@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Eyebrow, Donut, Card, JourneyMap } from "../components/UI";
+import { Eyebrow, Donut, Card, JourneyMap, Pill } from "../components/UI";
 import {
   loadMoment,
   saveMoment,
@@ -447,13 +447,10 @@ export function SustainabilityMetrics() {
         <Donut percent={30} label="CO₂" sublabel={t("vs_avg")} color="#C97A8C" />
         <Donut percent={80} label="H₂O" sublabel={t("recycled_water")} color="#8FA688" />
       </div>
-      <div className="space-y-2 font-sans text-[12px] mb-4">
-        {[[t("recyclability"), "92%"], [t("renewable_energy"), "78%"], [t("ethical_sourcing"), "100%"]].map(([k, v]) => (
-          <div key={k} className="flex justify-between items-center">
-            <span className="text-clay">{k}</span>
-            <span className="text-ink font-medium">{v}</span>
-          </div>
-        ))}
+      <div className="space-y-3 mb-4">
+        <Pill label={t("recyclability")} percent={92} color="#C97A8C" />
+        <Pill label={t("renewable_energy")} percent={78} color="#8FA688" />
+        <Pill label={t("ethical_sourcing")} percent={100} color="#C9A46A" />
       </div>
       <div className="grid grid-cols-3 gap-2">
         {[["7.9kg", t("co2_saved")], ["2,400L", t("water_saved")], ["Top 10%", t("top_10")]].map(([v, l]) => (

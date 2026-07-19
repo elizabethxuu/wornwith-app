@@ -181,3 +181,32 @@ export function JourneyMap() {
     </div>
   );
 }
+
+export function Pill({
+  label,
+  percent,
+  color,
+}: {
+  label: string;
+  percent: number;
+  color: string;
+}) {
+  const [width, setWidth] = useState(0);
+  useEffect(() => {
+    const t = setTimeout(() => setWidth(percent), 80);
+    return () => clearTimeout(t);
+  }, [percent]);
+
+  return (
+    <div className="flex items-center gap-3">
+      <span className="font-sans text-[12px] text-clay w-24 shrink-0">{label}</span>
+      <div className="flex-1 h-[6px] rounded-full bg-line overflow-hidden">
+        <div
+          className="h-full rounded-full transition-all duration-1000 ease-out"
+          style={{ width: `${width}%`, backgroundColor: color }}
+        />
+      </div>
+      <span className="font-sans text-[12px] text-ink font-medium w-9 text-right shrink-0">{percent}%</span>
+    </div>
+  );
+}
