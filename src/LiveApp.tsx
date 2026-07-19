@@ -90,27 +90,40 @@ export default function LiveApp() {
         {liveScreens[index]}
       </div>
 
-      {/* Visible, unambiguous nav arrows — the tap-zones still work too, but
-          these make it obvious at a glance that you can move forward/back,
-          instead of relying on a small text hint people tend to miss. */}
-      {!isFirst && (
-        <button
-          onClick={(e) => { e.stopPropagation(); goPrev(); }}
-          aria-label="Previous"
-          className="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/95 border border-line shadow-md flex items-center justify-center z-10"
-        >
-          <ChevronLeft size={20} className="text-blush-deep" />
-        </button>
-      )}
-      {!isLast && (
-        <button
-          onClick={(e) => { e.stopPropagation(); goNext(); }}
-          aria-label="Next"
-          className="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/95 border border-line shadow-md flex items-center justify-center z-10"
-        >
-          <ChevronRight size={20} className="text-blush-deep" />
-        </button>
-      )}
+      {/* Visible, unambiguous nav bar — the tap-zones in the content area
+          still work too, but this makes it obvious at a glance that you can
+          move forward/back. Fixed outside the scrollable content so it can
+          never overlap whatever text happens to be on a given screen. */}
+      <div
+        className="flex items-center justify-between px-4 shrink-0 border-t border-line"
+        style={{ paddingTop: "10px", paddingBottom: "max(env(safe-area-inset-bottom), 10px)" }}
+      >
+        {!isFirst ? (
+          <button
+            onClick={goPrev}
+            aria-label="Previous"
+            className="w-10 h-10 rounded-full bg-white border border-line shadow-sm flex items-center justify-center"
+          >
+            <ChevronLeft size={20} className="text-blush-deep" />
+          </button>
+        ) : (
+          <div className="w-10 h-10" />
+        )}
+        <p className="font-sans text-[9px] text-clay/50">
+          {index + 1} / {liveScreens.length}
+        </p>
+        {!isLast ? (
+          <button
+            onClick={goNext}
+            aria-label="Next"
+            className="w-10 h-10 rounded-full bg-white border border-line shadow-sm flex items-center justify-center"
+          >
+            <ChevronRight size={20} className="text-blush-deep" />
+          </button>
+        ) : (
+          <div className="w-10 h-10" />
+        )}
+      </div>
     </div>
   );
 }
