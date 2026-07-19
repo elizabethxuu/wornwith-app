@@ -133,11 +133,11 @@ export function ProductOverview() {
           <Check size={12} /> DPP Verified
         </span>
       </div>
-      <div className="w-full h-40 rounded-card bg-blush-pale overflow-hidden mb-4">
+      <div className="w-full h-64 rounded-card bg-blush-pale overflow-hidden mb-4">
         <img
           src="/images/cos-wool-jacket.png"
           alt="COS Black Wool Funnel-Neck Coat"
-          className="w-full h-full object-cover object-center"
+          className="w-full h-full object-contain object-center"
         />
       </div>
       <h2 className="font-display italic text-2xl text-ink leading-tight">
@@ -181,8 +181,12 @@ export function ProductLifecycle() {
       <h2 className="font-display italic text-2xl text-ink mt-1">Where did it come from?</h2>
       <p className="font-sans text-[11px] text-clay mt-1 mb-2">18,400km from farm to your hands</p>
       <div className="flex gap-1.5 mb-5 flex-wrap">
-        {["🇳🇿 NZ", "🇮🇹 Italy", "🇵🇹 Portugal", "🇫🇷 France"].map((t) => (
-          <span key={t} className="text-[10px] font-sans bg-blush-pale text-blush-deep px-2 py-1 rounded-full">
+        {["🇳🇿 NZ", "🇮🇹 Italy", "🇵🇹 Portugal", "🇫🇷 France"].map((t, i) => (
+          <span
+            key={t}
+            style={{ animationDelay: `${i * 120}ms` }}
+            className="pop-in text-[10px] font-sans bg-blush-pale text-blush-deep px-2 py-1 rounded-full"
+          >
             {t}
           </span>
         ))}
@@ -190,8 +194,12 @@ export function ProductLifecycle() {
       <div className="relative pl-6">
         <div className="absolute left-[9px] top-2 bottom-2 w-px bg-line" />
         <div className="space-y-5">
-          {stops.map((s) => (
-            <div key={s.title} className="relative flex items-center gap-3">
+          {stops.map((s, i) => (
+            <div
+              key={s.title}
+              style={{ animationDelay: `${480 + i * 150}ms` }}
+              className="pop-in relative flex items-center gap-3"
+            >
               <div className={`absolute -left-6 w-4 h-4 rounded-full border-2 ${s.active ? "bg-blush border-blush" : "bg-paper border-line"}`} />
               <span className="text-xl">{s.icon}</span>
               <div>
@@ -239,10 +247,13 @@ export function SupplyChain() {
       </div>
       <Card>
         <Eyebrow>Ethical Audit</Eyebrow>
-        <div className="mt-2 space-y-1.5 font-sans text-[12px]">
-          <div className="flex justify-between"><span className="text-clay">Fair wages</span><span className="text-sage flex items-center gap-1">✦ Passed</span></div>
-          <div className="flex justify-between"><span className="text-clay">Health & safety</span><span className="text-sage flex items-center gap-1">✦ Grade A</span></div>
-          <div className="flex justify-between"><span className="text-clay">No forced labour</span><span className="text-sage flex items-center gap-1">✦ Verified</span></div>
+        <div className="mt-2 grid grid-cols-[1fr,auto] gap-y-1.5 gap-x-4 font-sans text-[12px] items-center">
+          <span className="text-clay">Fair wages</span>
+          <span className="text-sage flex items-center gap-1 justify-self-start">✦ Passed</span>
+          <span className="text-clay">Health & safety</span>
+          <span className="text-sage flex items-center gap-1 justify-self-start">✦ Grade A</span>
+          <span className="text-clay">No forced labour</span>
+          <span className="text-sage flex items-center gap-1 justify-self-start">✦ Verified</span>
         </div>
         <p className="text-[9px] text-clay/70 font-sans mt-2 pt-2 border-t border-line">
           Audited by Bureau Veritas · Cert #BV-2025-09871
@@ -449,13 +460,15 @@ export function StoryBehindIt() {
 
 /* 11 — PERSONALIZATION */
 export function Personalization() {
-  const [text, setText] = useState(() => loadMoment() || "dinner, autumn, somewhere with candlelight");
+  const [text, setText] = useState(() => loadMoment());
   const [moments, setMoments] = useState<SavedMoment[]>(() => loadMoments());
 
   const handleSave = () => {
     if (!text.trim()) return;
     saveMoment(text);
     setMoments(addMoment(text));
+    setText("");
+    saveMoment("");
   };
 
   return (
@@ -527,6 +540,12 @@ export function MyWardrobe() {
     setLogging(false);
   };
 
+  const deleteItem = (index: number) => {
+    const updated = items.filter((_, i) => i !== index);
+    setItems(updated);
+    saveWardrobe(updated);
+  };
+
   return (
     <div className="h-full px-5 py-6 fade-up">
       <Eyebrow>My Wardrobe</Eyebrow>
@@ -543,18 +562,27 @@ export function MyWardrobe() {
       </div>
       <div className="divide-y divide-line border-y border-line">
         {items.map((it, i) => (
-          <div key={i} className="py-3">
-            <p className="font-sans text-[13px] font-medium text-ink flex items-center gap-1.5">
-              {it.name}
-              {it.tag && (
-                <span className="text-[9px] text-sage border border-sage/40 rounded-full px-1.5 py-0.5">
-                  {it.tag}
-                </span>
-              )}
-            </p>
-            <p className="font-sans text-[11px] text-clay mt-0.5">
-              Worn {it.worn} · {it.note}
-            </p>
+          <div key={i} className="py-3 flex items-start justify-between gap-2 group">
+            <div>
+              <p className="font-sans text-[13px] font-medium text-ink flex items-center gap-1.5">
+                {it.name}
+                {it.tag && (
+                  <span className="text-[9px] text-sage border border-sage/40 rounded-full px-1.5 py-0.5">
+                    {it.tag}
+                  </span>
+                )}
+              </p>
+              <p className="font-sans text-[11px] text-clay mt-0.5">
+                Worn {it.worn} · {it.note}
+              </p>
+            </div>
+            <button
+              onClick={() => deleteItem(i)}
+              aria-label={`Remove ${it.name}`}
+              className="text-clay/50 hover:text-blush-deep font-sans text-[11px] shrink-0 pt-0.5"
+            >
+              ✕
+            </button>
           </div>
         ))}
       </div>
@@ -570,7 +598,7 @@ export function MyWardrobe() {
           <input
             value={note}
             onChange={(e) => setNote(e.target.value)}
-            placeholder="The memory — e.g. First worn at Jessika's birthday"
+            placeholder="The memory — where, when, why it mattered"
             className="w-full border border-line rounded-lg px-3 py-2 font-sans text-[12px] text-ink focus:outline-none focus:border-blush"
           />
           <div className="flex gap-2 pt-1">

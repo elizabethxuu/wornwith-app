@@ -55,9 +55,6 @@ export default function PrintableTag() {
       >
         Download tag as PNG
       </button>
-      <p className="font-sans text-[11px] text-clay text-center max-w-xs">
-      
-      </p>
     </div>
   );
 }

@@ -9,7 +9,7 @@ export default function PhoneShell({ children }: { children: ReactNode }) {
         <div className="w-24 h-6 bg-ink rounded-full absolute left-1/2 -translate-x-1/2 top-1" />
         <span>􀛨 􀙇 100%</span>
       </div>
-      <div className="w-full h-full pt-11 overflow-y-auto no-scrollbar">
+      <div className="w-full h-full pt-11 overflow-y-auto visible-scrollbar">
         {children}
       </div>
     </div>

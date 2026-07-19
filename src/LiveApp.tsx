@@ -79,7 +79,7 @@ export default function LiveApp() {
         ))}
       </div>
 
-      <div className="flex-1 overflow-y-auto no-scrollbar" onClick={handleTap}>
+      <div className="flex-1 overflow-y-auto visible-scrollbar" onClick={handleTap}>
         {liveScreens[index]}
       </div>
 
