@@ -43,9 +43,15 @@ const dict = {
   lifespan: { en: "Lifespan", fr: "Durée de vie", pt: "Vida útil" },
   your_garment: { en: "Your Garment", fr: "Votre Vêtement", pt: "Sua Peça" },
   owned_since: { en: "Owned since", fr: "Possédé depuis", pt: "Adquirido em" },
+  owned_since_date: { en: "April 2026", fr: "avril 2026", pt: "abril de 2026" },
   times_worn: { en: "Times worn", fr: "Fois porté", pt: "Vezes usado" },
   condition: { en: "Condition", fr: "État", pt: "Condição" },
   excellent: { en: "Excellent", fr: "Excellent", pt: "Excelente" },
+  lifespan_value: { en: "8–10 years", fr: "8 à 10 ans", pt: "8–10 anos" },
+  est_lifespan_value: { en: "6+ years", fr: "6 ans et plus", pt: "6+ anos" },
+  verified_date_value: { en: "April 2026", fr: "avril 2026", pt: "abril de 2026" },
+  story_date_value: { en: "5 Apr 2026", fr: "5 avr. 2026", pt: "5 abr. 2026" },
+  blockchain_word: { en: "blockchain", fr: "blockchain", pt: "blockchain" },
   photo_unavailable: { en: "Photo unavailable right now", fr: "Photo indisponible pour le moment", pt: "Foto indisponível no momento" },
 
   // Product lifecycle

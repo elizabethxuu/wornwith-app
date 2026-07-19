@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { ComposableMap, Geographies, Geography, Marker, Line } from "react-simple-maps";
 
 export function Eyebrow({ children }: { children: React.ReactNode }) {
   return (
@@ -75,49 +76,89 @@ export function Card({
   );
 }
 
+const worldMapUrl = "/data/world-110m.json";
+const highlightedCountries = ["New Zealand", "Italy", "Portugal", "France"];
+const journeyStops = [
+  { coords: [172.5, -43.5] as [number, number], label: "NZ" },
+  { coords: [8.05, 45.57] as [number, number], label: "Italy" },
+  { coords: [-8.61, 41.15] as [number, number], label: "Portugal" },
+  { coords: [2.35, 48.86] as [number, number], label: "Paris", active: true },
+];
+
 export function JourneyMap() {
-  const points = [
-    { x: 34, y: 96, label: "NZ" },
-    { x: 118, y: 42, label: "Italy" },
-    { x: 192, y: 74, label: "Portugal" },
-    { x: 268, y: 36, label: "Paris", active: true },
-  ];
-  const path = `M ${points[0].x} ${points[0].y} Q 80 20, ${points[1].x} ${points[1].y} T ${points[2].x} ${points[2].y} Q 230 50, ${points[3].x} ${points[3].y}`;
-
   return (
-    <div className="w-full bg-blush-pale/40 rounded-card py-5 px-2 mb-4">
-      <svg viewBox="0 0 300 130" className="w-full h-auto" fill="none">
-        {/* faint globe texture — a few soft latitude arcs */}
-        <ellipse cx="150" cy="65" rx="140" ry="55" stroke="#E7A6B4" strokeOpacity="0.25" strokeWidth="1" />
-        <ellipse cx="150" cy="65" rx="100" ry="40" stroke="#E7A6B4" strokeOpacity="0.2" strokeWidth="1" />
-        <ellipse cx="150" cy="65" rx="60" ry="25" stroke="#E7A6B4" strokeOpacity="0.15" strokeWidth="1" />
+    <div className="w-full bg-paper border border-line rounded-card overflow-hidden mb-4">
+      <ComposableMap
+        projection="geoEqualEarth"
+        projectionConfig={{ scale: 52 }}
+        width={320}
+        height={190}
+        style={{ width: "100%", height: "auto", display: "block" }}
+      >
+        <Geographies geography={worldMapUrl}>
+          {({ geographies }) =>
+            geographies.map((geo) => {
+              const isHighlighted = highlightedCountries.includes(geo.properties.name);
+              return (
+                <Geography
+                  key={geo.rsmKey}
+                  geography={geo}
+                  fill={isHighlighted ? "#E7A6B4" : "#F1E9EA"}
+                  stroke="#FFFFFF"
+                  strokeWidth={0.5}
+                  style={{
+                    default: { outline: "none" },
+                    hover: { outline: "none" },
+                    pressed: { outline: "none" },
+                  }}
+                />
+              );
+            })
+          }
+        </Geographies>
 
-        {/* the dashed route connecting each stop */}
-        <path d={path} stroke="#C97A8C" strokeWidth="1.5" strokeDasharray="4 4" strokeLinecap="round" />
+        {journeyStops.slice(0, -1).map((s, i) => (
+          <Line
+            key={i}
+            from={s.coords}
+            to={journeyStops[i + 1].coords}
+            stroke="#C97A8C"
+            strokeWidth={1.3}
+            strokeDasharray="3 3"
+            strokeLinecap="round"
+          />
+        ))}
 
-        {points.map((p) => (
-          <g key={p.label}>
-            {p.active && (
-              <circle cx={p.x} cy={p.y} r="9" fill="#E7A6B4" fillOpacity="0.35">
-                <animate attributeName="r" values="7;11;7" dur="2.2s" repeatCount="indefinite" />
-                <animate attributeName="fill-opacity" values="0.4;0.1;0.4" dur="2.2s" repeatCount="indefinite" />
+        {journeyStops.map((s) => (
+          <Marker key={s.label} coordinates={s.coords}>
+            {s.active && (
+              <circle r={8} fill="#C97A8C" fillOpacity={0.25}>
+                <animate attributeName="r" values="6;10;6" dur="2.2s" repeatCount="indefinite" />
+                <animate attributeName="fill-opacity" values="0.35;0.1;0.35" dur="2.2s" repeatCount="indefinite" />
               </circle>
             )}
-            <circle cx={p.x} cy={p.y} r="4" fill={p.active ? "#C97A8C" : "#FFFFFF"} stroke="#C97A8C" strokeWidth="1.5" />
+            <circle
+              r={s.active ? 4 : 3}
+              fill={s.active ? "#C97A8C" : "#FFFFFF"}
+              stroke="#C97A8C"
+              strokeWidth={1.3}
+            />
             <text
-              x={p.x}
-              y={p.y - 12}
               textAnchor="middle"
-              fontSize="9"
-              fontFamily="Inter, sans-serif"
-              fontWeight={p.active ? 600 : 500}
-              fill={p.active ? "#C97A8C" : "#8A7F76"}
+              y={-9}
+              style={{
+                fontFamily: "'Cormorant Garamond', serif",
+                fontStyle: "italic",
+                fontWeight: s.active ? 600 : 500,
+                fontSize: s.active ? 12 : 10,
+                fill: s.active ? "#C97A8C" : "#2B2622",
+              }}
             >
-              {p.label}
+              {s.label}
             </text>
-          </g>
+          </Marker>
         ))}
-      </svg>
+      </ComposableMap>
     </div>
   );
 }

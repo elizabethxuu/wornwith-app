@@ -26,6 +26,8 @@ import {
   Wrench,
   Repeat,
   ArrowRight,
+  Search,
+  CalendarDays,
 } from "lucide-react";
 
 /* 1 — SKELETON LOADER */
@@ -153,7 +155,7 @@ export function Welcome() {
         <p className="flex items-center gap-1.5 font-sans text-sm text-ink font-medium">
           {t("verified_passport")} <Check size={14} className="text-sage" />
         </p>
-        <p className="text-[11px] text-clay mt-1">{GARMENT.verifiedDate} · ID: {GARMENT.fullDppId}</p>
+        <p className="text-[11px] text-clay mt-1">{t("verified_date_value")} · ID: {GARMENT.fullDppId}</p>
         <p className="text-[11px] text-clay">{t("stored_ledger")}</p>
         <div className="mt-3 pt-3 border-t border-line flex items-center gap-1.5">
           <span className="text-[10px]">🇪🇺</span>
@@ -201,7 +203,7 @@ export function ProductOverview() {
     [t("material"), GARMENT.material],
     [t("made_in"), GARMENT.madeIn],
     [t("certified"), GARMENT.certified],
-    [t("lifespan"), GARMENT.lifespan],
+    [t("lifespan"), t("lifespan_value")],
   ];
   return (
     <div className="h-full px-5 py-4 fade-up">
@@ -244,7 +246,7 @@ export function ProductOverview() {
       <div className="mt-4">
         <Eyebrow>{t("your_garment")}</Eyebrow>
         <div className="mt-2 space-y-1.5 font-sans text-[12px]">
-          <div className="flex justify-between"><span className="text-clay">{t("owned_since")}</span><span className="text-ink">{GARMENT.ownedSince}</span></div>
+          <div className="flex justify-between"><span className="text-clay">{t("owned_since")}</span><span className="text-ink">{t("owned_since_date")}</span></div>
           <div className="flex justify-between"><span className="text-clay">{t("times_worn")}</span><span className="text-ink">{GARMENT.timesWorn}</span></div>
           <div className="flex justify-between"><span className="text-clay">{t("condition")}</span><span className="text-sage font-medium">{t("excellent")}</span></div>
         </div>
@@ -573,7 +575,7 @@ export function StoryBehindIt() {
           <span className="flex items-center gap-1 text-[11px] font-sans text-sage font-medium">
             <Check size={12} /> {t("verified_passport")}
           </span>
-          <span className="text-[10px] font-sans text-clay">5 Apr 2026 · blockchain</span>
+          <span className="text-[10px] font-sans text-clay">{t("story_date_value")} · {t("blockchain_word")}</span>
         </div>
         <div className="flex items-center gap-1.5 mb-2">
           <Sparkles size={13} className="text-blush-deep" />
@@ -664,10 +666,10 @@ export function Personalization() {
       <div className="mt-6">
         <Eyebrow>{t("your_garment")}</Eyebrow>
         <div className="mt-2 space-y-1.5 font-sans text-[12px]">
-          <div className="flex justify-between"><span className="text-clay">{t("owned_since")}</span><span className="text-ink">April 2026</span></div>
+          <div className="flex justify-between"><span className="text-clay">{t("owned_since")}</span><span className="text-ink">{t("owned_since_date")}</span></div>
           <div className="flex justify-between"><span className="text-clay">{t("times_worn")}</span><span className="text-ink">~18</span></div>
           <div className="flex justify-between"><span className="text-clay">{t("condition")}</span><span className="text-sage">{t("excellent")}</span></div>
-          <div className="flex justify-between"><span className="text-clay">{t("est_lifespan")}</span><span className="text-ink">6+ years ✦</span></div>
+          <div className="flex justify-between"><span className="text-clay">{t("est_lifespan")}</span><span className="text-ink">{t("est_lifespan_value")} ✦</span></div>
         </div>
       </div>
       <p className="font-display italic text-[12px] text-clay text-center mt-auto pt-6">
@@ -684,10 +686,18 @@ export function MyWardrobe() {
   const [logging, setLogging] = useState(false);
   const [name, setName] = useState("");
   const [note, setNote] = useState("");
+  const [search, setSearch] = useState("");
+  const [dateFilter, setDateFilter] = useState("");
 
   const submitMemory = () => {
     if (!name.trim()) return;
-    const newItem = { name: name.trim(), tag: null, worn: "1×", note: note.trim() || "Just now" };
+    const newItem = {
+      name: name.trim(),
+      tag: null,
+      worn: "1×",
+      note: note.trim() || "Just now",
+      loggedAt: new Date().toISOString().slice(0, 10),
+    };
     const updated = [...items, newItem];
     setItems(updated);
     saveWardrobe(updated);
@@ -705,13 +715,26 @@ export function MyWardrobe() {
 
   const brandCount = new Set(items.map((it) => it.brand || "Unlabeled")).size;
 
+  const filtered = items
+    .map((it, i) => ({ it, i }))
+    .filter(({ it }) => {
+      const matchesSearch =
+        !search.trim() ||
+        it.name.toLowerCase().includes(search.toLowerCase()) ||
+        it.note.toLowerCase().includes(search.toLowerCase());
+      const matchesDate = !dateFilter || it.loggedAt === dateFilter;
+      return matchesSearch && matchesDate;
+    });
+
+  const hasActiveFilters = search.trim() !== "" || dateFilter !== "";
+
   return (
     <div className="h-full px-5 py-6 fade-up">
       <Eyebrow>{t("my_wardrobe")}</Eyebrow>
       <h2 className="font-display italic text-xl text-ink mt-1 mb-3">
         {items.length} {t("pieces")} · {brandCount} {t("brands")} · 2 {t("resold")}
       </h2>
-      <div className="grid grid-cols-3 gap-2 mb-5">
+      <div className="grid grid-cols-3 gap-2 mb-3">
         {[[String(items.length), t("items_label")], [String(brandCount), t("brands")], ["2", t("resold")]].map(([v, l]) => (
           <div key={l} className="bg-blush-pale/60 rounded-lg py-2.5 text-center">
             <p className="font-display italic text-lg text-blush-deep">{v}</p>
@@ -719,31 +742,74 @@ export function MyWardrobe() {
           </div>
         ))}
       </div>
+
+      <div className="flex gap-2 mb-4">
+        <div className="flex-1 relative">
+          <Search size={13} className="absolute left-3 top-1/2 -translate-y-1/2 text-clay/50" />
+          <input
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search for journal entry"
+            className="w-full border border-line rounded-full pl-8 pr-3 py-2 font-sans text-[12px] text-ink focus:outline-none focus:border-blush"
+          />
+        </div>
+        <label className="relative flex items-center justify-center w-9 h-9 border border-line rounded-full shrink-0 cursor-pointer">
+          <CalendarDays size={14} className={dateFilter ? "text-blush-deep" : "text-clay/60"} />
+          <input
+            type="date"
+            value={dateFilter}
+            onChange={(e) => setDateFilter(e.target.value)}
+            className="absolute inset-0 opacity-0 cursor-pointer"
+            aria-label="Filter by date logged"
+          />
+        </label>
+      </div>
+
+      {hasActiveFilters && (
+        <div className="flex items-center justify-between mb-2 -mt-2">
+          <p className="font-sans text-[10px] text-clay">
+            {filtered.length} of {items.length} shown
+          </p>
+          <button
+            onClick={() => { setSearch(""); setDateFilter(""); }}
+            className="font-sans text-[10px] text-blush-deep underline underline-offset-2"
+          >
+            Clear filters
+          </button>
+        </div>
+      )}
+
       <div className="divide-y divide-line border-y border-line">
-        {items.map((it, i) => (
-          <div key={i} className="py-3 flex items-start justify-between gap-2 group">
-            <div>
-              <p className="font-sans text-[13px] font-medium text-ink flex items-center gap-1.5">
-                {it.name}
-                {it.tag && (
-                  <span className="text-[9px] text-sage border border-sage/40 rounded-full px-1.5 py-0.5">
-                    {it.tag}
-                  </span>
-                )}
-              </p>
-              <p className="font-sans text-[11px] text-clay mt-0.5">
-                {t("worn_label")} {it.worn} · {it.note}
-              </p>
+        {filtered.length === 0 ? (
+          <p className="py-6 text-center font-sans text-[12px] text-clay">
+            No entries match your search.
+          </p>
+        ) : (
+          filtered.map(({ it, i }) => (
+            <div key={i} className="py-3 flex items-start justify-between gap-2 group">
+              <div>
+                <p className="font-sans text-[13px] font-medium text-ink flex items-center gap-1.5">
+                  {it.name}
+                  {it.tag && (
+                    <span className="text-[9px] text-sage border border-sage/40 rounded-full px-1.5 py-0.5">
+                      {it.tag}
+                    </span>
+                  )}
+                </p>
+                <p className="font-sans text-[11px] text-clay mt-0.5">
+                  {t("worn_label")} {it.worn} · {it.note}
+                </p>
+              </div>
+              <button
+                onClick={() => deleteItem(i)}
+                aria-label={`Remove ${it.name}`}
+                className="text-clay/50 hover:text-blush-deep font-sans text-[11px] shrink-0 pt-0.5"
+              >
+                ✕
+              </button>
             </div>
-            <button
-              onClick={() => deleteItem(i)}
-              aria-label={`Remove ${it.name}`}
-              className="text-clay/50 hover:text-blush-deep font-sans text-[11px] shrink-0 pt-0.5"
-            >
-              ✕
-            </button>
-          </div>
-        ))}
+          ))
+        )}
       </div>
 
       {logging ? (

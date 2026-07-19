@@ -50,12 +50,13 @@ export type WardrobeItem = {
   worn: string;
   note: string;
   brand?: string;
+  loggedAt?: string; // ISO date (yyyy-mm-dd), used for the calendar filter
 };
 
 const defaultWardrobe: WardrobeItem[] = [
-  { name: "The Marais Coat", tag: "DPP", worn: "18×", note: "March dinner · Paris, New York", brand: "COS" },
-  { name: "Silk Slip Dress", tag: null, worn: "7×", note: "June birthday · London", brand: "Reformation" },
-  { name: "Linen Trousers", tag: null, worn: "2×", note: "Last: Lisbon trip", brand: "Everlane" },
+  { name: "The Marais Coat", tag: "DPP", worn: "18×", note: "March dinner · Paris, New York", brand: "COS", loggedAt: "2026-03-14" },
+  { name: "Silk Slip Dress", tag: null, worn: "7×", note: "June birthday · London", brand: "Reformation", loggedAt: "2026-06-02" },
+  { name: "Linen Trousers", tag: null, worn: "2×", note: "Last: Lisbon trip", brand: "Everlane", loggedAt: "2026-07-01" },
 ];
 
 export function loadWardrobe(): WardrobeItem[] {
