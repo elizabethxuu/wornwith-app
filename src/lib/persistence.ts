@@ -59,3 +59,49 @@ export function saveWardrobe(items: WardrobeItem[]) {
     // ignore
   }
 }
+
+// Care checklist — which of the 4 care instructions the visitor has checked
+export function loadCareChecks(): boolean[] {
+  try {
+    const raw = localStorage.getItem(key("care-checks"));
+    if (!raw) return [false, false, false, false];
+    const parsed = JSON.parse(raw);
+    if (Array.isArray(parsed) && parsed.length === 4) return parsed;
+    return [false, false, false, false];
+  } catch {
+    return [false, false, false, false];
+  }
+}
+
+export function saveCareChecks(checks: boolean[]) {
+  try {
+    localStorage.setItem(key("care-checks"), JSON.stringify(checks));
+  } catch {
+    // ignore
+  }
+}
+
+// A running log of saved "when will you wear this" moments, most recent last
+export type SavedMoment = { text: string; savedAt: string };
+
+export function loadMoments(): SavedMoment[] {
+  try {
+    const raw = localStorage.getItem(key("moments"));
+    if (!raw) return [];
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    return [];
+  }
+}
+
+export function addMoment(text: string): SavedMoment[] {
+  const moments = loadMoments();
+  const updated = [...moments, { text, savedAt: new Date().toISOString() }];
+  try {
+    localStorage.setItem(key("moments"), JSON.stringify(updated));
+  } catch {
+    // ignore
+  }
+  return updated;
+}

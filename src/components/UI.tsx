@@ -1,3 +1,5 @@
+import { useState, useEffect } from "react";
+
 export function Eyebrow({ children }: { children: React.ReactNode }) {
   return (
     <p className="text-[10px] tracking-[0.18em] uppercase text-blush-deep font-sans font-semibold">
@@ -17,9 +19,19 @@ export function Donut({
   sublabel: string;
   color?: string;
 }) {
+  const [displayed, setDisplayed] = useState(0);
+
+  useEffect(() => {
+    // Kick off the fill on the next tick so the browser paints the 0%
+    // state first — otherwise React batches straight to the final value
+    // and the stroke transition never has anything to animate from.
+    const t = setTimeout(() => setDisplayed(percent), 50);
+    return () => clearTimeout(t);
+  }, [percent]);
+
   const r = 34;
   const c = 2 * Math.PI * r;
-  const offset = c - (percent / 100) * c;
+  const offset = c - (displayed / 100) * c;
   return (
     <div className="flex flex-col items-center gap-1">
       <div className="relative w-[84px] h-[84px]">
@@ -36,11 +48,11 @@ export function Donut({
             strokeDashoffset={offset}
             strokeLinecap="round"
             transform="rotate(-90 42 42)"
-            style={{ transition: "stroke-dashoffset 1.2s ease" }}
+            style={{ transition: "stroke-dashoffset 1.1s ease" }}
           />
         </svg>
         <div className="absolute inset-0 flex items-center justify-center font-display italic text-lg text-ink">
-          {percent}%
+          {displayed}%
         </div>
       </div>
       <p className="text-[10px] font-sans font-semibold text-clay uppercase tracking-wide">{label}</p>

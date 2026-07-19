@@ -1,6 +1,17 @@
 import { useState } from "react";
 import { Eyebrow, Donut, Card } from "../components/UI";
-import { loadMoment, saveMoment, loadWardrobe, saveWardrobe, type WardrobeItem } from "../lib/persistence";
+import {
+  loadMoment,
+  saveMoment,
+  loadWardrobe,
+  saveWardrobe,
+  type WardrobeItem,
+  loadCareChecks,
+  saveCareChecks,
+  loadMoments,
+  addMoment,
+  type SavedMoment,
+} from "../lib/persistence";
 import {
   QrCode,
   Check,
@@ -254,6 +265,14 @@ export function CareGuide() {
     ["Steam, don't iron", "Let it breathe"],
     ["Fold, don't hang", "Away from sunlight"],
   ];
+  const [checks, setChecks] = useState<boolean[]>(() => loadCareChecks());
+
+  const toggle = (i: number) => {
+    const updated = checks.map((c, idx) => (idx === i ? !c : c));
+    setChecks(updated);
+    saveCareChecks(updated);
+  };
+
   return (
     <div className="h-full px-5 py-6 fade-up">
       <h2 className="font-display italic text-2xl text-ink leading-tight">
@@ -272,11 +291,16 @@ export function CareGuide() {
       </div>
 
       <div className="divide-y divide-line border-y border-line mb-4">
-        {care.map(([t, s]) => (
+        {care.map(([t, s], i) => (
           <label key={t} className="flex items-center gap-3 py-2.5 cursor-pointer">
-            <input type="checkbox" className="accent-blush-deep w-4 h-4" />
+            <input
+              type="checkbox"
+              checked={checks[i]}
+              onChange={() => toggle(i)}
+              className="accent-blush-deep w-4 h-4"
+            />
             <div>
-              <p className="font-sans text-[12px] text-ink">{t}</p>
+              <p className={`font-sans text-[12px] ${checks[i] ? "text-clay line-through" : "text-ink"}`}>{t}</p>
               <p className="font-sans text-[10px] text-clay">{s}</p>
             </div>
           </label>
@@ -326,10 +350,34 @@ export function SustainabilityMetrics() {
 /* 9 — WHAT'S NEXT */
 export function WhatsNext() {
   const options = [
-    { icon: Repeat, title: "Resell", sub: "Vestiaire Collective", color: "#C97A8C" },
-    { icon: ShoppingBag, title: "Thrift", sub: "Donate locally", color: "#8FA688" },
-    { icon: Wrench, title: "Repair", sub: "Find a tailor nearby", color: "#8A7F76" },
-    { icon: Recycle, title: "Recycle", sub: "Return to COS", color: "#C97A8C" },
+    {
+      icon: Repeat,
+      title: "Resell",
+      sub: "Vestiaire Collective",
+      color: "#C97A8C",
+      href: "https://www.vestiairecollective.com",
+    },
+    {
+      icon: ShoppingBag,
+      title: "Thrift",
+      sub: "Donate locally",
+      color: "#8FA688",
+      href: "https://www.google.com/maps/search/thrift+store+donation+near+me",
+    },
+    {
+      icon: Wrench,
+      title: "Repair",
+      sub: "Find a tailor nearby",
+      color: "#8A7F76",
+      href: "https://www.google.com/maps/search/tailor+clothing+repair+near+me",
+    },
+    {
+      icon: Recycle,
+      title: "Recycle",
+      sub: "Return to COS",
+      color: "#C97A8C",
+      href: "https://www.cos.com",
+    },
   ];
   return (
     <div className="h-full px-5 py-6 fade-up">
@@ -339,8 +387,11 @@ export function WhatsNext() {
       <p className="font-sans text-[11px] text-clay mt-1 mb-5">Choose what happens next</p>
       <div className="space-y-2.5">
         {options.map((o) => (
-          <button
+          <a
             key={o.title}
+            href={o.href}
+            target="_blank"
+            rel="noopener noreferrer"
             className="w-full flex items-center gap-3 border border-line rounded-card px-4 py-3 text-left hover:border-blush transition-colors"
           >
             <div className="w-9 h-9 rounded-full flex items-center justify-center bg-blush-pale">
@@ -351,9 +402,13 @@ export function WhatsNext() {
               <p className="font-sans text-[11px] text-clay">{o.sub}</p>
             </div>
             <ChevronLeft size={14} className="rotate-180 text-clay" />
-          </button>
+          </a>
         ))}
       </div>
+      <p className="font-sans text-[10px] text-clay/60 mt-4 text-center">
+        Thrift and Repair open a nearby-places search — your browser may ask
+        for location access.
+      </p>
     </div>
   );
 }
@@ -395,11 +450,12 @@ export function StoryBehindIt() {
 /* 11 — PERSONALIZATION */
 export function Personalization() {
   const [text, setText] = useState(() => loadMoment() || "dinner, autumn, somewhere with candlelight");
-  const [saved, setSaved] = useState(() => Boolean(loadMoment()));
+  const [moments, setMoments] = useState<SavedMoment[]>(() => loadMoments());
 
   const handleSave = () => {
+    if (!text.trim()) return;
     saveMoment(text);
-    setSaved(true);
+    setMoments(addMoment(text));
   };
 
   return (
@@ -410,16 +466,33 @@ export function Personalization() {
       </h2>
       <textarea
         value={text}
-        onChange={(e) => { setText(e.target.value); setSaved(false); }}
+        onChange={(e) => setText(e.target.value)}
         rows={2}
+        placeholder="dinner, autumn, somewhere with candlelight"
         className="w-full border border-line rounded-xl px-3 py-2.5 font-display italic text-[14px] text-ink resize-none focus:outline-none focus:border-blush"
       />
       <button
         onClick={handleSave}
         className="mt-3 w-full bg-ink text-cream font-sans text-[12px] tracking-wide py-2.5 rounded-full transition-colors"
       >
-        {saved ? "✓ Moment saved" : "Save this moment"}
+        Save this moment
       </button>
+
+      {moments.length > 0 && (
+        <Card className="mt-4">
+          <Eyebrow>Saved moments</Eyebrow>
+          <div className="mt-2 space-y-2 max-h-24 overflow-y-auto no-scrollbar">
+            {[...moments].reverse().map((m, i) => (
+              <div key={i} className="border-b border-line last:border-0 pb-2 last:pb-0">
+                <p className="font-display italic text-[13px] text-ink">{m.text}</p>
+                <p className="font-sans text-[9px] text-clay/60 mt-0.5">
+                  {new Date(m.savedAt).toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" })}
+                </p>
+              </div>
+            ))}
+          </div>
+        </Card>
+      )}
 
       <div className="mt-6">
         <Eyebrow>Your Garment</Eyebrow>
@@ -440,11 +513,18 @@ export function Personalization() {
 /* 12 — MY WARDROBE */
 export function MyWardrobe() {
   const [items, setItems] = useState<WardrobeItem[]>(() => loadWardrobe());
+  const [logging, setLogging] = useState(false);
+  const [name, setName] = useState("");
+  const [note, setNote] = useState("");
 
-  const logMemory = () => {
-    const updated = [...items, { name: "New memory", tag: null, worn: "1×", note: "Just now" }];
+  const submitMemory = () => {
+    if (!name.trim()) return;
+    const updated = [...items, { name: name.trim(), tag: null, worn: "1×", note: note.trim() || "Just now" }];
     setItems(updated);
     saveWardrobe(updated);
+    setName("");
+    setNote("");
+    setLogging(false);
   };
 
   return (
@@ -478,12 +558,44 @@ export function MyWardrobe() {
           </div>
         ))}
       </div>
-      <button
-        onClick={logMemory}
-        className="w-full mt-4 font-sans text-[12px] text-blush-deep border border-dashed border-blush rounded-full py-2.5"
-      >
-        + Log a memory
-      </button>
+
+      {logging ? (
+        <div className="mt-4 border border-line rounded-card px-4 py-3.5 space-y-2.5">
+          <input
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="What is it? e.g. Wool Trench Coat"
+            className="w-full border border-line rounded-lg px-3 py-2 font-sans text-[12px] text-ink focus:outline-none focus:border-blush"
+          />
+          <input
+            value={note}
+            onChange={(e) => setNote(e.target.value)}
+            placeholder="The memory — e.g. First worn at Jessika's birthday"
+            className="w-full border border-line rounded-lg px-3 py-2 font-sans text-[12px] text-ink focus:outline-none focus:border-blush"
+          />
+          <div className="flex gap-2 pt-1">
+            <button
+              onClick={submitMemory}
+              className="flex-1 bg-ink text-cream font-sans text-[11px] tracking-wide py-2 rounded-full"
+            >
+              Save memory
+            </button>
+            <button
+              onClick={() => { setLogging(false); setName(""); setNote(""); }}
+              className="px-4 font-sans text-[11px] text-clay"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      ) : (
+        <button
+          onClick={() => setLogging(true)}
+          className="w-full mt-4 font-sans text-[12px] text-blush-deep border border-dashed border-blush rounded-full py-2.5"
+        >
+          + Log a memory
+        </button>
+      )}
     </div>
   );
 }
