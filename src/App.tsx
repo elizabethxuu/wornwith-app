@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import DeckPreview from "./DeckPreview";
 import LiveApp from "./LiveApp";
 import PrintableTag from "./screens/PrintableTag";
+import { LanguageProvider } from "./lib/i18n";
 
 type Mode = "deck" | "live" | "tag";
 
@@ -29,7 +30,7 @@ export default function App() {
     return () => window.removeEventListener("resize", onResize);
   }, []);
 
-  if (mode === "live") return <LiveApp />;
-  if (mode === "tag") return <PrintableTag />;
-  return <DeckPreview />;
+  if (mode === "live") return <LanguageProvider><LiveApp /></LanguageProvider>;
+  if (mode === "tag") return <LanguageProvider><PrintableTag /></LanguageProvider>;
+  return <LanguageProvider><DeckPreview /></LanguageProvider>;
 }

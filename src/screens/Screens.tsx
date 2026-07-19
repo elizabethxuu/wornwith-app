@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Eyebrow, Donut, Card } from "../components/UI";
+import { Eyebrow, Donut, Card, JourneyMap } from "../components/UI";
 import {
   loadMoment,
   saveMoment,
@@ -14,6 +14,7 @@ import {
   logWardrobeEvent,
 } from "../lib/persistence";
 import { GARMENT } from "../lib/garment";
+import { useLanguage } from "../lib/i18n";
 import {
   QrCode,
   Check,
@@ -24,18 +25,20 @@ import {
   Recycle,
   Wrench,
   Repeat,
+  ArrowRight,
 } from "lucide-react";
 
 /* 1 — SKELETON LOADER */
 export function SkeletonLoader() {
+  const { t } = useLanguage();
   return (
     <div className="h-full flex flex-col items-center justify-center px-8 gap-6">
-      <Eyebrow>Digital Product Passport</Eyebrow>
+      <Eyebrow>{t("dpp_eyebrow")}</Eyebrow>
       <div className="w-full space-y-3">
         <div className="h-3 w-2/3 mx-auto rounded-full shimmer" />
         <div className="h-3 w-1/2 mx-auto rounded-full shimmer" />
       </div>
-      <p className="font-sans text-xs text-clay tracking-wide">Verifying passport…</p>
+      <p className="font-sans text-xs text-clay tracking-wide">{t("verifying")}</p>
       <p className="absolute bottom-10 font-display italic text-sm text-clay/60">wornwith.care</p>
     </div>
   );
@@ -43,6 +46,7 @@ export function SkeletonLoader() {
 
 /* 2 — CAMERA SCAN */
 export function CameraScan() {
+  const { t } = useLanguage();
   const [scanned, setScanned] = useState(false);
   const [flash, setFlash] = useState(false);
 
@@ -66,7 +70,7 @@ export function CameraScan() {
         <div className="bg-cream rounded-lg w-[150px] h-[190px] flex flex-col items-center justify-between py-6 shadow-xl">
           <p className="font-sans text-[10px] tracking-widest text-clay">COS</p>
           <QrCode size={44} className="text-ink" strokeWidth={1.2} />
-          <p className="font-display italic text-xs text-blush-deep">Scan me ›</p>
+          <p className="font-display italic text-xs text-blush-deep">{t("scan_me")}</p>
         </div>
         {/* corner brackets */}
         {["top-2 left-2 border-t-2 border-l-2", "top-2 right-2 border-t-2 border-r-2", "bottom-2 left-2 border-b-2 border-l-2", "bottom-2 right-2 border-b-2 border-r-2"].map((pos, i) => (
@@ -76,10 +80,10 @@ export function CameraScan() {
       <div className="h-16 flex items-center">
         {scanned ? (
           <p className="flex items-center gap-1.5 text-sm text-white font-sans fade-up">
-            <Check size={16} className="text-blush" /> Scan successful
+            <Check size={16} className="text-blush" /> {t("scan_successful")}
           </p>
         ) : (
-          <p className="text-white/50 text-xs font-sans">Tap the tag to scan</p>
+          <p className="text-white/50 text-xs font-sans">{t("tap_to_scan")}</p>
         )}
       </div>
     </div>
@@ -88,6 +92,7 @@ export function CameraScan() {
 
 /* 3 — WELCOME */
 export function Welcome() {
+  const { t, lang, setLang } = useLanguage();
   const [showInfo, setShowInfo] = useState(false);
   const [viewCount, setViewCount] = useState<number | null>(null);
 
@@ -114,9 +119,9 @@ export function Welcome() {
 
   return (
     <div className="h-full flex flex-col items-center justify-center px-8 gap-8 text-center fade-up">
-      <Eyebrow>Digital Product Passport</Eyebrow>
+      <Eyebrow>{t("dpp_eyebrow")}</Eyebrow>
       <div>
-        <p className="font-sans text-sm text-clay">Welcome to</p>
+        <p className="font-sans text-sm text-clay">{t("welcome_to")}</p>
         <h1 className="font-display italic text-4xl text-ink mt-1">wornwith.care</h1>
       </div>
 
@@ -125,15 +130,12 @@ export function Welcome() {
           onClick={() => setShowInfo(true)}
           className="font-sans text-[11px] text-blush-deep underline underline-offset-2 -mt-4"
         >
-          What is this?
+          {t("what_is_this")}
         </button>
       ) : (
         <div className="bg-blush-pale/50 rounded-xl px-4 py-3 -mt-4 fade-up">
           <p className="font-sans text-[11px] text-ink/80 leading-relaxed text-left">
-            A Digital Product Passport is a record every garment sold in the
-            EU will be required to carry by 2027 — where it was made, what
-            it's made of, and how to care for it. This is one designer's take
-            on what that moment could actually feel like.
+            {t("dpp_explainer")}
           </p>
         </div>
       )}
@@ -146,51 +148,74 @@ export function Welcome() {
       </p>
       <Card className="w-full text-left">
         <p className="text-[10px] font-sans font-semibold text-sage uppercase tracking-wide mb-1">
-          Verified Passport
+          {t("verified_passport")}
         </p>
         <p className="flex items-center gap-1.5 font-sans text-sm text-ink font-medium">
-          Verified Passport <Check size={14} className="text-sage" />
+          {t("verified_passport")} <Check size={14} className="text-sage" />
         </p>
         <p className="text-[11px] text-clay mt-1">{GARMENT.verifiedDate} · ID: {GARMENT.fullDppId}</p>
-        <p className="text-[11px] text-clay">Stored on secure digital ledger</p>
+        <p className="text-[11px] text-clay">{t("stored_ledger")}</p>
         <div className="mt-3 pt-3 border-t border-line flex items-center gap-1.5">
           <span className="text-[10px]">🇪🇺</span>
-          <span className="text-[10px] font-sans text-clay">EU Regulated · ESPR 2027</span>
+          <span className="text-[10px] font-sans text-clay">{t("eu_regulated")}</span>
         </div>
         {viewCount !== null && (
           <div className="mt-3 pt-3 border-t border-line">
             <p className="text-[10px] font-sans text-clay">
-              This passport has been viewed <span className="text-ink font-medium">{viewCount.toLocaleString()}</span> times
+              {t("viewed_times")} <span className="text-ink font-medium">{viewCount.toLocaleString()}</span> {t("times_suffix")}
             </p>
           </div>
         )}
       </Card>
+
+      {/* Language switcher */}
+      <div className="flex items-center gap-3 -mt-2">
+        <button
+          onClick={() => setLang("en")}
+          className={`font-sans text-[11px] flex items-center gap-1 px-2 py-1 rounded-full transition-opacity ${lang === "en" ? "opacity-100 bg-blush-pale/60" : "opacity-50"}`}
+        >
+          🇬🇧 EN
+        </button>
+        <button
+          onClick={() => setLang("fr")}
+          className={`font-sans text-[11px] flex items-center gap-1 px-2 py-1 rounded-full transition-opacity ${lang === "fr" ? "opacity-100 bg-blush-pale/60" : "opacity-50"}`}
+        >
+          🇫🇷 FR
+        </button>
+        <button
+          onClick={() => setLang("pt")}
+          className={`font-sans text-[11px] flex items-center gap-1 px-2 py-1 rounded-full transition-opacity ${lang === "pt" ? "opacity-100 bg-blush-pale/60" : "opacity-50"}`}
+        >
+          🇵🇹 PT
+        </button>
+      </div>
     </div>
   );
 }
 
 /* 4 — PRODUCT OVERVIEW */
 export function ProductOverview() {
+  const { t } = useLanguage();
   const [imgError, setImgError] = useState(false);
   const rows = [
-    ["Material", GARMENT.material],
-    ["Made in", GARMENT.madeIn],
-    ["Certified", GARMENT.certified],
-    ["Lifespan", GARMENT.lifespan],
+    [t("material"), GARMENT.material],
+    [t("made_in"), GARMENT.madeIn],
+    [t("certified"), GARMENT.certified],
+    [t("lifespan"), GARMENT.lifespan],
   ];
   return (
     <div className="h-full px-5 py-4 fade-up">
       <div className="flex items-center gap-1.5 text-clay text-xs font-sans mb-4">
-        <ChevronLeft size={14} /> <span>{GARMENT.brand} Wool Jacket</span>
+        <ChevronLeft size={14} /> <span>{GARMENT.brand} {t("wool_jacket")}</span>
         <span className="ml-auto flex items-center gap-1 text-sage text-[10px]">
-          <Check size={12} /> DPP Verified
+          <Check size={12} /> {t("dpp_verified")}
         </span>
       </div>
       <div className="w-full h-64 rounded-card bg-blush-pale overflow-hidden mb-4 flex items-center justify-center">
         {imgError ? (
           <div className="text-center px-6">
             <Shirt size={40} className="text-blush-deep mx-auto mb-2" strokeWidth={1} />
-            <p className="font-sans text-[10px] text-clay">Photo unavailable right now</p>
+            <p className="font-sans text-[10px] text-clay">{t("photo_unavailable")}</p>
           </div>
         ) : (
           <img
@@ -206,7 +231,7 @@ export function ProductOverview() {
         <br />Funnel-Neck Coat
       </h2>
       <p className="font-sans text-[11px] text-clay mt-1 mb-4">
-        {GARMENT.tagline}
+        {t("tagline_coat")}
       </p>
       <div className="divide-y divide-line border-y border-line">
         {rows.map(([k, v]) => (
@@ -217,11 +242,11 @@ export function ProductOverview() {
         ))}
       </div>
       <div className="mt-4">
-        <Eyebrow>Your Garment</Eyebrow>
+        <Eyebrow>{t("your_garment")}</Eyebrow>
         <div className="mt-2 space-y-1.5 font-sans text-[12px]">
-          <div className="flex justify-between"><span className="text-clay">Owned since</span><span className="text-ink">{GARMENT.ownedSince}</span></div>
-          <div className="flex justify-between"><span className="text-clay">Times worn</span><span className="text-ink">{GARMENT.timesWorn}</span></div>
-          <div className="flex justify-between"><span className="text-clay">Condition</span><span className="text-sage font-medium">{GARMENT.condition}</span></div>
+          <div className="flex justify-between"><span className="text-clay">{t("owned_since")}</span><span className="text-ink">{GARMENT.ownedSince}</span></div>
+          <div className="flex justify-between"><span className="text-clay">{t("times_worn")}</span><span className="text-ink">{GARMENT.timesWorn}</span></div>
+          <div className="flex justify-between"><span className="text-clay">{t("condition")}</span><span className="text-sage font-medium">{t("excellent")}</span></div>
         </div>
       </div>
     </div>
@@ -230,25 +255,26 @@ export function ProductOverview() {
 
 /* 5 — PRODUCT LIFECYCLE */
 export function ProductLifecycle() {
+  const { t } = useLanguage();
   const stops = [
-    { icon: "🐑", title: "Wool Farming", place: "Canterbury Plains", flag: "🇳🇿" },
-    { icon: "🧵", title: "Spinning & Weaving", place: "Biella, Italy", flag: "🇮🇹" },
-    { icon: "✂️", title: "Cutting & Construction", place: "Porto, Portugal", flag: "🇵🇹" },
-    { icon: "🧍", title: "With you now", place: "Paris, France", flag: "🇫🇷", active: true },
+    { icon: "🐑", title: t("wool_farming"), place: "Canterbury Plains", flag: "🇳🇿" },
+    { icon: "🧵", title: t("spinning_weaving"), place: "Biella, Italy", flag: "🇮🇹" },
+    { icon: "✂️", title: t("cutting_construction"), place: "Porto, Portugal", flag: "🇵🇹" },
+    { icon: "🧍", title: t("with_you_now"), place: "Paris, France", flag: "🇫🇷", active: true },
   ];
   return (
     <div className="h-full px-5 py-6 fade-up">
-      <Eyebrow>Product Lifecycle</Eyebrow>
-      <h2 className="font-display italic text-2xl text-ink mt-1">Where did it come from?</h2>
-      <p className="font-sans text-[11px] text-clay mt-1 mb-2">18,400km from farm to your hands</p>
+      <Eyebrow>{t("lifecycle_eyebrow")}</Eyebrow>
+      <h2 className="font-display italic text-2xl text-ink mt-1">{t("where_from")}</h2>
+      <p className="font-sans text-[11px] text-clay mt-1 mb-2">{t("km_traveled")}</p>
       <div className="flex gap-1.5 mb-5 flex-wrap">
-        {["🇳🇿 NZ", "🇮🇹 Italy", "🇵🇹 Portugal", "🇫🇷 France"].map((t, i) => (
+        {["🇳🇿 NZ", "🇮🇹 Italy", "🇵🇹 Portugal", "🇫🇷 France"].map((bubble, i) => (
           <span
-            key={t}
+            key={bubble}
             style={{ animationDelay: `${i * 120}ms` }}
             className="pop-in text-[10px] font-sans bg-blush-pale text-blush-deep px-2 py-1 rounded-full"
           >
-            {t}
+            {bubble}
           </span>
         ))}
       </div>
@@ -277,29 +303,43 @@ export function ProductLifecycle() {
 
 /* 6 — SUPPLY CHAIN */
 export function SupplyChain() {
+  const { t } = useLanguage();
   const chain = [
-    { icon: "🐑", label: "Wool Farm", place: "NZ", code: "NZ-F4821" },
-    { icon: "🏭", label: "Milling", place: "Italy", code: "IT-F9043" },
-    { icon: "🚢", label: "Ship", place: "Portugal", code: "PT-F2217" },
-    { icon: "🏬", label: "Retail", place: "Paris", code: "FR-F6631" },
+    { icon: "🐑", label: t("wool_farm"), place: "NZ", code: "NZ-F4821" },
+    { icon: "🏭", label: t("milling"), place: "Italy", code: "IT-F9043" },
+    { icon: "🚢", label: t("ship"), place: "Portugal", code: "PT-F2217" },
+    { icon: "🏬", label: t("retail"), place: "Paris", code: "FR-F6631" },
   ];
   return (
     <div className="h-full px-5 py-6 fade-up">
-      <Eyebrow>Supply Chain</Eyebrow>
-      <div className="grid grid-cols-4 gap-1.5 mt-4 mb-4">
-        {chain.map((c) => (
-          <div key={c.label} className="text-center">
-            <div className="w-11 h-11 mx-auto rounded-full bg-blush-pale flex items-center justify-center text-lg">
-              {c.icon}
+      <Eyebrow>{t("supply_chain")}</Eyebrow>
+      <div className="flex items-center justify-between mt-4 mb-4">
+        {chain.map((c, i) => (
+          <div key={c.label} className="flex items-center">
+            <div
+              style={{ animationDelay: `${i * 150}ms` }}
+              className="pop-in text-center w-14"
+            >
+              <div className="w-11 h-11 mx-auto rounded-full bg-blush-pale flex items-center justify-center text-lg">
+                {c.icon}
+              </div>
+              <p className="text-[9px] font-sans font-semibold text-ink mt-1">{c.label}</p>
+              <p className="text-[8px] font-sans text-clay">{c.place}</p>
+              <p className="text-[7px] font-sans text-clay/60">{c.code}</p>
             </div>
-            <p className="text-[9px] font-sans font-semibold text-ink mt-1">{c.label}</p>
-            <p className="text-[8px] font-sans text-clay">{c.place}</p>
-            <p className="text-[7px] font-sans text-clay/60">{c.code}</p>
+            {i < chain.length - 1 && (
+              <ArrowRight
+                size={13}
+                strokeWidth={1.5}
+                style={{ animationDelay: `${i * 150 + 75}ms` }}
+                className="pop-in text-blush shrink-0 -mt-4"
+              />
+            )}
           </div>
         ))}
       </div>
       <div className="grid grid-cols-3 gap-2 mb-5">
-        {[["4", "Countries"], ["18,400km", "traveled"], ["100%", "Verified"]].map(([v, l]) => (
+        {[["4", t("countries")], ["18,400km", t("traveled")], ["100%", t("verified")]].map(([v, l]) => (
           <div key={l} className="bg-blush-pale/60 rounded-lg py-2 text-center">
             <p className="font-display italic text-base text-blush-deep">{v}</p>
             <p className="text-[8px] font-sans text-clay uppercase tracking-wide">{l}</p>
@@ -307,17 +347,17 @@ export function SupplyChain() {
         ))}
       </div>
       <Card>
-        <Eyebrow>Ethical Audit</Eyebrow>
+        <Eyebrow>{t("ethical_audit")}</Eyebrow>
         <div className="mt-2 grid grid-cols-[1fr,auto] gap-y-1.5 gap-x-4 font-sans text-[12px] items-center">
-          <span className="text-clay">Fair wages</span>
-          <span className="text-sage flex items-center gap-1 justify-self-start">✦ Passed</span>
-          <span className="text-clay">Health & safety</span>
-          <span className="text-sage flex items-center gap-1 justify-self-start">✦ Grade A</span>
-          <span className="text-clay">No forced labour</span>
-          <span className="text-sage flex items-center gap-1 justify-self-start">✦ Verified</span>
+          <span className="text-clay">{t("fair_wages")}</span>
+          <span className="text-sage flex items-center gap-1 justify-self-start">✦ {t("passed")}</span>
+          <span className="text-clay">{t("health_safety")}</span>
+          <span className="text-sage flex items-center gap-1 justify-self-start">✦ {t("grade_a")}</span>
+          <span className="text-clay">{t("no_forced_labour")}</span>
+          <span className="text-sage flex items-center gap-1 justify-self-start">✦ {t("verified")}</span>
         </div>
         <p className="text-[9px] text-clay/70 font-sans mt-2 pt-2 border-t border-line">
-          Audited by Bureau Veritas · Cert #BV-2025-09871
+          {t("audited_by")}
         </p>
       </Card>
     </div>
@@ -326,16 +366,17 @@ export function SupplyChain() {
 
 /* 7 — CARE TO EXTEND LIFE */
 export function CareGuide() {
+  const { t } = useLanguage();
   const wears = [
     ["5 wears", "High", "text-blush-deep"],
     ["30 wears", "Opt.", "text-blush"],
     ["100 wears", "Low", "text-sage"],
   ];
   const care = [
-    ["Cold water only", "30°C max"],
-    ["Lay flat to dry", "Never hang wet"],
-    ["Steam, don't iron", "Let it breathe"],
-    ["Fold, don't hang", "Away from sunlight"],
+    [t("cold_water"), t("max_30")],
+    [t("lay_flat"), t("never_hang_wet")],
+    [t("steam_dont_iron"), t("let_breathe")],
+    [t("fold_dont_hang"), t("away_sunlight")],
   ];
   const [checks, setChecks] = useState<boolean[]>(() => loadCareChecks());
 
@@ -348,11 +389,11 @@ export function CareGuide() {
   return (
     <div className="h-full px-5 py-6 fade-up">
       <h2 className="font-display italic text-2xl text-ink leading-tight">
-        Designed for years,<br />not seasons.
+        {t("designed_years")}
       </h2>
-      <p className="text-[11px] text-clay font-sans mt-1 mb-4">Designed lifespan: 8–10 years</p>
+      <p className="text-[11px] text-clay font-sans mt-1 mb-4">{t("designed_lifespan")}</p>
 
-      <Eyebrow>Impact per wear</Eyebrow>
+      <Eyebrow>{t("impact_per_wear")}</Eyebrow>
       <div className="flex justify-between mt-2 mb-5">
         {wears.map(([label, tag, color]) => (
           <div key={label} className="text-center">
@@ -363,8 +404,8 @@ export function CareGuide() {
       </div>
 
       <div className="divide-y divide-line border-y border-line mb-4">
-        {care.map(([t, s], i) => (
-          <label key={t} className="flex items-center gap-3 py-2.5 cursor-pointer">
+        {care.map(([label, sub], i) => (
+          <label key={label} className="flex items-center gap-3 py-2.5 cursor-pointer">
             <input
               type="checkbox"
               checked={checks[i]}
@@ -372,17 +413,17 @@ export function CareGuide() {
               className="accent-blush-deep w-4 h-4"
             />
             <div>
-              <p className={`font-sans text-[12px] ${checks[i] ? "text-clay line-through" : "text-ink"}`}>{t}</p>
-              <p className="font-sans text-[10px] text-clay">{s}</p>
+              <p className={`font-sans text-[12px] ${checks[i] ? "text-clay line-through" : "text-ink"}`}>{label}</p>
+              <p className="font-sans text-[10px] text-clay">{sub}</p>
             </div>
           </label>
         ))}
       </div>
 
       <div className="border-l-2 border-blush pl-3">
-        <Eyebrow>Trade-off honesty</Eyebrow>
+        <Eyebrow>{t("tradeoff_honesty")}</Eyebrow>
         <p className="font-display italic text-[13px] text-ink mt-1">
-          "Blended fibres can make recycling more complex at end-of-life."
+          "{t("tradeoff_quote")}"
         </p>
       </div>
     </div>
@@ -391,16 +432,17 @@ export function CareGuide() {
 
 /* 8 — SUSTAINABILITY METRICS */
 export function SustainabilityMetrics() {
+  const { t } = useLanguage();
   return (
     <div className="h-full px-5 py-6 fade-up">
-      <Eyebrow>Sustainability</Eyebrow>
-      <h2 className="font-display italic text-2xl text-ink mt-1 mb-4">Impact Metrics</h2>
+      <Eyebrow>{t("sustainability")}</Eyebrow>
+      <h2 className="font-display italic text-2xl text-ink mt-1 mb-4">{t("impact_metrics")}</h2>
       <div className="flex justify-around mb-5">
-        <Donut percent={30} label="CO₂" sublabel="vs 12.1kg avg" color="#C97A8C" />
-        <Donut percent={80} label="H₂O" sublabel="recycled water" color="#8FA688" />
+        <Donut percent={30} label="CO₂" sublabel={t("vs_avg")} color="#C97A8C" />
+        <Donut percent={80} label="H₂O" sublabel={t("recycled_water")} color="#8FA688" />
       </div>
       <div className="space-y-2 font-sans text-[12px] mb-4">
-        {[["Recyclability", "92%"], ["Renewable energy", "78%"], ["Ethical sourcing", "100%"]].map(([k, v]) => (
+        {[[t("recyclability"), "92%"], [t("renewable_energy"), "78%"], [t("ethical_sourcing"), "100%"]].map(([k, v]) => (
           <div key={k} className="flex justify-between items-center">
             <span className="text-clay">{k}</span>
             <span className="text-ink font-medium">{v}</span>
@@ -408,7 +450,7 @@ export function SustainabilityMetrics() {
         ))}
       </div>
       <div className="grid grid-cols-3 gap-2">
-        {[["7.9kg", "CO₂ saved"], ["2,400L", "water saved"], ["Top 10%", "of brands"]].map(([v, l]) => (
+        {[["7.9kg", t("co2_saved")], ["2,400L", t("water_saved")], ["Top 10%", t("top_10")]].map(([v, l]) => (
           <div key={l} className="bg-blush-pale/60 rounded-lg py-2.5 text-center">
             <p className="font-display italic text-sm text-blush-deep">{v}</p>
             <p className="text-[8px] font-sans text-clay uppercase tracking-wide mt-0.5">{l}</p>
@@ -421,32 +463,33 @@ export function SustainabilityMetrics() {
 
 /* 9 — WHAT'S NEXT */
 export function WhatsNext() {
+  const { t } = useLanguage();
   const options = [
     {
       icon: Repeat,
-      title: "Resell",
+      title: t("resell"),
       sub: "Vestiaire Collective",
       color: "#C97A8C",
       href: "https://www.vestiairecollective.com",
     },
     {
       icon: ShoppingBag,
-      title: "Thrift",
-      sub: "Donate locally",
+      title: t("thrift"),
+      sub: t("donate_locally"),
       color: "#8FA688",
       href: "https://www.google.com/maps/search/thrift+store+donation+near+me",
     },
     {
       icon: Wrench,
-      title: "Repair",
-      sub: "Find a tailor nearby",
+      title: t("repair"),
+      sub: t("find_tailor"),
       color: "#8A7F76",
       href: "https://www.google.com/maps/search/tailor+clothing+repair+near+me",
     },
     {
       icon: Recycle,
-      title: "Recycle",
-      sub: "Return to COS",
+      title: t("recycle"),
+      sub: t("return_to_cos"),
       color: "#C97A8C",
       href: "https://www.cos.com",
     },
@@ -454,9 +497,9 @@ export function WhatsNext() {
   return (
     <div className="h-full px-5 py-6 fade-up">
       <h2 className="font-display italic text-2xl text-ink leading-tight">
-        Ready to pass<br />it on?
+        {t("ready_pass_on")}
       </h2>
-      <p className="font-sans text-[11px] text-clay mt-1 mb-5">Choose what happens next</p>
+      <p className="font-sans text-[11px] text-clay mt-1 mb-5">{t("choose_next")}</p>
       <div className="space-y-2.5">
         {options.map((o) => (
           <a
@@ -478,8 +521,7 @@ export function WhatsNext() {
         ))}
       </div>
       <p className="font-sans text-[10px] text-clay/60 mt-4 text-center">
-        Thrift and Repair open a nearby-places search — your browser may ask
-        for location access.
+        {t("location_note")}
       </p>
     </div>
   );
@@ -487,6 +529,7 @@ export function WhatsNext() {
 
 /* 10 — THE STORY BEHIND IT */
 export function StoryBehindIt() {
+  const { t } = useLanguage();
   const [shareState, setShareState] = useState<"idle" | "shared" | "copied">("idle");
   const [savedToWardrobe, setSavedToWardrobe] = useState(false);
 
@@ -524,30 +567,28 @@ export function StoryBehindIt() {
 
   return (
     <div className="h-full px-5 py-6 fade-up">
+      <JourneyMap />
       <Card>
         <div className="flex items-center justify-between mb-3">
           <span className="flex items-center gap-1 text-[11px] font-sans text-sage font-medium">
-            <Check size={12} /> Verified passport
+            <Check size={12} /> {t("verified_passport")}
           </span>
           <span className="text-[10px] font-sans text-clay">5 Apr 2026 · blockchain</span>
         </div>
         <div className="flex items-center gap-1.5 mb-2">
           <Sparkles size={13} className="text-blush-deep" />
           <p className="text-[10px] font-sans font-semibold text-blush-deep uppercase tracking-wide">
-            The story behind it
+            {t("story_behind_it")}
           </p>
         </div>
         <p className="font-display italic text-[15px] text-ink leading-relaxed">
-          Your coat began on sheep farms in New Zealand, before moving through
-          European mills and into skilled hands in Portugal — designed to be
-          worn, repaired, and passed on.
+          {t("story_p1")}
         </p>
         <p className="font-sans text-[12px] text-clay leading-relaxed mt-3">
-          Crafted from 70% recycled merino — it carries a lower footprint than
-          90% of comparable wool coats.
+          {t("story_p2")}
         </p>
         <p className="font-display italic text-[13px] text-blush-deep mt-3">
-          Crafted to last. Designed to return.
+          {t("crafted_to_last")}
         </p>
       </Card>
 
@@ -556,14 +597,14 @@ export function StoryBehindIt() {
           onClick={handleShare}
           className="flex-1 border border-line rounded-full py-2.5 font-sans text-[12px] text-ink"
         >
-          {shareState === "shared" ? "✓ Shared" : shareState === "copied" ? "✓ Link copied" : "Share passport"}
+          {shareState === "shared" ? t("shared") : shareState === "copied" ? t("link_copied") : t("share_passport")}
         </button>
         <button
           onClick={handleSaveToWardrobe}
           disabled={savedToWardrobe}
           className="flex-1 bg-ink text-cream rounded-full py-2.5 font-sans text-[12px] disabled:opacity-60"
         >
-          {savedToWardrobe ? "✓ Saved" : "Save to wardrobe"}
+          {savedToWardrobe ? t("saved") : t("save_to_wardrobe")}
         </button>
       </div>
     </div>
@@ -572,6 +613,7 @@ export function StoryBehindIt() {
 
 /* 11 — PERSONALIZATION */
 export function Personalization() {
+  const { t } = useLanguage();
   const [text, setText] = useState(() => loadMoment());
   const [moments, setMoments] = useState<SavedMoment[]>(() => loadMoments());
 
@@ -585,27 +627,27 @@ export function Personalization() {
 
   return (
     <div className="h-full px-5 py-6 fade-up flex flex-col">
-      <Eyebrow>Make it yours</Eyebrow>
+      <Eyebrow>{t("make_it_yours")}</Eyebrow>
       <h2 className="font-display italic text-2xl text-ink mt-1 mb-4 leading-snug">
-        When do you think you'll wear this?
+        {t("when_wear")}
       </h2>
       <textarea
         value={text}
         onChange={(e) => setText(e.target.value)}
         rows={2}
-        placeholder="dinner, autumn, somewhere with candlelight"
+        placeholder={t("moment_placeholder")}
         className="w-full border border-line rounded-xl px-3 py-2.5 font-display italic text-[14px] text-ink resize-none focus:outline-none focus:border-blush"
       />
       <button
         onClick={handleSave}
         className="mt-3 w-full bg-ink text-cream font-sans text-[12px] tracking-wide py-2.5 rounded-full transition-colors"
       >
-        Save this moment
+        {t("save_moment")}
       </button>
 
       {moments.length > 0 && (
         <Card className="mt-4">
-          <Eyebrow>Saved moments</Eyebrow>
+          <Eyebrow>{t("saved_moments")}</Eyebrow>
           <div className="mt-2 space-y-2 max-h-24 overflow-y-auto no-scrollbar">
             {[...moments].reverse().map((m, i) => (
               <div key={i} className="border-b border-line last:border-0 pb-2 last:pb-0">
@@ -620,16 +662,16 @@ export function Personalization() {
       )}
 
       <div className="mt-6">
-        <Eyebrow>Your Garment</Eyebrow>
+        <Eyebrow>{t("your_garment")}</Eyebrow>
         <div className="mt-2 space-y-1.5 font-sans text-[12px]">
-          <div className="flex justify-between"><span className="text-clay">Owned since</span><span className="text-ink">April 2026</span></div>
-          <div className="flex justify-between"><span className="text-clay">Times worn</span><span className="text-ink">~18</span></div>
-          <div className="flex justify-between"><span className="text-clay">Condition</span><span className="text-sage">Excellent</span></div>
-          <div className="flex justify-between"><span className="text-clay">Est. lifespan</span><span className="text-ink">6+ years ✦</span></div>
+          <div className="flex justify-between"><span className="text-clay">{t("owned_since")}</span><span className="text-ink">April 2026</span></div>
+          <div className="flex justify-between"><span className="text-clay">{t("times_worn")}</span><span className="text-ink">~18</span></div>
+          <div className="flex justify-between"><span className="text-clay">{t("condition")}</span><span className="text-sage">{t("excellent")}</span></div>
+          <div className="flex justify-between"><span className="text-clay">{t("est_lifespan")}</span><span className="text-ink">6+ years ✦</span></div>
         </div>
       </div>
       <p className="font-display italic text-[12px] text-clay text-center mt-auto pt-6">
-        Once you wear the outfits, the outfits should not wear you.
+        {t("closing_line")}
       </p>
     </div>
   );
@@ -637,6 +679,7 @@ export function Personalization() {
 
 /* 12 — MY WARDROBE */
 export function MyWardrobe() {
+  const { t } = useLanguage();
   const [items, setItems] = useState<WardrobeItem[]>(() => loadWardrobe());
   const [logging, setLogging] = useState(false);
   const [name, setName] = useState("");
@@ -664,12 +707,12 @@ export function MyWardrobe() {
 
   return (
     <div className="h-full px-5 py-6 fade-up">
-      <Eyebrow>My Wardrobe</Eyebrow>
+      <Eyebrow>{t("my_wardrobe")}</Eyebrow>
       <h2 className="font-display italic text-xl text-ink mt-1 mb-3">
-        {items.length} pieces · {brandCount} brands · 2 resold
+        {items.length} {t("pieces")} · {brandCount} {t("brands")} · 2 {t("resold")}
       </h2>
       <div className="grid grid-cols-3 gap-2 mb-5">
-        {[[String(items.length), "items"], [String(brandCount), "brands"], ["2", "resold"]].map(([v, l]) => (
+        {[[String(items.length), t("items_label")], [String(brandCount), t("brands")], ["2", t("resold")]].map(([v, l]) => (
           <div key={l} className="bg-blush-pale/60 rounded-lg py-2.5 text-center">
             <p className="font-display italic text-lg text-blush-deep">{v}</p>
             <p className="text-[9px] font-sans text-clay uppercase tracking-wide">{l}</p>
@@ -689,7 +732,7 @@ export function MyWardrobe() {
                 )}
               </p>
               <p className="font-sans text-[11px] text-clay mt-0.5">
-                Worn {it.worn} · {it.note}
+                {t("worn_label")} {it.worn} · {it.note}
               </p>
             </div>
             <button
@@ -708,13 +751,13 @@ export function MyWardrobe() {
           <input
             value={name}
             onChange={(e) => setName(e.target.value)}
-            placeholder="What is it? e.g. Wool Trench Coat"
+            placeholder={t("what_is_it")}
             className="w-full border border-line rounded-lg px-3 py-2 font-sans text-[12px] text-ink focus:outline-none focus:border-blush"
           />
           <input
             value={note}
             onChange={(e) => setNote(e.target.value)}
-            placeholder="The memory — where, when, why it mattered"
+            placeholder={t("memory_placeholder")}
             className="w-full border border-line rounded-lg px-3 py-2 font-sans text-[12px] text-ink focus:outline-none focus:border-blush"
           />
           <div className="flex gap-2 pt-1">
@@ -722,13 +765,13 @@ export function MyWardrobe() {
               onClick={submitMemory}
               className="flex-1 bg-ink text-cream font-sans text-[11px] tracking-wide py-2 rounded-full"
             >
-              Save memory
+              {t("save_memory")}
             </button>
             <button
               onClick={() => { setLogging(false); setName(""); setNote(""); }}
               className="px-4 font-sans text-[11px] text-clay"
             >
-              Cancel
+              {t("cancel")}
             </button>
           </div>
         </div>
@@ -737,7 +780,7 @@ export function MyWardrobe() {
           onClick={() => setLogging(true)}
           className="w-full mt-4 font-sans text-[12px] text-blush-deep border border-dashed border-blush rounded-full py-2.5"
         >
-          + Log a memory
+          {t("log_a_memory")}
         </button>
       )}
     </div>

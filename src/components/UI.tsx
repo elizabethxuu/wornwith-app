@@ -74,3 +74,50 @@ export function Card({
     </div>
   );
 }
+
+export function JourneyMap() {
+  const points = [
+    { x: 34, y: 96, label: "NZ" },
+    { x: 118, y: 42, label: "Italy" },
+    { x: 192, y: 74, label: "Portugal" },
+    { x: 268, y: 36, label: "Paris", active: true },
+  ];
+  const path = `M ${points[0].x} ${points[0].y} Q 80 20, ${points[1].x} ${points[1].y} T ${points[2].x} ${points[2].y} Q 230 50, ${points[3].x} ${points[3].y}`;
+
+  return (
+    <div className="w-full bg-blush-pale/40 rounded-card py-5 px-2 mb-4">
+      <svg viewBox="0 0 300 130" className="w-full h-auto" fill="none">
+        {/* faint globe texture — a few soft latitude arcs */}
+        <ellipse cx="150" cy="65" rx="140" ry="55" stroke="#E7A6B4" strokeOpacity="0.25" strokeWidth="1" />
+        <ellipse cx="150" cy="65" rx="100" ry="40" stroke="#E7A6B4" strokeOpacity="0.2" strokeWidth="1" />
+        <ellipse cx="150" cy="65" rx="60" ry="25" stroke="#E7A6B4" strokeOpacity="0.15" strokeWidth="1" />
+
+        {/* the dashed route connecting each stop */}
+        <path d={path} stroke="#C97A8C" strokeWidth="1.5" strokeDasharray="4 4" strokeLinecap="round" />
+
+        {points.map((p) => (
+          <g key={p.label}>
+            {p.active && (
+              <circle cx={p.x} cy={p.y} r="9" fill="#E7A6B4" fillOpacity="0.35">
+                <animate attributeName="r" values="7;11;7" dur="2.2s" repeatCount="indefinite" />
+                <animate attributeName="fill-opacity" values="0.4;0.1;0.4" dur="2.2s" repeatCount="indefinite" />
+              </circle>
+            )}
+            <circle cx={p.x} cy={p.y} r="4" fill={p.active ? "#C97A8C" : "#FFFFFF"} stroke="#C97A8C" strokeWidth="1.5" />
+            <text
+              x={p.x}
+              y={p.y - 12}
+              textAnchor="middle"
+              fontSize="9"
+              fontFamily="Inter, sans-serif"
+              fontWeight={p.active ? 600 : 500}
+              fill={p.active ? "#C97A8C" : "#8A7F76"}
+            >
+              {p.label}
+            </text>
+          </g>
+        ))}
+      </svg>
+    </div>
+  );
+}
