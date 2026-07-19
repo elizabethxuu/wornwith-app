@@ -78,11 +78,14 @@ export function Card({
 
 const worldMapUrl = "/data/world-110m.json";
 const highlightedCountries = ["New Zealand", "Italy", "Portugal", "France"];
+// dx/dy fan each label out in its own direction so the three closely-spaced
+// European stops (Portugal, Italy, Paris) don't stack on top of each other.
+// leader: true draws a short connecting line from the pin to the label.
 const journeyStops = [
-  { coords: [172.5, -43.5] as [number, number], label: "NZ" },
-  { coords: [8.05, 45.57] as [number, number], label: "Italy" },
-  { coords: [-8.61, 41.15] as [number, number], label: "Portugal" },
-  { coords: [2.35, 48.86] as [number, number], label: "Paris", active: true },
+  { coords: [172.5, -43.5] as [number, number], label: "NZ", dx: 0, dy: -14 },
+  { coords: [8.05, 45.57] as [number, number], label: "Italy", dx: 34, dy: 4, leader: true },
+  { coords: [-8.61, 41.15] as [number, number], label: "Portugal", dx: -42, dy: 10, leader: true },
+  { coords: [2.35, 48.86] as [number, number], label: "Paris", dx: 4, dy: -26, active: true, leader: true },
 ];
 
 export function JourneyMap() {
@@ -90,9 +93,9 @@ export function JourneyMap() {
     <div className="w-full bg-paper border border-line rounded-card overflow-hidden mb-4">
       <ComposableMap
         projection="geoEqualEarth"
-        projectionConfig={{ scale: 52 }}
-        width={320}
-        height={190}
+        projectionConfig={{ scale: 55 }}
+        width={340}
+        height={215}
         style={{ width: "100%", height: "auto", display: "block" }}
       >
         <Geographies geography={worldMapUrl}>
@@ -143,14 +146,30 @@ export function JourneyMap() {
               stroke="#C97A8C"
               strokeWidth={1.3}
             />
+            {s.leader && (
+              <line
+                x1={0}
+                y1={0}
+                x2={s.dx}
+                y2={s.dy + 3}
+                stroke="#C97A8C"
+                strokeWidth={0.75}
+                strokeOpacity={0.5}
+              />
+            )}
             <text
+              x={s.dx}
+              y={s.dy}
               textAnchor="middle"
-              y={-9}
+              paintOrder="stroke"
+              stroke="#FFFFFF"
+              strokeWidth={3}
+              strokeLinejoin="round"
               style={{
                 fontFamily: "'Cormorant Garamond', serif",
                 fontStyle: "italic",
                 fontWeight: s.active ? 600 : 500,
-                fontSize: s.active ? 12 : 10,
+                fontSize: s.active ? 13 : 11,
                 fill: s.active ? "#C97A8C" : "#2B2622",
               }}
             >
