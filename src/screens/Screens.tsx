@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Eyebrow, Donut, Card } from "../components/UI";
+import { loadMoment, saveMoment, loadWardrobe, saveWardrobe, type WardrobeItem } from "../lib/persistence";
 import {
   QrCode,
   Check,
@@ -393,8 +394,14 @@ export function StoryBehindIt() {
 
 /* 11 — PERSONALIZATION */
 export function Personalization() {
-  const [text, setText] = useState("dinner, autumn, somewhere with candlelight");
-  const [saved, setSaved] = useState(false);
+  const [text, setText] = useState(() => loadMoment() || "dinner, autumn, somewhere with candlelight");
+  const [saved, setSaved] = useState(() => Boolean(loadMoment()));
+
+  const handleSave = () => {
+    saveMoment(text);
+    setSaved(true);
+  };
+
   return (
     <div className="h-full px-5 py-6 fade-up flex flex-col">
       <Eyebrow>Make it yours</Eyebrow>
@@ -408,7 +415,7 @@ export function Personalization() {
         className="w-full border border-line rounded-xl px-3 py-2.5 font-display italic text-[14px] text-ink resize-none focus:outline-none focus:border-blush"
       />
       <button
-        onClick={() => setSaved(true)}
+        onClick={handleSave}
         className="mt-3 w-full bg-ink text-cream font-sans text-[12px] tracking-wide py-2.5 rounded-full transition-colors"
       >
         {saved ? "✓ Moment saved" : "Save this moment"}
@@ -432,14 +439,12 @@ export function Personalization() {
 
 /* 12 — MY WARDROBE */
 export function MyWardrobe() {
-  const [items, setItems] = useState([
-    { name: "The Marais Coat", tag: "DPP", worn: "18×", note: "March dinner · Paris, New York" },
-    { name: "Silk Slip Dress", tag: null, worn: "7×", note: "June birthday · London" },
-    { name: "Linen Trousers", tag: null, worn: "2×", note: "Last: Lisbon trip" },
-  ]);
+  const [items, setItems] = useState<WardrobeItem[]>(() => loadWardrobe());
 
   const logMemory = () => {
-    setItems([...items, { name: "New memory", tag: null, worn: "1×", note: "Just now" }]);
+    const updated = [...items, { name: "New memory", tag: null, worn: "1×", note: "Just now" }];
+    setItems(updated);
+    saveWardrobe(updated);
   };
 
   return (
