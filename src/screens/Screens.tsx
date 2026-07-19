@@ -120,7 +120,7 @@ export function Welcome() {
   }, []);
 
   return (
-    <div className="h-full flex flex-col items-center justify-center px-8 gap-8 text-center fade-up border-4 border-[#3C8C5D] box-border">
+    <div className="h-full flex flex-col items-center justify-center px-8 gap-8 text-center fade-up">
       <Eyebrow>{t("dpp_eyebrow")}</Eyebrow>
       <div>
         <p className="font-sans text-sm text-clay">{t("welcome_to")}</p>
