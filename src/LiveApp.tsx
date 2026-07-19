@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import {
   SkeletonLoader,
   Welcome,
@@ -38,6 +39,9 @@ export default function LiveApp() {
     return () => clearTimeout(t);
   }, []);
 
+  const goPrev = () => setIndex((i) => Math.max(0, i - 1));
+  const goNext = () => setIndex((i) => Math.min(liveScreens.length - 1, i + 1));
+
   const handleTap = (e: React.MouseEvent) => {
     // Don't hijack taps meant for actual controls — inputs, textareas,
     // buttons, links, and checkboxes should just work normally.
@@ -48,9 +52,9 @@ export default function LiveApp() {
     const x = e.clientX;
     const width = window.innerWidth;
     if (x < width * 0.3) {
-      setIndex((i) => Math.max(0, i - 1));
+      goPrev();
     } else {
-      setIndex((i) => Math.min(liveScreens.length - 1, i + 1));
+      goNext();
     }
   };
 
@@ -62,8 +66,11 @@ export default function LiveApp() {
     );
   }
 
+  const isFirst = index === 0;
+  const isLast = index === liveScreens.length - 1;
+
   return (
-    <div className="h-[100dvh] w-full bg-paper flex flex-col overflow-hidden">
+    <div className="h-[100dvh] w-full bg-paper flex flex-col overflow-hidden relative">
       {/* story-style progress bar */}
       <div
         className="flex gap-1 px-3 shrink-0"
@@ -79,18 +86,31 @@ export default function LiveApp() {
         ))}
       </div>
 
-      <div className="flex-1 overflow-y-auto visible-scrollbar" onClick={handleTap}>
+      <div className="flex-1 overflow-y-auto visible-scrollbar relative" onClick={handleTap}>
         {liveScreens[index]}
       </div>
 
-      <div
-        className="flex justify-center pb-2 shrink-0"
-        style={{ paddingBottom: "max(env(safe-area-inset-bottom), 10px)" }}
-      >
-        <p className="text-[9px] font-sans text-clay/50 tracking-wide">
-          tap right to continue · tap left to go back
-        </p>
-      </div>
+      {/* Visible, unambiguous nav arrows — the tap-zones still work too, but
+          these make it obvious at a glance that you can move forward/back,
+          instead of relying on a small text hint people tend to miss. */}
+      {!isFirst && (
+        <button
+          onClick={(e) => { e.stopPropagation(); goPrev(); }}
+          aria-label="Previous"
+          className="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/95 border border-line shadow-md flex items-center justify-center z-10"
+        >
+          <ChevronLeft size={20} className="text-blush-deep" />
+        </button>
+      )}
+      {!isLast && (
+        <button
+          onClick={(e) => { e.stopPropagation(); goNext(); }}
+          aria-label="Next"
+          className="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/95 border border-line shadow-md flex items-center justify-center z-10"
+        >
+          <ChevronRight size={20} className="text-blush-deep" />
+        </button>
+      )}
     </div>
   );
 }

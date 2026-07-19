@@ -119,7 +119,7 @@ const journeyStops = [
     dy: -26,
     active: true,
     leader: true,
-    icon: "🧍",
+    icon: "",
     place: "Paris, France",
     blurbKey: "stop_blurb_paris" as const,
   },
@@ -191,6 +191,16 @@ export function JourneyMap() {
 
             {journeyStops.map((s, i) => (
               <Marker key={s.label} coordinates={s.coords}>
+                {/* Invisible larger touch target — the visible dot below is
+                    deliberately small/precise, but a ~4-6px dot is too small
+                    to reliably tap on a phone, so this circle underneath
+                    captures taps across a much wider radius. */}
+                <circle
+                  r={13}
+                  fill="rgba(0,0,0,0.001)"
+                  onClick={() => setSelected(i)}
+                  style={{ cursor: "pointer", pointerEvents: "all" }}
+                />
                 {s.active && (
                   <circle r={8} fill="#C97A8C" fillOpacity={0.25}>
                     <animate attributeName="r" values="6;10;6" dur="2.2s" repeatCount="indefinite" />
@@ -202,8 +212,7 @@ export function JourneyMap() {
                   fill={s.active || selected === i ? "#C97A8C" : "#FFFFFF"}
                   stroke="#C97A8C"
                   strokeWidth={1.3}
-                  onClick={() => setSelected(i)}
-                  style={{ cursor: "pointer", transition: "r 0.2s ease" }}
+                  style={{ pointerEvents: "none" }}
                 />
                 {selected === i && (
                   <circle
@@ -212,8 +221,7 @@ export function JourneyMap() {
                     stroke="#C97A8C"
                     strokeWidth={1}
                     strokeOpacity={0.5}
-                    onClick={() => setSelected(i)}
-                    style={{ cursor: "pointer" }}
+                    style={{ pointerEvents: "none" }}
                   />
                 )}
                 {s.leader && (
@@ -256,7 +264,7 @@ export function JourneyMap() {
       {/* Tap-to-reveal detail card for whichever stop is selected */}
       <div className="mt-2.5 bg-blush-pale/40 rounded-xl px-3.5 py-3 fade-up" key={selected}>
         <div className="flex items-center gap-2 mb-1">
-          <span className="text-base">{stop.icon}</span>
+          {stop.icon && <span className="text-base">{stop.icon}</span>}
           <p className="font-sans text-[11px] font-semibold text-ink">{stop.place}</p>
         </div>
         <p className="font-sans text-[11px] text-clay leading-relaxed">{t(stop.blurbKey)}</p>
