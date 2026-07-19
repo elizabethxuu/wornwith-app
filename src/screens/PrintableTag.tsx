@@ -56,8 +56,7 @@ export default function PrintableTag() {
         Download tag as PNG
       </button>
       <p className="font-sans text-[11px] text-clay text-center max-w-xs">
-        Print this at ~2×3in on cardstock, or display it on a second screen
-        or iPad next to the garment for the live demo.
+      
       </p>
     </div>
   );
