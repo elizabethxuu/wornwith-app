@@ -35,6 +35,31 @@ const dict = {
     fr: "Cette démo est fournie à titre illustratif uniquement.",
     pt: "Esta demonstração é apenas para fins ilustrativos.",
   },
+  tap_pin_hint: {
+    en: "Tap a stop to learn more · pinch to zoom",
+    fr: "Touchez une étape pour en savoir plus · pincez pour zoomer",
+    pt: "Toque em uma etapa para saber mais · belisque para ampliar",
+  },
+  stop_blurb_nz: {
+    en: "Where the coat's story begins — wool sheared from sheep raised on open pasture.",
+    fr: "Là où l'histoire du manteau commence — laine tondue sur des moutons élevés en plein pâturage.",
+    pt: "Onde a história do casaco começa — lã tosquiada de ovelhas criadas em pastagens abertas.",
+  },
+  stop_blurb_italy: {
+    en: "Raw wool is cleaned, spun into yarn, and woven into cloth by third-generation millers.",
+    fr: "La laine brute est nettoyée, filée puis tissée par des artisans de troisième génération.",
+    pt: "A lã bruta é limpa, fiada e tecida por moleiros de terceira geração.",
+  },
+  stop_blurb_portugal: {
+    en: "Skilled hands cut and construct each panel — the same ateliers COS has worked with for years.",
+    fr: "Des mains expertes coupent et assemblent chaque panneau — les mêmes ateliers depuis des années.",
+    pt: "Mãos habilidosas cortam e montam cada painel — os mesmos ateliês há anos.",
+  },
+  stop_blurb_paris: {
+    en: "The coat's most recent chapter — wherever you are, right now, wearing it.",
+    fr: "Le dernier chapitre du manteau — où que vous soyez, en ce moment, en le portant.",
+    pt: "O capítulo mais recente do casaco — onde quer que você esteja, agora, usando-o.",
+  },
   viewed_times: { en: "This passport has been viewed", fr: "Ce passeport a été consulté", pt: "Este passaporte foi visualizado" },
   times_suffix: { en: "times", fr: "fois", pt: "vezes" },
 

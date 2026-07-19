@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
-import { ComposableMap, Geographies, Geography, Marker, Line } from "react-simple-maps";
+import { ComposableMap, Geographies, Geography, Marker, Line, ZoomableGroup } from "react-simple-maps";
+import { useLanguage } from "../lib/i18n";
 
 export function Eyebrow({ children }: { children: React.ReactNode }) {
   return (
@@ -82,105 +83,192 @@ const highlightedCountries = ["New Zealand", "Italy", "Portugal", "France"];
 // European stops (Portugal, Italy, Paris) don't stack on top of each other.
 // leader: true draws a short connecting line from the pin to the label.
 const journeyStops = [
-  { coords: [172.5, -43.5] as [number, number], label: "NZ", dx: 0, dy: -14 },
-  { coords: [8.05, 45.57] as [number, number], label: "Italy", dx: 34, dy: 4, leader: true },
-  { coords: [-8.61, 41.15] as [number, number], label: "Portugal", dx: -42, dy: 10, leader: true },
-  { coords: [2.35, 48.86] as [number, number], label: "Paris", dx: 4, dy: -26, active: true, leader: true },
+  {
+    coords: [172.5, -43.5] as [number, number],
+    label: "NZ",
+    dx: 0,
+    dy: -14,
+    icon: "🐑",
+    place: "Canterbury Plains, NZ",
+    blurbKey: "stop_blurb_nz" as const,
+  },
+  {
+    coords: [8.05, 45.57] as [number, number],
+    label: "Italy",
+    dx: 34,
+    dy: 4,
+    leader: true,
+    icon: "🧵",
+    place: "Biella, Italy",
+    blurbKey: "stop_blurb_italy" as const,
+  },
+  {
+    coords: [-8.61, 41.15] as [number, number],
+    label: "Portugal",
+    dx: -42,
+    dy: 10,
+    leader: true,
+    icon: "✂️",
+    place: "Porto, Portugal",
+    blurbKey: "stop_blurb_portugal" as const,
+  },
+  {
+    coords: [2.35, 48.86] as [number, number],
+    label: "Paris",
+    dx: 4,
+    dy: -26,
+    active: true,
+    leader: true,
+    icon: "🧍",
+    place: "Paris, France",
+    blurbKey: "stop_blurb_paris" as const,
+  },
 ];
 
 export function JourneyMap() {
+  const { t } = useLanguage();
+  // Defaults to the last stop (where the garment is now) since that's the
+  // most relevant detail to show before anyone's tapped anything.
+  const [selected, setSelected] = useState(journeyStops.length - 1);
+  const [drawn, setDrawn] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setDrawn(true), 150);
+    return () => clearTimeout(timer);
+  }, []);
+
+  const stop = journeyStops[selected];
+
   return (
-    <div className="w-full bg-paper border border-line rounded-card overflow-hidden mb-4">
-      <ComposableMap
-        projection="geoEqualEarth"
-        projectionConfig={{ scale: 55 }}
-        width={340}
-        height={215}
-        style={{ width: "100%", height: "auto", display: "block" }}
-      >
-        <Geographies geography={worldMapUrl}>
-          {({ geographies }) =>
-            geographies.map((geo) => {
-              const isHighlighted = highlightedCountries.includes(geo.properties.name);
-              return (
-                <Geography
-                  key={geo.rsmKey}
-                  geography={geo}
-                  fill={isHighlighted ? "#E7A6B4" : "#F1E9EA"}
-                  stroke="#FFFFFF"
-                  strokeWidth={0.5}
-                  style={{
-                    default: { outline: "none" },
-                    hover: { outline: "none" },
-                    pressed: { outline: "none" },
-                  }}
-                />
-              );
-            })
-          }
-        </Geographies>
+    <div className="w-full mb-4">
+      <div className="w-full bg-paper border border-line rounded-card overflow-hidden">
+        <ComposableMap
+          projection="geoEqualEarth"
+          projectionConfig={{ scale: 55 }}
+          width={340}
+          height={215}
+          style={{ width: "100%", height: "auto", display: "block" }}
+        >
+          <ZoomableGroup center={[0, 0]} zoom={1} minZoom={1} maxZoom={5}>
+            <Geographies geography={worldMapUrl}>
+              {({ geographies }) =>
+                geographies.map((geo) => {
+                  const isHighlighted = highlightedCountries.includes(geo.properties.name);
+                  return (
+                    <Geography
+                      key={geo.rsmKey}
+                      geography={geo}
+                      fill={isHighlighted ? "#E7A6B4" : "#F1E9EA"}
+                      stroke="#FFFFFF"
+                      strokeWidth={0.5}
+                      style={{
+                        default: { outline: "none" },
+                        hover: { outline: "none" },
+                        pressed: { outline: "none" },
+                      }}
+                    />
+                  );
+                })
+              }
+            </Geographies>
 
-        {journeyStops.slice(0, -1).map((s, i) => (
-          <Line
-            key={i}
-            from={s.coords}
-            to={journeyStops[i + 1].coords}
-            stroke="#C97A8C"
-            strokeWidth={1.3}
-            strokeDasharray="3 3"
-            strokeLinecap="round"
-          />
-        ))}
-
-        {journeyStops.map((s) => (
-          <Marker key={s.label} coordinates={s.coords}>
-            {s.active && (
-              <circle r={8} fill="#C97A8C" fillOpacity={0.25}>
-                <animate attributeName="r" values="6;10;6" dur="2.2s" repeatCount="indefinite" />
-                <animate attributeName="fill-opacity" values="0.35;0.1;0.35" dur="2.2s" repeatCount="indefinite" />
-              </circle>
-            )}
-            <circle
-              r={s.active ? 4 : 3}
-              fill={s.active ? "#C97A8C" : "#FFFFFF"}
-              stroke="#C97A8C"
-              strokeWidth={1.3}
-            />
-            {s.leader && (
-              <line
-                x1={0}
-                y1={0}
-                x2={s.dx}
-                y2={s.dy + 3}
+            {journeyStops.slice(0, -1).map((s, i) => (
+              <Line
+                key={i}
+                from={s.coords}
+                to={journeyStops[i + 1].coords}
                 stroke="#C97A8C"
-                strokeWidth={0.75}
-                strokeOpacity={0.5}
+                strokeWidth={1.3}
+                strokeLinecap="round"
+                pathLength={1}
+                style={{
+                  strokeDasharray: "1px",
+                  strokeDashoffset: drawn ? 0 : 1,
+                  transition: `stroke-dashoffset 0.9s ease ${i * 0.35}s`,
+                }}
               />
-            )}
-            <text
-              x={s.dx}
-              y={s.dy}
-              textAnchor="middle"
-              paintOrder="stroke"
-              stroke="#FFFFFF"
-              strokeWidth={3}
-              strokeLinejoin="round"
-              style={{
-                fontFamily: "'Cormorant Garamond', serif",
-                fontStyle: "italic",
-                fontWeight: s.active ? 600 : 500,
-                fontSize: s.active ? 13 : 11,
-                fill: s.active ? "#C97A8C" : "#2B2622",
-              }}
-            >
-              {s.label}
-            </text>
-          </Marker>
-        ))}
-      </ComposableMap>
+            ))}
+
+            {journeyStops.map((s, i) => (
+              <Marker key={s.label} coordinates={s.coords}>
+                {s.active && (
+                  <circle r={8} fill="#C97A8C" fillOpacity={0.25}>
+                    <animate attributeName="r" values="6;10;6" dur="2.2s" repeatCount="indefinite" />
+                    <animate attributeName="fill-opacity" values="0.35;0.1;0.35" dur="2.2s" repeatCount="indefinite" />
+                  </circle>
+                )}
+                <circle
+                  r={selected === i ? 6 : s.active ? 4 : 3}
+                  fill={s.active || selected === i ? "#C97A8C" : "#FFFFFF"}
+                  stroke="#C97A8C"
+                  strokeWidth={1.3}
+                  onClick={() => setSelected(i)}
+                  style={{ cursor: "pointer", transition: "r 0.2s ease" }}
+                />
+                {selected === i && (
+                  <circle
+                    r={9}
+                    fill="none"
+                    stroke="#C97A8C"
+                    strokeWidth={1}
+                    strokeOpacity={0.5}
+                    onClick={() => setSelected(i)}
+                    style={{ cursor: "pointer" }}
+                  />
+                )}
+                {s.leader && (
+                  <line
+                    x1={0}
+                    y1={0}
+                    x2={s.dx}
+                    y2={s.dy + 3}
+                    stroke="#C97A8C"
+                    strokeWidth={0.75}
+                    strokeOpacity={0.5}
+                  />
+                )}
+                <text
+                  x={s.dx}
+                  y={s.dy}
+                  textAnchor="middle"
+                  paintOrder="stroke"
+                  stroke="#FFFFFF"
+                  strokeWidth={3}
+                  strokeLinejoin="round"
+                  onClick={() => setSelected(i)}
+                  style={{
+                    cursor: "pointer",
+                    fontFamily: "'Cormorant Garamond', serif",
+                    fontStyle: "italic",
+                    fontWeight: s.active || selected === i ? 600 : 500,
+                    fontSize: s.active || selected === i ? 13 : 11,
+                    fill: s.active || selected === i ? "#C97A8C" : "#2B2622",
+                  }}
+                >
+                  {s.label}
+                </text>
+              </Marker>
+            ))}
+          </ZoomableGroup>
+        </ComposableMap>
+      </div>
+
+      {/* Tap-to-reveal detail card for whichever stop is selected */}
+      <div className="mt-2.5 bg-blush-pale/40 rounded-xl px-3.5 py-3 fade-up" key={selected}>
+        <div className="flex items-center gap-2 mb-1">
+          <span className="text-base">{stop.icon}</span>
+          <p className="font-sans text-[11px] font-semibold text-ink">{stop.place}</p>
+        </div>
+        <p className="font-sans text-[11px] text-clay leading-relaxed">{t(stop.blurbKey)}</p>
+      </div>
+
+      <p className="font-sans text-[9px] text-clay/50 text-center mt-2">
+        {t("tap_pin_hint")}
+      </p>
     </div>
   );
 }
+
 
 export function Pill({
   label,
