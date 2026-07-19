@@ -39,6 +39,12 @@ export default function LiveApp() {
   }, []);
 
   const handleTap = (e: React.MouseEvent) => {
+    // Don't hijack taps meant for actual controls — inputs, textareas,
+    // buttons, links, and checkboxes should just work normally.
+    const target = e.target as HTMLElement;
+    if (target.closest("input, textarea, button, a, label, select")) {
+      return;
+    }
     const x = e.clientX;
     const width = window.innerWidth;
     if (x < width * 0.3) {
