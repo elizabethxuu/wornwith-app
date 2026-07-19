@@ -121,8 +121,12 @@ export function ProductOverview() {
           <Check size={12} /> DPP Verified
         </span>
       </div>
-      <div className="w-full h-40 rounded-card bg-blush-pale flex items-center justify-center mb-4">
-        <Shirt size={64} className="text-blush-deep" strokeWidth={0.8} />
+      <div className="w-full h-40 rounded-card bg-blush-pale overflow-hidden mb-4">
+        <img
+          src="/images/cos-wool-jacket.png"
+          alt="COS Black Wool Funnel-Neck Coat"
+          className="w-full h-full object-cover object-center"
+        />
       </div>
       <h2 className="font-display italic text-2xl text-ink leading-tight">
         COS Black Wool
