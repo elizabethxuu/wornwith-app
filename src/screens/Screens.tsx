@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Eyebrow, Donut, Card } from "../components/UI";
 import {
   loadMoment,
@@ -11,7 +11,9 @@ import {
   loadMoments,
   addMoment,
   type SavedMoment,
+  logWardrobeEvent,
 } from "../lib/persistence";
+import { GARMENT } from "../lib/garment";
 import {
   QrCode,
   Check,
@@ -86,6 +88,30 @@ export function CameraScan() {
 
 /* 3 — WELCOME */
 export function Welcome() {
+  const [showInfo, setShowInfo] = useState(false);
+  const [viewCount, setViewCount] = useState<number | null>(null);
+
+  useEffect(() => {
+    // A real, shared counter across every visitor — not fake or per-browser.
+    // Only increments once per browser session so refreshing the page (or
+    // navigating back to this screen) doesn't inflate the count.
+    const alreadyCounted = sessionStorage.getItem("wornwith:counted");
+    const endpoint = alreadyCounted
+      ? "https://api.countapi.xyz/get/wornwithcare-demo/passport-views"
+      : "https://api.countapi.xyz/hit/wornwithcare-demo/passport-views";
+
+    fetch(endpoint)
+      .then((res) => res.json())
+      .then((data) => {
+        if (typeof data.value === "number") setViewCount(data.value);
+        sessionStorage.setItem("wornwith:counted", "1");
+      })
+      .catch(() => {
+        // Public API can be flaky/blocked (adblockers, offline demo, etc.)
+        // — fail silently rather than show an error for something this minor.
+      });
+  }, []);
+
   return (
     <div className="h-full flex flex-col items-center justify-center px-8 gap-8 text-center fade-up">
       <Eyebrow>Digital Product Passport</Eyebrow>
@@ -93,11 +119,30 @@ export function Welcome() {
         <p className="font-sans text-sm text-clay">Welcome to</p>
         <h1 className="font-display italic text-4xl text-ink mt-1">wornwith.care</h1>
       </div>
+
+      {!showInfo ? (
+        <button
+          onClick={() => setShowInfo(true)}
+          className="font-sans text-[11px] text-blush-deep underline underline-offset-2 -mt-4"
+        >
+          What is this?
+        </button>
+      ) : (
+        <div className="bg-blush-pale/50 rounded-xl px-4 py-3 -mt-4 fade-up">
+          <p className="font-sans text-[11px] text-ink/80 leading-relaxed text-left">
+            A Digital Product Passport is a record every garment sold in the
+            EU will be required to carry by 2027 — where it was made, what
+            it's made of, and how to care for it. This is one designer's take
+            on what that moment could actually feel like.
+          </p>
+        </div>
+      )}
+
       <div className="w-24 h-28 rounded-xl bg-blush-pale flex items-center justify-center">
         <Shirt size={40} className="text-blush-deep" strokeWidth={1} />
       </div>
       <p className="font-sans text-[11px] text-clay tracking-wide">
-        COS-8821 &nbsp;✦&nbsp; RWS &nbsp;·&nbsp; DPP-ID: 4f2a
+        {GARMENT.brandSku} &nbsp;✦&nbsp; RWS &nbsp;·&nbsp; DPP-ID: {GARMENT.dppId}
       </p>
       <Card className="w-full text-left">
         <p className="text-[10px] font-sans font-semibold text-sage uppercase tracking-wide mb-1">
@@ -106,12 +151,19 @@ export function Welcome() {
         <p className="flex items-center gap-1.5 font-sans text-sm text-ink font-medium">
           Verified Passport <Check size={14} className="text-sage" />
         </p>
-        <p className="text-[11px] text-clay mt-1">April 2026 · ID: #DPP-204839</p>
+        <p className="text-[11px] text-clay mt-1">{GARMENT.verifiedDate} · ID: {GARMENT.fullDppId}</p>
         <p className="text-[11px] text-clay">Stored on secure digital ledger</p>
         <div className="mt-3 pt-3 border-t border-line flex items-center gap-1.5">
           <span className="text-[10px]">🇪🇺</span>
           <span className="text-[10px] font-sans text-clay">EU Regulated · ESPR 2027</span>
         </div>
+        {viewCount !== null && (
+          <div className="mt-3 pt-3 border-t border-line">
+            <p className="text-[10px] font-sans text-clay">
+              This passport has been viewed <span className="text-ink font-medium">{viewCount.toLocaleString()}</span> times
+            </p>
+          </div>
+        )}
       </Card>
     </div>
   );
@@ -119,33 +171,42 @@ export function Welcome() {
 
 /* 4 — PRODUCT OVERVIEW */
 export function ProductOverview() {
+  const [imgError, setImgError] = useState(false);
   const rows = [
-    ["Material", "70% Recycled Wool"],
-    ["Made in", "Italy & Portugal"],
-    ["Certified", "RWS · GOTS"],
-    ["Lifespan", "8–10 years"],
+    ["Material", GARMENT.material],
+    ["Made in", GARMENT.madeIn],
+    ["Certified", GARMENT.certified],
+    ["Lifespan", GARMENT.lifespan],
   ];
   return (
     <div className="h-full px-5 py-4 fade-up">
       <div className="flex items-center gap-1.5 text-clay text-xs font-sans mb-4">
-        <ChevronLeft size={14} /> <span>COS Wool Jacket</span>
+        <ChevronLeft size={14} /> <span>{GARMENT.brand} Wool Jacket</span>
         <span className="ml-auto flex items-center gap-1 text-sage text-[10px]">
           <Check size={12} /> DPP Verified
         </span>
       </div>
-      <div className="w-full h-64 rounded-card bg-blush-pale overflow-hidden mb-4">
-        <img
-          src="/images/cos-wool-jacket.png"
-          alt="COS Black Wool Funnel-Neck Coat"
-          className="w-full h-full object-contain object-center"
-        />
+      <div className="w-full h-64 rounded-card bg-blush-pale overflow-hidden mb-4 flex items-center justify-center">
+        {imgError ? (
+          <div className="text-center px-6">
+            <Shirt size={40} className="text-blush-deep mx-auto mb-2" strokeWidth={1} />
+            <p className="font-sans text-[10px] text-clay">Photo unavailable right now</p>
+          </div>
+        ) : (
+          <img
+            src={GARMENT.image}
+            alt={GARMENT.name}
+            onError={() => setImgError(true)}
+            className="w-full h-full object-contain object-center"
+          />
+        )}
       </div>
       <h2 className="font-display italic text-2xl text-ink leading-tight">
         COS Black Wool
         <br />Funnel-Neck Coat
       </h2>
       <p className="font-sans text-[11px] text-clay mt-1 mb-4">
-        Sustainable materials, timeless style
+        {GARMENT.tagline}
       </p>
       <div className="divide-y divide-line border-y border-line">
         {rows.map(([k, v]) => (
@@ -158,9 +219,9 @@ export function ProductOverview() {
       <div className="mt-4">
         <Eyebrow>Your Garment</Eyebrow>
         <div className="mt-2 space-y-1.5 font-sans text-[12px]">
-          <div className="flex justify-between"><span className="text-clay">Owned since</span><span className="text-ink">April 2026</span></div>
-          <div className="flex justify-between"><span className="text-clay">Times worn</span><span className="text-ink">~18</span></div>
-          <div className="flex justify-between"><span className="text-clay">Condition</span><span className="text-sage font-medium">Excellent</span></div>
+          <div className="flex justify-between"><span className="text-clay">Owned since</span><span className="text-ink">{GARMENT.ownedSince}</span></div>
+          <div className="flex justify-between"><span className="text-clay">Times worn</span><span className="text-ink">{GARMENT.timesWorn}</span></div>
+          <div className="flex justify-between"><span className="text-clay">Condition</span><span className="text-sage font-medium">{GARMENT.condition}</span></div>
         </div>
       </div>
     </div>
@@ -426,6 +487,41 @@ export function WhatsNext() {
 
 /* 10 — THE STORY BEHIND IT */
 export function StoryBehindIt() {
+  const [shareState, setShareState] = useState<"idle" | "shared" | "copied">("idle");
+  const [savedToWardrobe, setSavedToWardrobe] = useState(false);
+
+  const handleShare = async () => {
+    const shareData = {
+      title: GARMENT.name,
+      text: `The story behind my ${GARMENT.name} — verified on wornwith.care`,
+      url: window.location.origin,
+    };
+    try {
+      if (navigator.share) {
+        await navigator.share(shareData);
+        setShareState("shared");
+      } else {
+        await navigator.clipboard.writeText(shareData.url);
+        setShareState("copied");
+      }
+    } catch {
+      // user cancelled the native share sheet — not an error, do nothing
+    }
+    setTimeout(() => setShareState("idle"), 2000);
+  };
+
+  const handleSaveToWardrobe = () => {
+    const items = loadWardrobe();
+    const alreadySaved = items.some((it) => it.name === GARMENT.name);
+    if (!alreadySaved) {
+      const newItem = { name: GARMENT.name, tag: "DPP", worn: GARMENT.timesWorn, note: "Saved from passport", brand: GARMENT.brand };
+      const updated = [...items, newItem];
+      saveWardrobe(updated);
+      logWardrobeEvent(newItem);
+    }
+    setSavedToWardrobe(true);
+  };
+
   return (
     <div className="h-full px-5 py-6 fade-up">
       <Card>
@@ -454,6 +550,22 @@ export function StoryBehindIt() {
           Crafted to last. Designed to return.
         </p>
       </Card>
+
+      <div className="flex gap-2.5 mt-4">
+        <button
+          onClick={handleShare}
+          className="flex-1 border border-line rounded-full py-2.5 font-sans text-[12px] text-ink"
+        >
+          {shareState === "shared" ? "✓ Shared" : shareState === "copied" ? "✓ Link copied" : "Share passport"}
+        </button>
+        <button
+          onClick={handleSaveToWardrobe}
+          disabled={savedToWardrobe}
+          className="flex-1 bg-ink text-cream rounded-full py-2.5 font-sans text-[12px] disabled:opacity-60"
+        >
+          {savedToWardrobe ? "✓ Saved" : "Save to wardrobe"}
+        </button>
+      </div>
     </div>
   );
 }
@@ -532,9 +644,11 @@ export function MyWardrobe() {
 
   const submitMemory = () => {
     if (!name.trim()) return;
-    const updated = [...items, { name: name.trim(), tag: null, worn: "1×", note: note.trim() || "Just now" }];
+    const newItem = { name: name.trim(), tag: null, worn: "1×", note: note.trim() || "Just now" };
+    const updated = [...items, newItem];
     setItems(updated);
     saveWardrobe(updated);
+    logWardrobeEvent(newItem);
     setName("");
     setNote("");
     setLogging(false);
@@ -546,14 +660,16 @@ export function MyWardrobe() {
     saveWardrobe(updated);
   };
 
+  const brandCount = new Set(items.map((it) => it.brand || "Unlabeled")).size;
+
   return (
     <div className="h-full px-5 py-6 fade-up">
       <Eyebrow>My Wardrobe</Eyebrow>
       <h2 className="font-display italic text-xl text-ink mt-1 mb-3">
-        {items.length} pieces · 3 brands · 2 resold
+        {items.length} pieces · {brandCount} brands · 2 resold
       </h2>
       <div className="grid grid-cols-3 gap-2 mb-5">
-        {[[String(items.length), "items"], ["3", "brands"], ["2", "resold"]].map(([v, l]) => (
+        {[[String(items.length), "items"], [String(brandCount), "brands"], ["2", "resold"]].map(([v, l]) => (
           <div key={l} className="bg-blush-pale/60 rounded-lg py-2.5 text-center">
             <p className="font-display italic text-lg text-blush-deep">{v}</p>
             <p className="text-[9px] font-sans text-clay uppercase tracking-wide">{l}</p>

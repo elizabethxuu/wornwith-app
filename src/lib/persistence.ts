@@ -4,6 +4,23 @@
 // Note: this is per-device/per-browser only. It won't sync across a
 // person's phone and laptop, and clearing browser data clears it.
 
+import { FORMSPREE_ENDPOINT } from "./config";
+
+// Sends captured data to you (not just the visitor's own browser) if a
+// Formspree endpoint is configured. Fails silently if not configured or if
+// the request fails — this is a nice-to-have, not something that should
+// ever break the actual experience for a visitor.
+function sendToFormspree(payload: Record<string, string>) {
+  if (!FORMSPREE_ENDPOINT) return;
+  fetch(FORMSPREE_ENDPOINT, {
+    method: "POST",
+    headers: { "Content-Type": "application/json", Accept: "application/json" },
+    body: JSON.stringify(payload),
+  }).catch(() => {
+    // ignore — this should never block the visitor's actual experience
+  });
+}
+
 const DPP_ID = "COS-8821-4f2a"; // matches the garment shown in the demo
 
 function key(name: string) {
@@ -32,12 +49,13 @@ export type WardrobeItem = {
   tag: string | null;
   worn: string;
   note: string;
+  brand?: string;
 };
 
 const defaultWardrobe: WardrobeItem[] = [
-  { name: "The Marais Coat", tag: "DPP", worn: "18×", note: "March dinner · Paris, New York" },
-  { name: "Silk Slip Dress", tag: null, worn: "7×", note: "June birthday · London" },
-  { name: "Linen Trousers", tag: null, worn: "2×", note: "Last: Lisbon trip" },
+  { name: "The Marais Coat", tag: "DPP", worn: "18×", note: "March dinner · Paris, New York", brand: "COS" },
+  { name: "Silk Slip Dress", tag: null, worn: "7×", note: "June birthday · London", brand: "Reformation" },
+  { name: "Linen Trousers", tag: null, worn: "2×", note: "Last: Lisbon trip", brand: "Everlane" },
 ];
 
 export function loadWardrobe(): WardrobeItem[] {
@@ -103,5 +121,24 @@ export function addMoment(text: string): SavedMoment[] {
   } catch {
     // ignore
   }
+  sendToFormspree({
+    type: "saved-moment",
+    dppId: DPP_ID,
+    text,
+    savedAt: new Date().toISOString(),
+  });
   return updated;
+}
+
+// Call this when a visitor explicitly logs a new wardrobe memory or saves
+// this garment to their wardrobe — a real, meaningful signal worth sending,
+// as opposed to every incidental list mutation (like deleting an item).
+export function logWardrobeEvent(item: WardrobeItem) {
+  sendToFormspree({
+    type: "wardrobe-event",
+    dppId: DPP_ID,
+    itemName: item.name,
+    note: item.note,
+    loggedAt: new Date().toISOString(),
+  });
 }
