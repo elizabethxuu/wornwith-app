@@ -570,16 +570,16 @@ export function WhatsNext() {
     return (
       <EmptyState
         icon={MapPinOff}
-        eyebrow="Ready to pass it on"
-        title="Location isn't available"
-        subtitle="Enter a city or postcode instead, and we'll find a tailor or donation point nearby."
+        eyebrow={t("location_error_eyebrow")}
+        title={t("location_error_title")}
+        subtitle={t("location_error_subtitle")}
       >
         <div className="flex items-center gap-2 mt-5 w-full max-w-[260px]">
           <input
             value={manualLocation}
             onChange={(e) => setManualLocation(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && submitManualLocation()}
-            placeholder="City or postcode"
+            placeholder={t("city_postcode")}
             className="flex-1 border border-line rounded-full px-4 py-2.5 font-sans text-[12px] text-ink focus:outline-none focus:border-blush"
           />
         </div>
@@ -588,13 +588,13 @@ export function WhatsNext() {
             onClick={submitManualLocation}
             className="bg-ink text-cream font-sans text-[12px] font-semibold px-5 py-2.5 rounded-full"
           >
-            Search
+            {t("search_button")}
           </button>
           <button
             onClick={() => { setLocationQuery(null); setManualLocation(""); }}
             className="font-sans text-[12px] text-clay px-2 py-2.5"
           >
-            Back
+            {t("back_button")}
           </button>
         </div>
       </EmptyState>
@@ -887,9 +887,9 @@ export function MyWardrobe() {
       <EmptyState
         icon={Shirt}
         eyebrow={t("my_wardrobe")}
-        title="Nothing here yet"
-        subtitle="Scan a tag to add the first piece — and the first memory that comes with it."
-        actionLabel="Scan a tag"
+        title={t("wardrobe_empty_title")}
+        subtitle={t("wardrobe_empty_subtitle")}
+        actionLabel={t("scan_a_tag")}
         actionHref="?mode=tag"
       />
     );
@@ -918,7 +918,7 @@ export function MyWardrobe() {
         ) : (
           <div className="w-full aspect-square rounded-card bg-blush-pale/50 flex flex-col items-center justify-center gap-2 mb-4">
             <Camera size={32} className="text-blush-deep/40" />
-            <p className="font-sans text-[11px] text-clay/60">No photo added</p>
+            <p className="font-sans text-[11px] text-clay/60">{t("no_photo_added")}</p>
           </div>
         )}
 
@@ -938,13 +938,13 @@ export function MyWardrobe() {
                 : "text-clay/50 border-line"
             }`}
           >
-            {it.resold ? "✓ Resold" : "Mark resold"}
+            {it.resold ? t("resold_badge") : t("mark_resold")}
           </button>
         </div>
 
         <div className="divide-y divide-line border-y border-line font-sans text-[12px]">
           <div className="flex justify-between py-2.5">
-            <span className="text-clay">Brand</span>
+            <span className="text-clay">{t("brand_label")}</span>
             <span className="text-ink font-medium">{it.brand || "—"}</span>
           </div>
           <div className="flex justify-between py-2.5">
@@ -952,7 +952,7 @@ export function MyWardrobe() {
             <span className="text-ink font-medium">{it.worn}</span>
           </div>
           <div className="flex justify-between py-2.5">
-            <span className="text-clay">Logged</span>
+            <span className="text-clay">{t("logged_label")}</span>
             <span className="text-ink font-medium">
               {it.loggedAt
                 ? new Date(it.loggedAt).toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" })
@@ -963,7 +963,7 @@ export function MyWardrobe() {
 
         <div className="mt-4">
           <p className="text-[10px] font-sans font-semibold text-blush-deep uppercase tracking-wide mb-1">
-            The memory
+            {t("the_memory")}
           </p>
           <p className="font-display italic text-[15px] text-ink leading-relaxed">
             {it.note}
@@ -974,7 +974,7 @@ export function MyWardrobe() {
           onClick={() => { deleteItem(selectedIndex); setSelectedIndex(null); }}
           className="w-full mt-6 font-sans text-[12px] text-blush-deep border border-line rounded-full py-2.5"
         >
-          Remove from wardrobe
+          {t("remove_from_wardrobe")}
         </button>
         <Disclaimer />
       </div>
@@ -1002,7 +1002,7 @@ export function MyWardrobe() {
           <input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search for journal entry"
+            placeholder={t("search_placeholder")}
             className="w-full border border-line rounded-full pl-8 pr-3 py-2 font-sans text-[12px] text-ink focus:outline-none focus:border-blush"
           />
         </div>
@@ -1021,13 +1021,13 @@ export function MyWardrobe() {
       {hasActiveFilters && (
         <div className="flex items-center justify-between mb-2 -mt-2">
           <p className="font-sans text-[10px] text-clay">
-            {filtered.length} of {items.length} shown
+            {filtered.length} {t("shown_of")} {items.length} {t("shown_label")}
           </p>
           <button
             onClick={() => { setSearch(""); setDateFilter(""); }}
             className="font-sans text-[10px] text-blush-deep underline underline-offset-2"
           >
-            Clear filters
+            {t("clear_filters")}
           </button>
         </div>
       )}
@@ -1035,7 +1035,7 @@ export function MyWardrobe() {
       <div className="divide-y divide-line border-y border-line">
         {filtered.length === 0 ? (
           <p className="py-6 text-center font-sans text-[12px] text-clay">
-            No entries match your search.
+            {t("no_entries_match")}
           </p>
         ) : (
           filtered.map(({ it, i }) => (
@@ -1071,7 +1071,7 @@ export function MyWardrobe() {
                         : "text-clay/40 border-line"
                     }`}
                   >
-                    {it.resold ? "✓ Resold" : "Mark resold"}
+                    {it.resold ? t("resold_badge") : t("mark_resold")}
                   </button>
                 </p>
                 <p className="font-sans text-[11px] text-clay mt-0.5">
@@ -1108,7 +1108,7 @@ export function MyWardrobe() {
               />
             </label>
             <p className="font-sans text-[10px] text-clay flex-1">
-              {photo ? "Photo added — tap to change" : "Add a photo (optional)"}
+              {photo ? t("photo_added_hint") : t("add_photo_hint")}
             </p>
           </div>
           <input

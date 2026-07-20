@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { ChevronLeft, ChevronRight, WifiOff, SearchX } from "lucide-react";
 import { EmptyState } from "./components/UI";
 import { GARMENT } from "./lib/garment";
+import { useLanguage } from "./lib/i18n";
 import {
   SkeletonLoader,
   Welcome,
@@ -46,6 +47,7 @@ function checkDppId(): boolean {
 }
 
 export default function LiveApp() {
+  const { t } = useLanguage();
   const [bootState, setBootState] = useState<BootState>("verifying");
   const [index, setIndex] = useState(0);
 
@@ -101,10 +103,10 @@ export default function LiveApp() {
       <div className="h-[100dvh] w-full bg-paper">
         <EmptyState
           icon={WifiOff}
-          eyebrow="Connection"
-          title="Couldn't verify this passport"
-          subtitle="Check your connection and try again. The garment's story hasn't gone anywhere."
-          actionLabel="Try again"
+          eyebrow={t("connection_eyebrow")}
+          title={t("connection_error_title")}
+          subtitle={t("connection_error_subtitle")}
+          actionLabel={t("try_again")}
           onAction={runVerification}
         />
       </div>
@@ -116,10 +118,10 @@ export default function LiveApp() {
       <div className="h-[100dvh] w-full bg-paper">
         <EmptyState
           icon={SearchX}
-          eyebrow="Digital Product Passport"
-          title="No passport found"
-          subtitle="This code doesn't match a garment we know. Rescan the tag, or check the link."
-          actionLabel="Scan again"
+          eyebrow={t("dpp_eyebrow")}
+          title={t("not_found_title")}
+          subtitle={t("not_found_subtitle")}
+          actionLabel={t("scan_again")}
           actionHref="?mode=tag"
         />
       </div>
