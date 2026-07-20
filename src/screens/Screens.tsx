@@ -819,6 +819,7 @@ export function MyWardrobe() {
   const [photo, setPhoto] = useState<string | null>(null);
   const [search, setSearch] = useState("");
   const [dateFilter, setDateFilter] = useState("");
+  const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
 
   const handlePhotoSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -892,6 +893,92 @@ export function MyWardrobe() {
     );
   }
 
+  if (selectedIndex !== null && items[selectedIndex]) {
+    const it = items[selectedIndex];
+    return (
+      <div
+        className="h-full px-5 py-6 fade-up overflow-y-auto"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <button
+          onClick={() => setSelectedIndex(null)}
+          className="flex items-center gap-1 text-clay text-xs font-sans mb-4"
+        >
+          <ChevronLeft size={14} /> {t("my_wardrobe")}
+        </button>
+
+        {it.photo ? (
+          <img
+            src={it.photo}
+            alt={it.name}
+            className="w-full aspect-square rounded-card object-cover border border-line mb-4"
+          />
+        ) : (
+          <div className="w-full aspect-square rounded-card bg-blush-pale/50 flex flex-col items-center justify-center gap-2 mb-4">
+            <Camera size={32} className="text-blush-deep/40" />
+            <p className="font-sans text-[11px] text-clay/60">No photo added</p>
+          </div>
+        )}
+
+        <h2 className="font-display italic text-2xl text-ink leading-tight">{it.name}</h2>
+
+        <div className="flex flex-wrap gap-1.5 mt-2 mb-4">
+          {it.tag && (
+            <span className="text-[10px] text-sage border border-sage/40 rounded-full px-2 py-1">
+              {it.tag}
+            </span>
+          )}
+          <button
+            onClick={() => toggleResold(selectedIndex)}
+            className={`text-[10px] rounded-full px-2 py-1 border transition-colors ${
+              it.resold
+                ? "text-blush-deep border-blush-deep bg-blush-pale/60"
+                : "text-clay/50 border-line"
+            }`}
+          >
+            {it.resold ? "✓ Resold" : "Mark resold"}
+          </button>
+        </div>
+
+        <div className="divide-y divide-line border-y border-line font-sans text-[12px]">
+          <div className="flex justify-between py-2.5">
+            <span className="text-clay">Brand</span>
+            <span className="text-ink font-medium">{it.brand || "—"}</span>
+          </div>
+          <div className="flex justify-between py-2.5">
+            <span className="text-clay">{t("worn_label")}</span>
+            <span className="text-ink font-medium">{it.worn}</span>
+          </div>
+          <div className="flex justify-between py-2.5">
+            <span className="text-clay">Logged</span>
+            <span className="text-ink font-medium">
+              {it.loggedAt
+                ? new Date(it.loggedAt).toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" })
+                : "—"}
+            </span>
+          </div>
+        </div>
+
+        <div className="mt-4">
+          <p className="text-[10px] font-sans font-semibold text-blush-deep uppercase tracking-wide mb-1">
+            The memory
+          </p>
+          <p className="font-display italic text-[15px] text-ink leading-relaxed">
+            {it.note}
+          </p>
+        </div>
+
+        <button
+          onClick={() => { deleteItem(selectedIndex); setSelectedIndex(null); }}
+          className="w-full mt-6 font-sans text-[12px] text-blush-deep border border-line rounded-full py-2.5"
+        >
+          Remove from wardrobe
+        </button>
+        <Disclaimer />
+      </div>
+    );
+  }
+
   return (
     <div className="h-full px-5 py-6 fade-up">
       <Eyebrow>{t("my_wardrobe")}</Eyebrow>
@@ -950,7 +1037,11 @@ export function MyWardrobe() {
           </p>
         ) : (
           filtered.map(({ it, i }) => (
-            <div key={i} className="py-3 flex items-start gap-3 group">
+            <div
+              key={i}
+              onClick={(e) => { e.stopPropagation(); setSelectedIndex(i); }}
+              className="py-3 flex items-start gap-3 group cursor-pointer"
+            >
               {it.photo ? (
                 <img
                   src={it.photo}
@@ -971,7 +1062,7 @@ export function MyWardrobe() {
                     </span>
                   )}
                   <button
-                    onClick={() => toggleResold(i)}
+                    onClick={(e) => { e.stopPropagation(); toggleResold(i); }}
                     className={`text-[9px] rounded-full px-1.5 py-0.5 border transition-colors ${
                       it.resold
                         ? "text-blush-deep border-blush-deep bg-blush-pale/60"
@@ -986,7 +1077,7 @@ export function MyWardrobe() {
                 </p>
               </div>
               <button
-                onClick={() => deleteItem(i)}
+                onClick={(e) => { e.stopPropagation(); deleteItem(i); }}
                 aria-label={`Remove ${it.name}`}
                 className="text-clay/50 hover:text-blush-deep font-sans text-[11px] shrink-0 pt-0.5"
               >
