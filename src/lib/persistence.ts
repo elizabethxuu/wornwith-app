@@ -103,7 +103,7 @@ export function saveCareChecks(checks: boolean[]) {
 }
 
 // A running log of saved "when will you wear this" moments, most recent last
-export type SavedMoment = { text: string; savedAt: string };
+export type SavedMoment = { text: string; savedAt: string; summary?: string };
 
 export function loadMoments(): SavedMoment[] {
   try {
@@ -130,6 +130,20 @@ export function addMoment(text: string): SavedMoment[] {
     text,
     savedAt: new Date().toISOString(),
   });
+  return updated;
+}
+
+// Patches a specific moment with its AI-generated reflection once it comes
+// back from the API — matched by savedAt since that's set at creation and
+// never changes.
+export function updateMomentSummary(savedAt: string, summary: string): SavedMoment[] {
+  const moments = loadMoments();
+  const updated = moments.map((m) => (m.savedAt === savedAt ? { ...m, summary } : m));
+  try {
+    localStorage.setItem(key("moments"), JSON.stringify(updated));
+  } catch {
+    // ignore
+  }
   return updated;
 }
 

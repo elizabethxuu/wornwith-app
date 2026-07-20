@@ -10,6 +10,7 @@ import {
   saveCareChecks,
   loadMoments,
   addMoment,
+  updateMomentSummary,
   type SavedMoment,
   logWardrobeEvent,
   compressImage,
@@ -749,11 +750,36 @@ export function Personalization() {
   const { t } = useLanguage();
   const [text, setText] = useState(() => loadMoment());
   const [moments, setMoments] = useState<SavedMoment[]>(() => loadMoments());
+  const [generating, setGenerating] = useState<Record<string, boolean>>({});
+  const [failed, setFailed] = useState<Record<string, boolean>>({});
+
+  const generateReflection = (savedAt: string, momentText: string) => {
+    setGenerating((g) => ({ ...g, [savedAt]: true }));
+    setFailed((f) => ({ ...f, [savedAt]: false }));
+    fetch("/api/summarize", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ text: momentText }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.summary) {
+          setMoments(updateMomentSummary(savedAt, data.summary));
+        } else {
+          setFailed((f) => ({ ...f, [savedAt]: true }));
+        }
+      })
+      .catch(() => setFailed((f) => ({ ...f, [savedAt]: true })))
+      .finally(() => setGenerating((g) => ({ ...g, [savedAt]: false })));
+  };
 
   const handleSave = () => {
     if (!text.trim()) return;
     saveMoment(text);
-    setMoments(addMoment(text));
+    const updated = addMoment(text);
+    setMoments(updated);
+    const newMoment = updated[updated.length - 1];
+    generateReflection(newMoment.savedAt, newMoment.text);
     setText("");
     saveMoment("");
   };
@@ -781,13 +807,31 @@ export function Personalization() {
       {moments.length > 0 && (
         <Card className="mt-4">
           <Eyebrow>{t("saved_moments")}</Eyebrow>
-          <div className="mt-2 space-y-2 max-h-24 overflow-y-auto no-scrollbar">
+          <div className="mt-2 space-y-3 max-h-40 overflow-y-auto no-scrollbar">
             {[...moments].reverse().map((m, i) => (
-              <div key={i} className="border-b border-line last:border-0 pb-2 last:pb-0">
+              <div key={i} className="border-b border-line last:border-0 pb-3 last:pb-0">
                 <p className="font-display italic text-[13px] text-ink">{m.text}</p>
                 <p className="font-sans text-[9px] text-clay/60 mt-0.5">
                   {new Date(m.savedAt).toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" })}
                 </p>
+
+                {m.summary ? (
+                  <p className="font-sans text-[11px] text-ink/80 mt-1.5 flex items-start gap-1.5">
+                    <span className="text-ink shrink-0">💎</span>
+                    <span>{m.summary}</span>
+                  </p>
+                ) : generating[m.savedAt] ? (
+                  <p className="font-sans text-[10px] text-clay/50 mt-1.5 italic">
+                    {t("generating_reflection")}
+                  </p>
+                ) : failed[m.savedAt] ? (
+                  <button
+                    onClick={() => generateReflection(m.savedAt, m.text)}
+                    className="font-sans text-[10px] text-blush-deep underline underline-offset-2 mt-1.5"
+                  >
+                    {t("reflection_failed")}
+                  </button>
+                ) : null}
               </div>
             ))}
           </div>
