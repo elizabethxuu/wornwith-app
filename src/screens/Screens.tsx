@@ -124,94 +124,96 @@ export function Welcome() {
   }, []);
 
   return (
-    <div className="h-full flex flex-col items-center justify-center px-8 gap-8 text-center fade-up border-2 border-ink box-border">
-      <div className="w-full flex flex-col items-center gap-8 rounded-2xl px-5 py-6">
-        <Eyebrow>{t("dpp_eyebrow")}</Eyebrow>
-        <div>
-          <p className="font-sans text-sm text-clay">{t("welcome_to")}</p>
-          <h1 className="font-display italic text-4xl text-ink mt-1">wornwith.care</h1>
-        </div>
+    <div className="h-full flex flex-col p-3 text-center fade-up">
+      <div className="w-full h-full flex flex-col items-center justify-center gap-7 border border-ink/70 rounded-[32px] px-7 py-10 overflow-y-auto no-scrollbar">
+        <div className="w-full flex flex-col items-center gap-7">
+          <Eyebrow>{t("dpp_eyebrow")}</Eyebrow>
+          <div>
+            <p className="font-sans text-sm text-clay">{t("welcome_to")}</p>
+            <h1 className="font-display italic text-4xl text-ink mt-1">wornwith.care</h1>
+          </div>
 
-        {!showInfo ? (
+          {!showInfo ? (
+            <button
+              onClick={() => setShowInfo(true)}
+              className="font-sans text-[11px] text-blush-deep underline underline-offset-2 -mt-3"
+            >
+              {t("what_is_this")}
+            </button>
+          ) : (
+            <div className="bg-blush-pale/50 rounded-xl px-4 py-3 -mt-3 fade-up">
+              <p className="font-sans text-[11px] text-ink/80 leading-relaxed text-left">
+                {t("dpp_explainer")}
+              </p>
+            </div>
+          )}
+
+          <div className="w-24 h-28 rounded-xl bg-blush-pale flex items-center justify-center">
+            <Shirt size={40} className="text-blush-deep" strokeWidth={1} />
+          </div>
+          <p className="font-sans text-[11px] text-clay tracking-wide">
+            {GARMENT.brandSku} &nbsp;✦&nbsp;{" "}
+            <button onClick={() => setShowRws(!showRws)} className="underline underline-offset-2">
+              RWS
+            </button>
+            {" "}&nbsp;·&nbsp; DPP-ID: {GARMENT.dppId}
+          </p>
+          {showRws && (
+            <div className="bg-blush-pale/50 rounded-xl px-4 py-3 -mt-3 fade-up">
+              <p className="font-sans text-[11px] text-ink/80 leading-relaxed text-left">
+                {t("rws_explainer")}
+              </p>
+            </div>
+          )}
+        </div>
+        <Card className="w-full text-left">
+          <p className="text-[10px] font-sans font-semibold text-sage uppercase tracking-wide mb-1">
+            {t("verified_passport")}
+          </p>
+          <p className="flex items-center gap-1.5 font-sans text-sm text-ink font-medium">
+            {t("verified_passport")} <Check size={14} className="text-sage" />
+          </p>
+          <p className="text-[11px] text-clay mt-1">{t("verified_date_value")} · ID: {GARMENT.fullDppId}</p>
+          <p className="text-[11px] text-clay">{t("stored_ledger")}</p>
+          <div className="mt-3 pt-3 border-t border-line flex items-center gap-1.5">
+            <span className="text-[10px]">🇪🇺</span>
+            <span className="text-[10px] font-sans text-clay">{t("eu_regulated")}</span>
+          </div>
+          {viewCount !== null && (
+            <div className="mt-3 pt-3 border-t border-line">
+              <p className="text-[10px] font-sans text-clay">
+                {t("viewed_times")} <span className="text-ink font-medium">{viewCount.toLocaleString()}</span> {t("times_suffix")}
+              </p>
+            </div>
+          )}
+        </Card>
+
+        {/* Language switcher */}
+        <div className="flex items-center gap-3">
           <button
-            onClick={() => setShowInfo(true)}
-            className="font-sans text-[11px] text-blush-deep underline underline-offset-2 -mt-4"
+            onClick={() => setLang("en")}
+            className={`font-sans text-[11px] flex items-center gap-1 px-2 py-1 rounded-full transition-opacity ${lang === "en" ? "opacity-100 bg-blush-pale/60" : "opacity-50"}`}
           >
-            {t("what_is_this")}
+            🇬🇧 EN
           </button>
-        ) : (
-          <div className="bg-blush-pale/50 rounded-xl px-4 py-3 -mt-4 fade-up">
-            <p className="font-sans text-[11px] text-ink/80 leading-relaxed text-left">
-              {t("dpp_explainer")}
-            </p>
-          </div>
-        )}
-
-        <div className="w-24 h-28 rounded-xl bg-blush-pale flex items-center justify-center">
-          <Shirt size={40} className="text-blush-deep" strokeWidth={1} />
-        </div>
-        <p className="font-sans text-[11px] text-clay tracking-wide">
-          {GARMENT.brandSku} &nbsp;✦&nbsp;{" "}
-          <button onClick={() => setShowRws(!showRws)} className="underline underline-offset-2">
-            RWS
+          <button
+            onClick={() => setLang("fr")}
+            className={`font-sans text-[11px] flex items-center gap-1 px-2 py-1 rounded-full transition-opacity ${lang === "fr" ? "opacity-100 bg-blush-pale/60" : "opacity-50"}`}
+          >
+            🇫🇷 FR
           </button>
-          {" "}&nbsp;·&nbsp; DPP-ID: {GARMENT.dppId}
-        </p>
-        {showRws && (
-          <div className="bg-blush-pale/50 rounded-xl px-4 py-3 -mt-4 fade-up">
-            <p className="font-sans text-[11px] text-ink/80 leading-relaxed text-left">
-              {t("rws_explainer")}
-            </p>
-          </div>
-        )}
-      </div>
-      <Card className="w-full text-left">
-        <p className="text-[10px] font-sans font-semibold text-sage uppercase tracking-wide mb-1">
-          {t("verified_passport")}
-        </p>
-        <p className="flex items-center gap-1.5 font-sans text-sm text-ink font-medium">
-          {t("verified_passport")} <Check size={14} className="text-sage" />
-        </p>
-        <p className="text-[11px] text-clay mt-1">{t("verified_date_value")} · ID: {GARMENT.fullDppId}</p>
-        <p className="text-[11px] text-clay">{t("stored_ledger")}</p>
-        <div className="mt-3 pt-3 border-t border-line flex items-center gap-1.5">
-          <span className="text-[10px]">🇪🇺</span>
-          <span className="text-[10px] font-sans text-clay">{t("eu_regulated")}</span>
+          <button
+            onClick={() => setLang("pt")}
+            className={`font-sans text-[11px] flex items-center gap-1 px-2 py-1 rounded-full transition-opacity ${lang === "pt" ? "opacity-100 bg-blush-pale/60" : "opacity-50"}`}
+          >
+            🇵🇹 PT
+          </button>
         </div>
-        {viewCount !== null && (
-          <div className="mt-3 pt-3 border-t border-line">
-            <p className="text-[10px] font-sans text-clay">
-              {t("viewed_times")} <span className="text-ink font-medium">{viewCount.toLocaleString()}</span> {t("times_suffix")}
-            </p>
-          </div>
-        )}
-      </Card>
 
-      {/* Language switcher */}
-      <div className="flex items-center gap-3 -mt-2">
-        <button
-          onClick={() => setLang("en")}
-          className={`font-sans text-[11px] flex items-center gap-1 px-2 py-1 rounded-full transition-opacity ${lang === "en" ? "opacity-100 bg-blush-pale/60" : "opacity-50"}`}
-        >
-          🇬🇧 EN
-        </button>
-        <button
-          onClick={() => setLang("fr")}
-          className={`font-sans text-[11px] flex items-center gap-1 px-2 py-1 rounded-full transition-opacity ${lang === "fr" ? "opacity-100 bg-blush-pale/60" : "opacity-50"}`}
-        >
-          🇫🇷 FR
-        </button>
-        <button
-          onClick={() => setLang("pt")}
-          className={`font-sans text-[11px] flex items-center gap-1 px-2 py-1 rounded-full transition-opacity ${lang === "pt" ? "opacity-100 bg-blush-pale/60" : "opacity-50"}`}
-        >
-          🇵🇹 PT
-        </button>
+        <p className="font-sans text-[9px] text-clay/60">
+          {t("demo_disclaimer")}
+        </p>
       </div>
-
-      <p className="font-sans text-[9px] text-clay/60 -mt-4">
-        {t("demo_disclaimer")}
-      </p>
     </div>
   );
 }
