@@ -87,7 +87,7 @@ const journeyStops = [
     coords: [172.5, -43.5] as [number, number],
     label: "NZ",
     dx: 0,
-    dy: -14,
+    dy: -17,
     icon: "🐑",
     place: "Canterbury Plains, NZ",
     blurbKey: "stop_blurb_nz" as const,
@@ -95,7 +95,7 @@ const journeyStops = [
   {
     coords: [8.05, 45.57] as [number, number],
     label: "Italy",
-    dx: 34,
+    dx: 40,
     dy: 4,
     leader: true,
     icon: "🧵",
@@ -105,7 +105,7 @@ const journeyStops = [
   {
     coords: [-8.61, 41.15] as [number, number],
     label: "Portugal",
-    dx: -42,
+    dx: -48,
     dy: 10,
     leader: true,
     icon: "✂️",
@@ -116,7 +116,7 @@ const journeyStops = [
     coords: [2.35, 48.86] as [number, number],
     label: "Paris",
     dx: 4,
-    dy: -26,
+    dy: -30,
     active: true,
     leader: true,
     icon: "",
@@ -144,9 +144,9 @@ export function JourneyMap() {
       <div className="w-full bg-paper border border-line rounded-card overflow-hidden">
         <ComposableMap
           projection="geoEqualEarth"
-          projectionConfig={{ scale: 55 }}
+          projectionConfig={{ scale: 58 }}
           width={340}
-          height={215}
+          height={225}
           style={{ width: "100%", height: "auto", display: "block" }}
         >
           <ZoomableGroup center={[0, 0]} zoom={1} minZoom={1} maxZoom={5}>
@@ -208,7 +208,7 @@ export function JourneyMap() {
                   </circle>
                 )}
                 <circle
-                  r={selected === i ? 6 : s.active ? 4 : 3}
+                  r={selected === i ? 7 : s.active ? 5 : 4}
                   fill={s.active || selected === i ? "#C97A8C" : "#FFFFFF"}
                   stroke="#C97A8C"
                   strokeWidth={1.3}
@@ -249,7 +249,7 @@ export function JourneyMap() {
                     fontFamily: "'Cormorant Garamond', serif",
                     fontStyle: "italic",
                     fontWeight: s.active || selected === i ? 600 : 500,
-                    fontSize: s.active || selected === i ? 13 : 11,
+                    fontSize: s.active || selected === i ? 15 : 13,
                     fill: s.active || selected === i ? "#C97A8C" : "#2B2622",
                   }}
                 >
@@ -304,5 +304,14 @@ export function Pill({
       </div>
       <span className="font-sans text-[12px] text-ink font-medium w-9 text-right shrink-0">{percent}%</span>
     </div>
+  );
+}
+
+export function Disclaimer() {
+  const { t } = useLanguage();
+  return (
+    <p className="font-sans text-[8px] text-clay/40 text-center leading-relaxed mt-4 pt-3 border-t border-line/60">
+      {t("demo_disclaimer")}
+    </p>
   );
 }

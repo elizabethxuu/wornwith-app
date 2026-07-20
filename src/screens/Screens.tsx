@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Eyebrow, Donut, Card, JourneyMap, Pill } from "../components/UI";
+import { Eyebrow, Donut, Card, JourneyMap, Pill, Disclaimer } from "../components/UI";
 import {
   loadMoment,
   saveMoment,
@@ -12,6 +12,7 @@ import {
   addMoment,
   type SavedMoment,
   logWardrobeEvent,
+  compressImage,
 } from "../lib/persistence";
 import { GARMENT } from "../lib/garment";
 import { useLanguage } from "../lib/i18n";
@@ -28,6 +29,7 @@ import {
   ArrowRight,
   Search,
   CalendarDays,
+  Camera,
 } from "lucide-react";
 
 /* 1 — SKELETON LOADER */
@@ -96,6 +98,7 @@ export function CameraScan() {
 export function Welcome() {
   const { t, lang, setLang } = useLanguage();
   const [showInfo, setShowInfo] = useState(false);
+  const [showRws, setShowRws] = useState(false);
   const [viewCount, setViewCount] = useState<number | null>(null);
 
   useEffect(() => {
@@ -146,8 +149,19 @@ export function Welcome() {
         <Shirt size={40} className="text-blush-deep" strokeWidth={1} />
       </div>
       <p className="font-sans text-[11px] text-clay tracking-wide">
-        {GARMENT.brandSku} &nbsp;✦&nbsp; RWS &nbsp;·&nbsp; DPP-ID: {GARMENT.dppId}
+        {GARMENT.brandSku} &nbsp;✦&nbsp;{" "}
+        <button onClick={() => setShowRws(!showRws)} className="underline underline-offset-2">
+          RWS
+        </button>
+        {" "}&nbsp;·&nbsp; DPP-ID: {GARMENT.dppId}
       </p>
+      {showRws && (
+        <div className="bg-blush-pale/50 rounded-xl px-4 py-3 -mt-4 fade-up">
+          <p className="font-sans text-[11px] text-ink/80 leading-relaxed text-left">
+            {t("rws_explainer")}
+          </p>
+        </div>
+      )}
       <Card className="w-full text-left">
         <p className="text-[10px] font-sans font-semibold text-sage uppercase tracking-wide mb-1">
           {t("verified_passport")}
@@ -199,6 +213,7 @@ export function Welcome() {
   );
 }
 
+
 /* 4 — PRODUCT OVERVIEW */
 export function ProductOverview() {
   const { t } = useLanguage();
@@ -208,6 +223,7 @@ export function ProductOverview() {
     [t("made_in"), GARMENT.madeIn],
     [t("certified"), GARMENT.certified],
     [t("lifespan"), t("lifespan_value")],
+    [t("repairability"), "8.5 / 10"],
   ];
   return (
     <div className="h-full px-5 py-4 fade-up">
@@ -255,6 +271,7 @@ export function ProductOverview() {
           <div className="flex justify-between"><span className="text-clay">{t("condition")}</span><span className="text-sage font-medium">{t("excellent")}</span></div>
         </div>
       </div>
+      <Disclaimer />
     </div>
   );
 }
@@ -303,6 +320,7 @@ export function ProductLifecycle() {
           ))}
         </div>
       </div>
+      <Disclaimer />
     </div>
   );
 }
@@ -366,6 +384,19 @@ export function SupplyChain() {
           {t("audited_by")}
         </p>
       </Card>
+
+      <Card className="mt-3">
+        <div className="grid grid-cols-[1fr,auto] gap-y-2 gap-x-4 font-sans text-[12px] items-start">
+          <span className="text-clay">{t("chemical_compliance")}</span>
+          <span className="text-sage text-right text-[11px]">✦ {t("reach_compliant")}</span>
+          <span className="text-clay">{t("economic_operator")}</span>
+          <span className="text-ink text-right text-[11px] font-medium">{t("economic_operator_value")}</span>
+        </div>
+        <p className="text-[9px] text-clay/60 font-sans mt-2 pt-2 border-t border-line leading-relaxed">
+          {t("economic_operator_note")}
+        </p>
+      </Card>
+      <Disclaimer />
     </div>
   );
 }
@@ -432,6 +463,7 @@ export function CareGuide() {
           "{t("tradeoff_quote")}"
         </p>
       </div>
+      <Disclaimer />
     </div>
   );
 }
@@ -460,6 +492,7 @@ export function SustainabilityMetrics() {
           </div>
         ))}
       </div>
+      <Disclaimer />
     </div>
   );
 }
@@ -526,6 +559,14 @@ export function WhatsNext() {
       <p className="font-sans text-[10px] text-clay/60 mt-4 text-center">
         {t("location_note")}
       </p>
+
+      <Card className="mt-4">
+        <Eyebrow>{t("why_brands_participate")}</Eyebrow>
+        <p className="font-sans text-[11px] text-clay leading-relaxed mt-2">
+          {t("brand_incentive_note")}
+        </p>
+      </Card>
+      <Disclaimer />
     </div>
   );
 }
@@ -610,6 +651,12 @@ export function StoryBehindIt() {
           {savedToWardrobe ? t("saved") : t("save_to_wardrobe")}
         </button>
       </div>
+
+      <p className="font-display italic text-[13px] text-clay text-center mt-6">
+        With care,
+        <br />Elizabeth Xu
+      </p>
+      <Disclaimer />
     </div>
   );
 }
@@ -676,6 +723,7 @@ export function Personalization() {
       <p className="font-display italic text-[12px] text-clay text-center mt-auto pt-6">
         {t("closing_line")}
       </p>
+      <Disclaimer />
     </div>
   );
 }
@@ -687,17 +735,30 @@ export function MyWardrobe() {
   const [logging, setLogging] = useState(false);
   const [name, setName] = useState("");
   const [note, setNote] = useState("");
+  const [photo, setPhoto] = useState<string | null>(null);
   const [search, setSearch] = useState("");
   const [dateFilter, setDateFilter] = useState("");
 
+  const handlePhotoSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    try {
+      const compressed = await compressImage(file);
+      setPhoto(compressed);
+    } catch {
+      // ignore — photo is optional, don't block the rest of the form
+    }
+  };
+
   const submitMemory = () => {
     if (!name.trim()) return;
-    const newItem = {
+    const newItem: WardrobeItem = {
       name: name.trim(),
       tag: null,
       worn: "1×",
       note: note.trim() || "Just now",
       loggedAt: new Date().toISOString().slice(0, 10),
+      ...(photo ? { photo } : {}),
     };
     const updated = [...items, newItem];
     setItems(updated);
@@ -705,6 +766,7 @@ export function MyWardrobe() {
     logWardrobeEvent(newItem);
     setName("");
     setNote("");
+    setPhoto(null);
     setLogging(false);
   };
 
@@ -714,7 +776,14 @@ export function MyWardrobe() {
     saveWardrobe(updated);
   };
 
+  const toggleResold = (index: number) => {
+    const updated = items.map((it, i) => (i === index ? { ...it, resold: !it.resold } : it));
+    setItems(updated);
+    saveWardrobe(updated);
+  };
+
   const brandCount = new Set(items.map((it) => it.brand || "Unlabeled")).size;
+  const resoldCount = items.filter((it) => it.resold).length;
 
   const filtered = items
     .map((it, i) => ({ it, i }))
@@ -733,10 +802,10 @@ export function MyWardrobe() {
     <div className="h-full px-5 py-6 fade-up">
       <Eyebrow>{t("my_wardrobe")}</Eyebrow>
       <h2 className="font-display italic text-xl text-ink mt-1 mb-3">
-        {items.length} {t("pieces")} · {brandCount} {t("brands")} · 2 {t("resold")}
+        {items.length} {t("pieces")} · {brandCount} {t("brands")} · {resoldCount} {t("resold")}
       </h2>
       <div className="grid grid-cols-3 gap-2 mb-3">
-        {[[String(items.length), t("items_label")], [String(brandCount), t("brands")], ["2", t("resold")]].map(([v, l]) => (
+        {[[String(items.length), t("items_label")], [String(brandCount), t("brands")], [String(resoldCount), t("resold")]].map(([v, l]) => (
           <div key={l} className="bg-blush-pale/60 rounded-lg py-2.5 text-center">
             <p className="font-display italic text-lg text-blush-deep">{v}</p>
             <p className="text-[9px] font-sans text-clay uppercase tracking-wide">{l}</p>
@@ -787,15 +856,36 @@ export function MyWardrobe() {
           </p>
         ) : (
           filtered.map(({ it, i }) => (
-            <div key={i} className="py-3 flex items-start justify-between gap-2 group">
-              <div>
-                <p className="font-sans text-[13px] font-medium text-ink flex items-center gap-1.5">
+            <div key={i} className="py-3 flex items-start gap-3 group">
+              {it.photo ? (
+                <img
+                  src={it.photo}
+                  alt={it.name}
+                  className="w-12 h-12 rounded-lg object-cover shrink-0 border border-line"
+                />
+              ) : (
+                <div className="w-12 h-12 rounded-lg bg-blush-pale/50 flex items-center justify-center shrink-0">
+                  <Camera size={16} className="text-blush-deep/50" />
+                </div>
+              )}
+              <div className="flex-1 min-w-0">
+                <p className="font-sans text-[13px] font-medium text-ink flex items-center gap-1.5 flex-wrap">
                   {it.name}
                   {it.tag && (
                     <span className="text-[9px] text-sage border border-sage/40 rounded-full px-1.5 py-0.5">
                       {it.tag}
                     </span>
                   )}
+                  <button
+                    onClick={() => toggleResold(i)}
+                    className={`text-[9px] rounded-full px-1.5 py-0.5 border transition-colors ${
+                      it.resold
+                        ? "text-blush-deep border-blush-deep bg-blush-pale/60"
+                        : "text-clay/40 border-line"
+                    }`}
+                  >
+                    {it.resold ? "✓ Resold" : "Mark resold"}
+                  </button>
                 </p>
                 <p className="font-sans text-[11px] text-clay mt-0.5">
                   {t("worn_label")} {it.worn} · {it.note}
@@ -815,6 +905,25 @@ export function MyWardrobe() {
 
       {logging ? (
         <div className="mt-4 border border-line rounded-card px-4 py-3.5 space-y-2.5">
+          <div className="flex items-center gap-3">
+            <label className="w-14 h-14 rounded-lg border border-dashed border-blush flex items-center justify-center shrink-0 cursor-pointer overflow-hidden">
+              {photo ? (
+                <img src={photo} alt="Selected" className="w-full h-full object-cover" />
+              ) : (
+                <Camera size={18} className="text-blush-deep/60" />
+              )}
+              <input
+                type="file"
+                accept="image/*"
+                capture="environment"
+                onChange={handlePhotoSelect}
+                className="hidden"
+              />
+            </label>
+            <p className="font-sans text-[10px] text-clay flex-1">
+              {photo ? "Photo added — tap to change" : "Add a photo (optional)"}
+            </p>
+          </div>
           <input
             value={name}
             onChange={(e) => setName(e.target.value)}
@@ -835,7 +944,7 @@ export function MyWardrobe() {
               {t("save_memory")}
             </button>
             <button
-              onClick={() => { setLogging(false); setName(""); setNote(""); }}
+              onClick={() => { setLogging(false); setName(""); setNote(""); setPhoto(null); }}
               className="px-4 font-sans text-[11px] text-clay"
             >
               {t("cancel")}
@@ -850,6 +959,7 @@ export function MyWardrobe() {
           {t("log_a_memory")}
         </button>
       )}
+      <Disclaimer />
     </div>
   );
 }

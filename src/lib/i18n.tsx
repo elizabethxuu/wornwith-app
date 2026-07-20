@@ -31,14 +31,19 @@ const dict = {
   stored_ledger: { en: "Stored on secure digital ledger", fr: "Stocké sur un registre numérique sécurisé", pt: "Armazenado em registro digital seguro" },
   eu_regulated: { en: "EU Regulated · ESPR 2028–2029", fr: "Réglementé par l'UE · ESPR 2028–2029", pt: "Regulado pela UE · ESPR 2028–2029" },
   demo_disclaimer: {
-    en: "This demo is for illustrative purposes only.",
-    fr: "Cette démo est fournie à titre illustratif uniquement.",
-    pt: "Esta demonstração é apenas para fins ilustrativos.",
+    en: "All data shown is illustrative for demo purposes only.",
+    fr: "Toutes les données affichées sont illustratives, à des fins de démonstration uniquement.",
+    pt: "Todos os dados exibidos são ilustrativos, apenas para fins de demonstração.",
   },
   tap_pin_hint: {
     en: "Tap a stop to learn more · pinch to zoom",
     fr: "Touchez une étape pour en savoir plus · pincez pour zoomer",
     pt: "Toque em uma etapa para saber mais · belisque para ampliar",
+  },
+  rws_explainer: {
+    en: "Responsible Wool Standard — an independent certification verifying the wool came from farms that meet strict animal welfare and land management requirements.",
+    fr: "Responsible Wool Standard — une certification indépendante garantissant que la laine provient de fermes respectant des exigences strictes en matière de bien-être animal et de gestion des terres.",
+    pt: "Responsible Wool Standard — uma certificação independente que garante que a lã veio de fazendas que atendem a rigorosos requisitos de bem-estar animal e gestão da terra.",
   },
   stop_blurb_nz: {
     en: "Where the coat's story begins — wool sheared from sheep raised on open pasture.",
@@ -71,6 +76,7 @@ const dict = {
   made_in: { en: "Made in", fr: "Fabriqué en", pt: "Fabricado em" },
   certified: { en: "Certified", fr: "Certifié", pt: "Certificado" },
   lifespan: { en: "Lifespan", fr: "Durée de vie", pt: "Vida útil" },
+  repairability: { en: "Repairability", fr: "Réparabilité", pt: "Reparabilidade" },
   your_garment: { en: "Your Garment", fr: "Votre Vêtement", pt: "Sua Peça" },
   owned_since: { en: "Owned since", fr: "Possédé depuis", pt: "Adquirido em" },
   owned_since_date: { en: "April 2026", fr: "avril 2026", pt: "abril de 2026" },
@@ -109,6 +115,15 @@ const dict = {
   passed: { en: "Passed", fr: "Réussi", pt: "Aprovado" },
   grade_a: { en: "Grade A", fr: "Note A", pt: "Nota A" },
   audited_by: { en: "Audited by Bureau Veritas · Cert #BV-2025-09871", fr: "Audité par Bureau Veritas · Cert n°BV-2025-09871", pt: "Auditado pela Bureau Veritas · Cert #BV-2025-09871" },
+  chemical_compliance: { en: "Chemical Compliance", fr: "Conformité Chimique", pt: "Conformidade Química" },
+  reach_compliant: { en: "REACH Compliant · No restricted substances detected", fr: "Conforme REACH · Aucune substance restreinte détectée", pt: "Conforme REACH · Nenhuma substância restrita detectada" },
+  economic_operator: { en: "Economic Operator", fr: "Opérateur Économique", pt: "Operador Econômico" },
+  economic_operator_value: { en: "COS AB · Stockholm, Sweden", fr: "COS AB · Stockholm, Suède", pt: "COS AB · Estocolmo, Suécia" },
+  economic_operator_note: {
+    en: "The legal entity responsible for this product's compliance under EU regulation.",
+    fr: "L'entité juridique responsable de la conformité de ce produit selon la réglementation de l'UE.",
+    pt: "A entidade legal responsável pela conformidade deste produto segundo a regulamentação da UE.",
+  },
 
   // Care guide
   designed_years: { en: "Designed for years, not seasons.", fr: "Conçu pour des années, pas des saisons.", pt: "Feito para durar anos, não estações." },
@@ -132,7 +147,7 @@ const dict = {
   // Sustainability
   sustainability: { en: "Sustainability", fr: "Durabilité", pt: "Sustentabilidade" },
   impact_metrics: { en: "Impact Metrics", fr: "Indicateurs d'Impact", pt: "Métricas de Impacto" },
-  vs_avg: { en: "vs 12.1kg avg", fr: "vs 12,1kg en moyenne", pt: "vs 12,1kg média" },
+  vs_avg: { en: "vs 12.1kg avg (similar coats)", fr: "vs 12,1kg moy. (manteaux similaires)", pt: "vs 12,1kg méd. (casacos similares)" },
   recycled_water: { en: "recycled water", fr: "eau recyclée", pt: "água reciclada" },
   recyclability: { en: "Recyclability", fr: "Recyclabilité", pt: "Reciclabilidade" },
   renewable_energy: { en: "Renewable energy", fr: "Énergie renouvelable", pt: "Energia renovável" },
@@ -155,6 +170,12 @@ const dict = {
     en: "Thrift and Repair open a nearby-places search — your browser may ask for location access.",
     fr: "Donner et Réparer ouvrent une recherche à proximité — votre navigateur peut demander l'accès à votre position.",
     pt: "Doar e Consertar abrem uma busca de locais próximos — seu navegador pode pedir acesso à localização.",
+  },
+  why_brands_participate: { en: "Why COS participates", fr: "Pourquoi COS participe", pt: "Por que a COS participa" },
+  brand_incentive_note: {
+    en: "Every resell, repair, or return routed through this passport gives COS a repeat touchpoint with you — and first right of refusal when the garment eventually leaves your closet.",
+    fr: "Chaque revente, réparation ou retour effectué via ce passeport donne à COS un point de contact récurrent avec vous — et la priorité lorsque le vêtement quittera votre garde-robe.",
+    pt: "Cada revenda, reparo ou devolução feito através deste passaporte dá à COS um ponto de contato recorrente com você — e prioridade quando a peça eventualmente sair do seu guarda-roupa.",
   },
 
   // Story
@@ -180,9 +201,9 @@ const dict = {
   make_it_yours: { en: "Make it yours", fr: "Personnalisez-le", pt: "Torne-o seu" },
   when_wear: { en: "When do you think you'll wear this?", fr: "Quand pensez-vous le porter ?", pt: "Quando você acha que vai usar isso?" },
   moment_placeholder: {
-    en: "dinner, autumn, somewhere with candlelight",
-    fr: "un dîner, en automne, à la lueur des bougies",
-    pt: "um jantar, no outono, à luz de velas",
+    en: "Think about a place, date, or time and enter here.",
+    fr: "Pensez à un lieu, une date ou un moment et écrivez-le ici.",
+    pt: "Pense em um lugar, data ou momento e escreva aqui.",
   },
   save_moment: { en: "Save this moment", fr: "Enregistrer ce moment", pt: "Salvar este momento" },
   saved_moments: { en: "Saved moments", fr: "Moments enregistrés", pt: "Momentos salvos" },
