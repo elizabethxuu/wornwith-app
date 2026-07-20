@@ -315,3 +315,51 @@ export function Disclaimer() {
     </p>
   );
 }
+
+export function EmptyState({
+  icon: Icon,
+  eyebrow,
+  title,
+  subtitle,
+  actionLabel,
+  onAction,
+  actionHref,
+  children,
+}: {
+  icon: React.ComponentType<{ size?: number; className?: string; strokeWidth?: number }>;
+  eyebrow: string;
+  title: string;
+  subtitle: string;
+  actionLabel?: string;
+  onAction?: () => void;
+  actionHref?: string;
+  children?: React.ReactNode;
+}) {
+  return (
+    <div className="h-full flex flex-col items-center justify-center text-center px-8 fade-up">
+      <Eyebrow>{eyebrow}</Eyebrow>
+      <div className="w-20 h-20 rounded-full bg-blush-pale flex items-center justify-center my-4">
+        <Icon size={28} className="text-blush-deep" strokeWidth={1.5} />
+      </div>
+      <h2 className="font-display italic text-2xl text-ink mb-2 leading-tight">{title}</h2>
+      <p className="font-sans text-[12px] text-clay leading-relaxed max-w-[240px]">{subtitle}</p>
+      {children}
+      {actionLabel && actionHref && (
+        <a
+          href={actionHref}
+          className="mt-5 bg-ink text-cream font-sans text-[13px] font-semibold px-6 py-3 rounded-full"
+        >
+          {actionLabel}
+        </a>
+      )}
+      {actionLabel && onAction && !actionHref && (
+        <button
+          onClick={onAction}
+          className="mt-5 bg-ink text-cream font-sans text-[13px] font-semibold px-6 py-3 rounded-full"
+        >
+          {actionLabel}
+        </button>
+      )}
+    </div>
+  );
+}

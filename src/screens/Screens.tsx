@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Eyebrow, Donut, Card, JourneyMap, Pill, Disclaimer } from "../components/UI";
+import { Eyebrow, Donut, Card, JourneyMap, Pill, Disclaimer, EmptyState } from "../components/UI";
 import {
   loadMoment,
   saveMoment,
@@ -30,6 +30,7 @@ import {
   Search,
   CalendarDays,
   Camera,
+  MapPinOff,
 } from "lucide-react";
 
 /* 1 — SKELETON LOADER */
@@ -502,6 +503,9 @@ export function SustainabilityMetrics() {
 /* 9 — WHAT'S NEXT */
 export function WhatsNext() {
   const { t } = useLanguage();
+  const [locationQuery, setLocationQuery] = useState<string | null>(null);
+  const [manualLocation, setManualLocation] = useState("");
+
   const options = [
     {
       icon: Repeat,
@@ -515,14 +519,14 @@ export function WhatsNext() {
       title: t("thrift"),
       sub: t("donate_locally"),
       color: "#8FA688",
-      href: "https://www.google.com/maps/search/thrift+store+donation+near+me",
+      searchTerm: "thrift store donation near me",
     },
     {
       icon: Wrench,
       title: t("repair"),
       sub: t("find_tailor"),
       color: "#8A7F76",
-      href: "https://www.google.com/maps/search/tailor+clothing+repair+near+me",
+      searchTerm: "tailor clothing repair near me",
     },
     {
       icon: Recycle,
@@ -532,6 +536,69 @@ export function WhatsNext() {
       href: "https://www.cos.com",
     },
   ];
+
+  const handleLocationAction = (searchTerm: string) => {
+    if (!navigator.geolocation) {
+      setLocationQuery(searchTerm);
+      return;
+    }
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        window.open(
+          `https://www.google.com/maps/search/${encodeURIComponent(searchTerm)}/@${pos.coords.latitude},${pos.coords.longitude},14z`,
+          "_blank"
+        );
+      },
+      () => setLocationQuery(searchTerm),
+      { timeout: 6000 }
+    );
+  };
+
+  const submitManualLocation = () => {
+    if (!locationQuery || !manualLocation.trim()) return;
+    window.open(
+      `https://www.google.com/maps/search/${encodeURIComponent(`${locationQuery} near ${manualLocation}`)}`,
+      "_blank"
+    );
+    setLocationQuery(null);
+    setManualLocation("");
+  };
+
+  if (locationQuery) {
+    return (
+      <EmptyState
+        icon={MapPinOff}
+        eyebrow="Ready to pass it on"
+        title="Location isn't available"
+        subtitle="Enter a city or postcode instead, and we'll find a tailor or donation point nearby."
+      >
+        <div className="flex items-center gap-2 mt-5 w-full max-w-[260px]">
+          <input
+            value={manualLocation}
+            onChange={(e) => setManualLocation(e.target.value)}
+            onKeyDown={(e) => e.key === "Enter" && submitManualLocation()}
+            placeholder="City or postcode"
+            className="flex-1 border border-line rounded-full px-4 py-2.5 font-sans text-[12px] text-ink focus:outline-none focus:border-blush"
+          />
+        </div>
+        <div className="flex gap-3 mt-3">
+          <button
+            onClick={submitManualLocation}
+            className="bg-ink text-cream font-sans text-[12px] font-semibold px-5 py-2.5 rounded-full"
+          >
+            Search
+          </button>
+          <button
+            onClick={() => { setLocationQuery(null); setManualLocation(""); }}
+            className="font-sans text-[12px] text-clay px-2 py-2.5"
+          >
+            Back
+          </button>
+        </div>
+      </EmptyState>
+    );
+  }
+
   return (
     <div className="h-full px-5 py-6 fade-up">
       <h2 className="font-display italic text-2xl text-ink leading-tight">
@@ -539,24 +606,41 @@ export function WhatsNext() {
       </h2>
       <p className="font-sans text-[11px] text-clay mt-1 mb-5">{t("choose_next")}</p>
       <div className="space-y-2.5">
-        {options.map((o) => (
-          <a
-            key={o.title}
-            href={o.href}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="w-full flex items-center gap-3 border border-line rounded-card px-4 py-3 text-left hover:border-blush transition-colors"
-          >
-            <div className="w-9 h-9 rounded-full flex items-center justify-center bg-blush-pale">
-              <o.icon size={16} style={{ color: o.color }} />
-            </div>
-            <div className="flex-1">
-              <p className="font-sans text-[13px] font-medium text-ink">{o.title}</p>
-              <p className="font-sans text-[11px] text-clay">{o.sub}</p>
-            </div>
-            <ChevronLeft size={14} className="rotate-180 text-clay" />
-          </a>
-        ))}
+        {options.map((o) =>
+          o.searchTerm ? (
+            <button
+              key={o.title}
+              onClick={() => handleLocationAction(o.searchTerm)}
+              className="w-full flex items-center gap-3 border border-line rounded-card px-4 py-3 text-left hover:border-blush transition-colors"
+            >
+              <div className="w-9 h-9 rounded-full flex items-center justify-center bg-blush-pale">
+                <o.icon size={16} style={{ color: o.color }} />
+              </div>
+              <div className="flex-1">
+                <p className="font-sans text-[13px] font-medium text-ink">{o.title}</p>
+                <p className="font-sans text-[11px] text-clay">{o.sub}</p>
+              </div>
+              <ChevronLeft size={14} className="rotate-180 text-clay" />
+            </button>
+          ) : (
+            <a
+              key={o.title}
+              href={o.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full flex items-center gap-3 border border-line rounded-card px-4 py-3 text-left hover:border-blush transition-colors"
+            >
+              <div className="w-9 h-9 rounded-full flex items-center justify-center bg-blush-pale">
+                <o.icon size={16} style={{ color: o.color }} />
+              </div>
+              <div className="flex-1">
+                <p className="font-sans text-[13px] font-medium text-ink">{o.title}</p>
+                <p className="font-sans text-[11px] text-clay">{o.sub}</p>
+              </div>
+              <ChevronLeft size={14} className="rotate-180 text-clay" />
+            </a>
+          )
+        )}
       </div>
       <p className="font-sans text-[10px] text-clay/60 mt-4 text-center">
         {t("location_note")}
@@ -794,6 +878,19 @@ export function MyWardrobe() {
     });
 
   const hasActiveFilters = search.trim() !== "" || dateFilter !== "";
+
+  if (items.length === 0) {
+    return (
+      <EmptyState
+        icon={Shirt}
+        eyebrow={t("my_wardrobe")}
+        title="Nothing here yet"
+        subtitle="Scan a tag to add the first piece — and the first memory that comes with it."
+        actionLabel="Scan a tag"
+        actionHref="?mode=tag"
+      />
+    );
+  }
 
   return (
     <div className="h-full px-5 py-6 fade-up">

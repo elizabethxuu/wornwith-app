@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, WifiOff, SearchX } from "lucide-react";
+import { EmptyState } from "./components/UI";
+import { GARMENT } from "./lib/garment";
 import {
   SkeletonLoader,
   Welcome,
@@ -30,13 +32,41 @@ const liveScreens = [
   <MyWardrobe key="wardrobe" />,
 ];
 
+type BootState = "verifying" | "ready" | "offline" | "not-found";
+
+function checkDppId(): boolean {
+  // If the URL carries a dpp param (the way a real scanned tag would), it
+  // must match this garment's actual ID. No param at all (e.g. someone just
+  // typed the bare domain) is treated as valid, since that's the normal
+  // "scanned the physical tag" case for this single-garment demo.
+  const params = new URLSearchParams(window.location.search);
+  const dpp = params.get("dpp");
+  if (!dpp) return true;
+  return dpp === GARMENT.dppId;
+}
+
 export default function LiveApp() {
-  const [booted, setBooted] = useState(false);
+  const [bootState, setBootState] = useState<BootState>("verifying");
   const [index, setIndex] = useState(0);
 
+  const runVerification = () => {
+    setBootState("verifying");
+    setTimeout(() => {
+      if (!navigator.onLine) {
+        setBootState("offline");
+        return;
+      }
+      if (!checkDppId()) {
+        setBootState("not-found");
+        return;
+      }
+      setBootState("ready");
+    }, 1400);
+  };
+
   useEffect(() => {
-    const t = setTimeout(() => setBooted(true), 1400);
-    return () => clearTimeout(t);
+    runVerification();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const goPrev = () => setIndex((i) => Math.max(0, i - 1));
@@ -58,10 +88,40 @@ export default function LiveApp() {
     }
   };
 
-  if (!booted) {
+  if (bootState === "verifying") {
     return (
       <div className="h-[100dvh] w-full bg-paper">
         <SkeletonLoader />
+      </div>
+    );
+  }
+
+  if (bootState === "offline") {
+    return (
+      <div className="h-[100dvh] w-full bg-paper">
+        <EmptyState
+          icon={WifiOff}
+          eyebrow="Connection"
+          title="Couldn't verify this passport"
+          subtitle="Check your connection and try again. The garment's story hasn't gone anywhere."
+          actionLabel="Try again"
+          onAction={runVerification}
+        />
+      </div>
+    );
+  }
+
+  if (bootState === "not-found") {
+    return (
+      <div className="h-[100dvh] w-full bg-paper">
+        <EmptyState
+          icon={SearchX}
+          eyebrow="Digital Product Passport"
+          title="No passport found"
+          subtitle="This code doesn't match a garment we know. Rescan the tag, or check the link."
+          actionLabel="Scan again"
+          actionHref="?mode=tag"
+        />
       </div>
     );
   }

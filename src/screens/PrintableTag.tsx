@@ -1,6 +1,9 @@
 import { useRef } from "react";
 import { QRCodeCanvas } from "qrcode.react";
 import { SITE_URL } from "../lib/config";
+import { GARMENT } from "../lib/garment";
+
+const QR_VALUE = `${SITE_URL}/?dpp=${GARMENT.dppId}`;
 
 export default function PrintableTag() {
   const canvasWrapRef = useRef<HTMLDivElement>(null);
@@ -25,7 +28,7 @@ export default function PrintableTag() {
           Scan this with an iPhone
         </h1>
         <p className="font-sans text-xs text-clay mt-2">
-          This QR points to <span className="text-ink">{SITE_URL}</span>.
+          This QR points to <span className="text-ink">{QR_VALUE}</span>.
           Point the iPhone Camera app at it directly — no app install needed,
           it opens straight into the passport.
         </p>
@@ -36,7 +39,7 @@ export default function PrintableTag() {
         <p className="font-sans text-[11px] tracking-[0.2em] text-clay">COS</p>
         <div ref={canvasWrapRef} className="bg-white p-3 rounded-md">
           <QRCodeCanvas
-            value={SITE_URL}
+            value={QR_VALUE}
             size={160}
             level="M"
             fgColor="#2B2622"
