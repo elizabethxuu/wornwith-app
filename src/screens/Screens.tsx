@@ -32,6 +32,7 @@ import {
   CalendarDays,
   Camera,
   MapPinOff,
+  Heart,
 } from "lucide-react";
 
 /* 1 — SKELETON LOADER */
@@ -150,7 +151,7 @@ export function Welcome() {
           )}
 
           <div className="w-24 h-28 rounded-xl bg-blush-pale flex items-center justify-center">
-            <Shirt size={40} className="text-blush-deep" strokeWidth={1} />
+            <Heart size={40} className="text-blush-deep" strokeWidth={1} fill="#C97A8C" />
           </div>
           <p className="font-sans text-[11px] text-clay tracking-wide">
             {GARMENT.brandSku} &nbsp;✦&nbsp;{" "}
