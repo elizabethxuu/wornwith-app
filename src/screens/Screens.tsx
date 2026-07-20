@@ -832,7 +832,14 @@ export function Personalization() {
                   >
                     {t("reflection_failed")}
                   </button>
-                ) : null}
+                ) : (
+                  <button
+                    onClick={() => generateReflection(m.savedAt, m.text)}
+                    className="font-sans text-[10px] text-clay/60 flex items-center gap-1 mt-1.5"
+                  >
+                    <span className="text-ink">💎</span> {t("generate_reflection")}
+                  </button>
+                )}
               </div>
             ))}
           </div>
