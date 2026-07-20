@@ -140,7 +140,7 @@ export function JourneyMap() {
   const stop = journeyStops[selected];
 
   return (
-    <div className="w-full mb-4">
+    <div className="w-full mb-4" onClick={(e) => e.stopPropagation()}>
       <div className="w-full bg-paper border border-line rounded-card overflow-hidden">
         <ComposableMap
           projection="geoEqualEarth"
