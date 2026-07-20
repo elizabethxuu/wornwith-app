@@ -124,8 +124,8 @@ export function Welcome() {
   }, []);
 
   return (
-    <div className="h-full flex flex-col items-center justify-center px-8 gap-8 text-center fade-up">
-      <div className="w-full flex flex-col items-center gap-8 border-2 border-ink rounded-2xl px-5 py-6">
+    <div className="h-full flex flex-col items-center justify-center px-8 gap-8 text-center fade-up border-2 border-ink box-border">
+      <div className="w-full flex flex-col items-center gap-8 rounded-2xl px-5 py-6">
         <Eyebrow>{t("dpp_eyebrow")}</Eyebrow>
         <div>
           <p className="font-sans text-sm text-clay">{t("welcome_to")}</p>
