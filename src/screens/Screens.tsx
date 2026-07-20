@@ -124,44 +124,46 @@ export function Welcome() {
 
   return (
     <div className="h-full flex flex-col items-center justify-center px-8 gap-8 text-center fade-up">
-      <Eyebrow>{t("dpp_eyebrow")}</Eyebrow>
-      <div>
-        <p className="font-sans text-sm text-clay">{t("welcome_to")}</p>
-        <h1 className="font-display italic text-4xl text-ink mt-1">wornwith.care</h1>
-      </div>
-
-      {!showInfo ? (
-        <button
-          onClick={() => setShowInfo(true)}
-          className="font-sans text-[11px] text-blush-deep underline underline-offset-2 -mt-4"
-        >
-          {t("what_is_this")}
-        </button>
-      ) : (
-        <div className="bg-blush-pale/50 rounded-xl px-4 py-3 -mt-4 fade-up">
-          <p className="font-sans text-[11px] text-ink/80 leading-relaxed text-left">
-            {t("dpp_explainer")}
-          </p>
+      <div className="w-full flex flex-col items-center gap-8 border-2 border-ink rounded-2xl px-5 py-6">
+        <Eyebrow>{t("dpp_eyebrow")}</Eyebrow>
+        <div>
+          <p className="font-sans text-sm text-clay">{t("welcome_to")}</p>
+          <h1 className="font-display italic text-4xl text-ink mt-1">wornwith.care</h1>
         </div>
-      )}
 
-      <div className="w-24 h-28 rounded-xl bg-blush-pale flex items-center justify-center">
-        <Shirt size={40} className="text-blush-deep" strokeWidth={1} />
-      </div>
-      <p className="font-sans text-[11px] text-clay tracking-wide">
-        {GARMENT.brandSku} &nbsp;✦&nbsp;{" "}
-        <button onClick={() => setShowRws(!showRws)} className="underline underline-offset-2">
-          RWS
-        </button>
-        {" "}&nbsp;·&nbsp; DPP-ID: {GARMENT.dppId}
-      </p>
-      {showRws && (
-        <div className="bg-blush-pale/50 rounded-xl px-4 py-3 -mt-4 fade-up">
-          <p className="font-sans text-[11px] text-ink/80 leading-relaxed text-left">
-            {t("rws_explainer")}
-          </p>
+        {!showInfo ? (
+          <button
+            onClick={() => setShowInfo(true)}
+            className="font-sans text-[11px] text-blush-deep underline underline-offset-2 -mt-4"
+          >
+            {t("what_is_this")}
+          </button>
+        ) : (
+          <div className="bg-blush-pale/50 rounded-xl px-4 py-3 -mt-4 fade-up">
+            <p className="font-sans text-[11px] text-ink/80 leading-relaxed text-left">
+              {t("dpp_explainer")}
+            </p>
+          </div>
+        )}
+
+        <div className="w-24 h-28 rounded-xl bg-blush-pale flex items-center justify-center">
+          <Shirt size={40} className="text-blush-deep" strokeWidth={1} />
         </div>
-      )}
+        <p className="font-sans text-[11px] text-clay tracking-wide">
+          {GARMENT.brandSku} &nbsp;✦&nbsp;{" "}
+          <button onClick={() => setShowRws(!showRws)} className="underline underline-offset-2">
+            RWS
+          </button>
+          {" "}&nbsp;·&nbsp; DPP-ID: {GARMENT.dppId}
+        </p>
+        {showRws && (
+          <div className="bg-blush-pale/50 rounded-xl px-4 py-3 -mt-4 fade-up">
+            <p className="font-sans text-[11px] text-ink/80 leading-relaxed text-left">
+              {t("rws_explainer")}
+            </p>
+          </div>
+        )}
+      </div>
       <Card className="w-full text-left">
         <p className="text-[10px] font-sans font-semibold text-sage uppercase tracking-wide mb-1">
           {t("verified_passport")}

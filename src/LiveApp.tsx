@@ -102,9 +102,9 @@ export default function LiveApp() {
           <button
             onClick={goPrev}
             aria-label="Previous"
-            className="w-10 h-10 rounded-full bg-white border border-line shadow-sm flex items-center justify-center"
+            className="w-10 h-10 rounded-full bg-ink shadow-sm flex items-center justify-center"
           >
-            <ChevronLeft size={20} className="text-blush-deep" />
+            <ChevronLeft size={20} className="text-white" />
           </button>
         ) : (
           <div className="w-10 h-10" />
@@ -116,9 +116,9 @@ export default function LiveApp() {
           <button
             onClick={goNext}
             aria-label="Next"
-            className="w-10 h-10 rounded-full bg-white border border-line shadow-sm flex items-center justify-center"
+            className="w-10 h-10 rounded-full bg-ink shadow-sm flex items-center justify-center"
           >
-            <ChevronRight size={20} className="text-blush-deep" />
+            <ChevronRight size={20} className="text-white" />
           </button>
         ) : (
           <div className="w-10 h-10" />
