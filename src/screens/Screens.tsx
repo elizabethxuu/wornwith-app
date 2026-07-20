@@ -651,11 +651,6 @@ export function StoryBehindIt() {
           {savedToWardrobe ? t("saved") : t("save_to_wardrobe")}
         </button>
       </div>
-
-      <p className="font-display italic text-[13px] text-clay text-center mt-6">
-        With care,
-        <br />Elizabeth Xu
-      </p>
       <Disclaimer />
     </div>
   );
@@ -959,6 +954,10 @@ export function MyWardrobe() {
           {t("log_a_memory")}
         </button>
       )}
+      <p className="font-display italic text-[13px] text-clay text-center mt-6">
+        With care,
+        <br />Elizabeth Xu
+      </p>
       <Disclaimer />
     </div>
   );
