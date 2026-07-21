@@ -581,6 +581,22 @@ export function TodaysEdit({ wardrobe }: { wardrobe: WardrobeItem[] }) {
   const timeOfDay = getTimeOfDay();
   const atmosphere = selectAtmosphere(careSeasonForAtmosphere, timeOfDay, weather?.rainLikely ?? false);
   const [interludeState, setInterludeState] = useState<"closed" | "transitioning" | "open">("closed");
+  // The delayed entrance animation on the "Enter the Listening Room"
+  // button should only ever happen once, the very first time someone
+  // encounters it — checked and persisted via localStorage, not a
+  // per-session flag, so it genuinely never repeats on later visits.
+  const [showEntranceHint] = useState<boolean>(() => {
+    try {
+      const seen = localStorage.getItem("wornwith:seenInterludeButton");
+      if (!seen) {
+        localStorage.setItem("wornwith:seenInterludeButton", "1");
+        return true;
+      }
+      return false;
+    } catch {
+      return false;
+    }
+  });
 
   return (
     <div className="mb-7 pb-7 border-b border-line">
@@ -601,17 +617,25 @@ export function TodaysEdit({ wardrobe }: { wardrobe: WardrobeItem[] }) {
 
       {/* Interlude — sits between Recommended Garment and Why This Piece,
           per the required flow. Calm teaser card, no artwork, no player
-          chrome — just the atmosphere title as an invitation. */}
-      <button
-        onClick={() => setInterludeState("transitioning")}
-        className="w-full text-left mt-5 py-4 border-t border-b border-line"
-      >
+          chrome — the atmosphere title as an invitation, with a distinct
+          secondary-style entrance button beneath it. */}
+      <div className="mt-5 py-4 border-t border-b border-line">
         <p className="font-sans text-[10px] uppercase tracking-[0.14em] font-semibold" style={{ color }}>
           {t("interlude_title")}
         </p>
         <p className="font-sans text-[11px] text-clay mt-1">{t("interlude_supporting")}</p>
         <p className="font-display italic text-base text-ink mt-1.5">{atmosphere.title}</p>
-      </button>
+
+        <button
+          onClick={() => setInterludeState("transitioning")}
+          className={`bg-white text-ink font-sans text-[12px] rounded-full px-6 py-2.5 mt-4 border transition-all duration-300 hover:opacity-80 active:scale-95 cursor-pointer ${
+            showEntranceHint ? "fade-up" : ""
+          }`}
+          style={{ borderWidth: "1px", borderColor: color, animationDelay: showEntranceHint ? "800ms" : undefined }}
+        >
+          {t("enter_listening_room")}
+        </button>
+      </div>
 
       {interludeState !== "closed" && (
         <ListeningRoom

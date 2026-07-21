@@ -368,6 +368,7 @@ const dict = {
     fr: "Un accompagnement discret à la recommandation du jour.",
     pt: "Um acompanhamento discreto para a recomendação de hoje.",
   },
+  enter_listening_room: { en: "Enter the Listening Room", fr: "Entrer dans la Salle d'Écoute", pt: "Entrar na Sala de Escuta" },
   listening_room_title: { en: "The Listening Room", fr: "La Salle d'Écoute", pt: "A Sala de Escuta" },
   todays_atmosphere_title: { en: "Today's Atmosphere", fr: "L'Atmosphère du Jour", pt: "A Atmosfera de Hoje" },
   editorial_notes_title: { en: "Editorial Notes", fr: "Notes Éditoriales", pt: "Notas Editoriais" },
