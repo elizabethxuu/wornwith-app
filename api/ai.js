@@ -1,6 +1,6 @@
 import { EDITORIAL_SYSTEM_PROMPT } from "./_lib/editorialVoice.js";
 import { FEATURES } from "./_lib/prompts.js";
-import { generateWithGemini } from "./_lib/geminiClient.js";
+import { generateWithGemini, GEMINI_MODEL } from "./_lib/geminiClient.js";
 
 // Same debugging note as geminiClient.js — unconditional logging for now,
 // while tracking down the 502s. Re-gate to non-production once resolved.
@@ -13,7 +13,7 @@ function respond(res, status, body, start) {
     success: body.success,
     content: body.content ?? null,
     error: body.error ?? null,
-    metadata: body.feature ? { feature: body.feature, model: "gemini-2.0-flash" } : null,
+    metadata: body.feature ? { feature: body.feature, model: GEMINI_MODEL } : null,
     durationMs: Date.now() - start,
   };
   // 5. The exact response sent back to the frontend, logged before it goes out.

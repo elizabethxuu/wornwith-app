@@ -1,6 +1,14 @@
-const GEMINI_MODEL = "gemini-2.0-flash";
+// gemini-2.0-flash was returning "limit: 0" on the free tier — it's no
+// longer part of Google's actively-provisioned free-tier lineup as of
+// 2026. The confirmed free-tier models are 2.5 Pro, 2.5 Flash, and 2.5
+// Flash-Lite; Flash-Lite has the most generous rate limits of the three
+// and is more than sufficient for a one-sentence reflection. Still
+// overridable via GEMINI_MODEL if you want to try a different one.
+const GEMINI_MODEL = process.env.GEMINI_MODEL || "gemini-2.5-flash-lite";
 const TIMEOUT_MS = 12000;
 const MAX_RETRIES = 2;
+
+export { GEMINI_MODEL };
 
 // NOTE: while actively debugging the 502s, this logs unconditionally
 // (not gated to non-production) — Vercel's function logs are the only
