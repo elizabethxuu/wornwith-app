@@ -361,6 +361,20 @@ const dict = {
   alternatives_title: { en: "Also Consider", fr: "À Considérer Aussi", pt: "Considere Também" },
 
   readiness_title: { en: "Garment Readiness", fr: "État de Préparation", pt: "Prontidão da Peça" },
+
+  interlude_title: { en: "Interlude", fr: "Interlude", pt: "Interlúdio" },
+  interlude_supporting: {
+    en: "A quiet accompaniment to today's recommendation.",
+    fr: "Un accompagnement discret à la recommandation du jour.",
+    pt: "Um acompanhamento discreto para a recomendação de hoje.",
+  },
+  listening_room_title: { en: "The Listening Room", fr: "La Salle d'Écoute", pt: "A Sala de Escuta" },
+  todays_atmosphere_title: { en: "Today's Atmosphere", fr: "L'Atmosphère du Jour", pt: "A Atmosfera de Hoje" },
+  editorial_notes_title: { en: "Editorial Notes", fr: "Notes Éditoriales", pt: "Notas Editoriais" },
+  listening_nearby_title: { en: "Listening Nearby", fr: "À Écouter", pt: "Para Ouvir" },
+  reading_nearby_title: { en: "Reading Nearby", fr: "À Lire", pt: "Para Ler" },
+  continue_listening_label: { en: "Continue Listening", fr: "Continuer l'Écoute", pt: "Continuar Ouvindo" },
+  return_to_todays_edit: { en: "Return", fr: "Retour", pt: "Voltar" },
   ready_to_wear: { en: "Ready to wear", fr: "Prêt à porter", pt: "Pronto para usar" },
   estimated_after_wears: { en: "Estimated after {n} additional wears", fr: "Estimé après {n} ports supplémentaires", pt: "Estimado após mais {n} usos" },
 

@@ -5,6 +5,8 @@ import { useLanguage, type TranslationKey } from "../lib/i18n";
 import type { WardrobeItem } from "../lib/persistence";
 import { requestVoice } from "../lib/voice";
 import { useChapterColor } from "../lib/chapterColor";
+import { getCurrentSeason } from "../lib/careRecommendation";
+import { getTimeOfDay, selectAtmosphere, spotifySearchUrl, type Atmosphere } from "../lib/interlude";
 import {
   fetchWeather,
   pickFeaturedItem,
@@ -575,6 +577,11 @@ export function TodaysEdit({ wardrobe }: { wardrobe: WardrobeItem[] }) {
 
   const briefingText = [t(observationKey as TranslationKey), itemName + ".", t(reasoningKey as TranslationKey)].join(" ");
 
+  const careSeasonForAtmosphere = getCurrentSeason();
+  const timeOfDay = getTimeOfDay();
+  const atmosphere = selectAtmosphere(careSeasonForAtmosphere, timeOfDay, weather?.rainLikely ?? false);
+  const [interludeState, setInterludeState] = useState<"closed" | "transitioning" | "open">("closed");
+
   return (
     <div className="mb-7 pb-7 border-b border-line">
       <Eyebrow>{t("todays_edit_title")}</Eyebrow>
@@ -591,6 +598,30 @@ export function TodaysEdit({ wardrobe }: { wardrobe: WardrobeItem[] }) {
       <p className="font-sans text-[12px] text-ink/80 leading-relaxed mt-1">
         {t(reasoningKey as TranslationKey)}
       </p>
+
+      {/* Interlude — sits between Recommended Garment and Why This Piece,
+          per the required flow. Calm teaser card, no artwork, no player
+          chrome — just the atmosphere title as an invitation. */}
+      <button
+        onClick={() => setInterludeState("transitioning")}
+        className="w-full text-left mt-5 py-4 border-t border-b border-line"
+      >
+        <p className="font-sans text-[10px] uppercase tracking-[0.14em] font-semibold" style={{ color }}>
+          {t("interlude_title")}
+        </p>
+        <p className="font-sans text-[11px] text-clay mt-1">{t("interlude_supporting")}</p>
+        <p className="font-display italic text-base text-ink mt-1.5">{atmosphere.title}</p>
+      </button>
+
+      {interludeState !== "closed" && (
+        <ListeningRoom
+          atmosphere={atmosphere}
+          transitioning={interludeState === "transitioning"}
+          onTransitionDone={() => setInterludeState("open")}
+          onClose={() => setInterludeState("closed")}
+          accentColor={color}
+        />
+      )}
 
       {/* Weather Summary — simplified, no raw metrics */}
       <div className="mt-5">
@@ -745,5 +776,119 @@ export function VoicePlayer({
       )}
       {state === "playing" ? stopLabel : listenLabel}
     </button>
+  );
+}
+
+// The immersive full-screen "room" — covers the app chrome entirely
+// (progress bar, nav arrows included) for the "entering a quiet space"
+// feel the brief asks for. Two phases: a brief white-space transition
+// showing only INTERLUDE + the atmosphere title, then a staggered reveal
+// of the room's sections. No spring animation, no parallax — opacity and
+// small vertical offsets only.
+export function ListeningRoom({
+  atmosphere,
+  transitioning,
+  onTransitionDone,
+  onClose,
+  accentColor,
+}: {
+  atmosphere: Atmosphere;
+  transitioning: boolean;
+  onTransitionDone: () => void;
+  onClose: () => void;
+  accentColor: string;
+}) {
+  const { t } = useLanguage();
+
+  useEffect(() => {
+    if (!transitioning) return;
+    const timer = setTimeout(onTransitionDone, 1100);
+    return () => clearTimeout(timer);
+  }, [transitioning, onTransitionDone]);
+
+  return (
+    <div className="fixed inset-0 z-50 bg-cream overflow-y-auto visible-scrollbar">
+      {transitioning ? (
+        <div className="h-full flex flex-col items-center justify-center px-8">
+          <p
+            className="font-sans text-[10px] uppercase tracking-[0.25em] font-semibold fade-up"
+            style={{ color: accentColor }}
+          >
+            {t("interlude_title")}
+          </p>
+          <p
+            className="font-display italic text-2xl text-ink mt-3 fade-up text-center"
+            style={{ animationDelay: "300ms" }}
+          >
+            {atmosphere.title}
+          </p>
+        </div>
+      ) : (
+        <div className="min-h-full px-6 py-10 max-w-md mx-auto">
+          <button
+            onClick={onClose}
+            className="font-sans text-[11px] text-clay mb-8"
+          >
+            ← {t("return_to_todays_edit")}
+          </button>
+
+          <div className="fade-up">
+            <p className="font-sans text-[10px] uppercase tracking-[0.14em] font-semibold" style={{ color: accentColor }}>
+              {t("todays_atmosphere_title")}
+            </p>
+            <p className="font-display italic text-3xl text-ink mt-2">{atmosphere.title}</p>
+          </div>
+
+          <div className="fade-up mt-10" style={{ animationDelay: "150ms" }}>
+            <p className="font-sans text-[10px] uppercase tracking-[0.14em] font-semibold text-clay mb-3">
+              {t("editorial_notes_title")}
+            </p>
+            {atmosphere.description.map((line, i) => (
+              <p key={i} className="font-display italic text-[15px] text-ink leading-loose">
+                {line}
+              </p>
+            ))}
+          </div>
+
+          <div className="fade-up mt-10" style={{ animationDelay: "300ms" }}>
+            <p className="font-sans text-[10px] uppercase tracking-[0.14em] font-semibold text-clay mb-3">
+              {t("listening_nearby_title")}
+            </p>
+            <div className="space-y-1.5">
+              {atmosphere.artists.map((artist) => (
+                <p key={artist} className="font-sans text-[13px] text-ink">{artist}</p>
+              ))}
+            </div>
+          </div>
+
+          <div className="fade-up mt-10" style={{ animationDelay: "450ms" }}>
+            <p className="font-sans text-[10px] uppercase tracking-[0.14em] font-semibold text-clay mb-3">
+              {t("reading_nearby_title")}
+            </p>
+            <div className="space-y-4">
+              {atmosphere.reading.map((book) => (
+                <div key={book.title}>
+                  <p className="font-sans text-[13px] text-ink font-medium">{book.author}</p>
+                  <p className="font-display italic text-[13px] text-ink/80">{book.title}</p>
+                  <p className="font-sans text-[11px] text-clay mt-0.5">{book.note}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="fade-up mt-10" style={{ animationDelay: "600ms" }}>
+            <a
+              href={spotifySearchUrl(atmosphere)}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-block border border-line rounded-full px-5 py-2.5 font-sans text-[12px] text-ink"
+              style={{ borderColor: accentColor }}
+            >
+              {t("continue_listening_label")}
+            </a>
+          </div>
+        </div>
+      )}
+    </div>
   );
 }
