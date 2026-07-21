@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Eyebrow, Donut, Card, JourneyMap, Pill, Disclaimer, EmptyState, ExpandableCard, ArchiveTransition, ArchiveTimeline, type ArchiveEntry, TodaysEdit, CareRitualRow, type CareRitual } from "../components/UI";
+import { Eyebrow, Donut, Card, JourneyMap, Pill, Disclaimer, EmptyState, ExpandableCard, ArchiveTransition, ArchiveTimeline, type ArchiveEntry, TodaysEdit, CareRitualRow, type CareRitual, useEditorialReveal } from "../components/UI";
 import { ChapterColorProvider, ARCHIVE_ACCENT_COLOR, useChapterColor } from "../lib/chapterColor";
 import { generateAI } from "../lib/aiService";
 import {
@@ -229,6 +229,9 @@ export function Welcome() {
 export function ProductOverview() {
   const { t } = useLanguage();
   const [imgError, setImgError] = useState(false);
+  const { ref: editorialRef, visible: editorialVisible, stepStyle: editorialStep } = useEditorialReveal(
+    "wornwith:craftedRevealPlayed"
+  );
   const rows = [
     [t("material"), t("material_value")],
     [t("made_in"), t("made_in_value")],
@@ -274,40 +277,61 @@ export function ProductOverview() {
         {t("tagline_coat")}
       </p>
 
-      {/* Editorial feature panel — a quiet interlude between the hero
-          image and the spec table, not a promotional card. Kept to a
-          fixed max-height so it reads as a compact editorial strip rather
-          than a boxed-in banner. */}
-      <div
-        className="flex items-start gap-4 px-4 py-3.5 mb-4 rounded-lg"
-        style={{ backgroundColor: "#FCF5F6", minHeight: "90px" }}
+      {/* Static editorial heading — never animates, always visible */}
+      <p
+        className="font-sans text-[13px] uppercase font-medium mb-2"
+        style={{ color: "#8E3D52", letterSpacing: "0.20em" }}
       >
-        <div className="flex-1 min-w-0">
+        {t("product_editorial_label")}
+      </p>
+      <div style={{ borderTop: "1px solid rgba(142,61,82,0.18)" }} className="mb-5" />
+
+      {/* The animated reveal — soft blush background fades in first, then
+          the title, then each supporting-copy fragment staggers in, then
+          the CTA. Full sequence plays once per session; after that,
+          re-entering the viewport is just a quick simple fade. */}
+      <div ref={editorialRef} className="relative mb-4 rounded-lg overflow-hidden">
+        <div
+          className="absolute inset-0"
+          style={{
+            backgroundColor: "#FCF5F6",
+            opacity: editorialVisible ? 1 : 0,
+            transition: "opacity 350ms ease-out",
+          }}
+        />
+        <div className="relative px-4 py-4">
           <p
-            className="font-sans text-[9px] uppercase tracking-[0.16em] font-semibold"
-            style={{ color: "#8E3D52" }}
-          >
-            {t("product_editorial_label")}
-          </p>
-          <p
-            className="font-display italic text-[15px] leading-snug mt-1"
-            style={{ color: "#8E3D52" }}
+            className="font-display italic text-[16px] leading-snug"
+            style={{ color: "#8E3D52", ...editorialStep("translateY(8px)", 350, 400) }}
           >
             {t("product_editorial_headline")}
           </p>
-          <p className="font-sans text-[9px] text-clay leading-relaxed mt-1.5">
-            {t("product_editorial_copy")}
+
+          <div className="mt-2.5 space-y-0.5">
+            <p className="font-sans text-[10px] text-clay leading-relaxed" style={editorialStep("translateY(4px)", 750, 350)}>
+              {t("product_editorial_copy_1")}
+            </p>
+            <p className="font-sans text-[10px] text-clay leading-relaxed" style={editorialStep("translateY(4px)", 870, 350)}>
+              {t("product_editorial_copy_2")}
+            </p>
+            <p className="font-sans text-[10px] text-clay leading-relaxed" style={editorialStep("translateY(4px)", 990, 350)}>
+              {t("product_editorial_copy_3")}
+            </p>
+          </div>
+
+          {/* Plain text, not a button — tapping it falls through to the
+              screen's existing forward-navigation tap zone, so it's
+              genuinely functional without any new navigation wiring. */}
+          <p
+            className="group inline-flex items-center gap-1 font-sans text-[10px] font-medium mt-2.5 cursor-pointer"
+            style={{ color: "#8E3D52", ...editorialStep("translateX(-5px)", 1150, 300) }}
+          >
+            <span className="group-hover:underline underline-offset-2 transition-colors group-hover:text-[#7A2F42]">
+              {t("product_editorial_cta")}
+            </span>
+            <span className="inline-block transition-transform duration-200 group-hover:translate-x-[3px]">→</span>
           </p>
         </div>
-        {/* Plain text, not a button — tapping it falls through to the
-            screen's existing forward-navigation tap zone, so it's
-            genuinely functional without any new navigation wiring. */}
-        <p
-          className="font-sans text-[10px] font-medium whitespace-nowrap shrink-0 cursor-pointer"
-          style={{ color: "#8E3D52" }}
-        >
-          {t("product_editorial_cta")} →
-        </p>
       </div>
 
       <div className="divide-y divide-line border-y border-line">

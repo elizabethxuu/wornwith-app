@@ -1030,3 +1030,89 @@ export function CareRitualRow({ ritual }: { ritual: CareRitual }) {
     </div>
   );
 }
+
+// Drives the "Crafted to Last" style editorial reveal: full staggered
+// entrance the first time the section enters the viewport in this
+// session, a quick simple fade on every re-entry after that, and no
+// animation at all for prefers-reduced-motion. Session-scoped (not
+// permanent) since the brief specifically says "during a session."
+export function useEditorialReveal(sessionKey: string) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [visible, setVisible] = useState(false);
+  const [firstReveal, setFirstReveal] = useState(true);
+  const playedRef = useRef(false);
+  const reducedMotionRef = useRef(false);
+
+  useEffect(() => {
+    reducedMotionRef.current =
+      typeof window !== "undefined" &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    try {
+      playedRef.current = sessionStorage.getItem(sessionKey) === "1";
+    } catch {
+      // ignore
+    }
+
+    if (reducedMotionRef.current) {
+      setVisible(true);
+      setFirstReveal(false);
+      return;
+    }
+
+    const el = ref.current;
+    if (!el) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          const isFirst = !playedRef.current;
+          setFirstReveal(isFirst);
+          if (isFirst) {
+            playedRef.current = true;
+            try {
+              sessionStorage.setItem(sessionKey, "1");
+            } catch {
+              // ignore
+            }
+          }
+          setVisible(true);
+        } else {
+          setVisible(false);
+        }
+      },
+      { threshold: 0.15 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Builds the opacity/transform/transition style for one element in the
+  // sequence. On the very first reveal, elements slide in with their own
+  // delay; on every later re-entry, everything just does one quick,
+  // uniform 150ms opacity fade with no movement.
+  const stepStyle = (
+    translateFrom: string,
+    delayMs: number,
+    durationMs: number
+  ): React.CSSProperties => {
+    if (reducedMotionRef.current) {
+      return { opacity: 1, transform: "none" };
+    }
+    if (!firstReveal) {
+      return {
+        opacity: visible ? 1 : 0,
+        transform: "none",
+        transition: "opacity 150ms ease-out",
+      };
+    }
+    return {
+      opacity: visible ? 1 : 0,
+      transform: visible ? "translate(0,0)" : translateFrom,
+      transition: `opacity ${durationMs}ms ease-out ${delayMs}ms, transform ${durationMs}ms ease-out ${delayMs}ms`,
+    };
+  };
+
+  return { ref, visible, firstReveal, stepStyle };
+}

@@ -80,10 +80,20 @@ const dict = {
     fr: "Ce manteau a été conçu pour faire partie de votre vie — pas seulement de votre garde-robe.",
     pt: "Este casaco foi feito para fazer parte da sua vida — não apenas do seu guarda-roupa.",
   },
-  product_editorial_copy: {
-    en: "A timeless wool silhouette made from 70% recycled fibres, crafted in Portugal using Italian-spun wool, and designed to be repaired rather than replaced.",
-    fr: "Une silhouette intemporelle en laine composée à 70% de fibres recyclées, confectionnée au Portugal à partir de laine filée en Italie, conçue pour être réparée plutôt que remplacée.",
-    pt: "Uma silhueta atemporal em lã feita com 70% de fibras recicladas, confeccionada em Portugal com lã fiada na Itália, feita para ser reparada em vez de substituída.",
+  product_editorial_copy_1: {
+    en: "A timeless wool silhouette made from 70% recycled fibres,",
+    fr: "Une silhouette intemporelle en laine composée à 70% de fibres recyclées,",
+    pt: "Uma silhueta atemporal em lã feita com 70% de fibras recicladas,",
+  },
+  product_editorial_copy_2: {
+    en: "crafted in Portugal using Italian-spun wool,",
+    fr: "confectionnée au Portugal à partir de laine filée en Italie,",
+    pt: "confeccionada em Portugal com lã fiada na Itália,",
+  },
+  product_editorial_copy_3: {
+    en: "and designed to be repaired rather than replaced.",
+    fr: "conçue pour être réparée plutôt que remplacée.",
+    pt: "feita para ser reparada em vez de substituída.",
   },
   product_editorial_cta: { en: "Explore its journey", fr: "Découvrir son parcours", pt: "Explorar sua jornada" },
   material: { en: "Material", fr: "Matériau", pt: "Material" },
