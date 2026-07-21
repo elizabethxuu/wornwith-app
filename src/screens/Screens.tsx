@@ -504,6 +504,29 @@ export function SustainabilityMetrics() {
           </div>
         ))}
       </div>
+
+      <div className="mt-6 pt-5 border-t border-blush/30">
+        <p className="font-display italic text-lg text-ink mb-2">{t("env_performance_title")}</p>
+        <p className="font-sans text-[12px] text-clay leading-relaxed mb-3">
+          {t("env_performance_body")}
+        </p>
+        <ul className="space-y-1.5">
+          {[
+            t("env_bullet_co2"),
+            t("env_bullet_water"),
+            t("env_bullet_sourcing"),
+            t("env_bullet_lifespan"),
+            t("env_bullet_repair"),
+          ].map((line) => (
+            <li key={line} className="flex items-start gap-2 font-sans text-[12px] text-ink/80">
+              <span className="mt-0.5 shrink-0">🌐</span>
+              <span>{line}</span>
+            </li>
+          ))}
+        </ul>
+        <div className="mt-4 border-t border-blush/30" />
+      </div>
+
       <Disclaimer />
     </div>
   );

@@ -175,6 +175,17 @@ const dict = {
   co2_saved: { en: "CO₂ saved", fr: "CO₂ économisé", pt: "CO₂ economizado" },
   water_saved: { en: "water saved", fr: "eau économisée", pt: "água economizada" },
   top_10: { en: "of brands", fr: "des marques", pt: "das marcas" },
+  env_performance_title: { en: "Environmental Performance", fr: "Performance Environnementale", pt: "Desempenho Ambiental" },
+  env_performance_body: {
+    en: "Designed to outperform most comparable wool coats across environmental and durability measures, this coat ranks among the top 10% for environmental performance.",
+    fr: "Conçu pour surpasser la plupart des manteaux en laine comparables en matière d'impact environnemental et de durabilité, ce manteau se classe parmi les 10% les plus performants sur le plan environnemental.",
+    pt: "Projetado para superar a maioria dos casacos de lã comparáveis em medidas ambientais e de durabilidade, este casaco está entre os 10% melhores em desempenho ambiental.",
+  },
+  env_bullet_co2: { en: "7.9 kg CO₂ avoided", fr: "7,9 kg de CO₂ évités", pt: "7,9 kg de CO₂ evitados" },
+  env_bullet_water: { en: "2,400 L water saved", fr: "2 400 L d'eau économisée", pt: "2.400 L de água economizada" },
+  env_bullet_sourcing: { en: "100% ethically sourced wool", fr: "100% de laine issue de sources éthiques", pt: "100% de lã de origem ética" },
+  env_bullet_lifespan: { en: "Built for an expected lifespan of 8–10 years", fr: "Conçu pour une durée de vie prévue de 8 à 10 ans", pt: "Feito para uma vida útil prevista de 8–10 anos" },
+  env_bullet_repair: { en: "Repairability score: 8.5/10", fr: "Score de réparabilité : 8,5/10", pt: "Pontuação de reparabilidade: 8,5/10" },
 
   // What's next
   ready_pass_on: { en: "Ready to pass it on?", fr: "Prêt à le transmettre ?", pt: "Pronto para repassar?" },
