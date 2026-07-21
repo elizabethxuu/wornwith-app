@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Eyebrow, Donut, Card, JourneyMap, Pill, Disclaimer, EmptyState, ExpandableCard, ArchiveTransition, ArchiveTimeline, type ArchiveEntry, TodaysEdit } from "../components/UI";
 import { ChapterColorProvider, ARCHIVE_ACCENT_COLOR } from "../lib/chapterColor";
+import { generateAI } from "../lib/aiService";
 import {
   loadMoment,
   saveMoment,
@@ -801,25 +802,57 @@ export function Personalization() {
   const [view, setView] = useState<"compose" | "transitioning" | "archive">(
     () => (loadMoments().length > 0 ? "archive" : "compose")
   );
+  const [curatorsNotes, setCuratorsNotes] = useState<string | null>(null);
 
-  const generateReflection = (savedAt: string, momentText: string) => {
+  // Curator's Notes: real generation, but cached for the day so opening
+  // this screen repeatedly doesn't re-call the API every time. Falls back
+  // silently to the static editorial copy if generation fails — this
+  // section is never blank and never stuck loading.
+  useEffect(() => {
+    if (view !== "archive") return;
+    const cacheKey = "wornwith:curatorsNotes";
+    const todayKey = new Date().toISOString().slice(0, 10);
+    try {
+      const cached = JSON.parse(localStorage.getItem(cacheKey) || "null");
+      if (cached && cached.date === todayKey && cached.text) {
+        setCuratorsNotes(cached.text);
+        return;
+      }
+    } catch {
+      // ignore malformed cache, just regenerate
+    }
+    generateAI("curatorsNotes", {
+      garmentName: GARMENT.name,
+      ownedSince: "April 2026",
+      timesWorn: "18",
+      condition: "excellent",
+      yearsRemaining: getEstimatedYearsRemaining(),
+    }).then((result) => {
+      if (result.success && result.content) {
+        setCuratorsNotes(result.content);
+        try {
+          localStorage.setItem(cacheKey, JSON.stringify({ date: todayKey, text: result.content }));
+        } catch {
+          // storage full or unavailable — not worth failing over
+        }
+      }
+      // On failure, curatorsNotes stays null and the static fallback copy
+      // renders instead — no error state needed for this one, since the
+      // static copy is a genuinely good fallback, not a degraded one.
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [view]);
+
+  const generateReflection = async (savedAt: string, momentText: string) => {
     setGenerating((g) => ({ ...g, [savedAt]: true }));
     setFailed((f) => ({ ...f, [savedAt]: false }));
-    fetch("/api/summarize", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ text: momentText }),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.summary) {
-          setMoments(updateMomentSummary(savedAt, data.summary));
-        } else {
-          setFailed((f) => ({ ...f, [savedAt]: true }));
-        }
-      })
-      .catch(() => setFailed((f) => ({ ...f, [savedAt]: true })))
-      .finally(() => setGenerating((g) => ({ ...g, [savedAt]: false })));
+    const result = await generateAI("reflection", { momentText });
+    if (result.success && result.content) {
+      setMoments(updateMomentSummary(savedAt, result.content));
+    } else {
+      setFailed((f) => ({ ...f, [savedAt]: true }));
+    }
+    setGenerating((g) => ({ ...g, [savedAt]: false }));
   };
 
   const handleSave = () => {
@@ -907,13 +940,17 @@ export function Personalization() {
           </div>
         </ChapterColorProvider>
 
-        {/* Curator's Notes — deliberately no card, generous white space */}
+        {/* Curator's Notes — deliberately no card, generous white space.
+            Real AI generation, cached once per day so it doesn't
+            regenerate on every visit, with a graceful fallback to static
+            editorial copy if generation fails or hasn't loaded yet — this
+            section should never be blank or stuck loading. */}
         <div className="mb-8 py-2 fade-up" style={{ animationDelay: "650ms" }}>
           <p className="font-sans text-[10px] uppercase tracking-[0.14em] font-semibold text-blush-deep mb-3">
             {t("curators_notes_title")}
           </p>
           <p className="font-display italic text-[15px] text-ink leading-loose">
-            {t("curators_notes_body")}
+            {curatorsNotes || t("curators_notes_body")}
           </p>
         </div>
 
