@@ -421,23 +421,45 @@ export type LifecycleEntry = { year: string; event: string };
 export function LifecycleTimeline({
   title,
   entries,
+  projectedLabel,
 }: {
   title: string;
   entries: LifecycleEntry[];
+  projectedLabel?: string;
 }) {
+  const currentYear = new Date().getFullYear();
   return (
     <div className="mt-6">
       <Eyebrow>{title}</Eyebrow>
       <div className="relative pl-5 mt-3">
         <div className="absolute left-[5px] top-1 bottom-1 w-px bg-line" />
         <div className="space-y-4">
-          {entries.map((e, i) => (
-            <div key={i} className="relative">
-              <div className="absolute -left-5 top-[3px] w-2.5 h-2.5 rounded-full bg-blush-deep border-2 border-paper" />
-              <p className="font-display italic text-sm text-blush-deep leading-none">{e.year}</p>
-              <p className="font-sans text-[12px] text-ink mt-0.5">{e.event}</p>
-            </div>
-          ))}
+          {entries.map((e, i) => {
+            const isFuture = Number(e.year) > currentYear;
+            return (
+              <div key={i} className="relative">
+                <div
+                  className={`absolute -left-5 top-[3px] w-2.5 h-2.5 rounded-full border-2 border-paper ${
+                    isFuture ? "bg-paper border-blush" : "bg-blush-deep"
+                  }`}
+                  style={isFuture ? { boxShadow: "inset 0 0 0 1.5px #C97A8C" } : undefined}
+                />
+                <p
+                  className={`font-display italic text-sm leading-none ${
+                    isFuture ? "text-clay" : "text-blush-deep"
+                  }`}
+                >
+                  {e.year}
+                </p>
+                <p className={`font-sans text-[12px] mt-0.5 ${isFuture ? "text-clay" : "text-ink"}`}>
+                  {e.event}
+                  {isFuture && projectedLabel && (
+                    <span className="text-[9px] text-clay/80 ml-1.5">· {projectedLabel}</span>
+                  )}
+                </p>
+              </div>
+            );
+          })}
         </div>
       </div>
     </div>

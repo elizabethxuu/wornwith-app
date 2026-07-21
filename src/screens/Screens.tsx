@@ -15,7 +15,7 @@ import {
   logWardrobeEvent,
   compressImage,
 } from "../lib/persistence";
-import { GARMENT } from "../lib/garment";
+import { GARMENT, getEstimatedYearsRemaining } from "../lib/garment";
 import { useLanguage } from "../lib/i18n";
 import {
   QrCode,
@@ -856,9 +856,9 @@ export function Personalization() {
       <textarea
         value={text}
         onChange={(e) => setText(e.target.value)}
-        rows={2}
+        rows={3}
         placeholder={t("moment_placeholder")}
-        className="w-full border border-line rounded-xl px-3 py-2.5 font-display italic text-[14px] text-ink resize-none focus:outline-none focus:border-blush"
+        className="w-full border border-line rounded-xl px-3.5 py-3 font-display italic text-[14px] leading-relaxed text-ink resize-none focus:outline-none focus:border-blush"
       />
       <button
         onClick={handleSave}
@@ -914,12 +914,13 @@ export function Personalization() {
           <div className="flex justify-between"><span className="text-clay">{t("owned_since")}</span><span className="text-ink">{t("owned_since_date")}</span></div>
           <div className="flex justify-between"><span className="text-clay">{t("times_worn")}</span><span className="text-ink">~18</span></div>
           <div className="flex justify-between"><span className="text-clay">{t("condition")}</span><span className="text-sage">{t("excellent")}</span></div>
-          <div className="flex justify-between"><span className="text-clay">{t("est_lifespan")}</span><span className="text-ink">{t("est_lifespan_value")} ✦</span></div>
+          <div className="flex justify-between"><span className="text-clay">{t("est_lifespan")}</span><span className="text-ink">{getEstimatedYearsRemaining()} {t("years_word")} ✦</span></div>
         </div>
       </div>
 
       <LifecycleTimeline
         title={t("garment_lifecycle_title")}
+        projectedLabel={t("lifecycle_projected")}
         entries={[
           { year: "2026", event: t("lifecycle_2026") },
           { year: "2027", event: t("lifecycle_2027") },

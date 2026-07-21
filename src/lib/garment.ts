@@ -17,10 +17,22 @@ export const GARMENT = {
   certified: "RWS · GOTS",
   lifespan: "8–10 years",
   ownedSince: "April 2026",
+  ownedSinceDate: new Date(2026, 3, 1), // real date, used to compute est. lifespan automatically
+  lifespanYearsMin: 8,
+  lifespanYearsMax: 10,
   timesWorn: "~18",
   condition: "Excellent",
   estLifespan: "6+ years",
   verifiedDate: "April 2026",
 };
+
+// Computes "X+ years" remaining automatically from today's date instead of
+// a hardcoded string — updates on its own as time passes, no manual edits.
+export function getEstimatedYearsRemaining(): string {
+  const msPerYear = 1000 * 60 * 60 * 24 * 365.25;
+  const yearsOwned = (Date.now() - GARMENT.ownedSinceDate.getTime()) / msPerYear;
+  const remaining = Math.max(1, Math.round(GARMENT.lifespanYearsMin - yearsOwned));
+  return `${remaining}+`;
+}
 
 export type Garment = typeof GARMENT;

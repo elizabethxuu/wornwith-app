@@ -230,6 +230,8 @@ const dict = {
   lifecycle_2031: { en: "Professionally re-dyed", fr: "Reteinture professionnelle", pt: "Retingido profissionalmente" },
   lifecycle_2034: { en: "Still in active use", fr: "Toujours porté régulièrement", pt: "Ainda em uso ativo" },
   lifecycle_2038: { en: "Returned for recycling", fr: "Retourné pour recyclage", pt: "Devolvido para reciclagem" },
+  lifecycle_projected: { en: "projected", fr: "projeté", pt: "projetado" },
+  years_word: { en: "years", fr: "ans", pt: "anos" },
 
   // What's next
   ready_pass_on: { en: "Ready to pass it on?", fr: "Prêt à le transmettre ?", pt: "Pronto para repassar?" },
