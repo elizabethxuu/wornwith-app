@@ -21,6 +21,7 @@ import {
   QrCode,
   Check,
   ChevronLeft,
+  ChevronRight,
   Sparkles,
   ShoppingBag,
   Shirt,
@@ -483,6 +484,7 @@ export function CareGuide() {
 /* 8 — SUSTAINABILITY METRICS */
 export function SustainabilityMetrics() {
   const { t } = useLanguage();
+  const [showEnvDetails, setShowEnvDetails] = useState(false);
   return (
     <div className="h-full px-5 py-6 fade-up">
       <Eyebrow>{t("sustainability")}</Eyebrow>
@@ -506,24 +508,41 @@ export function SustainabilityMetrics() {
       </div>
 
       <div className="mt-6 pt-5 border-t border-blush/30">
-        <p className="font-display italic text-lg text-ink mb-2">{t("env_performance_title")}</p>
-        <p className="font-sans text-[12px] text-clay leading-relaxed mb-3">
-          {t("env_performance_body")}
-        </p>
-        <ul className="space-y-1.5">
-          {[
-            t("env_bullet_co2"),
-            t("env_bullet_water"),
-            t("env_bullet_sourcing"),
-            t("env_bullet_lifespan"),
-            t("env_bullet_repair"),
-          ].map((line) => (
-            <li key={line} className="flex items-start gap-2 font-sans text-[12px] text-ink/80">
-              <span className="mt-0.5 shrink-0">🌐</span>
-              <span>{line}</span>
-            </li>
-          ))}
-        </ul>
+        <button
+          onClick={() => setShowEnvDetails(!showEnvDetails)}
+          className="w-full flex items-center justify-between"
+        >
+          <p className="font-display italic text-lg text-ink">{t("env_performance_title")}</p>
+          <ChevronRight
+            size={16}
+            className="text-blush-deep transition-transform"
+            style={{ transform: showEnvDetails ? "rotate(90deg)" : "rotate(0deg)" }}
+          />
+        </button>
+
+        {showEnvDetails && (
+          <div className="fade-up mt-2">
+            <p className="font-sans text-[12px] text-clay leading-relaxed mb-3">
+              {t("env_performance_body")}
+            </p>
+            <ul className="space-y-1.5">
+              {[
+                [t("env_bullet_co2_value"), t("env_bullet_co2_label")],
+                [t("env_bullet_water_value"), t("env_bullet_water_label")],
+                [t("env_bullet_sourcing_value"), t("env_bullet_sourcing_label")],
+                [t("env_bullet_lifespan_value"), t("env_bullet_lifespan_label")],
+                [t("env_bullet_repair_value"), t("env_bullet_repair_label")],
+              ].map(([value, label]) => (
+                <li key={label} className="flex items-start gap-2 font-sans text-[12px] text-ink/80">
+                  <span className="mt-0.5 shrink-0">🌐</span>
+                  <span>
+                    <span className="font-semibold text-ink">{value}</span> {label}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
         <div className="mt-4 border-t border-blush/30" />
       </div>
 
