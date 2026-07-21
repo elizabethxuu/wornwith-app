@@ -883,7 +883,7 @@ export function StoryBehindIt() {
         <p className="font-sans text-[12px] text-clay leading-relaxed mt-3">
           {t("story_p2")}
         </p>
-        <p className="font-display italic text-[13px] mt-3" style={{ color: "#6E8595" }}>
+        <p className="font-display italic text-[13px] text-ink mt-3">
           {t("crafted_to_last")}
         </p>
       </Card>

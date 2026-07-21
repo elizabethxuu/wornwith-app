@@ -16,7 +16,7 @@ export const CHAPTER_COLORS: string[] = [
   "#6E7E5C", // 4 Care Guide — Olive
   "#8A9F7A", // 5 Sustainability Metrics — Impact / Environmental Performance — Sage
   "#5E7B5E", // 6 What's Next — Repair / Circularity — Forest Green
-  "#415666", // 7 Story — Deep Ocean (coastal palette)
+  "#22C7D6", // 7 Story — Ocean turquoise (editorial travel-journal palette)
   "#A66A73", // 8 Personalization — Ownership — Dusty Burgundy
   "#556B8A", // 9 My Wardrobe — Today's Edit — Midnight Blue
 ];
