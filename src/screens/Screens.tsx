@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Eyebrow, Donut, Card, JourneyMap, Pill, Disclaimer, EmptyState, ExpandableCard, ArchiveTransition, ArchiveTimeline, type ArchiveEntry, TodaysEdit } from "../components/UI";
-import { ChapterColorProvider, ARCHIVE_ACCENT_COLOR } from "../lib/chapterColor";
+import { ChapterColorProvider, ARCHIVE_ACCENT_COLOR, useChapterColor } from "../lib/chapterColor";
 import { generateAI } from "../lib/aiService";
 import {
   loadMoment,
@@ -771,6 +771,7 @@ export function WhatsNext() {
 /* 10 — THE STORY BEHIND IT */
 export function StoryBehindIt() {
   const { t } = useLanguage();
+  const storyColor = useChapterColor();
   const [shareState, setShareState] = useState<"idle" | "shared" | "copied">("idle");
   const [savedToWardrobe, setSavedToWardrobe] = useState(false);
 
@@ -817,8 +818,8 @@ export function StoryBehindIt() {
           <span className="text-[10px] font-sans text-clay">{t("story_date_value")} · {t("blockchain_word")}</span>
         </div>
         <div className="flex items-center gap-1.5 mb-2">
-          <Sparkles size={13} className="text-blush-deep" />
-          <p className="text-[10px] font-sans font-semibold text-blush-deep uppercase tracking-wide">
+          <Sparkles size={13} style={{ color: storyColor }} />
+          <p className="text-[10px] font-sans font-semibold uppercase tracking-wide" style={{ color: storyColor }}>
             {t("story_behind_it")}
           </p>
         </div>
@@ -828,7 +829,7 @@ export function StoryBehindIt() {
         <p className="font-sans text-[12px] text-clay leading-relaxed mt-3">
           {t("story_p2")}
         </p>
-        <p className="font-display italic text-[13px] text-blush-deep mt-3">
+        <p className="font-display italic text-[13px] mt-3" style={{ color: "#6E8595" }}>
           {t("crafted_to_last")}
         </p>
       </Card>

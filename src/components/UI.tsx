@@ -150,6 +150,7 @@ const journeyStops = [
 
 export function JourneyMap() {
   const { t } = useLanguage();
+  const color = useChapterColor(); // Deep Ocean on this screen
   // Defaults to the last stop (where the garment is now) since that's the
   // most relevant detail to show before anyone's tapped anything.
   const [selected, setSelected] = useState(journeyStops.length - 1);
@@ -164,7 +165,7 @@ export function JourneyMap() {
 
   return (
     <div className="w-full mb-4" onClick={(e) => e.stopPropagation()}>
-      <div className="w-full bg-paper border border-line rounded-card overflow-hidden">
+      <div className="w-full border border-line rounded-card overflow-hidden" style={{ backgroundColor: "#F7F5F1" }}>
         <ComposableMap
           projection="geoEqualEarth"
           projectionConfig={{ scale: 58 }}
@@ -181,8 +182,9 @@ export function JourneyMap() {
                     <Geography
                       key={geo.rsmKey}
                       geography={geo}
-                      fill={isHighlighted ? "#E7A6B4" : "#F1E9EA"}
-                      stroke="#FFFFFF"
+                      fill={isHighlighted ? "#D9D5CF" : "#E8EEF0"}
+                      fillOpacity={isHighlighted ? 0.75 : 0.6}
+                      stroke="#F7F5F1"
                       strokeWidth={0.5}
                       style={{
                         default: { outline: "none" },
@@ -200,7 +202,7 @@ export function JourneyMap() {
                 key={i}
                 from={s.coords}
                 to={journeyStops[i + 1].coords}
-                stroke="#C97A8C"
+                stroke="#6E8595"
                 strokeWidth={1.3}
                 strokeLinecap="round"
                 pathLength={1}
@@ -225,15 +227,15 @@ export function JourneyMap() {
                   style={{ cursor: "pointer", pointerEvents: "all" }}
                 />
                 {s.active && (
-                  <circle r={8} fill="#C97A8C" fillOpacity={0.25}>
+                  <circle r={8} fill={color} fillOpacity={0.25}>
                     <animate attributeName="r" values="6;10;6" dur="2.2s" repeatCount="indefinite" />
                     <animate attributeName="fill-opacity" values="0.35;0.1;0.35" dur="2.2s" repeatCount="indefinite" />
                   </circle>
                 )}
                 <circle
                   r={selected === i ? 7 : s.active ? 5 : 4}
-                  fill={s.active || selected === i ? "#C97A8C" : "#FFFFFF"}
-                  stroke="#C97A8C"
+                  fill={s.active || selected === i ? color : "#FFFFFF"}
+                  stroke={color}
                   strokeWidth={1.3}
                   style={{ pointerEvents: "none" }}
                 />
@@ -241,7 +243,7 @@ export function JourneyMap() {
                   <circle
                     r={9}
                     fill="none"
-                    stroke="#C97A8C"
+                    stroke={color}
                     strokeWidth={1}
                     strokeOpacity={0.5}
                     style={{ pointerEvents: "none" }}
@@ -253,7 +255,7 @@ export function JourneyMap() {
                     y1={0}
                     x2={s.dx}
                     y2={s.dy + 3}
-                    stroke="#C97A8C"
+                    stroke="#6E8595"
                     strokeWidth={0.75}
                     strokeOpacity={0.5}
                   />
@@ -263,7 +265,7 @@ export function JourneyMap() {
                   y={s.dy}
                   textAnchor="middle"
                   paintOrder="stroke"
-                  stroke="#FFFFFF"
+                  stroke="#F7F5F1"
                   strokeWidth={3}
                   strokeLinejoin="round"
                   onClick={() => setSelected(i)}
@@ -273,7 +275,7 @@ export function JourneyMap() {
                     fontStyle: "italic",
                     fontWeight: s.active || selected === i ? 600 : 500,
                     fontSize: s.active || selected === i ? 15 : 13,
-                    fill: s.active || selected === i ? "#C97A8C" : "#2B2622",
+                    fill: s.active || selected === i ? color : "#2E2E2E",
                   }}
                 >
                   {t(s.labelKey)}
@@ -285,7 +287,7 @@ export function JourneyMap() {
       </div>
 
       {/* Tap-to-reveal detail card for whichever stop is selected */}
-      <div className="mt-2.5 bg-blush-pale/40 rounded-xl px-3.5 py-3 fade-up" key={selected}>
+      <div className="mt-2.5 rounded-xl px-3.5 py-3 fade-up" style={{ backgroundColor: "#E8EEF0" }} key={selected}>
         <div className="flex items-center gap-2 mb-1">
           {stop.icon && <span className="text-base">{stop.icon}</span>}
           <p className="font-sans text-[11px] font-semibold text-ink">{t(stop.placeKey)}</p>
