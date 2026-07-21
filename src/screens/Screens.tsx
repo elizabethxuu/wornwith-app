@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Eyebrow, Donut, Card, JourneyMap, Pill, Disclaimer, EmptyState, ExpandableCard, LifecycleTimeline } from "../components/UI";
+import { Eyebrow, Donut, Card, JourneyMap, Pill, Disclaimer, EmptyState, ExpandableCard, ArchiveTransition, ArchiveTimeline, type ArchiveEntry } from "../components/UI";
 import {
   loadMoment,
   saveMoment,
@@ -772,11 +772,16 @@ export function StoryBehindIt() {
 
 /* 11 — PERSONALIZATION */
 export function Personalization() {
-  const { t, locale } = useLanguage();
+  const { t } = useLanguage();
   const [text, setText] = useState(() => loadMoment());
   const [moments, setMoments] = useState<SavedMoment[]>(() => loadMoments());
   const [generating, setGenerating] = useState<Record<string, boolean>>({});
   const [failed, setFailed] = useState<Record<string, boolean>>({});
+  // Returning visitors who already have history land straight in the
+  // archive; first-time visitors start on the compose view.
+  const [view, setView] = useState<"compose" | "transitioning" | "archive">(
+    () => (loadMoments().length > 0 ? "archive" : "compose")
+  );
 
   const generateReflection = (savedAt: string, momentText: string) => {
     setGenerating((g) => ({ ...g, [savedAt]: true }));
@@ -807,7 +812,115 @@ export function Personalization() {
     generateReflection(newMoment.savedAt, newMoment.text);
     setText("");
     saveMoment("");
+    setView("transitioning");
   };
+
+  const latestMoment = moments.length > 0 ? moments[moments.length - 1] : null;
+
+  const archiveEntries: ArchiveEntry[] = [
+    { year: "2026", category: t("archive_cat_acquisition"), title: t("archive_title_acquisition"), description: t("archive_desc_acquisition") },
+    { year: "2026", category: t("archive_cat_journey"), title: t("archive_title_journey"), description: t("archive_desc_journey") },
+    { year: "2027", category: t("archive_cat_maintenance"), title: t("archive_title_maintenance"), description: t("archive_desc_maintenance") },
+    { year: "2027", category: t("archive_cat_milestone"), title: t("archive_title_milestone"), description: t("archive_desc_milestone") },
+    { year: "2028", category: t("archive_cat_restoration"), title: t("archive_title_restoration"), description: t("archive_desc_restoration") },
+    { year: "2029", category: t("archive_cat_transfer"), title: t("archive_title_transfer"), description: t("archive_desc_transfer") },
+  ];
+
+  if (view === "transitioning") {
+    return (
+      <ArchiveTransition
+        phrases={[
+          t("transition_saving"),
+          t("transition_provenance"),
+          t("transition_reflection"),
+          t("transition_assessing"),
+          t("transition_complete"),
+        ]}
+        onDone={() => setView("archive")}
+      />
+    );
+  }
+
+  if (view === "archive") {
+    return (
+      <div className="h-full px-5 py-6 fade-up overflow-y-auto">
+        {/* AI Reflection — featured, at the top */}
+        {latestMoment && (
+          <div className="mb-8">
+            <p className="font-sans text-[10px] uppercase tracking-[0.14em] font-semibold text-blush-deep mb-2">
+              ◆ {t("ai_reflection_title")}
+            </p>
+            {latestMoment.summary ? (
+              <p className="font-display italic text-[17px] text-ink leading-relaxed">
+                "{latestMoment.summary}"
+              </p>
+            ) : generating[latestMoment.savedAt] ? (
+              <p className="font-sans text-[11px] text-clay/70 italic">{t("generating_reflection")}</p>
+            ) : failed[latestMoment.savedAt] ? (
+              <button
+                onClick={() => generateReflection(latestMoment.savedAt, latestMoment.text)}
+                className="font-sans text-[11px] text-blush-deep underline underline-offset-2"
+              >
+                {t("reflection_failed")}
+              </button>
+            ) : (
+              <button
+                onClick={() => generateReflection(latestMoment.savedAt, latestMoment.text)}
+                className="font-sans text-[11px] text-clay/80 underline underline-offset-2"
+              >
+                {t("generate_reflection")}
+              </button>
+            )}
+          </div>
+        )}
+
+        {/* From the Archives */}
+        <div className="mb-8 fade-up" style={{ animationDelay: "150ms" }}>
+          <p className="font-sans text-[10px] uppercase tracking-[0.14em] font-semibold text-blush-deep">
+            {t("from_the_archives_title")}
+          </p>
+          <p className="font-sans text-[11px] text-clay mt-1 mb-5 leading-relaxed">
+            {t("from_the_archives_subtitle")}
+          </p>
+          <ArchiveTimeline entries={archiveEntries} />
+        </div>
+
+        {/* Curator's Notes — deliberately no card, generous white space */}
+        <div className="mb-8 py-2 fade-up" style={{ animationDelay: "650ms" }}>
+          <p className="font-sans text-[10px] uppercase tracking-[0.14em] font-semibold text-blush-deep mb-3">
+            {t("curators_notes_title")}
+          </p>
+          <p className="font-display italic text-[15px] text-ink leading-loose">
+            {t("curators_notes_body")}
+          </p>
+        </div>
+
+        {/* Ownership Summary — simplified */}
+        <div className="mb-6">
+          <Eyebrow>{t("ownership_summary_title")}</Eyebrow>
+          <div className="mt-2 space-y-1.5 font-sans text-[12px]">
+            <div className="flex justify-between"><span className="text-clay">{t("owned_since")}</span><span className="text-ink">{t("owned_since_date")}</span></div>
+            <div className="flex justify-between"><span className="text-clay">{t("recorded_wears")}</span><span className="text-ink">18</span></div>
+            <div className="flex justify-between"><span className="text-clay">{t("condition")}</span><span className="text-sage">{t("excellent")}</span></div>
+            <div className="flex justify-between"><span className="text-clay">{t("est_lifespan")}</span><span className="text-ink">{getEstimatedYearsRemaining()} {t("years_word")}</span></div>
+            <div className="flex justify-between"><span className="text-clay">{t("environmental_ranking")}</span><span className="text-ink">Top 10%</span></div>
+            <div className="flex justify-between"><span className="text-clay">{t("archive_entries_count")}</span><span className="text-ink">{archiveEntries.length}</span></div>
+          </div>
+        </div>
+
+        <button
+          onClick={() => setView("compose")}
+          className="font-sans text-[11px] text-blush-deep underline underline-offset-2"
+        >
+          {t("save_another_moment")}
+        </button>
+
+        <p className="font-display italic text-[12px] text-clay text-center mt-8">
+          {t("closing_line")}
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div className="h-full px-5 py-6 fade-up flex flex-col">
@@ -829,70 +942,6 @@ export function Personalization() {
       >
         {t("save_moment")}
       </button>
-
-      {moments.length > 0 && (
-        <Card className="mt-4">
-          <Eyebrow>{t("saved_moments")}</Eyebrow>
-          <div className="mt-2 space-y-3 max-h-40 overflow-y-auto no-scrollbar">
-            {[...moments].reverse().map((m, i) => (
-              <div key={i} className="border-b border-line last:border-0 pb-3 last:pb-0">
-                <p className="font-display italic text-[13px] text-ink">{m.text}</p>
-                <p className="font-sans text-[9px] text-clay/80 mt-0.5">
-                  {new Date(m.savedAt).toLocaleDateString(locale, { month: "long", day: "numeric", year: "numeric" })}
-                </p>
-
-                {m.summary ? (
-                  <p className="font-sans text-[11px] text-ink/80 mt-1.5 flex items-start gap-1.5">
-                    <span className="text-ink shrink-0">💎</span>
-                    <span>{m.summary}</span>
-                  </p>
-                ) : generating[m.savedAt] ? (
-                  <p className="font-sans text-[10px] text-clay/70 mt-1.5 italic">
-                    {t("generating_reflection")}
-                  </p>
-                ) : failed[m.savedAt] ? (
-                  <button
-                    onClick={() => generateReflection(m.savedAt, m.text)}
-                    className="font-sans text-[10px] text-blush-deep underline underline-offset-2 mt-1.5"
-                  >
-                    {t("reflection_failed")}
-                  </button>
-                ) : (
-                  <button
-                    onClick={() => generateReflection(m.savedAt, m.text)}
-                    className="font-sans text-[10px] text-clay/80 flex items-center gap-1 mt-1.5"
-                  >
-                    <span className="text-ink">💎</span> {t("generate_reflection")}
-                  </button>
-                )}
-              </div>
-            ))}
-          </div>
-        </Card>
-      )}
-
-      <div className="mt-6">
-        <Eyebrow>{t("your_garment")}</Eyebrow>
-        <div className="mt-2 space-y-1.5 font-sans text-[12px]">
-          <div className="flex justify-between"><span className="text-clay">{t("owned_since")}</span><span className="text-ink">{t("owned_since_date")}</span></div>
-          <div className="flex justify-between"><span className="text-clay">{t("times_worn")}</span><span className="text-ink">~18</span></div>
-          <div className="flex justify-between"><span className="text-clay">{t("condition")}</span><span className="text-sage">{t("excellent")}</span></div>
-          <div className="flex justify-between"><span className="text-clay">{t("est_lifespan")}</span><span className="text-ink">{getEstimatedYearsRemaining()} {t("years_word")} ✦</span></div>
-        </div>
-      </div>
-
-      <LifecycleTimeline
-        title={t("garment_lifecycle_title")}
-        projectedLabel={t("lifecycle_projected")}
-        entries={[
-          { year: "2026", event: t("lifecycle_2026") },
-          { year: "2027", event: t("lifecycle_2027") },
-          { year: "2029", event: t("lifecycle_2029") },
-          { year: "2031", event: t("lifecycle_2031") },
-          { year: "2034", event: t("lifecycle_2034") },
-          { year: "2038", event: t("lifecycle_2038") },
-        ]}
-      />
 
       <p className="font-display italic text-[12px] text-clay text-center mt-auto pt-6">
         {t("closing_line")}

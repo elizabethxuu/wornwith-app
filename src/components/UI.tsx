@@ -435,51 +435,86 @@ export function ExpandableCard({
   );
 }
 
-export type LifecycleEntry = { year: string; event: string };
 
-export function LifecycleTimeline({
-  title,
-  entries,
-  projectedLabel,
+// Calm, editorial loading transition — cycles through a few short phrases
+// with a subtle fade, then calls onDone. Deliberately no progress bar or
+// spinner, per the "luxury, not dashboard" direction.
+export function ArchiveTransition({
+  phrases,
+  onDone,
 }: {
-  title: string;
-  entries: LifecycleEntry[];
-  projectedLabel?: string;
+  phrases: string[];
+  onDone: () => void;
 }) {
+  const [index, setIndex] = useState(0);
+
+  useEffect(() => {
+    const stepMs = 280;
+    if (index >= phrases.length - 1) {
+      const t = setTimeout(onDone, stepMs + 120);
+      return () => clearTimeout(t);
+    }
+    const t = setTimeout(() => setIndex((i) => i + 1), stepMs);
+    return () => clearTimeout(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [index]);
+
+  return (
+    <div className="h-full flex items-center justify-center px-8">
+      <p key={index} className="font-display italic text-lg text-clay fade-up text-center">
+        {phrases[index]}
+      </p>
+    </div>
+  );
+}
+
+export type ArchiveEntry = {
+  year: string;
+  category: string;
+  title: string;
+  description: string;
+};
+
+// The editorial replacement for the old plain lifecycle timeline — bigger
+// per-entry blocks (category/title/description) and, per design direction,
+// no literal "projected" label: completed entries get a filled marker,
+// future ones a hollow marker, and that's the only signal.
+export function ArchiveTimeline({ entries }: { entries: ArchiveEntry[] }) {
   const currentYear = new Date().getFullYear();
   return (
-    <div className="mt-6">
-      <Eyebrow>{title}</Eyebrow>
-      <div className="relative pl-5 mt-3">
-        <div className="absolute left-[5px] top-1 bottom-1 w-px bg-line" />
-        <div className="space-y-4">
-          {entries.map((e, i) => {
-            const isFuture = Number(e.year) > currentYear;
-            return (
-              <div key={i} className="relative">
-                <div
-                  className={`absolute -left-5 top-[3px] w-2.5 h-2.5 rounded-full border-2 border-paper ${
-                    isFuture ? "bg-paper border-blush" : "bg-blush-deep"
-                  }`}
-                  style={isFuture ? { boxShadow: "inset 0 0 0 1.5px #C97A8C" } : undefined}
-                />
-                <p
-                  className={`font-display italic text-sm leading-none ${
-                    isFuture ? "text-clay" : "text-blush-deep"
-                  }`}
-                >
-                  {e.year}
-                </p>
-                <p className={`font-sans text-[12px] mt-0.5 ${isFuture ? "text-clay" : "text-ink"}`}>
-                  {e.event}
-                  {isFuture && projectedLabel && (
-                    <span className="text-[9px] text-clay/80 ml-1.5">· {projectedLabel}</span>
-                  )}
-                </p>
-              </div>
-            );
-          })}
-        </div>
+    <div className="relative pl-5">
+      <div className="absolute left-[5px] top-1 bottom-1 w-px bg-line" />
+      <div className="space-y-6">
+        {entries.map((e, i) => {
+          const isFuture = Number(e.year) > currentYear;
+          return (
+            <div
+              key={i}
+              className="relative fade-up"
+              style={{ animationDelay: `${i * 90}ms` }}
+            >
+              <div
+                className={`absolute -left-5 top-[5px] w-2.5 h-2.5 rounded-full border-2 border-paper ${
+                  isFuture ? "bg-paper" : "bg-blush-deep"
+                }`}
+                style={isFuture ? { boxShadow: "inset 0 0 0 1.5px #C97A8C" } : undefined}
+              />
+              <p
+                className={`font-sans text-[9px] uppercase tracking-[0.14em] font-semibold ${
+                  isFuture ? "text-clay/70" : "text-blush-deep"
+                }`}
+              >
+                {e.year} · {e.category}
+              </p>
+              <p className={`font-display italic text-base mt-0.5 ${isFuture ? "text-clay" : "text-ink"}`}>
+                {e.title}
+              </p>
+              <p className={`font-sans text-[11px] mt-0.5 leading-relaxed ${isFuture ? "text-clay/80" : "text-clay"}`}>
+                {e.description}
+              </p>
+            </div>
+          );
+        })}
       </div>
     </div>
   );

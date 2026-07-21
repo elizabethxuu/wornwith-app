@@ -227,14 +227,62 @@ const dict = {
   manufacturing_renewable_label: { en: "Renewable energy", fr: "Énergie renouvelable", pt: "Energia renovável" },
   manufacturing_renewable_value: { en: "65%", fr: "65%", pt: "65%" },
 
-  garment_lifecycle_title: { en: "Garment Lifecycle", fr: "Cycle de Vie du Vêtement", pt: "Ciclo de Vida da Peça" },
-  lifecycle_2026: { en: "Purchased", fr: "Acheté", pt: "Comprado" },
-  lifecycle_2027: { en: "Sleeve repaired", fr: "Manche réparée", pt: "Manga reparada" },
-  lifecycle_2029: { en: "Passed to Sabrina", fr: "Transmis à Sabrina", pt: "Repassado para Sabrina" },
-  lifecycle_2031: { en: "Professionally re-dyed", fr: "Reteinture professionnelle", pt: "Retingido profissionalmente" },
-  lifecycle_2034: { en: "Still in active use", fr: "Toujours porté régulièrement", pt: "Ainda em uso ativo" },
-  lifecycle_2038: { en: "Returned for recycling", fr: "Retourné pour recyclage", pt: "Devolvido para reciclagem" },
-  lifecycle_projected: { en: "projected", fr: "projeté", pt: "projetado" },
+
+  // Archive transition
+  transition_saving: { en: "Saving to Archive…", fr: "Enregistrement dans les archives…", pt: "Salvando no Arquivo…" },
+  transition_provenance: { en: "Updating provenance…", fr: "Mise à jour de la provenance…", pt: "Atualizando a proveniência…" },
+  transition_reflection: { en: "Generating reflection…", fr: "Génération de la réflexion…", pt: "Gerando reflexão…" },
+  transition_assessing: { en: "Assessing garment history…", fr: "Évaluation de l'historique du vêtement…", pt: "Avaliando o histórico da peça…" },
+  transition_complete: { en: "Complete.", fr: "Terminé.", pt: "Concluído." },
+
+  // AI Reflection (archive, featured)
+  ai_reflection_title: { en: "AI Reflection", fr: "Réflexion IA", pt: "Reflexão de IA" },
+
+  // From the Archives
+  from_the_archives_title: { en: "From the Archives", fr: "Depuis les Archives", pt: "Dos Arquivos" },
+  from_the_archives_subtitle: {
+    en: "Every wear, repair and journey contributes to this garment's provenance.",
+    fr: "Chaque port, réparation et voyage contribue à la provenance de ce vêtement.",
+    pt: "Cada uso, reparo e jornada contribui para a proveniência desta peça.",
+  },
+  archive_cat_acquisition: { en: "Acquisition", fr: "Acquisition", pt: "Aquisição" },
+  archive_title_acquisition: { en: "Purchased", fr: "Acheté", pt: "Comprado" },
+  archive_desc_acquisition: { en: "Entered into your collection.", fr: "Entré dans votre collection.", pt: "Adicionado à sua coleção." },
+
+  archive_cat_journey: { en: "First Journey", fr: "Premier Voyage", pt: "Primeira Jornada" },
+  archive_title_journey: { en: "Weekend in Edinburgh", fr: "Week-end à Édimbourg", pt: "Fim de semana em Edimburgo" },
+  archive_desc_journey: { en: "First memory recorded.", fr: "Premier souvenir enregistré.", pt: "Primeira memória registrada." },
+
+  archive_cat_maintenance: { en: "Maintenance", fr: "Entretien", pt: "Manutenção" },
+  archive_title_maintenance: { en: "Buttons professionally repaired", fr: "Boutons réparés professionnellement", pt: "Botões reparados profissionalmente" },
+  archive_desc_maintenance: { en: "Routine care preserved the original construction.", fr: "Un entretien de routine a préservé la construction d'origine.", pt: "Cuidados de rotina preservaram a construção original." },
+
+  archive_cat_milestone: { en: "Milestone", fr: "Étape Marquante", pt: "Marco" },
+  archive_title_milestone: { en: "50 wears recorded", fr: "50 ports enregistrés", pt: "50 usos registrados" },
+  archive_desc_milestone: { en: "A significant longevity milestone.", fr: "Une étape importante de longévité.", pt: "Um marco importante de longevidade." },
+
+  archive_cat_restoration: { en: "Restoration", fr: "Restauration", pt: "Restauração" },
+  archive_title_restoration: { en: "Buttons replaced", fr: "Boutons remplacés", pt: "Botões substituídos" },
+  archive_desc_restoration: { en: "Components renewed to extend service life.", fr: "Composants renouvelés pour prolonger la durée de vie.", pt: "Componentes renovados para prolongar a vida útil." },
+
+  archive_cat_transfer: { en: "Transfer", fr: "Transfert", pt: "Transferência" },
+  archive_title_transfer: { en: "Ownership transferred", fr: "Propriété transférée", pt: "Propriedade transferida" },
+  archive_desc_transfer: { en: "Digital provenance transferred with the garment.", fr: "Provenance numérique transférée avec le vêtement.", pt: "Proveniência digital transferida com a peça." },
+
+  // Curator's Notes
+  curators_notes_title: { en: "Curator's Notes", fr: "Notes du Conservateur", pt: "Notas do Curador" },
+  curators_notes_body: {
+    en: "This garment has matured through four winters, travelled across three cities and remained in exceptional condition. Rather than being replaced, it has been maintained, repaired and continuously worn — an ownership pattern that reflects the principles of circular design. Its documented history suggests a product intended to endure well beyond the industry average.",
+    fr: "Ce vêtement a mûri à travers quatre hivers, voyagé dans trois villes et est resté dans un état exceptionnel. Plutôt que d'être remplacé, il a été entretenu, réparé et porté continuellement — une habitude de possession qui reflète les principes du design circulaire. Son histoire documentée suggère un produit conçu pour durer bien au-delà de la moyenne du secteur.",
+    pt: "Esta peça amadureceu ao longo de quatro invernos, viajou por três cidades e permaneceu em condição excepcional. Em vez de ser substituída, foi mantida, reparada e usada continuamente — um padrão de posse que reflete os princípios do design circular. Sua história documentada sugere um produto feito para durar muito além da média do setor.",
+  },
+
+  // Ownership Summary
+  ownership_summary_title: { en: "Ownership Summary", fr: "Résumé de Propriété", pt: "Resumo de Propriedade" },
+  recorded_wears: { en: "Recorded wears", fr: "Ports enregistrés", pt: "Usos registrados" },
+  environmental_ranking: { en: "Environmental ranking", fr: "Classement Environnemental", pt: "Classificação Ambiental" },
+  archive_entries_count: { en: "Archive entries", fr: "Entrées d'archives", pt: "Entradas no arquivo" },
+  save_another_moment: { en: "+ Save another moment", fr: "+ Enregistrer un autre moment", pt: "+ Salvar outro momento" },
   years_word: { en: "years", fr: "ans", pt: "anos" },
 
   // What's next
@@ -287,7 +335,6 @@ const dict = {
     pt: "Pense em um lugar, data ou momento e escreva aqui.",
   },
   save_moment: { en: "Save this moment", fr: "Enregistrer ce moment", pt: "Salvar este momento" },
-  saved_moments: { en: "Saved moments", fr: "Moments enregistrés", pt: "Momentos salvos" },
   est_lifespan: { en: "Est. lifespan", fr: "Durée de vie est.", pt: "Vida útil est." },
   closing_line: {
     en: "Once you wear the outfits, the outfits should not wear you.",
