@@ -158,6 +158,60 @@ const dict = {
     fr: "Les petits gestes qui le gardent en rotation plus longtemps.",
     pt: "As pequenas escolhas que o mantêm em uso por mais tempo.",
   },
+
+  next_recommended_care_title: { en: "Next Recommended Care", fr: "Prochain Entretien Recommandé", pt: "Próximo Cuidado Recomendado" },
+  next_suggested_service_title: { en: "Next Suggested Service", fr: "Prochain Service Suggéré", pt: "Próximo Serviço Sugerido" },
+
+  care_intro_before: { en: "Based on", fr: "Sur la base de", pt: "Com base em" },
+  care_intro_recorded_wears: { en: "recorded wears", fr: "ports enregistrés", pt: "usos registrados" },
+
+  care_tier_excellent: {
+    en: "no maintenance is recommended at this time.",
+    fr: "aucun entretien n'est recommandé pour le moment.",
+    pt: "nenhuma manutenção é recomendada no momento.",
+  },
+  care_tier_moderate: {
+    en: "a light professional clean is recommended before continued seasonal use.",
+    fr: "un léger nettoyage professionnel est recommandé avant une utilisation saisonnière continue.",
+    pt: "uma limpeza profissional leve é recomendada antes do uso contínuo na estação.",
+  },
+  care_tier_heavy: {
+    en: "this garment would benefit from professional servicing before further regular wear.",
+    fr: "ce vêtement bénéficierait d'un entretien professionnel avant une utilisation régulière prolongée.",
+    pt: "esta peça se beneficiaria de manutenção profissional antes de mais uso regular.",
+  },
+
+  care_season_autumn: {
+    en: "Current autumn conditions favour professional cleaning before seasonal storage.",
+    fr: "Les conditions automnales actuelles favorisent un nettoyage professionnel avant le stockage saisonnier.",
+    pt: "As condições atuais de outono favorecem uma limpeza profissional antes do armazenamento sazonal.",
+  },
+  care_season_winter: {
+    en: "Current winter conditions call for continued regular brushing to preserve the wool fibres.",
+    fr: "Les conditions hivernales actuelles appellent à un brossage régulier continu pour préserver les fibres de laine.",
+    pt: "As condições atuais de inverno pedem escovação regular contínua para preservar as fibras de lã.",
+  },
+  care_season_spring: {
+    en: "Current spring conditions suggest a light refresh before storing through the warmer months.",
+    fr: "Les conditions printanières actuelles suggèrent un léger rafraîchissement avant le stockage durant les mois plus chauds.",
+    pt: "As condições atuais de primavera sugerem uma leve renovação antes de guardar durante os meses mais quentes.",
+  },
+  care_season_summer: {
+    en: "Current summer conditions call for lighter, less frequent wear until the cooler months return.",
+    fr: "Les conditions estivales actuelles appellent à un port plus léger et moins fréquent jusqu'au retour des mois plus frais.",
+    pt: "As condições atuais de verão pedem uso mais leve e menos frequente até o retorno dos meses mais frios.",
+  },
+
+  care_will_notify: {
+    en: "We'll let you know when its care profile changes.",
+    fr: "Nous vous informerons lorsque son profil d'entretien évoluera.",
+    pt: "Avisaremos quando o perfil de cuidados mudar.",
+  },
+
+  service_professional_cleaning: { en: "Professional cleaning before seasonal storage", fr: "Nettoyage professionnel avant le stockage saisonnier", pt: "Limpeza profissional antes do armazenamento sazonal" },
+  service_light_brushing: { en: "Light brushing after regular wear to preserve the wool fibres", fr: "Brossage léger après un port régulier pour préserver les fibres de laine", pt: "Escovação leve após uso regular para preservar as fibras de lã" },
+  service_wooden_hanger: { en: "Store on a broad wooden hanger in a cool, dry environment", fr: "Ranger sur un large cintre en bois dans un environnement frais et sec", pt: "Guardar em um cabide de madeira largo em ambiente fresco e seco" },
+
   impact_per_wear: { en: "Impact per wear", fr: "Impact par port", pt: "Impacto por uso" },
   cold_water: { en: "Cold water only", fr: "Eau froide uniquement", pt: "Somente água fria" },
   max_30: { en: "30°C max", fr: "30°C max", pt: "30°C máx" },
