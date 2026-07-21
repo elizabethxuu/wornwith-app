@@ -101,7 +101,16 @@ export function Card({
 }
 
 const worldMapUrl = "/data/world-110m.json";
-const highlightedCountries = ["New Zealand", "Italy", "Portugal", "France"];
+// Per-country watercolor wash — France (Paris) is the one deliberate
+// burgundy focal point; NZ gets the turquoise primary; Italy reads
+// slightly warmer; Portugal stays neutral, per the brief.
+const COUNTRY_WASH: Record<string, { fill: string; opacity: number }> = {
+  "New Zealand": { fill: "#2FC7D8", opacity: 0.22 },
+  Italy: { fill: "#E3B98E", opacity: 0.28 },
+  Portugal: { fill: "#D9D5CF", opacity: 0.4 },
+  France: { fill: "#EBC9D2", opacity: 0.4 },
+};
+const STOP_ACCENTS = ["#2FC7D8", "#D19A63", "#8A7F76", "#A94C63"]; // NZ, Italy, Portugal, Paris
 // dx/dy fan each label out in its own direction so the three closely-spaced
 // European stops (Portugal, Italy, Paris) don't stack on top of each other.
 // leader: true draws a short connecting line from the pin to the label.
@@ -150,7 +159,6 @@ const journeyStops = [
 
 export function JourneyMap() {
   const { t } = useLanguage();
-  const color = useChapterColor(); // Deep Ocean on this screen
   // Defaults to the last stop (where the garment is now) since that's the
   // most relevant detail to show before anyone's tapped anything.
   const [selected, setSelected] = useState(journeyStops.length - 1);
@@ -177,17 +185,17 @@ export function JourneyMap() {
             <Geographies geography={worldMapUrl}>
               {({ geographies }) =>
                 geographies.map((geo) => {
-                  const isHighlighted = highlightedCountries.includes(geo.properties.name);
+                  const wash = COUNTRY_WASH[geo.properties.name];
                   return (
                     <Geography
                       key={geo.rsmKey}
                       geography={geo}
-                      fill={isHighlighted ? "#BFECEF" : "#EDEBE7"}
-                      fillOpacity={isHighlighted ? 0.65 : 0.55}
-                      stroke="#F7F5F1"
+                      fill={wash ? wash.fill : "#EDEBE7"}
+                      fillOpacity={wash ? wash.opacity : 0.45}
+                      stroke="#FAF7F2"
                       strokeWidth={0.5}
                       style={{
-                        default: { outline: "none" },
+                        default: { outline: "none", transition: "fill-opacity 1.2s ease" },
                         hover: { outline: "none" },
                         pressed: { outline: "none" },
                       }}
@@ -202,7 +210,7 @@ export function JourneyMap() {
                 key={i}
                 from={s.coords}
                 to={journeyStops[i + 1].coords}
-                stroke="#22C7D6"
+                stroke="#2FC7D8"
                 strokeWidth={1.3}
                 strokeLinecap="round"
                 pathLength={1}
@@ -214,85 +222,128 @@ export function JourneyMap() {
               />
             ))}
 
-            {journeyStops.map((s, i) => (
-              <Marker key={s.labelKey} coordinates={s.coords}>
-                {/* Invisible larger touch target — the visible dot below is
-                    deliberately small/precise, but a ~4-6px dot is too small
-                    to reliably tap on a phone, so this circle underneath
-                    captures taps across a much wider radius. */}
-                <circle
-                  r={13}
-                  fill="rgba(0,0,0,0.001)"
-                  onClick={() => setSelected(i)}
-                  style={{ cursor: "pointer", pointerEvents: "all" }}
-                />
-                {s.active && (
-                  <circle r={8} fill={color} fillOpacity={0.25}>
-                    <animate attributeName="r" values="6;10;6" dur="2.2s" repeatCount="indefinite" />
-                    <animate attributeName="fill-opacity" values="0.35;0.1;0.35" dur="2.2s" repeatCount="indefinite" />
-                  </circle>
-                )}
-                <circle
-                  r={selected === i ? 7 : s.active ? 5 : 4}
-                  fill={s.active || selected === i ? color : "#FFFFFF"}
-                  stroke={color}
-                  strokeWidth={1.3}
-                  style={{ pointerEvents: "none" }}
-                />
-                {selected === i && (
+            {journeyStops.map((s, i) => {
+              const stopColor = STOP_ACCENTS[i];
+              return (
+                <Marker key={s.labelKey} coordinates={s.coords}>
+                  {/* Invisible larger touch target — the visible dot below is
+                      deliberately small/precise, but a ~4-6px dot is too small
+                      to reliably tap on a phone, so this circle underneath
+                      captures taps across a much wider radius. */}
                   <circle
-                    r={9}
-                    fill="none"
-                    stroke={color}
-                    strokeWidth={1}
-                    strokeOpacity={0.5}
+                    r={13}
+                    fill="rgba(0,0,0,0.001)"
+                    onClick={() => setSelected(i)}
+                    style={{ cursor: "pointer", pointerEvents: "all" }}
+                  />
+                  {/* Paris carries a soft blush watercolor halo at all times
+                      — it's the one deliberate burgundy focal point on the
+                      map, not just another stop. */}
+                  {s.active && (
+                    <circle r={13} fill="#EBC9D2" fillOpacity={0.35} style={{ pointerEvents: "none" }} />
+                  )}
+                  {s.active && (
+                    <circle r={8} fill={stopColor} fillOpacity={0.25}>
+                      <animate attributeName="r" values="6;10;6" dur="2.6s" repeatCount="indefinite" />
+                      <animate attributeName="fill-opacity" values="0.3;0.1;0.3" dur="2.6s" repeatCount="indefinite" />
+                    </circle>
+                  )}
+                  <circle
+                    r={selected === i ? 7 : s.active ? 5 : 4}
+                    fill={s.active || selected === i ? stopColor : "#FFFFFF"}
+                    stroke={stopColor}
+                    strokeWidth={1.3}
                     style={{ pointerEvents: "none" }}
                   />
-                )}
-                {s.leader && (
-                  <line
-                    x1={0}
-                    y1={0}
-                    x2={s.dx}
-                    y2={s.dy + 3}
-                    stroke="#149CAB"
-                    strokeWidth={0.75}
-                    strokeOpacity={0.5}
-                  />
-                )}
-                <text
-                  x={s.dx}
-                  y={s.dy}
-                  textAnchor="middle"
-                  paintOrder="stroke"
-                  stroke="#F7F5F1"
-                  strokeWidth={3}
-                  strokeLinejoin="round"
-                  onClick={() => setSelected(i)}
-                  style={{
-                    cursor: "pointer",
-                    fontFamily: "'Cormorant Garamond', serif",
-                    fontStyle: "italic",
-                    fontWeight: s.active || selected === i ? 600 : 500,
-                    fontSize: s.active || selected === i ? 15 : 13,
-                    fill: s.active || selected === i ? color : "#2E2E2E",
-                  }}
-                >
-                  {t(s.labelKey)}
-                </text>
-              </Marker>
-            ))}
+                  {selected === i && (
+                    <circle
+                      r={9}
+                      fill="none"
+                      stroke={stopColor}
+                      strokeWidth={1}
+                      strokeOpacity={0.5}
+                      style={{ pointerEvents: "none" }}
+                    />
+                  )}
+                  {s.leader && (
+                    <line
+                      x1={0}
+                      y1={0}
+                      x2={s.dx}
+                      y2={s.dy + 3}
+                      stroke={stopColor}
+                      strokeWidth={0.75}
+                      strokeOpacity={0.5}
+                    />
+                  )}
+                  <text
+                    x={s.dx}
+                    y={s.dy}
+                    textAnchor="middle"
+                    paintOrder="stroke"
+                    stroke="#FAF7F2"
+                    strokeWidth={3}
+                    strokeLinejoin="round"
+                    onClick={() => setSelected(i)}
+                    style={{
+                      cursor: "pointer",
+                      fontFamily: "'Cormorant Garamond', serif",
+                      fontStyle: "italic",
+                      fontWeight: s.active || selected === i ? 600 : 500,
+                      fontSize: s.active || selected === i ? 15 : 13,
+                      fill: s.active || selected === i ? stopColor : "#2E2E2E",
+                    }}
+                  >
+                    {t(s.labelKey)}
+                  </text>
+                </Marker>
+              );
+            })}
           </ZoomableGroup>
         </ComposableMap>
       </div>
 
-      {/* Tap-to-reveal detail card for whichever stop is selected */}
-      <div className="mt-2.5 rounded-xl px-3.5 py-3 fade-up" style={{ backgroundColor: "#EAF9FB" }} key={selected}>
-        <div className="flex items-center gap-2 mb-1">
-          {stop.icon && <span className="text-base">{stop.icon}</span>}
-          <p className="font-sans text-[11px] font-semibold" style={{ color }}>{t(stop.placeKey)}</p>
+      {/* Tap-to-reveal detail card for whichever stop is selected — now an
+          editorial "story card" rather than a flat info banner. Paris
+          (the current chapter) gets the extra flourishes: a handwritten-
+          style note and a small watercolor sketch motif. */}
+      <div
+        className="mt-2.5 rounded-xl px-4 py-4 fade-up relative overflow-hidden"
+        style={{
+          backgroundImage: "linear-gradient(135deg, #EBC9D2 0%, #FAF7F2 55%, #FAF7F2 100%)",
+        }}
+        key={selected}
+      >
+        <div className="flex items-start gap-3">
+          {stop.active && (
+            <svg width="34" height="34" viewBox="0 0 34 34" fill="none" className="shrink-0 mt-0.5 opacity-60">
+              {/* A minimal line-sketch suggestion of Paris — thin strokes,
+                  no fill, to read as a light watercolour-sketch motif
+                  rather than a literal illustration. */}
+              <path d="M17 4 L17 22 M12 22 L22 22 M14 10 L20 10 M15.5 6 L18.5 6 M9 30 L25 30 M11 30 L11 22 M23 30 L23 22"
+                stroke="#A94C63" strokeWidth="0.8" strokeLinecap="round" />
+            </svg>
+          )}
+          <div className="min-w-0">
+            <p
+              className="font-sans text-[9px] uppercase tracking-[0.14em] font-semibold"
+              style={{ color: "#A94C63" }}
+            >
+              {t(stop.placeKey)}
+            </p>
+            <p className="font-display italic text-[15px] text-ink leading-snug mt-1.5">
+              {t(stop.blurbKey)}
+            </p>
+          </div>
         </div>
-        <p className="font-sans text-[11px] text-clay leading-relaxed">{t(stop.blurbKey)}</p>
+        {stop.active && (
+          <p
+            className="font-display italic text-[12px] text-right mt-3"
+            style={{ color: "#2FC7D8" }}
+          >
+            {t("every_place_note")}
+          </p>
+        )}
       </div>
 
       <p className="font-sans text-[9px] text-clay/70 text-center mt-2">

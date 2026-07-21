@@ -66,6 +66,7 @@ const dict = {
     pt: "O capítulo mais recente do casaco — onde quer que você esteja, agora, usando-o.",
   },
   viewed_times: { en: "This passport has been viewed", fr: "Ce passeport a été consulté", pt: "Este passaporte foi visualizado" },
+  every_place_note: { en: "Every place adds to its story.", fr: "Chaque lieu enrichit son histoire.", pt: "Cada lugar acrescenta à sua história." },
   times_suffix: { en: "times", fr: "fois", pt: "vezes" },
 
   // Product overview
