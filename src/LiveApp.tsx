@@ -67,6 +67,7 @@ export default function LiveApp() {
   const { t } = useLanguage();
   const [bootState, setBootState] = useState<BootState>("verifying");
   const [index, setIndex] = useState(0);
+  const [showClosing, setShowClosing] = useState(false);
 
   const runVerification = () => {
     setBootState("verifying");
@@ -89,7 +90,13 @@ export default function LiveApp() {
   }, []);
 
   const goPrev = () => setIndex((i) => Math.max(0, i - 1));
-  const goNext = () => setIndex((i) => Math.min(liveScreens.length - 1, i + 1));
+  const goNext = () => {
+    if (index === liveScreens.length - 1) {
+      setShowClosing(true);
+      return;
+    }
+    setIndex((i) => Math.min(liveScreens.length - 1, i + 1));
+  };
 
   const handleTap = (e: React.MouseEvent) => {
     // Don't hijack taps meant for actual controls — inputs, textareas,
@@ -147,6 +154,35 @@ export default function LiveApp() {
 
   const isFirst = index === 0;
   const isLast = index === liveScreens.length - 1;
+
+  if (showClosing) {
+    return (
+      <div className="h-[100dvh] w-full bg-paper flex flex-col items-center justify-center px-8 fade-up" style={{ animationDuration: "800ms" }}>
+        <p className="font-sans text-[10px] uppercase tracking-[0.2em] font-semibold text-clay">
+          {t("story_continues_title")}
+        </p>
+        <p className="font-display italic text-2xl text-ink text-center mt-4 leading-snug">
+          {t("thank_you_wearing_care")}
+        </p>
+        <p className="font-sans text-[13px] text-ink/80 text-center mt-6 leading-relaxed max-w-xs">
+          {t("closing_craftsmanship_line")}
+        </p>
+        <p className="font-sans text-[13px] text-ink/80 text-center mt-4 leading-relaxed max-w-xs">
+          {t("closing_stewardship_line")}
+        </p>
+        <p className="font-display italic text-[13px] text-clay text-center mt-8">
+          {t("closing_evolve_line")}
+        </p>
+
+        <button
+          onClick={() => setShowClosing(false)}
+          className="mt-12 border border-line rounded-full px-6 py-2.5 font-sans text-[12px] text-ink"
+        >
+          {t("return_to_wardrobe")}
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div className="h-[100dvh] w-full bg-paper flex flex-col overflow-hidden relative">

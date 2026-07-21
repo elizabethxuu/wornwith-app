@@ -464,6 +464,25 @@ const dict = {
     pt: "Depois de vestir as roupas, as roupas não devem te vestir.",
   },
 
+  story_continues_title: { en: "The Story Continues", fr: "L'Histoire Continue", pt: "A História Continua" },
+  thank_you_wearing_care: { en: "Thank you for wearing with care.", fr: "Merci de porter avec soin.", pt: "Obrigado por usar com cuidado." },
+  closing_craftsmanship_line: {
+    en: "Every story begins with craftsmanship.",
+    fr: "Chaque histoire commence par le savoir-faire.",
+    pt: "Cada história começa com o artesanato.",
+  },
+  closing_stewardship_line: {
+    en: "Its lasting value is shaped through thoughtful ownership, careful stewardship and the moments collected along the way.",
+    fr: "Sa valeur durable se construit à travers une possession réfléchie, un entretien attentif et les moments accumulés en chemin.",
+    pt: "Seu valor duradouro é moldado por uma posse cuidadosa, uma administração atenta e os momentos reunidos ao longo do caminho.",
+  },
+  closing_evolve_line: {
+    en: "This passport will continue to evolve alongside yours.",
+    fr: "Ce passeport continuera d'évoluer aux côtés du vôtre.",
+    pt: "Este passaporte continuará a evoluir junto com o seu.",
+  },
+  return_to_wardrobe: { en: "Return to My Wardrobe", fr: "Retour à Ma Garde-robe", pt: "Voltar ao Meu Guarda-roupa" },
+
   // Wardrobe
   my_wardrobe: { en: "My Wardrobe", fr: "Ma Garde-robe", pt: "Meu Guarda-roupa" },
   pieces: { en: "pieces", fr: "pièces", pt: "peças" },
