@@ -366,16 +366,24 @@ export function EmptyState({
 
 export function ExpandableCard({
   title,
-  rows,
+  bodyText,
+  rows = [],
+  footerText,
   learnMoreHref,
   learnMoreLabel,
+  defaultOpen = false,
+  children,
 }: {
   title: string;
-  rows: [string, string][];
+  bodyText?: string;
+  rows?: [string, string][];
+  footerText?: string;
   learnMoreHref?: string;
   learnMoreLabel?: string;
+  defaultOpen?: boolean;
+  children?: React.ReactNode;
 }) {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(defaultOpen);
   return (
     <div className="mt-4 border border-line rounded-card overflow-hidden">
       <button
@@ -392,14 +400,25 @@ export function ExpandableCard({
       </button>
       {open && (
         <div className="px-4 pb-4 fade-up">
-          <div className="divide-y divide-line border-t border-line">
-            {rows.map(([k, v]) => (
-              <div key={k} className="flex justify-between py-2 font-sans text-[11px]">
-                <span className="text-clay">{k}</span>
-                <span className="text-ink text-right">{v}</span>
-              </div>
-            ))}
-          </div>
+          {bodyText && (
+            <p className="font-sans text-[12px] text-clay leading-relaxed mb-3">{bodyText}</p>
+          )}
+          {children}
+          {rows.length > 0 && (
+            <div className="divide-y divide-line border-t border-line">
+              {rows.map(([k, v]) => (
+                <div key={k} className="flex justify-between py-2 font-sans text-[11px]">
+                  <span className="text-clay">{k}</span>
+                  <span className="text-ink text-right">{v}</span>
+                </div>
+              ))}
+            </div>
+          )}
+          {footerText && (
+            <p className="text-[9px] text-clay/85 font-sans mt-2 pt-2 border-t border-line leading-relaxed">
+              {footerText}
+            </p>
+          )}
           {learnMoreHref && (
             <a
               href={learnMoreHref}

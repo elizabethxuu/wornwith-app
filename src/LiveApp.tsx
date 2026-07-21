@@ -43,7 +43,7 @@ const sectionKeys = [
   "section_journey",
   "section_care",
   "section_impact",
-  "section_ownership",
+  "section_next_chapter",
   "section_story",
   "section_ownership",
   "section_wardrobe",

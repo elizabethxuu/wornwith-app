@@ -21,7 +21,6 @@ import {
   QrCode,
   Check,
   ChevronLeft,
-  ChevronRight,
   Sparkles,
   ShoppingBag,
   Shirt,
@@ -233,7 +232,8 @@ export function ProductOverview() {
   ];
   return (
     <div className="h-full px-5 py-4 fade-up">
-      <div className="flex items-center gap-1.5 text-clay text-xs font-sans mb-4">
+      <Eyebrow>{t("section_product")}</Eyebrow>
+      <div className="flex items-center gap-1.5 text-clay text-xs font-sans mt-1 mb-4">
         <ChevronLeft size={14} /> <span>{GARMENT.brand} {t("wool_jacket")}</span>
         <span className="ml-auto flex items-center gap-1 text-sage text-[10px]">
           <Check size={12} /> {t("dpp_verified")}
@@ -358,7 +358,9 @@ export function SupplyChain() {
   return (
     <div className="h-full px-5 py-6 fade-up">
       <Eyebrow>{t("supply_chain")}</Eyebrow>
-      <div className="flex items-center justify-between mt-4 mb-4">
+      <h2 className="font-display italic text-2xl text-ink mt-1">{t("who_made_it")}</h2>
+      <p className="text-[11px] text-clay font-sans mt-1 mb-2">{t("supply_chain_supporting_line")}</p>
+      <div className="flex items-center justify-between mt-2 mb-4">
         {chain.map((c, i) => (
           <div key={c.label} className="flex items-center">
             <div
@@ -391,9 +393,8 @@ export function SupplyChain() {
           </div>
         ))}
       </div>
-      <Card>
-        <Eyebrow>{t("ethical_audit")}</Eyebrow>
-        <div className="mt-2 grid grid-cols-[1fr,auto] gap-y-1.5 gap-x-4 font-sans text-[12px] items-center">
+      <ExpandableCard title={t("ethical_audit")} defaultOpen footerText={t("audited_by")}>
+        <div className="grid grid-cols-[1fr,auto] gap-y-1.5 gap-x-4 font-sans text-[12px] items-center">
           <span className="text-clay">{t("fair_wages")}</span>
           <span className="text-sage flex items-center gap-1 justify-self-start">✦ {t("passed")}</span>
           <span className="text-clay">{t("health_safety")}</span>
@@ -401,22 +402,16 @@ export function SupplyChain() {
           <span className="text-clay">{t("no_forced_labour")}</span>
           <span className="text-sage flex items-center gap-1 justify-self-start">✦ {t("verified")}</span>
         </div>
-        <p className="text-[9px] text-clay/85 font-sans mt-2 pt-2 border-t border-line">
-          {t("audited_by")}
-        </p>
-      </Card>
+      </ExpandableCard>
 
-      <Card className="mt-3">
+      <ExpandableCard title={t("chemical_compliance")} defaultOpen footerText={t("economic_operator_note")}>
         <div className="grid grid-cols-[1fr,auto] gap-y-2 gap-x-4 font-sans text-[12px] items-start">
           <span className="text-clay">{t("chemical_compliance")}</span>
           <span className="text-sage text-right text-[11px]">✦ {t("reach_compliant")}</span>
           <span className="text-clay">{t("economic_operator")}</span>
           <span className="text-ink text-right text-[11px] font-medium">{t("economic_operator_value")}</span>
         </div>
-        <p className="text-[9px] text-clay/80 font-sans mt-2 pt-2 border-t border-line leading-relaxed">
-          {t("economic_operator_note")}
-        </p>
-      </Card>
+      </ExpandableCard>
 
       <ExpandableCard
         title={t("manufacturing_card_title")}
@@ -457,10 +452,11 @@ export function CareGuide() {
 
   return (
     <div className="h-full px-5 py-6 fade-up">
-      <h2 className="font-display italic text-2xl text-ink leading-tight">
+      <Eyebrow>{t("care")}</Eyebrow>
+      <h2 className="font-display italic text-2xl text-ink leading-tight mt-1">
         {t("designed_years")}
       </h2>
-      <p className="text-[11px] text-clay font-sans mt-1 mb-4">{t("designed_lifespan")}</p>
+      <p className="text-[11px] text-clay font-sans mt-1 mb-4">{t("care_supporting_line")}</p>
 
       <Eyebrow>{t("impact_per_wear")}</Eyebrow>
       <div className="flex justify-between mt-2 mb-5">
@@ -502,11 +498,11 @@ export function CareGuide() {
 /* 8 — SUSTAINABILITY METRICS */
 export function SustainabilityMetrics() {
   const { t } = useLanguage();
-  const [showEnvDetails, setShowEnvDetails] = useState(false);
   return (
     <div className="h-full px-5 py-6 fade-up">
       <Eyebrow>{t("sustainability")}</Eyebrow>
-      <h2 className="font-display italic text-2xl text-ink mt-1 mb-4">{t("impact_metrics")}</h2>
+      <h2 className="font-display italic text-2xl text-ink mt-1">{t("impact_metrics")}</h2>
+      <p className="text-[11px] text-clay font-sans mt-1 mb-4">{t("impact_supporting_line")}</p>
       <div className="flex justify-around mb-5">
         <Donut percent={30} label="CO₂" sublabel={t("vs_avg")} color="#C97A8C" />
         <Donut percent={80} label="H₂O" sublabel={t("recycled_water")} color="#8FA688" />
@@ -525,45 +521,10 @@ export function SustainabilityMetrics() {
         ))}
       </div>
 
-      <div className="mt-6 pt-5 border-t border-blush/30">
-        <button
-          onClick={() => setShowEnvDetails(!showEnvDetails)}
-          className="w-full flex items-center justify-between"
-        >
-          <p className="font-display italic text-lg text-ink">{t("env_performance_title")}</p>
-          <ChevronRight
-            size={16}
-            className="text-blush-deep transition-transform"
-            style={{ transform: showEnvDetails ? "rotate(90deg)" : "rotate(0deg)" }}
-          />
-        </button>
-
-        {showEnvDetails && (
-          <div className="fade-up mt-2">
-            <p className="font-sans text-[12px] text-clay leading-relaxed mb-3">
-              {t("env_performance_body")}
-            </p>
-            <ul className="space-y-1.5">
-              {[
-                [t("env_bullet_co2_value"), t("env_bullet_co2_label")],
-                [t("env_bullet_water_value"), t("env_bullet_water_label")],
-                [t("env_bullet_sourcing_value"), t("env_bullet_sourcing_label")],
-                [t("env_bullet_lifespan_value"), t("env_bullet_lifespan_label")],
-                [t("env_bullet_repair_value"), t("env_bullet_repair_label")],
-              ].map(([value, label]) => (
-                <li key={label} className="flex items-start gap-2 font-sans text-[12px] text-ink/80">
-                  <span className="mt-0.5 shrink-0">🌐</span>
-                  <span>
-                    <span className="font-semibold text-ink">{value}</span> {label}
-                  </span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
-        <div className="mt-4 border-t border-blush/30" />
-      </div>
-
+      <ExpandableCard
+        title={t("env_performance_title")}
+        bodyText={t("env_performance_body")}
+      />
     </div>
   );
 }
@@ -669,7 +630,8 @@ export function WhatsNext() {
 
   return (
     <div className="h-full px-5 py-6 fade-up">
-      <h2 className="font-display italic text-2xl text-ink leading-tight">
+      <Eyebrow>{t("section_next_chapter")}</Eyebrow>
+      <h2 className="font-display italic text-2xl text-ink leading-tight mt-1">
         {t("ready_pass_on")}
       </h2>
       <p className="font-sans text-[11px] text-clay mt-1 mb-5">{t("choose_next")}</p>
