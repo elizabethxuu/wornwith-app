@@ -47,7 +47,7 @@ export default function PrintableTag() {
           />
         </div>
         <p className="font-display italic text-sm text-blush-deep">Scan me ›</p>
-        <p className="font-sans text-[9px] text-clay/70 tracking-wide">
+        <p className="font-sans text-[9px] text-clay/85 tracking-wide">
           DPP-ID: 4f2a
         </p>
       </div>

@@ -58,7 +58,7 @@ export function Donut({
         </div>
       </div>
       <p className="text-[10px] font-sans font-semibold text-clay uppercase tracking-wide">{label}</p>
-      <p className="text-[10px] font-sans text-clay/70">{sublabel}</p>
+      <p className="text-[10px] font-sans text-clay/85">{sublabel}</p>
     </div>
   );
 }
@@ -270,7 +270,7 @@ export function JourneyMap() {
         <p className="font-sans text-[11px] text-clay leading-relaxed">{t(stop.blurbKey)}</p>
       </div>
 
-      <p className="font-sans text-[9px] text-clay/50 text-center mt-2">
+      <p className="font-sans text-[9px] text-clay/70 text-center mt-2">
         {t("tap_pin_hint")}
       </p>
     </div>
@@ -310,7 +310,7 @@ export function Pill({
 export function Disclaimer() {
   const { t } = useLanguage();
   return (
-    <p className="font-sans text-[8px] text-clay/40 text-center leading-relaxed mt-4 pt-3 border-t border-line/60">
+    <p className="font-sans text-[8px] text-clay/60 text-center leading-relaxed mt-4 pt-3 border-t border-line/60">
       {t("demo_disclaimer")}
     </p>
   );
@@ -360,6 +360,86 @@ export function EmptyState({
           {actionLabel}
         </button>
       )}
+    </div>
+  );
+}
+
+export function ExpandableCard({
+  title,
+  rows,
+  learnMoreHref,
+  learnMoreLabel,
+}: {
+  title: string;
+  rows: [string, string][];
+  learnMoreHref?: string;
+  learnMoreLabel?: string;
+}) {
+  const [open, setOpen] = useState(false);
+  return (
+    <div className="mt-4 border border-line rounded-card overflow-hidden">
+      <button
+        onClick={() => setOpen(!open)}
+        className="w-full flex items-center justify-between px-4 py-3"
+      >
+        <span className="font-sans text-[12px] font-semibold text-ink">{title}</span>
+        <span
+          className="text-blush-deep transition-transform inline-block"
+          style={{ transform: open ? "rotate(90deg)" : "rotate(0deg)" }}
+        >
+          ›
+        </span>
+      </button>
+      {open && (
+        <div className="px-4 pb-4 fade-up">
+          <div className="divide-y divide-line border-t border-line">
+            {rows.map(([k, v]) => (
+              <div key={k} className="flex justify-between py-2 font-sans text-[11px]">
+                <span className="text-clay">{k}</span>
+                <span className="text-ink text-right">{v}</span>
+              </div>
+            ))}
+          </div>
+          {learnMoreHref && (
+            <a
+              href={learnMoreHref}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-block mt-3 font-sans text-[11px] text-blush-deep underline underline-offset-2"
+            >
+              {learnMoreLabel}
+            </a>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
+export type LifecycleEntry = { year: string; event: string };
+
+export function LifecycleTimeline({
+  title,
+  entries,
+}: {
+  title: string;
+  entries: LifecycleEntry[];
+}) {
+  return (
+    <div className="mt-6">
+      <Eyebrow>{title}</Eyebrow>
+      <div className="relative pl-5 mt-3">
+        <div className="absolute left-[5px] top-1 bottom-1 w-px bg-line" />
+        <div className="space-y-4">
+          {entries.map((e, i) => (
+            <div key={i} className="relative">
+              <div className="absolute -left-5 top-[3px] w-2.5 h-2.5 rounded-full bg-blush-deep border-2 border-paper" />
+              <p className="font-display italic text-sm text-blush-deep leading-none">{e.year}</p>
+              <p className="font-sans text-[12px] text-ink mt-0.5">{e.event}</p>
+            </div>
+          ))}
+        </div>
+      </div>
     </div>
   );
 }

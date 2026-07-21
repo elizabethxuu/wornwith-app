@@ -33,6 +33,22 @@ const liveScreens = [
   <MyWardrobe key="wardrobe" />,
 ];
 
+// One label per screen above, used as the subtle section indicator next to
+// the progress bar. Kept as translation keys so it follows the language
+// toggle like everything else.
+const sectionKeys = [
+  "section_passport",
+  "section_product",
+  "section_journey",
+  "section_journey",
+  "section_care",
+  "section_impact",
+  "section_ownership",
+  "section_story",
+  "section_ownership",
+  "section_wardrobe",
+] as const;
+
 type BootState = "verifying" | "ready" | "offline" | "not-found";
 
 function checkDppId(): boolean {
@@ -133,10 +149,18 @@ export default function LiveApp() {
 
   return (
     <div className="h-[100dvh] w-full bg-paper flex flex-col overflow-hidden relative">
+      {/* subtle current-section label — same pink accent as the rest of
+          the app, doesn't touch the progress bar itself */}
+      <p
+        className="font-sans text-[9px] font-semibold uppercase tracking-[0.15em] text-blush-deep text-center shrink-0"
+        style={{ paddingTop: "max(env(safe-area-inset-top), 10px)" }}
+      >
+        {t(sectionKeys[index])}
+      </p>
+
       {/* story-style progress bar */}
       <div
-        className="flex gap-1 px-3 shrink-0"
-        style={{ paddingTop: "max(env(safe-area-inset-top), 12px)" }}
+        className="flex gap-1 px-3 shrink-0 mt-1.5"
       >
         {liveScreens.map((_, i) => (
           <div key={i} className="flex-1 h-[3px] rounded-full bg-line overflow-hidden">
@@ -171,7 +195,7 @@ export default function LiveApp() {
         ) : (
           <div className="w-10 h-10" />
         )}
-        <p className="font-sans text-[9px] text-clay/50">
+        <p className="font-sans text-[9px] text-clay/70">
           {index + 1} / {liveScreens.length}
         </p>
         {!isLast ? (

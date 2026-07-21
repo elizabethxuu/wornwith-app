@@ -7,7 +7,7 @@ export default {
         cream: "#FBF9F6",
         paper: "#FFFFFF",
         ink: "#2B2622",
-        clay: "#8A7F76",
+        clay: "#6E635A",
         blush: "#E7A6B4",
         "blush-deep": "#C97A8C",
         "blush-pale": "#F7E4E8",

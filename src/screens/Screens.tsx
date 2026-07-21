@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Eyebrow, Donut, Card, JourneyMap, Pill, Disclaimer, EmptyState } from "../components/UI";
+import { Eyebrow, Donut, Card, JourneyMap, Pill, Disclaimer, EmptyState, ExpandableCard, LifecycleTimeline } from "../components/UI";
 import {
   loadMoment,
   saveMoment,
@@ -47,7 +47,7 @@ export function SkeletonLoader() {
         <div className="h-3 w-1/2 mx-auto rounded-full shimmer" />
       </div>
       <p className="font-sans text-xs text-clay tracking-wide">{t("verifying")}</p>
-      <p className="absolute bottom-10 font-display italic text-sm text-clay/60">wornwith.care</p>
+      <p className="absolute bottom-10 font-display italic text-sm text-clay/80">wornwith.care</p>
     </div>
   );
 }
@@ -213,9 +213,7 @@ export function Welcome() {
           </button>
         </div>
 
-        <p className="font-sans text-[9px] text-clay/60">
-          {t("demo_disclaimer")}
-        </p>
+        <Disclaimer />
       </div>
     </div>
   );
@@ -279,7 +277,6 @@ export function ProductOverview() {
           <div className="flex justify-between"><span className="text-clay">{t("condition")}</span><span className="text-sage font-medium">{t("excellent")}</span></div>
         </div>
       </div>
-      <Disclaimer />
     </div>
   );
 }
@@ -333,7 +330,18 @@ export function ProductLifecycle() {
           ))}
         </div>
       </div>
-      <Disclaimer />
+
+      <ExpandableCard
+        title={t("wool_farming_card_title")}
+        rows={[
+          [t("wool_farming_cert_label"), t("wool_farming_cert_value")],
+          [t("wool_farming_region_label"), t("wool_farming_region_value")],
+          [t("wool_farming_climate_label"), t("wool_farming_climate_value")],
+          [t("wool_farming_season_label"), t("wool_farming_season_value")],
+        ]}
+        learnMoreHref="https://responsiblewool.org"
+        learnMoreLabel={t("learn_more")}
+      />
     </div>
   );
 }
@@ -362,7 +370,7 @@ export function SupplyChain() {
               </div>
               <p className="text-[9px] font-sans font-semibold text-ink mt-1">{c.label}</p>
               <p className="text-[8px] font-sans text-clay">{c.place}</p>
-              <p className="text-[7px] font-sans text-clay/60">{c.code}</p>
+              <p className="text-[7px] font-sans text-clay/80">{c.code}</p>
             </div>
             {i < chain.length - 1 && (
               <ArrowRight
@@ -393,7 +401,7 @@ export function SupplyChain() {
           <span className="text-clay">{t("no_forced_labour")}</span>
           <span className="text-sage flex items-center gap-1 justify-self-start">✦ {t("verified")}</span>
         </div>
-        <p className="text-[9px] text-clay/70 font-sans mt-2 pt-2 border-t border-line">
+        <p className="text-[9px] text-clay/85 font-sans mt-2 pt-2 border-t border-line">
           {t("audited_by")}
         </p>
       </Card>
@@ -405,11 +413,22 @@ export function SupplyChain() {
           <span className="text-clay">{t("economic_operator")}</span>
           <span className="text-ink text-right text-[11px] font-medium">{t("economic_operator_value")}</span>
         </div>
-        <p className="text-[9px] text-clay/60 font-sans mt-2 pt-2 border-t border-line leading-relaxed">
+        <p className="text-[9px] text-clay/80 font-sans mt-2 pt-2 border-t border-line leading-relaxed">
           {t("economic_operator_note")}
         </p>
       </Card>
-      <Disclaimer />
+
+      <ExpandableCard
+        title={t("manufacturing_card_title")}
+        rows={[
+          [t("manufacturing_mill_label"), t("manufacturing_mill_value")],
+          [t("manufacturing_family_label"), t("manufacturing_family_value")],
+          [t("manufacturing_since_label"), t("manufacturing_since_value")],
+          [t("manufacturing_renewable_label"), t("manufacturing_renewable_value")],
+        ]}
+        learnMoreHref="https://www.cos.com"
+        learnMoreLabel={t("learn_more")}
+      />
     </div>
   );
 }
@@ -476,7 +495,6 @@ export function CareGuide() {
           "{t("tradeoff_quote")}"
         </p>
       </div>
-      <Disclaimer />
     </div>
   );
 }
@@ -546,7 +564,6 @@ export function SustainabilityMetrics() {
         <div className="mt-4 border-t border-blush/30" />
       </div>
 
-      <Disclaimer />
     </div>
   );
 }
@@ -693,7 +710,7 @@ export function WhatsNext() {
           )
         )}
       </div>
-      <p className="font-sans text-[10px] text-clay/60 mt-4 text-center">
+      <p className="font-sans text-[10px] text-clay/80 mt-4 text-center">
         {t("location_note")}
       </p>
 
@@ -703,7 +720,6 @@ export function WhatsNext() {
           {t("brand_incentive_note")}
         </p>
       </Card>
-      <Disclaimer />
     </div>
   );
 }
@@ -788,7 +804,6 @@ export function StoryBehindIt() {
           {savedToWardrobe ? t("saved") : t("save_to_wardrobe")}
         </button>
       </div>
-      <Disclaimer />
     </div>
   );
 }
@@ -859,7 +874,7 @@ export function Personalization() {
             {[...moments].reverse().map((m, i) => (
               <div key={i} className="border-b border-line last:border-0 pb-3 last:pb-0">
                 <p className="font-display italic text-[13px] text-ink">{m.text}</p>
-                <p className="font-sans text-[9px] text-clay/60 mt-0.5">
+                <p className="font-sans text-[9px] text-clay/80 mt-0.5">
                   {new Date(m.savedAt).toLocaleDateString(locale, { month: "long", day: "numeric", year: "numeric" })}
                 </p>
 
@@ -869,7 +884,7 @@ export function Personalization() {
                     <span>{m.summary}</span>
                   </p>
                 ) : generating[m.savedAt] ? (
-                  <p className="font-sans text-[10px] text-clay/50 mt-1.5 italic">
+                  <p className="font-sans text-[10px] text-clay/70 mt-1.5 italic">
                     {t("generating_reflection")}
                   </p>
                 ) : failed[m.savedAt] ? (
@@ -882,7 +897,7 @@ export function Personalization() {
                 ) : (
                   <button
                     onClick={() => generateReflection(m.savedAt, m.text)}
-                    className="font-sans text-[10px] text-clay/60 flex items-center gap-1 mt-1.5"
+                    className="font-sans text-[10px] text-clay/80 flex items-center gap-1 mt-1.5"
                   >
                     <span className="text-ink">💎</span> {t("generate_reflection")}
                   </button>
@@ -902,10 +917,22 @@ export function Personalization() {
           <div className="flex justify-between"><span className="text-clay">{t("est_lifespan")}</span><span className="text-ink">{t("est_lifespan_value")} ✦</span></div>
         </div>
       </div>
+
+      <LifecycleTimeline
+        title={t("garment_lifecycle_title")}
+        entries={[
+          { year: "2026", event: t("lifecycle_2026") },
+          { year: "2027", event: t("lifecycle_2027") },
+          { year: "2029", event: t("lifecycle_2029") },
+          { year: "2031", event: t("lifecycle_2031") },
+          { year: "2034", event: t("lifecycle_2034") },
+          { year: "2038", event: t("lifecycle_2038") },
+        ]}
+      />
+
       <p className="font-display italic text-[12px] text-clay text-center mt-auto pt-6">
         {t("closing_line")}
       </p>
-      <Disclaimer />
     </div>
   );
 }
@@ -1017,7 +1044,7 @@ export function MyWardrobe() {
         ) : (
           <div className="w-full aspect-square rounded-card bg-blush-pale/50 flex flex-col items-center justify-center gap-2 mb-4">
             <Camera size={32} className="text-blush-deep/40" />
-            <p className="font-sans text-[11px] text-clay/60">{t("no_photo_added")}</p>
+            <p className="font-sans text-[11px] text-clay/80">{t("no_photo_added")}</p>
           </div>
         )}
 
@@ -1034,7 +1061,7 @@ export function MyWardrobe() {
             className={`text-[10px] rounded-full px-2 py-1 border transition-colors ${
               it.resold
                 ? "text-blush-deep border-blush-deep bg-blush-pale/60"
-                : "text-clay/50 border-line"
+                : "text-clay/70 border-line"
             }`}
           >
             {it.resold ? t("resold_badge") : t("mark_resold")}
@@ -1097,7 +1124,7 @@ export function MyWardrobe() {
 
       <div className="flex gap-2 mb-4">
         <div className="flex-1 relative">
-          <Search size={13} className="absolute left-3 top-1/2 -translate-y-1/2 text-clay/50" />
+          <Search size={13} className="absolute left-3 top-1/2 -translate-y-1/2 text-clay/70" />
           <input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
@@ -1106,7 +1133,7 @@ export function MyWardrobe() {
           />
         </div>
         <label className="relative flex items-center justify-center w-9 h-9 border border-line rounded-full shrink-0 cursor-pointer">
-          <CalendarDays size={14} className={dateFilter ? "text-blush-deep" : "text-clay/60"} />
+          <CalendarDays size={14} className={dateFilter ? "text-blush-deep" : "text-clay/80"} />
           <input
             type="date"
             value={dateFilter}
@@ -1167,7 +1194,7 @@ export function MyWardrobe() {
                     className={`text-[9px] rounded-full px-1.5 py-0.5 border transition-colors ${
                       it.resold
                         ? "text-blush-deep border-blush-deep bg-blush-pale/60"
-                        : "text-clay/40 border-line"
+                        : "text-clay/60 border-line"
                     }`}
                   >
                     {it.resold ? t("resold_badge") : t("mark_resold")}
@@ -1180,7 +1207,7 @@ export function MyWardrobe() {
               <button
                 onClick={(e) => { e.stopPropagation(); deleteItem(i); }}
                 aria-label={`Remove ${it.name}`}
-                className="text-clay/50 hover:text-blush-deep font-sans text-[11px] shrink-0 pt-0.5"
+                className="text-clay/70 hover:text-blush-deep font-sans text-[11px] shrink-0 pt-0.5"
               >
                 ✕
               </button>
