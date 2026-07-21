@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Eyebrow, Donut, Card, JourneyMap, Pill, Disclaimer, EmptyState, ExpandableCard, ArchiveTransition, ArchiveTimeline, type ArchiveEntry, TodaysEdit } from "../components/UI";
+import { ChapterColorProvider, ARCHIVE_ACCENT_COLOR } from "../lib/chapterColor";
 import {
   loadMoment,
   saveMoment,
@@ -892,16 +893,19 @@ export function Personalization() {
           </div>
         )}
 
-        {/* From the Archives */}
-        <div className="mb-8 fade-up" style={{ animationDelay: "150ms" }}>
-          <p className="font-sans text-[10px] uppercase tracking-[0.14em] font-semibold text-blush-deep">
-            {t("from_the_archives_title")}
-          </p>
-          <p className="font-sans text-[11px] text-clay mt-1 mb-5 leading-relaxed">
-            {t("from_the_archives_subtitle")}
-          </p>
-          <ArchiveTimeline entries={archiveEntries} />
-        </div>
+        {/* From the Archives — its own Deep Plum accent, distinct from the
+            Dusty Burgundy used for the rest of the Ownership screen */}
+        <ChapterColorProvider color={ARCHIVE_ACCENT_COLOR}>
+          <div className="mb-8 fade-up" style={{ animationDelay: "150ms" }}>
+            <p className="font-sans text-[10px] uppercase tracking-[0.14em] font-semibold transition-colors duration-500" style={{ color: ARCHIVE_ACCENT_COLOR }}>
+              {t("from_the_archives_title")}
+            </p>
+            <p className="font-sans text-[11px] text-clay mt-1 mb-5 leading-relaxed">
+              {t("from_the_archives_subtitle")}
+            </p>
+            <ArchiveTimeline entries={archiveEntries} />
+          </div>
+        </ChapterColorProvider>
 
         {/* Curator's Notes — deliberately no card, generous white space */}
         <div className="mb-8 py-2 fade-up" style={{ animationDelay: "650ms" }}>

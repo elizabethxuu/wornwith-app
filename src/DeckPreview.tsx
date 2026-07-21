@@ -1,5 +1,6 @@
 import { useState } from "react";
 import PhoneShell from "./components/PhoneShell";
+import { ChapterColorProvider, CHAPTER_COLORS } from "./lib/chapterColor";
 import {
   SkeletonLoader,
   CameraScan,
@@ -30,8 +31,17 @@ const screens = [
   { name: "Wardrobe", el: <MyWardrobe /> },
 ];
 
+// The first two screens (verifying / scan simulation) come before the
+// passport itself starts, so they don't have a chapter color — everything
+// from Welcome onward maps into CHAPTER_COLORS.
+const DEFAULT_ACCENT = "#C97A8C";
+function chapterColorFor(index: number): string {
+  return index >= 2 ? CHAPTER_COLORS[index - 2] : DEFAULT_ACCENT;
+}
+
 export default function DeckPreview() {
   const [index, setIndex] = useState(0);
+  const color = chapterColorFor(index);
 
   const next = () => setIndex((i) => Math.min(i + 1, screens.length - 1));
   const prev = () => setIndex((i) => Math.max(i - 1, 0));
@@ -42,12 +52,14 @@ export default function DeckPreview() {
         <p className="text-[10px] tracking-[0.2em] uppercase text-blush-deep font-sans font-semibold">
           wornwith.care
         </p>
-        <h1 className="font-display italic text-2xl text-ink mt-1">
+        <h1 className="font-display italic text-2xl text-ink mt-1 transition-colors duration-500" style={{ color }}>
           {index + 1}. {screens[index].name}
         </h1>
       </div>
 
-      <PhoneShell key={index}>{screens[index].el}</PhoneShell>
+      <PhoneShell key={index}>
+        <ChapterColorProvider color={color}>{screens[index].el}</ChapterColorProvider>
+      </PhoneShell>
 
       <div className="flex items-center gap-4">
         <button
@@ -62,9 +74,12 @@ export default function DeckPreview() {
             <button
               key={i}
               onClick={() => setIndex(i)}
-              className={`w-1.5 h-1.5 rounded-full transition-all ${
-                i === index ? "bg-blush-deep w-4" : "bg-line"
-              }`}
+              className="rounded-full transition-all duration-500"
+              style={{
+                width: i === index ? "16px" : "6px",
+                height: "6px",
+                backgroundColor: i === index ? chapterColorFor(i) : "#E8E2DD",
+              }}
               aria-label={`Go to screen ${i + 1}`}
             />
           ))}
@@ -72,7 +87,8 @@ export default function DeckPreview() {
         <button
           onClick={next}
           disabled={index === screens.length - 1}
-          className="font-sans text-xs tracking-wide text-blush-deep disabled:opacity-30 px-3 py-2"
+          className="font-sans text-xs tracking-wide disabled:opacity-30 px-3 py-2 transition-colors duration-500"
+          style={{ color }}
         >
           Next →
         </button>

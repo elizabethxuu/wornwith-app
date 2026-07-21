@@ -3,6 +3,7 @@ import { ComposableMap, Geographies, Geography, Marker, Line, ZoomableGroup } fr
 import { useLanguage, type TranslationKey } from "../lib/i18n";
 import type { WardrobeItem } from "../lib/persistence";
 import { requestVoice } from "../lib/voice";
+import { useChapterColor } from "../lib/chapterColor";
 import {
   fetchWeather,
   pickFeaturedItem,
@@ -18,8 +19,12 @@ import {
 } from "../lib/todaysEdit";
 
 export function Eyebrow({ children }: { children: React.ReactNode }) {
+  const color = useChapterColor();
   return (
-    <p className="text-[10px] tracking-[0.18em] uppercase text-blush-deep font-sans font-semibold">
+    <p
+      className="text-[10px] tracking-[0.18em] uppercase font-sans font-semibold transition-colors duration-500"
+      style={{ color }}
+    >
       {children}
     </p>
   );
@@ -399,6 +404,7 @@ export function ExpandableCard({
   children?: React.ReactNode;
 }) {
   const [open, setOpen] = useState(defaultOpen);
+  const color = useChapterColor();
   return (
     <div className="mt-4 border border-line rounded-card overflow-hidden">
       <button
@@ -407,8 +413,8 @@ export function ExpandableCard({
       >
         <span className="font-sans text-[12px] font-semibold text-ink">{title}</span>
         <span
-          className="text-blush-deep transition-transform inline-block"
-          style={{ transform: open ? "rotate(90deg)" : "rotate(0deg)" }}
+          className="transition-all inline-block"
+          style={{ transform: open ? "rotate(90deg)" : "rotate(0deg)", color }}
         >
           ›
         </span>
@@ -439,7 +445,8 @@ export function ExpandableCard({
               href={learnMoreHref}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-block mt-3 font-sans text-[11px] text-blush-deep underline underline-offset-2"
+              style={{ color }}
+              className="inline-block mt-3 font-sans text-[11px] underline underline-offset-2 transition-colors duration-500"
             >
               {learnMoreLabel}
             </a>
@@ -496,6 +503,7 @@ export type ArchiveEntry = {
 // future ones a hollow marker, and that's the only signal.
 export function ArchiveTimeline({ entries }: { entries: ArchiveEntry[] }) {
   const currentYear = new Date().getFullYear();
+  const color = useChapterColor();
   return (
     <div className="relative pl-5">
       <div className="absolute left-[5px] top-1 bottom-1 w-px bg-line" />
@@ -509,15 +517,15 @@ export function ArchiveTimeline({ entries }: { entries: ArchiveEntry[] }) {
               style={{ animationDelay: `${i * 90}ms` }}
             >
               <div
-                className={`absolute -left-5 top-[5px] w-2.5 h-2.5 rounded-full border-2 border-paper ${
-                  isFuture ? "bg-paper" : "bg-blush-deep"
-                }`}
-                style={isFuture ? { boxShadow: "inset 0 0 0 1.5px #C97A8C" } : undefined}
+                className="absolute -left-5 top-[5px] w-2.5 h-2.5 rounded-full border-2 border-paper transition-colors duration-500"
+                style={{
+                  backgroundColor: isFuture ? "#FFFFFF" : color,
+                  boxShadow: isFuture ? `inset 0 0 0 1.5px ${color}` : undefined,
+                }}
               />
               <p
-                className={`font-sans text-[9px] uppercase tracking-[0.14em] font-semibold ${
-                  isFuture ? "text-clay/70" : "text-blush-deep"
-                }`}
+                className="font-sans text-[9px] uppercase tracking-[0.14em] font-semibold transition-colors duration-500"
+                style={{ color: isFuture ? "#6E635A" : color }}
               >
                 {e.year} · {e.category}
               </p>
@@ -537,6 +545,7 @@ export function ArchiveTimeline({ entries }: { entries: ArchiveEntry[] }) {
 
 export function TodaysEdit({ wardrobe }: { wardrobe: WardrobeItem[] }) {
   const { t } = useLanguage();
+  const color = useChapterColor();
   const [weather, setWeather] = useState<WeatherData | null>(null);
   const [weatherStatus, setWeatherStatus] = useState<"loading" | "ready" | "unavailable">("loading");
 
@@ -577,7 +586,7 @@ export function TodaysEdit({ wardrobe }: { wardrobe: WardrobeItem[] }) {
       </p>
 
       {/* Recommended garment — the actual hero moment */}
-      <p className="font-display italic text-lg text-blush-deep mt-4">
+      <p className="font-display italic text-lg mt-4 transition-colors duration-500" style={{ color }}>
         {capitalizeFirst(itemName)}
       </p>
       <p className="font-sans text-[12px] text-ink/80 leading-relaxed mt-1">
@@ -620,7 +629,7 @@ export function TodaysEdit({ wardrobe }: { wardrobe: WardrobeItem[] }) {
             .filter(Boolean)
             .map((line, i) => (
               <li key={i} className="font-sans text-[11px] text-ink/80 flex items-start gap-1.5">
-                <span className="text-blush-deep shrink-0">·</span>
+                <span className="shrink-0 transition-colors duration-500" style={{ color }}>·</span>
                 <span>{line}</span>
               </li>
             ))}
@@ -649,7 +658,7 @@ export function TodaysEdit({ wardrobe }: { wardrobe: WardrobeItem[] }) {
           <ul className="space-y-1">
             {alternatives.map((a) => (
               <li key={a.name} className="font-sans text-[11px] text-ink/80 flex items-start gap-1.5">
-                <span className="text-blush-deep shrink-0">·</span>
+                <span className="shrink-0 transition-colors duration-500" style={{ color }}>·</span>
                 <span>{capitalizeFirst(naturalName(a.name))}</span>
               </li>
             ))}

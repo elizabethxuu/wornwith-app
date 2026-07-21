@@ -3,6 +3,7 @@ import { ChevronLeft, ChevronRight, WifiOff, SearchX } from "lucide-react";
 import { EmptyState } from "./components/UI";
 import { GARMENT } from "./lib/garment";
 import { useLanguage } from "./lib/i18n";
+import { ChapterColorProvider, CHAPTER_COLORS, INACTIVE_PROGRESS_COLOR } from "./lib/chapterColor";
 import {
   SkeletonLoader,
   Welcome,
@@ -149,31 +150,41 @@ export default function LiveApp() {
 
   return (
     <div className="h-[100dvh] w-full bg-paper flex flex-col overflow-hidden relative">
-      {/* subtle current-section label — same pink accent as the rest of
-          the app, doesn't touch the progress bar itself */}
+      {/* subtle current-section label — now tinted per chapter */}
       <p
-        className="font-sans text-[9px] font-semibold uppercase tracking-[0.15em] text-blush-deep text-center shrink-0"
-        style={{ paddingTop: "max(env(safe-area-inset-top), 10px)" }}
+        className="font-sans text-[9px] font-semibold uppercase tracking-[0.15em] text-center shrink-0 transition-colors duration-500"
+        style={{ paddingTop: "max(env(safe-area-inset-top), 10px)", color: CHAPTER_COLORS[index] }}
       >
         {t(sectionKeys[index])}
       </p>
 
-      {/* story-style progress bar */}
+      {/* story-style progress bar — each segment carries its own chapter's
+          color once reached, so the bar itself becomes a map of chapters
+          turned, like the page-edge color bands in a printed book */}
       <div
         className="flex gap-1 px-3 shrink-0 mt-1.5"
       >
         {liveScreens.map((_, i) => (
-          <div key={i} className="flex-1 h-[3px] rounded-full bg-line overflow-hidden">
+          <div
+            key={i}
+            className="flex-1 h-[3px] rounded-full overflow-hidden transition-colors duration-500"
+            style={{ backgroundColor: INACTIVE_PROGRESS_COLOR }}
+          >
             <div
-              className="h-full bg-blush-deep transition-all duration-300"
-              style={{ width: i < index ? "100%" : i === index ? "100%" : "0%" }}
+              className="h-full transition-all duration-500 ease-in-out"
+              style={{
+                width: i <= index ? "100%" : "0%",
+                backgroundColor: CHAPTER_COLORS[i],
+              }}
             />
           </div>
         ))}
       </div>
 
       <div className="flex-1 overflow-y-auto visible-scrollbar relative" onClick={handleTap}>
-        {liveScreens[index]}
+        <ChapterColorProvider color={CHAPTER_COLORS[index]}>
+          {liveScreens[index]}
+        </ChapterColorProvider>
       </div>
 
       {/* Visible, unambiguous nav bar — the tap-zones in the content area
