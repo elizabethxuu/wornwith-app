@@ -297,8 +297,62 @@ export function ProductLifecycle() {
     { icon: "🐑", title: t("wool_farming"), place: t("place_full_nz_short"), flag: "🇳🇿" },
     { icon: "🧵", title: t("spinning_weaving"), place: t("place_full_italy"), flag: "🇮🇹" },
     { icon: "✂️", title: t("cutting_construction"), place: t("place_full_portugal"), flag: "🇵🇹" },
-    { icon: "🧍", title: t("with_you_now"), place: t("place_full_paris"), flag: "🇫🇷", active: true },
+    { icon: "🧣", title: t("with_you_now"), place: t("place_full_paris"), flag: "🇫🇷" },
   ];
+  // The timeline's last stop ("With you now") is where the garment
+  // currently is, so that's the sensible default selection — but every
+  // row is tappable, and the card beneath adapts to whichever chapter is
+  // selected rather than always describing the wool farm.
+  const [selected, setSelected] = useState(stops.length - 1);
+
+  const stopDetails = [
+    {
+      cardTitle: t("wool_farming_card_title"),
+      rows: [
+        [t("wool_farming_cert_label"), t("wool_farming_cert_value")],
+        [t("wool_farming_region_label"), t("wool_farming_region_value")],
+        [t("wool_farming_climate_label"), t("wool_farming_climate_value")],
+        [t("wool_farming_season_label"), t("wool_farming_season_value")],
+      ] as [string, string][],
+      learnMoreLabel: t("learn_wool_farm"),
+      learnMoreHref: "https://responsiblewool.org",
+    },
+    {
+      cardTitle: t("manufacturing_card_title"),
+      rows: [
+        [t("manufacturing_mill_label"), t("manufacturing_mill_value")],
+        [t("manufacturing_family_label"), t("manufacturing_family_value")],
+        [t("manufacturing_since_label"), t("manufacturing_since_value")],
+        [t("manufacturing_renewable_label"), t("manufacturing_renewable_value")],
+      ] as [string, string][],
+      learnMoreLabel: t("meet_the_mill"),
+      learnMoreHref: "https://www.cos.com",
+    },
+    {
+      cardTitle: t("atelier_card_title"),
+      rows: [
+        [t("atelier_name_label"), t("atelier_name_value")],
+        [t("atelier_founded_label"), t("atelier_founded_value")],
+        [t("atelier_specialism_label"), t("atelier_specialism_value")],
+        [t("atelier_hands_label"), t("atelier_hands_value")],
+      ] as [string, string][],
+      learnMoreLabel: t("explore_the_atelier"),
+      learnMoreHref: "https://www.cos.com",
+    },
+    {
+      cardTitle: t("chapter_card_title"),
+      rows: [
+        [t("chapter_status_label"), t("chapter_status_value")],
+        [t("chapter_verified_label"), GARMENT.verifiedDate],
+        [t("chapter_owner_label"), t("chapter_owner_value")],
+      ] as [string, string][],
+      learnMoreLabel: t("view_this_chapter"),
+      learnMoreHref: "https://www.cos.com",
+    },
+  ];
+
+  const activeDetail = stopDetails[selected];
+
   return (
     <div className="h-full px-5 py-6 fade-up">
       <Eyebrow>{t("lifecycle_eyebrow")}</Eyebrow>
@@ -324,32 +378,29 @@ export function ProductLifecycle() {
         <div className="absolute left-[9px] top-2 bottom-2 w-px bg-line" />
         <div className="space-y-5">
           {stops.map((s, i) => (
-            <div
+            <button
               key={s.title}
+              onClick={() => setSelected(i)}
               style={{ animationDelay: `${480 + i * 150}ms` }}
-              className="pop-in relative flex items-center gap-3"
+              className="pop-in relative flex items-center gap-3 w-full text-left"
             >
-              <div className={`absolute -left-6 w-4 h-4 rounded-full border-2 ${s.active ? "bg-blush border-blush" : "bg-paper border-line"}`} />
+              <div className={`absolute -left-6 w-4 h-4 rounded-full border-2 ${selected === i ? "bg-blush border-blush" : "bg-paper border-line"}`} />
               <span className="text-xl">{s.icon}</span>
               <div>
-                <p className={`font-sans text-[13px] font-medium ${s.active ? "text-blush-deep" : "text-ink"}`}>{s.title}</p>
+                <p className={`font-sans text-[13px] font-medium ${selected === i ? "text-blush-deep" : "text-ink"}`}>{s.title}</p>
                 <p className="text-[11px] text-clay font-sans">{s.flag} {s.place}</p>
               </div>
-            </div>
+            </button>
           ))}
         </div>
       </div>
 
       <ExpandableCard
-        title={t("wool_farming_card_title")}
-        rows={[
-          [t("wool_farming_cert_label"), t("wool_farming_cert_value")],
-          [t("wool_farming_region_label"), t("wool_farming_region_value")],
-          [t("wool_farming_climate_label"), t("wool_farming_climate_value")],
-          [t("wool_farming_season_label"), t("wool_farming_season_value")],
-        ]}
-        learnMoreHref="https://responsiblewool.org"
-        learnMoreLabel={t("learn_more")}
+        key={selected}
+        title={activeDetail.cardTitle}
+        rows={activeDetail.rows}
+        learnMoreHref={activeDetail.learnMoreHref}
+        learnMoreLabel={activeDetail.learnMoreLabel}
       />
     </div>
   );

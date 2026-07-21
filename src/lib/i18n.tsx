@@ -284,6 +284,28 @@ const dict = {
   manufacturing_renewable_label: { en: "Renewable energy", fr: "Énergie renouvelable", pt: "Energia renovável" },
   manufacturing_renewable_value: { en: "65%", fr: "65%", pt: "65%" },
 
+  learn_wool_farm: { en: "Learn about the wool farm", fr: "Découvrir la ferme de laine", pt: "Conhecer a fazenda de lã" },
+  meet_the_mill: { en: "Meet the mill", fr: "Découvrir la filature", pt: "Conhecer a fábrica" },
+  explore_the_atelier: { en: "Explore the atelier", fr: "Découvrir l'atelier", pt: "Explorar o ateliê" },
+  view_this_chapter: { en: "View this chapter", fr: "Voir ce chapitre", pt: "Ver este capítulo" },
+
+  atelier_card_title: { en: "About this atelier", fr: "À propos de cet atelier", pt: "Sobre este ateliê" },
+  atelier_name_label: { en: "Atelier", fr: "Atelier", pt: "Ateliê" },
+  atelier_name_value: { en: "Porto Atelier", fr: "Atelier de Porto", pt: "Ateliê do Porto" },
+  atelier_founded_label: { en: "Established", fr: "Fondé en", pt: "Fundado em" },
+  atelier_founded_value: { en: "1962", fr: "1962", pt: "1962" },
+  atelier_specialism_label: { en: "Specialism", fr: "Spécialité", pt: "Especialidade" },
+  atelier_specialism_value: { en: "Precision tailoring & construction", fr: "Tailleur de précision et construction", pt: "Alfaiataria de precisão e construção" },
+  atelier_hands_label: { en: "Hands per garment", fr: "Mains par vêtement", pt: "Mãos por peça" },
+  atelier_hands_value: { en: "12", fr: "12", pt: "12" },
+
+  chapter_card_title: { en: "About this chapter", fr: "À propos de ce chapitre", pt: "Sobre este capítulo" },
+  chapter_status_label: { en: "Status", fr: "Statut", pt: "Status" },
+  chapter_status_value: { en: "In active use", fr: "En usage actif", pt: "Em uso ativo" },
+  chapter_verified_label: { en: "Verified", fr: "Vérifié", pt: "Verificado" },
+  chapter_owner_label: { en: "Chapter", fr: "Chapitre", pt: "Capítulo" },
+  chapter_owner_value: { en: "Ownership begins", fr: "Le début de la possession", pt: "O início da posse" },
+
 
   // Archive transition
   transition_saving: { en: "Saving to Archive…", fr: "Enregistrement dans les archives…", pt: "Salvando no Arquivo…" },
