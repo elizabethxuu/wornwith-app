@@ -295,6 +295,43 @@ const dict = {
   environmental_ranking: { en: "Environmental ranking", fr: "Classement Environnemental", pt: "Classificação Ambiental" },
   archive_entries_count: { en: "Archive entries", fr: "Entrées d'archives", pt: "Entradas no arquivo" },
   save_another_moment: { en: "+ Save another moment", fr: "+ Enregistrer un autre moment", pt: "+ Salvar outro momento" },
+
+  // Today's Edit
+  todays_edit_title: { en: "Today's Edit", fr: "La Sélection du Jour", pt: "A Seleção de Hoje" },
+  good_morning: { en: "Good morning.", fr: "Bonjour.", pt: "Bom dia." },
+  headline_cold_wet: { en: "Cool temperatures and a chance of rain make {item} the strongest choice for today.", fr: "Des températures fraîches et un risque de pluie font de {item} le meilleur choix aujourd'hui.", pt: "Temperaturas mais frias e chance de chuva fazem de {item} a melhor escolha hoje." },
+  headline_cold_dry: { en: "Cool, dry conditions make {item} a comfortable choice for today.", fr: "Des conditions fraîches et sèches font de {item} un choix confortable aujourd'hui.", pt: "Condições frias e secas fazem de {item} uma escolha confortável hoje." },
+  headline_mild: { en: "Mild conditions today — {item} pairs well with a light layer.", fr: "Conditions douces aujourd'hui — {item} se marie bien avec une couche légère.", pt: "Condições amenas hoje — {item} combina bem com uma camada leve." },
+  headline_warm_wet: { en: "Warm with a chance of rain — {item} is a practical choice today.", fr: "Chaud avec un risque de pluie — {item} est un choix pratique aujourd'hui.", pt: "Quente com chance de chuva — {item} é uma escolha prática hoje." },
+  headline_warm_dry: { en: "Warm, dry conditions make {item} the effortless choice for today.", fr: "Des conditions chaudes et sèches font de {item} le choix évident aujourd'hui.", pt: "Condições quentes e secas fazem de {item} a escolha sem esforço hoje." },
+  headline_no_weather: { en: "{item} remains a dependable choice today.", fr: "{item} reste un choix fiable aujourd'hui.", pt: "{item} continua sendo uma escolha confiável hoje." },
+  layer_suggestion: { en: "Layer over a lightweight knit for comfort throughout the day.", fr: "Superposez avec un tricot léger pour plus de confort tout au long de la journée.", pt: "Combine com uma malha leve para mais conforto ao longo do dia." },
+
+  weather_summary_title: { en: "Weather Summary", fr: "Résumé Météo", pt: "Resumo do Tempo" },
+  chance_of_rain: { en: "chance of rain today", fr: "de risque de pluie aujourd'hui", pt: "de chance de chuva hoje" },
+  wind_label: { en: "wind", fr: "de vent", pt: "de vento" },
+  humidity_label: { en: "humidity", fr: "d'humidité", pt: "de umidade" },
+  weather_unavailable: { en: "Enable location access for real-time weather.", fr: "Activez l'accès à la position pour la météo en temps réel.", pt: "Ative o acesso à localização para clima em tempo real." },
+
+  why_this_piece_title: { en: "Why this piece?", fr: "Pourquoi cette pièce ?", pt: "Por que esta peça?" },
+  reason_temperature: { en: "Suited to today's temperature", fr: "Adapté à la température d'aujourd'hui", pt: "Adequado à temperatura de hoje" },
+  reason_not_worn: { en: "Not worn in {n} days", fr: "Pas porté depuis {n} jours", pt: "Não usado há {n} dias" },
+  reason_condition: { en: "Excellent condition", fr: "État excellent", pt: "Condição excelente" },
+  reason_weather: { en: "Well suited to changing weather", fr: "Bien adapté aux conditions changeantes", pt: "Bem adequado a condições variáveis" },
+  reason_impact: { en: "Extends impact per wear", fr: "Prolonge l'impact par port", pt: "Estende o impacto por uso" },
+
+  morning_brief_title: { en: "Morning Brief", fr: "Bulletin du Matin", pt: "Boletim Matinal" },
+  listen_label: { en: "Listen", fr: "Écouter", pt: "Ouvir" },
+  stop_label: { en: "Stop", fr: "Arrêter", pt: "Parar" },
+  voice_unavailable: { en: "Spoken briefing isn't supported in this browser.", fr: "Le bulletin audio n'est pas pris en charge par ce navigateur.", pt: "O boletim falado não é compatível com este navegador." },
+
+  alternatives_title: { en: "Today's Alternatives", fr: "Alternatives du Jour", pt: "Alternativas de Hoje" },
+  alternatives_subtitle: { en: "You may also consider", fr: "Vous pourriez aussi considérer", pt: "Você também pode considerar" },
+
+  readiness_title: { en: "Garment Readiness", fr: "État de Préparation", pt: "Prontidão da Peça" },
+  ready_to_wear: { en: "Ready to wear", fr: "Prêt à porter", pt: "Pronto para usar" },
+  next_maintenance: { en: "Next recommended maintenance", fr: "Prochain entretien recommandé", pt: "Próxima manutenção recomendada" },
+  estimated_after_wears: { en: "Estimated after {n} additional wears", fr: "Estimé après {n} ports supplémentaires", pt: "Estimado após mais {n} usos" },
   years_word: { en: "years", fr: "ans", pt: "anos" },
 
   // What's next

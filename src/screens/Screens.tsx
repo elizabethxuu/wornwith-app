@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Eyebrow, Donut, Card, JourneyMap, Pill, Disclaimer, EmptyState, ExpandableCard, ArchiveTransition, ArchiveTimeline, type ArchiveEntry } from "../components/UI";
+import { Eyebrow, Donut, Card, JourneyMap, Pill, Disclaimer, EmptyState, ExpandableCard, ArchiveTransition, ArchiveTimeline, type ArchiveEntry, TodaysEdit } from "../components/UI";
 import {
   loadMoment,
   saveMoment,
@@ -1140,6 +1140,7 @@ export function MyWardrobe() {
 
   return (
     <div className="h-full px-5 py-6 fade-up">
+      <TodaysEdit wardrobe={items} />
       <Eyebrow>{t("my_wardrobe")}</Eyebrow>
       <h2 className="font-display italic text-xl text-ink mt-1 mb-3">
         {items.length} {t("pieces")} · {brandCount} {t("brands")} · {resoldCount} {t("resold")}
