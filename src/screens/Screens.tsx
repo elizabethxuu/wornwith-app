@@ -858,7 +858,8 @@ export function Personalization() {
         onChange={(e) => setText(e.target.value)}
         rows={3}
         placeholder={t("moment_placeholder")}
-        className="w-full border border-line rounded-xl px-3.5 py-3 font-display italic text-[14px] leading-relaxed text-ink resize-none focus:outline-none focus:border-blush"
+        style={{ minHeight: "88px", lineHeight: "1.5" }}
+        className="w-full border border-line rounded-xl px-3.5 py-3.5 font-display italic text-[14px] text-ink resize-none focus:outline-none focus:border-blush box-border"
       />
       <button
         onClick={handleSave}
