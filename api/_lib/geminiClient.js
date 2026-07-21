@@ -1,10 +1,11 @@
-// gemini-2.0-flash was returning "limit: 0" on the free tier — it's no
-// longer part of Google's actively-provisioned free-tier lineup as of
-// 2026. The confirmed free-tier models are 2.5 Pro, 2.5 Flash, and 2.5
-// Flash-Lite; Flash-Lite has the most generous rate limits of the three
-// and is more than sufficient for a one-sentence reflection. Still
-// overridable via GEMINI_MODEL if you want to try a different one.
-const GEMINI_MODEL = process.env.GEMINI_MODEL || "gemini-2.5-flash-lite";
+// Both gemini-2.0-flash and gemini-2.5-flash-lite failed for the same
+// underlying reason: hardcoded, pinned model versions go stale as Google
+// cuts off new-user access to older models. The actual fix is to stop
+// pinning a specific version — "gemini-flash-latest" is Google's rolling
+// alias that always points to their current recommended Flash model and
+// updates automatically on their end, so this class of failure shouldn't
+// recur. Still overridable via GEMINI_MODEL if needed.
+const GEMINI_MODEL = process.env.GEMINI_MODEL || "gemini-flash-latest";
 const TIMEOUT_MS = 12000;
 const MAX_RETRIES = 2;
 
