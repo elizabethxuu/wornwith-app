@@ -72,6 +72,19 @@ const dict = {
   dpp_verified: { en: "DPP Verified", fr: "DPP Vérifié", pt: "DPP Verificado" },
   wool_jacket: { en: "Wool Jacket", fr: "Veste en Laine", pt: "Casaco de Lã" },
   tagline_coat: { en: "Sustainable materials, timeless style", fr: "Matériaux durables, style intemporel", pt: "Materiais sustentáveis, estilo atemporal" },
+
+  product_editorial_label: { en: "Crafted to Last", fr: "Conçu pour Durer", pt: "Feito para Durar" },
+  product_editorial_headline: {
+    en: "This coat was designed to become part of your life—not just your wardrobe.",
+    fr: "Ce manteau a été conçu pour faire partie de votre vie — pas seulement de votre garde-robe.",
+    pt: "Este casaco foi feito para fazer parte da sua vida — não apenas do seu guarda-roupa.",
+  },
+  product_editorial_copy: {
+    en: "A timeless wool silhouette made from 70% recycled fibres, crafted in Portugal using Italian-spun wool, and designed to be repaired rather than replaced.",
+    fr: "Une silhouette intemporelle en laine composée à 70% de fibres recyclées, confectionnée au Portugal à partir de laine filée en Italie, conçue pour être réparée plutôt que remplacée.",
+    pt: "Uma silhueta atemporal em lã feita com 70% de fibras recicladas, confeccionada em Portugal com lã fiada na Itália, feita para ser reparada em vez de substituída.",
+  },
+  product_editorial_cta: { en: "Explore its journey", fr: "Découvrir son parcours", pt: "Explorar sua jornada" },
   material: { en: "Material", fr: "Matériau", pt: "Material" },
   made_in: { en: "Made in", fr: "Fabriqué en", pt: "Fabricado em" },
   certified: { en: "Certified", fr: "Certifié", pt: "Certificado" },

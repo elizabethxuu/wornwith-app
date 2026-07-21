@@ -268,6 +268,43 @@ export function ProductOverview() {
       <p className="font-sans text-[11px] text-clay mt-1 mb-4">
         {t("tagline_coat")}
       </p>
+
+      {/* Editorial feature panel — a quiet interlude between the hero
+          image and the spec table, not a promotional card. Kept to a
+          fixed max-height so it reads as a compact editorial strip rather
+          than a boxed-in banner. */}
+      <div
+        className="flex items-center gap-4 px-4 py-3.5 mb-4 rounded-lg"
+        style={{ backgroundColor: "#FCF5F6", minHeight: "90px", maxHeight: "110px" }}
+      >
+        <div className="flex-1 min-w-0">
+          <p
+            className="font-sans text-[9px] uppercase tracking-[0.16em] font-semibold"
+            style={{ color: "#8E3D52" }}
+          >
+            {t("product_editorial_label")}
+          </p>
+          <p
+            className="font-display italic text-[15px] leading-snug mt-1"
+            style={{ color: "#8E3D52" }}
+          >
+            {t("product_editorial_headline")}
+          </p>
+          <p className="font-sans text-[9px] text-clay leading-relaxed mt-1.5 line-clamp-2">
+            {t("product_editorial_copy")}
+          </p>
+        </div>
+        {/* Plain text, not a button — tapping it falls through to the
+            screen's existing forward-navigation tap zone, so it's
+            genuinely functional without any new navigation wiring. */}
+        <p
+          className="font-sans text-[10px] font-medium whitespace-nowrap shrink-0 cursor-pointer"
+          style={{ color: "#8E3D52" }}
+        >
+          {t("product_editorial_cta")} →
+        </p>
+      </div>
+
       <div className="divide-y divide-line border-y border-line">
         {rows.map(([k, v]) => (
           <div key={k} className="flex justify-between py-2 font-sans text-[12px]">
