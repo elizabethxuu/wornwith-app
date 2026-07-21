@@ -435,6 +435,10 @@ export function SupplyChain() {
 export function CareGuide() {
   const { t } = useLanguage();
   const { wearCount: careWearCount, tier: careTier, season: careSeason } = getCareRecommendation();
+  // Collapsed by default to keep the page light — but once wear, repairs,
+  // or seasonality actually make care relevant (anything past "excellent"
+  // tier), the detail isn't optional reading anymore, so it starts open.
+  const [serviceExpanded, setServiceExpanded] = useState(careTier !== "excellent");
   const wears = [
     [t("wears_5"), t("impact_high"), "text-blush-deep"],
     [t("wears_30"), t("impact_opt"), "text-blush"],
@@ -490,33 +494,53 @@ export function CareGuide() {
       </div>
 
       {/* Next Recommended Care — genuinely dynamic: real wear count, real
-          current season, real condition determine which tier and seasonal
-          clause render, not a fixed string. No icons, scores, or alert
-          styling, per the conservator-note tone this is meant to read as. */}
+          current season, real condition determine the tier and the
+          reasoning sentence, not a fixed string. Collapsed by default to
+          keep the page light; auto-expands once care actually becomes
+          relevant (moderate/heavy tier), since that's the moment the
+          detail stops being optional reading. */}
       <div className="mb-5 fade-up">
         <Eyebrow>{t("next_recommended_care_title")}</Eyebrow>
         <p className="font-sans text-[12px] text-ink/85 leading-relaxed mt-2">
-          {t("care_intro_before")}{" "}
-          <span className="font-semibold text-ink">
-            {careWearCount} {t("care_intro_recorded_wears")}
-          </span>
-          , {t(`care_tier_${careTier}` as TranslationKey)}
+          {t(`care_tier_${careTier}` as TranslationKey)}
         </p>
-        <p className="font-sans text-[12px] text-ink/85 leading-relaxed mt-2">
-          {t(`care_season_${careSeason}` as TranslationKey)}
+        <p className="font-sans text-[12px] text-ink/85 leading-relaxed mt-1.5">
+          {t("care_reasoning_before")}{" "}
+          <span className="font-semibold text-ink">
+            {careWearCount} {t("care_reasoning_wears_word")}
+          </span>
+          , {t(`season_word_${careSeason}` as TranslationKey)}{" "}
+          {t("care_reasoning_and_condition")} {t("condition_word_excellent")} {t("care_reasoning_condition_word")}.
         </p>
         {careTier === "excellent" && (
           <p className="font-sans text-[11px] text-clay mt-2 italic">{t("care_will_notify")}</p>
         )}
-      </div>
 
-      <div className="mb-5">
-        <Eyebrow>{t("next_suggested_service_title")}</Eyebrow>
-        <ul className="mt-2 space-y-1.5">
-          <li className="font-sans text-[12px] text-ink/80">{t("service_professional_cleaning")}</li>
-          <li className="font-sans text-[12px] text-ink/80">{t("service_light_brushing")}</li>
-          <li className="font-sans text-[12px] text-ink/80">{t("service_wooden_hanger")}</li>
-        </ul>
+        <button
+          onClick={() => setServiceExpanded(!serviceExpanded)}
+          className="font-sans text-[11px] text-blush-deep underline underline-offset-2 mt-3"
+        >
+          {serviceExpanded ? t("hide_suggested_service") : t("view_suggested_service")}
+        </button>
+
+        <div
+          className="grid transition-all duration-500 ease-in-out"
+          style={{ gridTemplateRows: serviceExpanded ? "1fr" : "0fr" }}
+        >
+          <div className="overflow-hidden">
+            <div
+              className="mt-4 transition-opacity duration-500"
+              style={{ opacity: serviceExpanded ? 1 : 0 }}
+            >
+              <Eyebrow>{t("next_suggested_service_title")}</Eyebrow>
+              <ul className="mt-2 space-y-1.5">
+                <li className="font-sans text-[12px] text-ink/80">{t("service_professional_cleaning")}</li>
+                <li className="font-sans text-[12px] text-ink/80">{t("service_light_brushing")}</li>
+                <li className="font-sans text-[12px] text-ink/80">{t("service_wooden_hanger")}</li>
+              </ul>
+            </div>
+          </div>
+        </div>
       </div>
 
       <div className="border-l-2 border-blush pl-3">

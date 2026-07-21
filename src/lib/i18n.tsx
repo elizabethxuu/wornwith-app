@@ -162,45 +162,32 @@ const dict = {
   next_recommended_care_title: { en: "Next Recommended Care", fr: "Prochain Entretien Recommandé", pt: "Próximo Cuidado Recomendado" },
   next_suggested_service_title: { en: "Next Suggested Service", fr: "Prochain Service Suggéré", pt: "Próximo Serviço Sugerido" },
 
-  care_intro_before: { en: "Based on", fr: "Sur la base de", pt: "Com base em" },
-  care_intro_recorded_wears: { en: "recorded wears", fr: "ports enregistrés", pt: "usos registrados" },
-
-  care_tier_excellent: {
-    en: "no maintenance is recommended at this time.",
-    fr: "aucun entretien n'est recommandé pour le moment.",
-    pt: "nenhuma manutenção é recomendada no momento.",
-  },
   care_tier_moderate: {
-    en: "a light professional clean is recommended before continued seasonal use.",
-    fr: "un léger nettoyage professionnel est recommandé avant une utilisation saisonnière continue.",
-    pt: "uma limpeza profissional leve é recomendada antes do uso contínuo na estação.",
+    en: "A light professional clean is recommended before continued seasonal use.",
+    fr: "Un léger nettoyage professionnel est recommandé avant une utilisation saisonnière continue.",
+    pt: "Uma limpeza profissional leve é recomendada antes do uso contínuo na estação.",
   },
   care_tier_heavy: {
-    en: "this garment would benefit from professional servicing before further regular wear.",
-    fr: "ce vêtement bénéficierait d'un entretien professionnel avant une utilisation régulière prolongée.",
-    pt: "esta peça se beneficiaria de manutenção profissional antes de mais uso regular.",
+    en: "This garment would benefit from professional servicing before further regular wear.",
+    fr: "Ce vêtement bénéficierait d'un entretien professionnel avant une utilisation régulière prolongée.",
+    pt: "Esta peça se beneficiaria de manutenção profissional antes de mais uso regular.",
   },
 
-  care_season_autumn: {
-    en: "Current autumn conditions favour professional cleaning before seasonal storage.",
-    fr: "Les conditions automnales actuelles favorisent un nettoyage professionnel avant le stockage saisonnier.",
-    pt: "As condições atuais de outono favorecem uma limpeza profissional antes do armazenamento sazonal.",
-  },
-  care_season_winter: {
-    en: "Current winter conditions call for continued regular brushing to preserve the wool fibres.",
-    fr: "Les conditions hivernales actuelles appellent à un brossage régulier continu pour préserver les fibres de laine.",
-    pt: "As condições atuais de inverno pedem escovação regular contínua para preservar as fibras de lã.",
-  },
-  care_season_spring: {
-    en: "Current spring conditions suggest a light refresh before storing through the warmer months.",
-    fr: "Les conditions printanières actuelles suggèrent un léger rafraîchissement avant le stockage durant les mois plus chauds.",
-    pt: "As condições atuais de primavera sugerem uma leve renovação antes de guardar durante os meses mais quentes.",
-  },
-  care_season_summer: {
-    en: "Current summer conditions call for lighter, less frequent wear until the cooler months return.",
-    fr: "Les conditions estivales actuelles appellent à un port plus léger et moins fréquent jusqu'au retour des mois plus frais.",
-    pt: "As condições atuais de verão pedem uso mais leve e menos frequente até o retorno dos meses mais frios.",
-  },
+
+  care_reasoning_before: { en: "Based on", fr: "Sur la base de", pt: "Com base em" },
+  care_reasoning_wears_word: { en: "recorded wears", fr: "ports enregistrés", pt: "usos registrados" },
+  care_reasoning_and_condition: { en: "and the garment's", fr: "et l'état", pt: "e a condição" },
+  care_reasoning_condition_word: { en: "condition", fr: "du vêtement", pt: "da peça" },
+
+  season_word_spring: { en: "spring", fr: "printemps", pt: "primavera" },
+  season_word_summer: { en: "summer", fr: "estivales", pt: "verão" },
+  season_word_autumn: { en: "autumn", fr: "automnales", pt: "outono" },
+  season_word_winter: { en: "winter", fr: "hivernales", pt: "inverno" },
+
+  condition_word_excellent: { en: "excellent", fr: "excellent", pt: "excelente" },
+
+  view_suggested_service: { en: "View suggested service", fr: "Voir le service suggéré", pt: "Ver serviço sugerido" },
+  hide_suggested_service: { en: "Hide suggested service", fr: "Masquer le service suggéré", pt: "Ocultar serviço sugerido" },
 
   care_will_notify: {
     en: "We'll let you know when its care profile changes.",
