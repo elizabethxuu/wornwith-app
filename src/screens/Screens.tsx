@@ -524,7 +524,25 @@ export function SustainabilityMetrics() {
       <ExpandableCard
         title={t("env_performance_title")}
         bodyText={t("env_performance_body")}
-      />
+      >
+        <ul className="space-y-2 mb-1">
+          {[
+            [t("env_metric_carbon_value"), t("env_metric_carbon")],
+            [t("env_metric_recyclable_value"), t("env_metric_recyclable")],
+            [t("env_metric_renewable_value"), t("env_metric_renewable")],
+            [t("env_metric_sourced_value"), t("env_metric_sourced")],
+            [t("env_metric_water_value"), t("env_metric_water")],
+            [t("env_metric_service_value"), t("env_metric_service")],
+          ].map(([value, label]) => (
+            <li key={label} className="flex items-baseline gap-2 font-sans text-[12px] text-ink/85">
+              <span className="text-[11px] shrink-0">🌐</span>
+              <span>
+                <span className="font-semibold text-ink">{value}</span> {label}
+              </span>
+            </li>
+          ))}
+        </ul>
+      </ExpandableCard>
     </div>
   );
 }
