@@ -13,11 +13,14 @@ import {
   updateMomentSummary,
   type SavedMoment,
   logWardrobeEvent,
+  loadOwnershipRecord,
+  saveOwnershipRecord,
+  type OwnershipRecord,
   compressImage,
 } from "../lib/persistence";
 import { GARMENT, getEstimatedYearsRemaining } from "../lib/garment";
 import { getCareRecommendation } from "../lib/careRecommendation";
-import { useLanguage } from "../lib/i18n";
+import { useLanguage, type TranslationKey } from "../lib/i18n";
 import {
   QrCode,
   Check,
@@ -276,8 +279,8 @@ export function ProductOverview() {
           fixed max-height so it reads as a compact editorial strip rather
           than a boxed-in banner. */}
       <div
-        className="flex items-center gap-4 px-4 py-3.5 mb-4 rounded-lg"
-        style={{ backgroundColor: "#FCF5F6", minHeight: "90px", maxHeight: "110px" }}
+        className="flex items-start gap-4 px-4 py-3.5 mb-4 rounded-lg"
+        style={{ backgroundColor: "#FCF5F6", minHeight: "90px" }}
       >
         <div className="flex-1 min-w-0">
           <p
@@ -292,7 +295,7 @@ export function ProductOverview() {
           >
             {t("product_editorial_headline")}
           </p>
-          <p className="font-sans text-[9px] text-clay leading-relaxed mt-1.5 line-clamp-2">
+          <p className="font-sans text-[9px] text-clay leading-relaxed mt-1.5">
             {t("product_editorial_copy")}
           </p>
         </div>
@@ -319,8 +322,8 @@ export function ProductOverview() {
         <Eyebrow>{t("your_garment")}</Eyebrow>
         <div className="mt-2 space-y-1.5 font-sans text-[12px]">
           <div className="flex justify-between"><span className="text-clay">{t("owned_since")}</span><span className="text-ink">{t("owned_since_date")}</span></div>
-          <div className="flex justify-between"><span className="text-clay">{t("times_worn")}</span><span className="text-ink">{GARMENT.timesWorn}</span></div>
-          <div className="flex justify-between"><span className="text-clay">{t("condition")}</span><span className="text-sage font-medium">{t("excellent")}</span></div>
+          <div className="flex justify-between"><span className="text-clay">{t("times_worn")}</span><span className="text-ink">{loadOwnershipRecord().wearCount || GARMENT.timesWorn}</span></div>
+          <div className="flex justify-between"><span className="text-clay">{t("condition")}</span><span className="text-sage font-medium">{loadOwnershipRecord().condition || t("excellent")}</span></div>
         </div>
       </div>
     </div>
@@ -917,6 +920,16 @@ export function Personalization() {
   );
   const [curatorsNotes, setCuratorsNotes] = useState<string | null>(null);
   const [lastAIError, setLastAIError] = useState<string | null>(null);
+  const [ownershipRecord, setOwnershipRecord] = useState<OwnershipRecord>(() => loadOwnershipRecord());
+  const [ownershipSaved, setOwnershipSaved] = useState(false);
+
+  const updateOwnershipField = (field: keyof OwnershipRecord, value: string) => {
+    const updated = { ...ownershipRecord, [field]: value };
+    setOwnershipRecord(updated);
+    saveOwnershipRecord(updated);
+    setOwnershipSaved(true);
+    setTimeout(() => setOwnershipSaved(false), 1600);
+  };
 
   // Curator's Notes: real generation, but cached for the day so opening
   // this screen repeatedly doesn't re-call the API every time. Falls back
@@ -1094,6 +1107,68 @@ export function Personalization() {
           </div>
         </div>
 
+        {/* Ownership Record — the persistent repository. Autosaves on
+            blur, same pattern as the Wardrobe editing panel. Condition
+            and Wear Count here are the same source of truth read by the
+            Product page's "Your Garment" table, so an edit here is
+            genuinely visible there too, not a cosmetic duplicate field. */}
+        <div className="mb-6">
+          <Eyebrow>{t("ownership_record_title")}</Eyebrow>
+          <p className="font-sans text-[10px] text-clay leading-relaxed mt-1 mb-3">
+            {t("ownership_record_subtitle")}
+          </p>
+          <div className="space-y-3">
+            {(
+              [
+                ["owner", "field_owner"],
+                ["purchaseDate", "field_purchase_date"],
+                ["purchaseLocation", "field_purchase_location"],
+                ["purchasePrice", "field_purchase_price"],
+                ["originalRetailer", "field_original_retailer"],
+                ["condition", "field_condition"],
+                ["wearCount", "field_wear_count"],
+              ] as [keyof OwnershipRecord, TranslationKey][]
+            ).map(([field, labelKey]) => (
+              <div key={field}>
+                <p className="text-[9px] font-sans font-semibold text-clay uppercase tracking-wide mb-1">
+                  {t(labelKey)}
+                </p>
+                <input
+                  defaultValue={ownershipRecord[field] || ""}
+                  onBlur={(e) => updateOwnershipField(field, e.target.value.trim())}
+                  className="font-sans text-[12px] text-ink w-full bg-transparent focus:outline-none border-b border-line focus:border-blush py-1"
+                />
+              </div>
+            ))}
+            {(
+              [
+                ["repairHistory", "field_repair_history"],
+                ["favoriteMemories", "field_favorite_memories"],
+                ["travelHistory", "field_travel_history"],
+                ["notes", "field_notes"],
+              ] as [keyof OwnershipRecord, TranslationKey][]
+            ).map(([field, labelKey]) => (
+              <div key={field}>
+                <p className="text-[9px] font-sans font-semibold text-clay uppercase tracking-wide mb-1">
+                  {t(labelKey)}
+                </p>
+                <textarea
+                  defaultValue={ownershipRecord[field] || ""}
+                  onBlur={(e) => updateOwnershipField(field, e.target.value.trim())}
+                  rows={2}
+                  className="font-sans text-[12px] text-ink w-full bg-transparent resize-none focus:outline-none border border-transparent focus:border-line rounded-lg -mx-1 px-1"
+                />
+              </div>
+            ))}
+          </div>
+          {ownershipSaved && (
+            <p className="font-sans text-[10px] text-sage fade-up mt-2">{t("saved_confirmation")}</p>
+          )}
+          <p className="font-sans text-[9px] text-clay/70 leading-relaxed mt-3">
+            {t("save_disclaimer")}
+          </p>
+        </div>
+
         <button
           onClick={() => setView("compose")}
           className="font-sans text-[11px] text-blush-deep underline underline-offset-2"
@@ -1128,6 +1203,9 @@ export function Personalization() {
       >
         {t("save_moment")}
       </button>
+      <p className="font-sans text-[9px] text-clay/70 text-center leading-relaxed mt-2 px-2">
+        {t("save_disclaimer")}
+      </p>
 
       <p className="font-display italic text-[12px] text-clay text-center mt-auto pt-6">
         {t("closing_line")}
@@ -1191,6 +1269,48 @@ export function MyWardrobe() {
     saveWardrobe(updated);
   };
 
+  const [savedFlash, setSavedFlash] = useState(false);
+  const [photoUploading, setPhotoUploading] = useState(false);
+  const flashSaved = () => {
+    setSavedFlash(true);
+    setTimeout(() => setSavedFlash(false), 1600);
+  };
+
+  // A single generic updater used by every editable field in the detail
+  // view — autosaves immediately and briefly shows "Saved" (matching the
+  // rest of the app's calm fade language, not a jarring toast).
+  const updateItemField = (index: number, field: keyof WardrobeItem, value: string) => {
+    const updated = items.map((it, i) => (i === index ? { ...it, [field]: value } : it));
+    setItems(updated);
+    saveWardrobe(updated);
+    flashSaved();
+  };
+
+  const handleDetailPhotoChange = async (index: number, e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    e.target.value = ""; // allow re-selecting the same file later
+    if (!file) return;
+    setPhotoUploading(true);
+    try {
+      const compressed = await compressImage(file);
+      const updated = items.map((it, i) => (i === index ? { ...it, photo: compressed } : it));
+      setItems(updated);
+      saveWardrobe(updated);
+      flashSaved();
+    } catch {
+      // ignore — photo upload failing shouldn't block anything else
+    } finally {
+      setPhotoUploading(false);
+    }
+  };
+
+  const removeDetailPhoto = (index: number) => {
+    const updated = items.map((it, i) => (i === index ? { ...it, photo: undefined } : it));
+    setItems(updated);
+    saveWardrobe(updated);
+    flashSaved();
+  };
+
   const brandCount = new Set(items.map((it) => it.brand || "Unlabeled")).size;
   const resoldCount = items.filter((it) => it.resold).length;
 
@@ -1222,32 +1342,70 @@ export function MyWardrobe() {
 
   if (selectedIndex !== null && items[selectedIndex]) {
     const it = items[selectedIndex];
+    const idx = selectedIndex;
     return (
       <div
+        key={idx}
         className="h-full px-5 py-6 fade-up overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
-        <button
-          onClick={() => setSelectedIndex(null)}
-          className="flex items-center gap-1 text-clay text-xs font-sans mb-4"
-        >
-          <ChevronLeft size={14} /> {t("my_wardrobe")}
-        </button>
+        <div className="flex items-center justify-between mb-4">
+          <button
+            onClick={() => setSelectedIndex(null)}
+            className="flex items-center gap-1 text-clay text-xs font-sans"
+          >
+            <ChevronLeft size={14} /> {t("my_wardrobe")}
+          </button>
+          {savedFlash && (
+            <p className="font-sans text-[10px] text-sage fade-up">{t("saved_confirmation")}</p>
+          )}
+        </div>
 
-        {it.photo ? (
-          <img
-            src={it.photo}
-            alt={it.name}
-            className="w-full aspect-square rounded-card object-cover border border-line mb-4"
-          />
-        ) : (
-          <div className="w-full aspect-square rounded-card bg-blush-pale/50 flex flex-col items-center justify-center gap-2 mb-4">
-            <Camera size={32} className="text-blush-deep/40" />
-            <p className="font-sans text-[11px] text-clay/80">{t("no_photo_added")}</p>
-          </div>
-        )}
+        {/* Interactive photo — tap the empty state to upload, tap an
+            existing photo to replace it, small × to remove it. */}
+        <div className="relative mb-4">
+          <label className="block cursor-pointer">
+            <input
+              type="file"
+              accept="image/jpeg,image/png,image/heic,image/*"
+              className="hidden"
+              onChange={(e) => handleDetailPhotoChange(idx, e)}
+            />
+            {photoUploading ? (
+              <div className="w-full aspect-square rounded-card bg-blush-pale/50 flex flex-col items-center justify-center gap-2">
+                <div className="w-6 h-6 border-2 border-blush-deep/40 border-t-blush-deep rounded-full animate-spin" />
+                <p className="font-sans text-[11px] text-clay/80">{t("uploading_label")}</p>
+              </div>
+            ) : it.photo ? (
+              <img
+                src={it.photo}
+                alt={it.name}
+                className="w-full aspect-square rounded-card object-cover border border-line"
+              />
+            ) : (
+              <div className="w-full aspect-square rounded-card bg-blush-pale/50 flex flex-col items-center justify-center gap-2">
+                <Camera size={32} className="text-blush-deep/40" />
+                <p className="font-sans text-[11px] text-clay/80">{t("upload_photo_label")}</p>
+              </div>
+            )}
+          </label>
+          {it.photo && !photoUploading && (
+            <button
+              onClick={() => removeDetailPhoto(idx)}
+              aria-label={t("remove_photo_label")}
+              className="absolute top-2.5 right-2.5 w-7 h-7 rounded-full bg-ink/70 text-white flex items-center justify-center text-sm"
+            >
+              ×
+            </button>
+          )}
+        </div>
 
-        <h2 className="font-display italic text-2xl text-ink leading-tight">{it.name}</h2>
+        {/* Editable Title */}
+        <input
+          defaultValue={it.name}
+          onBlur={(e) => e.target.value.trim() && updateItemField(idx, "name", e.target.value.trim())}
+          className="font-display italic text-2xl text-ink leading-tight w-full bg-transparent focus:outline-none focus:border-b focus:border-blush"
+        />
 
         <div className="flex flex-wrap gap-1.5 mt-2 mb-4">
           {it.tag && (
@@ -1256,7 +1414,7 @@ export function MyWardrobe() {
             </span>
           )}
           <button
-            onClick={() => toggleResold(selectedIndex)}
+            onClick={() => toggleResold(idx)}
             className={`text-[10px] rounded-full px-2 py-1 border transition-colors ${
               it.resold
                 ? "text-blush-deep border-blush-deep bg-blush-pale/60"
@@ -1286,17 +1444,71 @@ export function MyWardrobe() {
           </div>
         </div>
 
+        {/* Editable Description */}
         <div className="mt-4">
           <p className="text-[10px] font-sans font-semibold text-blush-deep uppercase tracking-wide mb-1">
-            {t("the_memory")}
+            {t("description_field_label")}
           </p>
-          <p className="font-display italic text-[15px] text-ink leading-relaxed">
-            {it.noteKey ? t(it.noteKey) : it.note}
-          </p>
+          <textarea
+            defaultValue={it.noteKey ? t(it.noteKey) : it.note}
+            onBlur={(e) => {
+              const value = e.target.value.trim();
+              const updated = items.map((item, i) =>
+                i === idx ? { ...item, note: value, noteKey: undefined } : item
+              );
+              setItems(updated);
+              saveWardrobe(updated);
+              flashSaved();
+            }}
+            rows={2}
+            className="font-display italic text-[15px] text-ink leading-relaxed w-full bg-transparent resize-none focus:outline-none border border-transparent focus:border-line rounded-lg -mx-1 px-1"
+          />
         </div>
 
+        {/* Optional fields — Occasion, Season, Favourite Outfit Notes */}
+        <div className="mt-4 space-y-3">
+          <div>
+            <p className="text-[9px] font-sans font-semibold text-clay uppercase tracking-wide mb-1">
+              {t("occasion_field_label")}
+            </p>
+            <input
+              defaultValue={it.occasion || ""}
+              onBlur={(e) => updateItemField(idx, "occasion", e.target.value.trim())}
+              placeholder={t("occasion_placeholder")}
+              className="font-sans text-[12px] text-ink w-full bg-transparent focus:outline-none border-b border-line focus:border-blush py-1"
+            />
+          </div>
+          <div>
+            <p className="text-[9px] font-sans font-semibold text-clay uppercase tracking-wide mb-1">
+              {t("season_field_label")}
+            </p>
+            <input
+              defaultValue={it.season || ""}
+              onBlur={(e) => updateItemField(idx, "season", e.target.value.trim())}
+              placeholder={t("season_placeholder")}
+              className="font-sans text-[12px] text-ink w-full bg-transparent focus:outline-none border-b border-line focus:border-blush py-1"
+            />
+          </div>
+          <div>
+            <p className="text-[9px] font-sans font-semibold text-clay uppercase tracking-wide mb-1">
+              {t("favorite_notes_field_label")}
+            </p>
+            <textarea
+              defaultValue={it.favoriteNotes || ""}
+              onBlur={(e) => updateItemField(idx, "favoriteNotes", e.target.value.trim())}
+              placeholder={t("favorite_notes_placeholder")}
+              rows={2}
+              className="font-sans text-[12px] text-ink w-full bg-transparent resize-none focus:outline-none border border-transparent focus:border-line rounded-lg -mx-1 px-1"
+            />
+          </div>
+        </div>
+
+        <p className="font-sans text-[9px] text-clay/70 leading-relaxed mt-4">
+          {t("save_disclaimer")}
+        </p>
+
         <button
-          onClick={() => { deleteItem(selectedIndex); setSelectedIndex(null); }}
+          onClick={() => { deleteItem(idx); setSelectedIndex(null); }}
           className="w-full mt-6 font-sans text-[12px] text-blush-deep border border-line rounded-full py-2.5"
         >
           {t("remove_from_wardrobe")}
@@ -1463,6 +1675,9 @@ export function MyWardrobe() {
               {t("cancel")}
             </button>
           </div>
+          <p className="font-sans text-[9px] text-clay/70 leading-relaxed">
+            {t("save_disclaimer")}
+          </p>
         </div>
       ) : (
         <button

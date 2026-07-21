@@ -27,6 +27,45 @@ function key(name: string) {
   return `wornwith:${DPP_ID}:${name}`;
 }
 
+// The Ownership Memory Repository — one persisted record per garment,
+// covering everything a real provenance record would track. Kept as a
+// flat, plainly-typed object (no nested logic, no derived fields) so it
+// could later be hashed and anchored on-chain without any UI changes —
+// "blockchain-ready" here means "clean, stable schema," not an actual
+// chain integration, which would need a real wallet/contract layer this
+// environment can't provide.
+export type OwnershipRecord = {
+  owner?: string;
+  purchaseDate?: string;
+  purchaseLocation?: string;
+  purchasePrice?: string;
+  originalRetailer?: string;
+  condition?: string;
+  repairHistory?: string;
+  wearCount?: string;
+  favoriteMemories?: string;
+  travelHistory?: string;
+  notes?: string;
+};
+
+export function loadOwnershipRecord(): OwnershipRecord {
+  try {
+    const raw = localStorage.getItem(key("ownership-record"));
+    if (!raw) return {};
+    return JSON.parse(raw);
+  } catch {
+    return {};
+  }
+}
+
+export function saveOwnershipRecord(record: OwnershipRecord) {
+  try {
+    localStorage.setItem(key("ownership-record"), JSON.stringify(record));
+  } catch {
+    // ignore
+  }
+}
+
 export function loadMoment(): string {
   try {
     return localStorage.getItem(key("moment")) ?? "";
@@ -54,6 +93,9 @@ export type WardrobeItem = {
   loggedAt?: string; // ISO date (yyyy-mm-dd), used for the calendar filter
   resold?: boolean;
   photo?: string; // compressed base64 data URL
+  occasion?: string;
+  season?: string;
+  favoriteNotes?: string;
 };
 
 const defaultWardrobe: WardrobeItem[] = [

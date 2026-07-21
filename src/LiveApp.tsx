@@ -223,6 +223,21 @@ export default function LiveApp() {
         </ChapterColorProvider>
       </div>
 
+
+      {/* Minimal legal footer — shown above nav on every screen, rendered
+          once here rather than duplicated per-screen. */}
+      <div className="flex items-center justify-center gap-3 px-4 pt-2 shrink-0">
+        <p className="font-sans text-[9px] text-clay/60">{t("footer_copyright")}</p>
+        <span className="text-clay/40 text-[9px]">·</span>
+        <a href="#" className="font-sans text-[9px] text-clay/60 hover:underline underline-offset-2">
+          {t("footer_privacy")}
+        </a>
+        <span className="text-clay/40 text-[9px]">·</span>
+        <a href="#" className="font-sans text-[9px] text-clay/60 hover:underline underline-offset-2">
+          {t("footer_terms")}
+        </a>
+      </div>
+
       {/* Visible, unambiguous nav bar — the tap-zones in the content area
           still work too, but this makes it obvious at a glance that you can
           move forward/back. Fixed outside the scrollable content so it can
