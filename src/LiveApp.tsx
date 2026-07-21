@@ -16,6 +16,8 @@ import {
   StoryBehindIt,
   Personalization,
   MyWardrobe,
+  PrivacyPolicyScreen,
+  TermsOfUseScreen,
 } from "./screens/Screens";
 
 // Real users arrive here because they already scanned the physical tag with
@@ -68,6 +70,7 @@ export default function LiveApp() {
   const [bootState, setBootState] = useState<BootState>("verifying");
   const [index, setIndex] = useState(0);
   const [showClosing, setShowClosing] = useState(false);
+  const [legalPage, setLegalPage] = useState<"none" | "privacy" | "terms">("none");
 
   const runVerification = () => {
     setBootState("verifying");
@@ -89,8 +92,18 @@ export default function LiveApp() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const goPrev = () => setIndex((i) => Math.max(0, i - 1));
+  const goPrev = () => {
+    if (legalPage !== "none") {
+      setLegalPage("none");
+      return;
+    }
+    setIndex((i) => Math.max(0, i - 1));
+  };
   const goNext = () => {
+    if (legalPage !== "none") {
+      setLegalPage("none");
+      return;
+    }
     if (index === liveScreens.length - 1) {
       setShowClosing(true);
       return;
@@ -219,23 +232,34 @@ export default function LiveApp() {
 
       <div className="flex-1 overflow-y-auto visible-scrollbar relative" onClick={handleTap}>
         <ChapterColorProvider color={CHAPTER_COLORS[index]}>
-          {liveScreens[index]}
+          {legalPage === "privacy" ? (
+            <PrivacyPolicyScreen onBack={() => setLegalPage("none")} />
+          ) : legalPage === "terms" ? (
+            <TermsOfUseScreen onBack={() => setLegalPage("none")} />
+          ) : (
+            liveScreens[index]
+          )}
         </ChapterColorProvider>
       </div>
 
 
       {/* Minimal legal footer — shown above nav on every screen, rendered
-          once here rather than duplicated per-screen. */}
-      <div className="flex items-center justify-center gap-3 px-4 pt-2 shrink-0">
+          once here rather than duplicated per-screen. Real buttons, not
+          external links — both open the dedicated in-app screens. */}
+      <div className="flex items-center justify-center gap-4 px-4 pt-2 shrink-0">
         <p className="font-sans text-[9px] text-clay/60">{t("footer_copyright")}</p>
-        <span className="text-clay/40 text-[9px]">·</span>
-        <a href="#" className="font-sans text-[9px] text-clay/60 hover:underline underline-offset-2">
+        <button
+          onClick={() => setLegalPage("privacy")}
+          className="font-sans text-[9px] text-clay/60 hover:underline underline-offset-2"
+        >
           {t("footer_privacy")}
-        </a>
-        <span className="text-clay/40 text-[9px]">·</span>
-        <a href="#" className="font-sans text-[9px] text-clay/60 hover:underline underline-offset-2">
+        </button>
+        <button
+          onClick={() => setLegalPage("terms")}
+          className="font-sans text-[9px] text-clay/60 hover:underline underline-offset-2"
+        >
           {t("footer_terms")}
-        </a>
+        </button>
       </div>
 
       {/* Visible, unambiguous nav bar — the tap-zones in the content area
