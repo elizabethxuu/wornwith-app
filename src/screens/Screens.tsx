@@ -520,7 +520,7 @@ export function CareGuide() {
           onClick={() => setServiceExpanded(!serviceExpanded)}
           className="font-sans text-[11px] text-blush-deep underline underline-offset-2 mt-3"
         >
-          {serviceExpanded ? t("hide_suggested_service") : t("view_suggested_service")}
+          {t("care_guidance_label")}
         </button>
 
         <div

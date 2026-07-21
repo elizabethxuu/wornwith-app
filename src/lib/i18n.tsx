@@ -162,6 +162,11 @@ const dict = {
   next_recommended_care_title: { en: "Next Recommended Care", fr: "Prochain Entretien Recommandé", pt: "Próximo Cuidado Recomendado" },
   next_suggested_service_title: { en: "Next Suggested Service", fr: "Prochain Service Suggéré", pt: "Próximo Serviço Sugerido" },
 
+  care_tier_excellent: {
+    en: "No maintenance is recommended at this time.",
+    fr: "Aucun entretien n'est recommandé pour le moment.",
+    pt: "Nenhuma manutenção é recomendada no momento.",
+  },
   care_tier_moderate: {
     en: "A light professional clean is recommended before continued seasonal use.",
     fr: "Un léger nettoyage professionnel est recommandé avant une utilisation saisonnière continue.",
@@ -186,8 +191,7 @@ const dict = {
 
   condition_word_excellent: { en: "excellent", fr: "excellent", pt: "excelente" },
 
-  view_suggested_service: { en: "View suggested service", fr: "Voir le service suggéré", pt: "Ver serviço sugerido" },
-  hide_suggested_service: { en: "Hide suggested service", fr: "Masquer le service suggéré", pt: "Ocultar serviço sugerido" },
+  care_guidance_label: { en: "Care Guidance", fr: "Conseils d'Entretien", pt: "Orientação de Cuidados" },
 
   care_will_notify: {
     en: "We'll let you know when its care profile changes.",
@@ -545,7 +549,22 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
   }, [lang]);
 
   const setLang = (l: Lang) => setLangState(l);
-  const t = (key: TranslationKey) => dict[key]?.[lang] ?? dict[key]?.en ?? String(key);
+  const t = (key: TranslationKey) => {
+    const entry = dict[key];
+    if (!entry) {
+      // A missing dictionary entry is a real bug (like the accidentally-
+      // deleted care_tier_excellent key), but the raw key name — e.g.
+      // "care_tier_excellent" — must never render as visible copy. Warn
+      // loudly in development so it gets caught, fail silently (empty
+      // string) in production so a person never sees an implementation
+      // detail.
+      if (import.meta.env.DEV) {
+        console.warn(`[i18n] Missing translation key: "${key}"`);
+      }
+      return "";
+    }
+    return entry[lang] ?? entry.en ?? "";
+  };
   const locale = LOCALE_MAP[lang];
 
   return (
