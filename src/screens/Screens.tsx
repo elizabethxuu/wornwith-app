@@ -34,6 +34,8 @@ import {
   Camera,
   MapPinOff,
   Heart,
+  Share,
+  Bookmark,
 } from "lucide-react";
 
 /* 1 — SKELETON LOADER */
@@ -883,15 +885,17 @@ export function StoryBehindIt() {
       <div className="flex gap-2.5 mt-4">
         <button
           onClick={handleShare}
-          className="flex-1 border border-line rounded-full py-2.5 font-sans text-[12px] text-ink"
+          className="flex-1 flex items-center justify-center gap-2 border border-line rounded-full py-2.5 font-sans text-[12px] text-ink transition-colors duration-300 hover:bg-black/[0.02]"
         >
+          <Share size={14} strokeWidth={1.5} />
           {shareState === "shared" ? t("shared") : shareState === "copied" ? t("link_copied") : t("share_passport")}
         </button>
         <button
           onClick={handleSaveToWardrobe}
           disabled={savedToWardrobe}
-          className="flex-1 bg-ink text-cream rounded-full py-2.5 font-sans text-[12px] disabled:opacity-60"
+          className="flex-1 flex items-center justify-center gap-2 bg-ink text-cream rounded-full py-2.5 font-sans text-[12px] transition-opacity duration-300 disabled:opacity-60"
         >
+          <Bookmark size={14} strokeWidth={1.5} />
           {savedToWardrobe ? t("saved") : t("save_to_wardrobe")}
         </button>
       </div>

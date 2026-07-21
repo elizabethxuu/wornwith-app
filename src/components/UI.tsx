@@ -173,7 +173,16 @@ export function JourneyMap() {
 
   return (
     <div className="w-full mb-4" onClick={(e) => e.stopPropagation()}>
-      <div className="w-full border border-line rounded-card overflow-hidden" style={{ backgroundColor: "#F7F5F1" }}>
+      <div
+        className="w-full border border-line/60 rounded-card overflow-hidden transition-shadow duration-500"
+        style={{
+          backgroundImage:
+            "radial-gradient(ellipse 60% 55% at 50% 32%, rgba(235,201,210,0.32) 0%, transparent 72%), " +
+            "radial-gradient(ellipse 50% 45% at 86% 82%, rgba(47,199,216,0.20) 0%, transparent 72%), " +
+            "linear-gradient(180deg, #FDFBF7 0%, #FAF7F1 100%)",
+          boxShadow: "0 1px 3px rgba(0,0,0,0.02)",
+        }}
+      >
         <ComposableMap
           projection="geoEqualEarth"
           projectionConfig={{ scale: 58 }}
@@ -190,10 +199,10 @@ export function JourneyMap() {
                     <Geography
                       key={geo.rsmKey}
                       geography={geo}
-                      fill={wash ? wash.fill : "#EDEBE7"}
-                      fillOpacity={wash ? wash.opacity : 0.45}
-                      stroke="#FAF7F2"
-                      strokeWidth={0.5}
+                      fill={wash ? wash.fill : "#E5E2DC"}
+                      fillOpacity={wash ? wash.opacity * 0.7 : 0.3}
+                      stroke="#FAF7F1"
+                      strokeWidth={0.4}
                       style={{
                         default: { outline: "none", transition: "fill-opacity 1.2s ease" },
                         hover: { outline: "none" },
@@ -211,7 +220,7 @@ export function JourneyMap() {
                 from={s.coords}
                 to={journeyStops[i + 1].coords}
                 stroke="#2FC7D8"
-                strokeWidth={1.3}
+                strokeWidth={1.0}
                 strokeLinecap="round"
                 pathLength={1}
                 style={{
@@ -272,7 +281,7 @@ export function JourneyMap() {
                       x2={s.dx}
                       y2={s.dy + 3}
                       stroke={stopColor}
-                      strokeWidth={0.75}
+                      strokeWidth={0.6}
                       strokeOpacity={0.5}
                     />
                   )}
@@ -303,38 +312,24 @@ export function JourneyMap() {
         </ComposableMap>
       </div>
 
-      {/* Tap-to-reveal detail card for whichever stop is selected — now an
-          editorial "story card" rather than a flat info banner. Paris
-          (the current chapter) gets the extra flourishes: a handwritten-
-          style note and a small watercolor sketch motif. */}
+      {/* Tap-to-reveal detail card for whichever stop is selected — the
+          gradient now lives on the map itself, so this returns to a
+          quiet, flat cream card. Typography only, no decorative icon. */}
       <div
-        className="mt-2.5 rounded-xl px-4 py-4 fade-up relative overflow-hidden"
-        style={{
-          backgroundImage: "linear-gradient(135deg, #EBC9D2 0%, #FAF7F2 55%, #FAF7F2 100%)",
-        }}
+        className="mt-2.5 rounded-xl px-4 py-4 fade-up border border-line/40"
+        style={{ backgroundColor: "#FAF7F1" }}
         key={selected}
       >
-        <div className="flex items-start gap-3">
-          {stop.active && (
-            <svg width="34" height="34" viewBox="0 0 34 34" fill="none" className="shrink-0 mt-0.5 opacity-60">
-              {/* A minimal line-sketch suggestion of Paris — thin strokes,
-                  no fill, to read as a light watercolour-sketch motif
-                  rather than a literal illustration. */}
-              <path d="M17 4 L17 22 M12 22 L22 22 M14 10 L20 10 M15.5 6 L18.5 6 M9 30 L25 30 M11 30 L11 22 M23 30 L23 22"
-                stroke="#A94C63" strokeWidth="0.8" strokeLinecap="round" />
-            </svg>
-          )}
-          <div className="min-w-0">
-            <p
-              className="font-sans text-[9px] uppercase tracking-[0.14em] font-semibold"
-              style={{ color: "#A94C63" }}
-            >
-              {t(stop.placeKey)}
-            </p>
-            <p className="font-display italic text-[15px] text-ink leading-snug mt-1.5">
-              {t(stop.blurbKey)}
-            </p>
-          </div>
+        <div className="min-w-0">
+          <p
+            className="font-sans text-[9px] uppercase tracking-[0.14em] font-semibold"
+            style={{ color: "#A94C63" }}
+          >
+            {t(stop.placeKey)}
+          </p>
+          <p className="font-display italic text-[15px] text-ink leading-snug mt-1.5">
+            {t(stop.blurbKey)}
+          </p>
         </div>
         {stop.active && (
           <p
