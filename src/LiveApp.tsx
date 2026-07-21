@@ -159,8 +159,8 @@ export default function LiveApp() {
       </p>
 
       {/* story-style progress bar — each segment carries its own chapter's
-          color once reached, so the bar itself becomes a map of chapters
-          turned, like the page-edge color bands in a printed book */}
+          color, so the bar reads as a single quiet marker of where you are,
+          not a multi-colored progress fill */}
       <div
         className="flex gap-1 px-3 shrink-0 mt-1.5"
       >
@@ -173,7 +173,7 @@ export default function LiveApp() {
             <div
               className="h-full transition-all duration-500 ease-in-out"
               style={{
-                width: i <= index ? "100%" : "0%",
+                width: i === index ? "100%" : "0%",
                 backgroundColor: CHAPTER_COLORS[i],
               }}
             />

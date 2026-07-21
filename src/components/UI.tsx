@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { Mic, Square } from "lucide-react";
 import { ComposableMap, Geographies, Geography, Marker, Line, ZoomableGroup } from "react-simple-maps";
 import { useLanguage, type TranslationKey } from "../lib/i18n";
 import type { WardrobeItem } from "../lib/persistence";
@@ -404,7 +405,6 @@ export function ExpandableCard({
   children?: React.ReactNode;
 }) {
   const [open, setOpen] = useState(defaultOpen);
-  const color = useChapterColor();
   return (
     <div className="mt-4 border border-line rounded-card overflow-hidden">
       <button
@@ -413,8 +413,8 @@ export function ExpandableCard({
       >
         <span className="font-sans text-[12px] font-semibold text-ink">{title}</span>
         <span
-          className="transition-all inline-block"
-          style={{ transform: open ? "rotate(90deg)" : "rotate(0deg)", color }}
+          className="text-clay transition-transform inline-block"
+          style={{ transform: open ? "rotate(90deg)" : "rotate(0deg)" }}
         >
           ›
         </span>
@@ -445,8 +445,7 @@ export function ExpandableCard({
               href={learnMoreHref}
               target="_blank"
               rel="noopener noreferrer"
-              style={{ color }}
-              className="inline-block mt-3 font-sans text-[11px] underline underline-offset-2 transition-colors duration-500"
+              className="inline-block mt-3 font-sans text-[11px] text-blush-deep underline underline-offset-2"
             >
               {learnMoreLabel}
             </a>
@@ -629,7 +628,7 @@ export function TodaysEdit({ wardrobe }: { wardrobe: WardrobeItem[] }) {
             .filter(Boolean)
             .map((line, i) => (
               <li key={i} className="font-sans text-[11px] text-ink/80 flex items-start gap-1.5">
-                <span className="shrink-0 transition-colors duration-500" style={{ color }}>·</span>
+                <span className="text-clay shrink-0">·</span>
                 <span>{line}</span>
               </li>
             ))}
@@ -658,7 +657,7 @@ export function TodaysEdit({ wardrobe }: { wardrobe: WardrobeItem[] }) {
           <ul className="space-y-1">
             {alternatives.map((a) => (
               <li key={a.name} className="font-sans text-[11px] text-ink/80 flex items-start gap-1.5">
-                <span className="shrink-0 transition-colors duration-500" style={{ color }}>·</span>
+                <span className="text-clay shrink-0">·</span>
                 <span>{capitalizeFirst(naturalName(a.name))}</span>
               </li>
             ))}
@@ -727,6 +726,8 @@ export function VoicePlayer({
     }
   };
 
+  const color = useChapterColor();
+
   if (state === "unavailable") {
     return <p className="font-sans text-[10px] text-clay/70">{unavailableLabel}</p>;
   }
@@ -735,9 +736,13 @@ export function VoicePlayer({
     <button
       onClick={state === "playing" ? stop : play}
       disabled={state === "loading"}
-      className="flex items-center gap-2 border border-line rounded-full px-4 py-2 font-sans text-[11px] text-ink disabled:opacity-50"
+      className="flex items-center gap-2 border border-line rounded-full px-4 py-2 font-sans text-[11px] text-ink disabled:opacity-50 transition-colors duration-500"
     >
-      <span>{state === "playing" ? "■" : "▶"}</span>
+      {state === "playing" ? (
+        <Square size={12} style={{ color }} fill={color} />
+      ) : (
+        <Mic size={13} style={{ color }} />
+      )}
       {state === "playing" ? stopLabel : listenLabel}
     </button>
   );
