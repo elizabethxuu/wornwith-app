@@ -803,6 +803,7 @@ export function Personalization() {
     () => (loadMoments().length > 0 ? "archive" : "compose")
   );
   const [curatorsNotes, setCuratorsNotes] = useState<string | null>(null);
+  const [lastAIError, setLastAIError] = useState<string | null>(null);
 
   // Curator's Notes: real generation, but cached for the day so opening
   // this screen repeatedly doesn't re-call the API every time. Falls back
@@ -851,6 +852,12 @@ export function Personalization() {
       setMoments(updateMomentSummary(savedAt, result.content));
     } else {
       setFailed((f) => ({ ...f, [savedAt]: true }));
+      setLastAIError(result.error || "Unknown error");
+      // Temporary, for live debugging — surfaces the real upstream error
+      // instead of only the generic retry UI, so it doesn't require
+      // opening the network tab or Vercel logs to see.
+      // eslint-disable-next-line no-console
+      console.error("[AI Reflection] generation failed:", result.error);
     }
     setGenerating((g) => ({ ...g, [savedAt]: false }));
   };
@@ -909,12 +916,19 @@ export function Personalization() {
             ) : generating[latestMoment.savedAt] ? (
               <p className="font-sans text-[11px] text-clay/70 italic">{t("generating_reflection")}</p>
             ) : failed[latestMoment.savedAt] ? (
-              <button
-                onClick={() => generateReflection(latestMoment.savedAt, latestMoment.text)}
-                className="font-sans text-[11px] text-blush-deep underline underline-offset-2"
-              >
-                {t("reflection_failed")}
-              </button>
+              <div>
+                <button
+                  onClick={() => generateReflection(latestMoment.savedAt, latestMoment.text)}
+                  className="font-sans text-[11px] text-blush-deep underline underline-offset-2"
+                >
+                  {t("reflection_failed")}
+                </button>
+                {lastAIError && (
+                  <p className="font-sans text-[9px] text-clay/70 mt-1 break-words">
+                    Debug: {lastAIError}
+                  </p>
+                )}
+              </div>
             ) : (
               <button
                 onClick={() => generateReflection(latestMoment.savedAt, latestMoment.text)}

@@ -2,18 +2,23 @@ import { EDITORIAL_SYSTEM_PROMPT } from "./_lib/editorialVoice.js";
 import { FEATURES } from "./_lib/prompts.js";
 import { generateWithGemini } from "./_lib/geminiClient.js";
 
-const isProd = process.env.VERCEL_ENV === "production";
+// Same debugging note as geminiClient.js — unconditional logging for now,
+// while tracking down the 502s. Re-gate to non-production once resolved.
+function log(...args) {
+  console.log("[ai:debug]", ...args);
+}
 
-// Every response from this endpoint follows the same shape, whether it
-// succeeds or fails — the frontend never has to guess what fields exist.
-function respond(res, status, { success, content = null, error = null, feature = null }, start) {
-  res.status(status).json({
-    success,
-    content,
-    error,
-    metadata: feature ? { feature, model: "gemini-2.0-flash" } : null,
+function respond(res, status, body, start) {
+  const payload = {
+    success: body.success,
+    content: body.content ?? null,
+    error: body.error ?? null,
+    metadata: body.feature ? { feature: body.feature, model: "gemini-2.0-flash" } : null,
     durationMs: Date.now() - start,
-  });
+  };
+  // 5. The exact response sent back to the frontend, logged before it goes out.
+  log("responding with status", status, "body:", JSON.stringify(payload));
+  res.status(status).json(payload);
 }
 
 export default async function handler(req, res) {
@@ -32,9 +37,7 @@ export default async function handler(req, res) {
     return;
   }
 
-  if (!isProd) {
-    console.log("[ai] request received", { feature });
-  }
+  log("request received", { feature, context });
 
   const fullPrompt = `${EDITORIAL_SYSTEM_PROMPT}\n\n---\n\n${featureConfig.build(context || {})}`;
 
@@ -42,6 +45,21 @@ export default async function handler(req, res) {
     const content = await generateWithGemini(fullPrompt, featureConfig.maxTokens);
     respond(res, 200, { success: true, content, feature }, start);
   } catch (err) {
-    respond(res, err.status === 429 ? 429 : 502, { success: false, error: err.message || "Generation failed", feature }, start);
+    // 4. Never swallowed — the real message and, where we have it, the
+    // real upstream detail both go back in the response body, not just
+    // a generic "couldn't generate" string.
+    log("generateWithGemini threw:", err.message, "| status:", err.status, "| detail:", err.detail);
+
+    // Use the real upstream status when we have one (400 = invalid
+    // request/model, 401/403 = invalid key, 404 = model not found, 429 =
+    // quota) instead of collapsing everything to 502. Only genuinely
+    // unexpected failures (network errors, timeouts, parse failures with
+    // no status attached) fall back to 502.
+    const status = err.status || 502;
+    const errorMessage = err.detail
+      ? `${err.message} | raw: ${String(err.detail).slice(0, 300)}`
+      : err.message || "Generation failed";
+
+    respond(res, status, { success: false, error: errorMessage, feature }, start);
   }
 }
