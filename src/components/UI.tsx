@@ -85,42 +85,42 @@ const highlightedCountries = ["New Zealand", "Italy", "Portugal", "France"];
 const journeyStops = [
   {
     coords: [172.5, -43.5] as [number, number],
-    label: "NZ",
+    labelKey: "place_nz" as const,
     dx: 0,
     dy: -17,
     icon: "",
-    place: "Canterbury Plains, NZ",
+    placeKey: "place_full_nz" as const,
     blurbKey: "stop_blurb_nz" as const,
   },
   {
     coords: [8.05, 45.57] as [number, number],
-    label: "Italy",
+    labelKey: "place_italy" as const,
     dx: 40,
     dy: 4,
     leader: true,
     icon: "",
-    place: "Biella, Italy",
+    placeKey: "place_full_italy" as const,
     blurbKey: "stop_blurb_italy" as const,
   },
   {
     coords: [-8.61, 41.15] as [number, number],
-    label: "Portugal",
+    labelKey: "place_portugal" as const,
     dx: -48,
     dy: 10,
     leader: true,
     icon: "",
-    place: "Porto, Portugal",
+    placeKey: "place_full_portugal" as const,
     blurbKey: "stop_blurb_portugal" as const,
   },
   {
     coords: [2.35, 48.86] as [number, number],
-    label: "Paris",
+    labelKey: "place_paris" as const,
     dx: 4,
     dy: -30,
     active: true,
     leader: true,
     icon: "",
-    place: "Paris, France",
+    placeKey: "place_full_paris" as const,
     blurbKey: "stop_blurb_paris" as const,
   },
 ];
@@ -190,7 +190,7 @@ export function JourneyMap() {
             ))}
 
             {journeyStops.map((s, i) => (
-              <Marker key={s.label} coordinates={s.coords}>
+              <Marker key={s.labelKey} coordinates={s.coords}>
                 {/* Invisible larger touch target — the visible dot below is
                     deliberately small/precise, but a ~4-6px dot is too small
                     to reliably tap on a phone, so this circle underneath
@@ -253,7 +253,7 @@ export function JourneyMap() {
                     fill: s.active || selected === i ? "#C97A8C" : "#2B2622",
                   }}
                 >
-                  {s.label}
+                  {t(s.labelKey)}
                 </text>
               </Marker>
             ))}
@@ -265,7 +265,7 @@ export function JourneyMap() {
       <div className="mt-2.5 bg-blush-pale/40 rounded-xl px-3.5 py-3 fade-up" key={selected}>
         <div className="flex items-center gap-2 mb-1">
           {stop.icon && <span className="text-base">{stop.icon}</span>}
-          <p className="font-sans text-[11px] font-semibold text-ink">{stop.place}</p>
+          <p className="font-sans text-[11px] font-semibold text-ink">{t(stop.placeKey)}</p>
         </div>
         <p className="font-sans text-[11px] text-clay leading-relaxed">{t(stop.blurbKey)}</p>
       </div>

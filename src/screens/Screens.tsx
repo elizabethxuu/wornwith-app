@@ -226,8 +226,8 @@ export function ProductOverview() {
   const { t } = useLanguage();
   const [imgError, setImgError] = useState(false);
   const rows = [
-    [t("material"), GARMENT.material],
-    [t("made_in"), GARMENT.madeIn],
+    [t("material"), t("material_value")],
+    [t("made_in"), t("made_in_value")],
     [t("certified"), GARMENT.certified],
     [t("lifespan"), t("lifespan_value")],
     [t("repairability"), "8.5 / 10"],
@@ -412,9 +412,9 @@ export function SupplyChain() {
 export function CareGuide() {
   const { t } = useLanguage();
   const wears = [
-    ["5 wears", "High", "text-blush-deep"],
-    ["30 wears", "Opt.", "text-blush"],
-    ["100 wears", "Low", "text-sage"],
+    [t("wears_5"), t("impact_high"), "text-blush-deep"],
+    [t("wears_30"), t("impact_opt"), "text-blush"],
+    [t("wears_100"), t("impact_low"), "text-sage"],
   ];
   const care = [
     [t("cold_water"), t("max_30")],
