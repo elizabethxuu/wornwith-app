@@ -287,10 +287,10 @@ export function ProductOverview() {
 export function ProductLifecycle() {
   const { t } = useLanguage();
   const stops = [
-    { icon: "🐑", title: t("wool_farming"), place: "Canterbury Plains", flag: "🇳🇿" },
-    { icon: "🧵", title: t("spinning_weaving"), place: "Biella, Italy", flag: "🇮🇹" },
-    { icon: "✂️", title: t("cutting_construction"), place: "Porto, Portugal", flag: "🇵🇹" },
-    { icon: "🧍", title: t("with_you_now"), place: "Paris, France", flag: "🇫🇷", active: true },
+    { icon: "🐑", title: t("wool_farming"), place: t("place_full_nz_short"), flag: "🇳🇿" },
+    { icon: "🧵", title: t("spinning_weaving"), place: t("place_full_italy"), flag: "🇮🇹" },
+    { icon: "✂️", title: t("cutting_construction"), place: t("place_full_portugal"), flag: "🇵🇹" },
+    { icon: "🧍", title: t("with_you_now"), place: t("place_full_paris"), flag: "🇫🇷", active: true },
   ];
   return (
     <div className="h-full px-5 py-6 fade-up">
@@ -1018,7 +1018,7 @@ export function MyWardrobe() {
             {t("the_memory")}
           </p>
           <p className="font-display italic text-[15px] text-ink leading-relaxed">
-            {it.note}
+            {it.noteKey ? t(it.noteKey) : it.note}
           </p>
         </div>
 
@@ -1127,7 +1127,7 @@ export function MyWardrobe() {
                   </button>
                 </p>
                 <p className="font-sans text-[11px] text-clay mt-0.5">
-                  {t("worn_label")} {it.worn} · {it.note}
+                  {t("worn_label")} {it.worn} · {it.noteKey ? t(it.noteKey) : it.note}
                 </p>
               </div>
               <button

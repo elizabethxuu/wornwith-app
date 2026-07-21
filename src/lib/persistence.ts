@@ -49,6 +49,7 @@ export type WardrobeItem = {
   tag: string | null;
   worn: string;
   note: string;
+  noteKey?: "seed_note_marais" | "seed_note_silk" | "seed_note_linen";
   brand?: string;
   loggedAt?: string; // ISO date (yyyy-mm-dd), used for the calendar filter
   resold?: boolean;
@@ -56,9 +57,9 @@ export type WardrobeItem = {
 };
 
 const defaultWardrobe: WardrobeItem[] = [
-  { name: "The Marais Coat", tag: "DPP", worn: "18×", note: "March dinner · Paris, New York", brand: "COS", loggedAt: "2026-03-14" },
-  { name: "Silk Slip Dress", tag: null, worn: "7×", note: "June birthday · London", brand: "Reformation", loggedAt: "2026-06-02", resold: true },
-  { name: "Linen Trousers", tag: null, worn: "2×", note: "Last: Lisbon trip", brand: "Everlane", loggedAt: "2026-07-01", resold: true },
+  { name: "The Marais Coat", tag: "DPP", worn: "18×", note: "March dinner · Paris, New York", noteKey: "seed_note_marais", brand: "COS", loggedAt: "2026-03-14" },
+  { name: "Silk Slip Dress", tag: null, worn: "7×", note: "June birthday · London", noteKey: "seed_note_silk", brand: "Reformation", loggedAt: "2026-06-02", resold: true },
+  { name: "Linen Trousers", tag: null, worn: "2×", note: "Last: Lisbon trip", noteKey: "seed_note_linen", brand: "Everlane", loggedAt: "2026-07-01", resold: true },
 ];
 
 export function loadWardrobe(): WardrobeItem[] {
