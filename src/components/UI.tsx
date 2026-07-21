@@ -544,6 +544,17 @@ export function ArchiveTimeline({ entries }: { entries: ArchiveEntry[] }) {
   );
 }
 
+// Converts "#556B8A" + an opacity fraction into an rgba() string — used
+// for the Interlude button's subtle hover tint, since inline styles can't
+// express :hover directly and the accent color is dynamic (chapter-driven).
+function hexToRgba(hex: string, alpha: number): string {
+  const clean = hex.replace("#", "");
+  const r = parseInt(clean.substring(0, 2), 16);
+  const g = parseInt(clean.substring(2, 4), 16);
+  const b = parseInt(clean.substring(4, 6), 16);
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+}
+
 export function TodaysEdit({ wardrobe }: { wardrobe: WardrobeItem[] }) {
   const { t } = useLanguage();
   const color = useChapterColor();
@@ -597,6 +608,7 @@ export function TodaysEdit({ wardrobe }: { wardrobe: WardrobeItem[] }) {
       return false;
     }
   });
+  const [enterButtonHovered, setEnterButtonHovered] = useState(false);
 
   return (
     <div className="mb-7 pb-7 border-b border-line">
@@ -628,10 +640,18 @@ export function TodaysEdit({ wardrobe }: { wardrobe: WardrobeItem[] }) {
 
         <button
           onClick={() => setInterludeState("transitioning")}
-          className={`bg-white text-ink font-sans text-[12px] rounded-full px-6 py-2.5 mt-4 border transition-all duration-300 hover:opacity-80 active:scale-95 cursor-pointer ${
+          onMouseEnter={() => setEnterButtonHovered(true)}
+          onMouseLeave={() => setEnterButtonHovered(false)}
+          className={`font-sans text-[12px] rounded-full px-6 py-2.5 mt-4 border transition-all duration-300 active:opacity-70 cursor-pointer ${
             showEntranceHint ? "fade-up" : ""
           }`}
-          style={{ borderWidth: "1px", borderColor: color, animationDelay: showEntranceHint ? "800ms" : undefined }}
+          style={{
+            borderWidth: "1px",
+            borderColor: color,
+            color,
+            backgroundColor: enterButtonHovered ? hexToRgba(color, 0.07) : "#FFFFFF",
+            animationDelay: showEntranceHint ? "800ms" : undefined,
+          }}
         >
           {t("enter_listening_room")}
         </button>
