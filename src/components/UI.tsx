@@ -1,7 +1,8 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { ComposableMap, Geographies, Geography, Marker, Line, ZoomableGroup } from "react-simple-maps";
 import { useLanguage, type TranslationKey } from "../lib/i18n";
 import type { WardrobeItem } from "../lib/persistence";
+import { requestVoice } from "../lib/voice";
 import {
   fetchWeather,
   pickFeaturedItem,
@@ -9,6 +10,10 @@ import {
   naturalName,
   daysSinceLogged,
   parseWornCount,
+  getWeatherObservationKey,
+  getReasoningKey,
+  getNotWornPhraseKey,
+  capitalizeFirst,
   type WeatherData,
 } from "../lib/todaysEdit";
 
@@ -534,8 +539,6 @@ export function TodaysEdit({ wardrobe }: { wardrobe: WardrobeItem[] }) {
   const { t } = useLanguage();
   const [weather, setWeather] = useState<WeatherData | null>(null);
   const [weatherStatus, setWeatherStatus] = useState<"loading" | "ready" | "unavailable">("loading");
-  const [speaking, setSpeaking] = useState(false);
-  const [voiceUnsupported, setVoiceUnsupported] = useState(false);
 
   useEffect(() => {
     fetchWeather().then((w) => {
@@ -552,88 +555,66 @@ export function TodaysEdit({ wardrobe }: { wardrobe: WardrobeItem[] }) {
   const itemName = naturalName(featured.name);
   const alternatives = pickAlternatives(wardrobe, featured.name, 3);
   const days = daysSinceLogged(featured.loggedAt);
-  const wornCount = parseWornCount(featured.worn) || 18; // main garment fallback matches its known ~18 wears
+  const wornCount = parseWornCount(featured.worn) || 18;
   const nextMaintenanceIn = Math.max(2, 20 - (wornCount % 20));
 
-  const isCold = weather ? weather.tempF < 55 : null;
-  const isMild = weather ? weather.tempF >= 55 && weather.tempF < 68 : null;
-  const isWet = weather ? weather.precipProbability > 40 : null;
+  const isCold = weather ? weather.afternoonTempF < 60 : null;
+  const isWet = weather ? weather.rainLikely : null;
 
-  let headlineKey: TranslationKey = "headline_no_weather";
-  if (weather) {
-    if (isCold && isWet) headlineKey = "headline_cold_wet";
-    else if (isCold && !isWet) headlineKey = "headline_cold_dry";
-    else if (isMild) headlineKey = "headline_mild";
-    else if (!isCold && !isMild && isWet) headlineKey = "headline_warm_wet";
-    else headlineKey = "headline_warm_dry";
-  }
-  const headline = t(headlineKey).replace("{item}", itemName);
+  const observationKey = weather ? getWeatherObservationKey(weather) : "obs_default";
+  const reasoningKey = getReasoningKey(weather);
+  const notWornKey = getNotWornPhraseKey(days);
 
-  const briefingText = [
-    t("good_morning"),
-    headline,
-    t("layer_suggestion"),
-  ].join(" ");
-
-  const toggleListen = () => {
-    if (!("speechSynthesis" in window)) {
-      setVoiceUnsupported(true);
-      return;
-    }
-    if (speaking) {
-      window.speechSynthesis.cancel();
-      setSpeaking(false);
-      return;
-    }
-    const utterance = new SpeechSynthesisUtterance(briefingText);
-    utterance.rate = 0.95;
-    utterance.onend = () => setSpeaking(false);
-    utterance.onerror = () => setSpeaking(false);
-    window.speechSynthesis.speak(utterance);
-    setSpeaking(true);
-  };
+  const briefingText = [t(observationKey as TranslationKey), itemName + ".", t(reasoningKey as TranslationKey)].join(" ");
 
   return (
-    <div className="mb-6 pb-6 border-b border-line">
+    <div className="mb-7 pb-7 border-b border-line">
       <Eyebrow>{t("todays_edit_title")}</Eyebrow>
-      <p className="font-display italic text-xl text-ink mt-2">{t("good_morning")}</p>
-      <p className="font-sans text-[12px] text-ink/85 leading-relaxed mt-1.5">
-        {headline}
-      </p>
-      <p className="font-sans text-[11px] text-clay mt-1.5 leading-relaxed">
-        {t("layer_suggestion")}
+
+      {/* Hero: editorial weather observation, not raw data */}
+      <p className="font-display italic text-2xl text-ink leading-snug mt-2">
+        {weather ? t(observationKey as TranslationKey) : t("obs_default")}
       </p>
 
-      {/* Weather Summary */}
-      <div className="mt-4">
-        <p className="font-sans text-[10px] uppercase tracking-[0.14em] font-semibold text-blush-deep mb-2">
-          {t("weather_summary_title")}
-        </p>
+      {/* Recommended garment — the actual hero moment */}
+      <p className="font-display italic text-lg text-blush-deep mt-4">
+        {capitalizeFirst(itemName)}
+      </p>
+      <p className="font-sans text-[12px] text-ink/80 leading-relaxed mt-1">
+        {t(reasoningKey as TranslationKey)}
+      </p>
+
+      {/* Weather Summary — simplified, no raw metrics */}
+      <div className="mt-5">
         {weatherStatus === "ready" && weather ? (
-          <div className="flex items-center gap-4 font-sans text-[11px] text-ink/80">
-            <span className="font-display italic text-lg text-ink">{weather.tempF}°F</span>
-            <span>{weather.precipProbability}% {t("chance_of_rain")}</span>
-            <span>{weather.windMph} mph {t("wind_label")}</span>
-            <span>{weather.humidity}% {t("humidity_label")}</span>
+          <div className="flex items-center gap-5 font-sans text-[11px] text-clay">
+            <span>{t("morning_label")} {weather.morningTempF}°</span>
+            <span>{t("afternoon_label")} {weather.afternoonTempF}°</span>
+            <span>{t("evening_label")} {weather.eveningTempF}°</span>
           </div>
         ) : weatherStatus === "loading" ? (
           <p className="font-sans text-[11px] text-clay/70 italic">…</p>
         ) : (
           <p className="font-sans text-[10px] text-clay/70">{t("weather_unavailable")}</p>
         )}
+        {weather && (
+          <p className="font-sans text-[11px] text-clay mt-1">
+            {weather.rainLikely ? t("rain_expected") : t("clear_expected")}
+          </p>
+        )}
       </div>
 
       {/* Why this piece */}
-      <div className="mt-4">
+      <div className="mt-5">
         <p className="font-sans text-[10px] uppercase tracking-[0.14em] font-semibold text-blush-deep mb-2">
           {t("why_this_piece_title")}
         </p>
         <ul className="space-y-1">
           {[
             (isCold || isWet || weather === null) && t("reason_temperature"),
-            days !== null && t("reason_not_worn").replace("{n}", String(days)),
-            t("reason_condition"),
             weather && isWet && t("reason_weather"),
+            notWornKey && t(notWornKey as TranslationKey),
+            t("reason_condition"),
             t("reason_impact"),
           ]
             .filter(Boolean)
@@ -646,34 +627,30 @@ export function TodaysEdit({ wardrobe }: { wardrobe: WardrobeItem[] }) {
         </ul>
       </div>
 
-      {/* Morning Brief */}
-      <div className="mt-4">
+      {/* Morning Brief — reusable voice player, premium-ready */}
+      <div className="mt-5">
         <p className="font-sans text-[10px] uppercase tracking-[0.14em] font-semibold text-blush-deep mb-2">
           {t("morning_brief_title")}
         </p>
-        <button
-          onClick={toggleListen}
-          className="flex items-center gap-2 border border-line rounded-full px-4 py-2 font-sans text-[11px] text-ink"
-        >
-          <span>{speaking ? "■" : "▶"}</span> {speaking ? t("stop_label") : t("listen_label")}
-        </button>
-        {voiceUnsupported && (
-          <p className="font-sans text-[9px] text-clay/70 mt-1.5">{t("voice_unavailable")}</p>
-        )}
+        <VoicePlayer
+          text={briefingText}
+          listenLabel={t("listen_label")}
+          stopLabel={t("stop_label")}
+          unavailableLabel={t("voice_unavailable")}
+        />
       </div>
 
-      {/* Today's Alternatives */}
+      {/* Also Consider */}
       {alternatives.length > 0 && (
-        <div className="mt-4">
+        <div className="mt-5">
           <p className="font-sans text-[10px] uppercase tracking-[0.14em] font-semibold text-blush-deep mb-2">
             {t("alternatives_title")}
           </p>
-          <p className="font-sans text-[11px] text-clay mb-1.5">{t("alternatives_subtitle")}</p>
           <ul className="space-y-1">
             {alternatives.map((a) => (
               <li key={a.name} className="font-sans text-[11px] text-ink/80 flex items-start gap-1.5">
                 <span className="text-blush-deep shrink-0">·</span>
-                <span>{naturalName(a.name)}</span>
+                <span>{capitalizeFirst(naturalName(a.name))}</span>
               </li>
             ))}
           </ul>
@@ -681,16 +658,78 @@ export function TodaysEdit({ wardrobe }: { wardrobe: WardrobeItem[] }) {
       )}
 
       {/* Garment Readiness */}
-      <div className="mt-4">
+      <div className="mt-5">
         <p className="font-sans text-[10px] uppercase tracking-[0.14em] font-semibold text-blush-deep mb-2">
           {t("readiness_title")}
         </p>
-        <p className="font-sans text-[11px] text-sage mb-0.5">✓ {t("ready_to_wear")}</p>
-        <p className="font-sans text-[11px] text-sage mb-2">✓ {t("reason_condition")}</p>
+        <p className="font-sans text-[11px] text-sage mb-0.5">{t("reason_condition")}</p>
+        <p className="font-sans text-[11px] text-sage mb-0.5">{t("ready_to_wear")}</p>
+        <p className="font-sans text-[11px] text-sage mb-2">{t("recently_maintained")}</p>
         <p className="font-sans text-[10px] text-clay">
-          {t("next_maintenance")} — {t("estimated_after_wears").replace("{n}", String(nextMaintenanceIn))}
+          {t("estimated_maintenance")} — {t("estimated_after_wears").replace("{n}", String(nextMaintenanceIn))}
         </p>
       </div>
     </div>
+  );
+}
+
+
+// A reusable narration player. The UI is finished and won't need to change
+// when premium voice goes live — it already renders the same play/stop
+// button regardless of which mode is actually speaking underneath.
+export function VoicePlayer({
+  text,
+  listenLabel,
+  stopLabel,
+  unavailableLabel,
+}: {
+  text: string;
+  listenLabel: string;
+  stopLabel: string;
+  unavailableLabel: string;
+}) {
+  const [state, setState] = useState<"idle" | "loading" | "playing" | "unavailable">("idle");
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+
+  const stop = () => {
+    audioRef.current?.pause();
+    if ("speechSynthesis" in window) window.speechSynthesis.cancel();
+    setState("idle");
+  };
+
+  const play = async () => {
+    setState("loading");
+    const result = await requestVoice(text);
+    if (result.mode === "premium") {
+      const audio = new Audio(result.audioUrl);
+      audioRef.current = audio;
+      audio.onended = () => setState("idle");
+      audio.play();
+      setState("playing");
+    } else if (result.mode === "browser") {
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.rate = 0.95;
+      utterance.onend = () => setState("idle");
+      utterance.onerror = () => setState("idle");
+      window.speechSynthesis.speak(utterance);
+      setState("playing");
+    } else {
+      setState("unavailable");
+    }
+  };
+
+  if (state === "unavailable") {
+    return <p className="font-sans text-[10px] text-clay/70">{unavailableLabel}</p>;
+  }
+
+  return (
+    <button
+      onClick={state === "playing" ? stop : play}
+      disabled={state === "loading"}
+      className="flex items-center gap-2 border border-line rounded-full px-4 py-2 font-sans text-[11px] text-ink disabled:opacity-50"
+    >
+      <span>{state === "playing" ? "■" : "▶"}</span>
+      {state === "playing" ? stopLabel : listenLabel}
+    </button>
   );
 }
