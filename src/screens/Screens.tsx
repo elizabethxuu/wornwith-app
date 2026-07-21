@@ -256,8 +256,8 @@ export function ProductOverview() {
         )}
       </div>
       <h2 className="font-display italic text-2xl text-ink leading-tight">
-        COS Black Wool
-        <br />Funnel-Neck Coat
+        {t("product_name_l1")}
+        <br />{t("product_name_l2")}
       </h2>
       <p className="font-sans text-[11px] text-clay mt-1 mb-4">
         {t("tagline_coat")}
@@ -298,13 +298,18 @@ export function ProductLifecycle() {
       <h2 className="font-display italic text-2xl text-ink mt-1">{t("where_from")}</h2>
       <p className="font-sans text-[11px] text-clay mt-1 mb-2">{t("km_traveled")}</p>
       <div className="flex gap-1.5 mb-5 flex-wrap">
-        {["🇳🇿 NZ", "🇮🇹 Italy", "🇵🇹 Portugal", "🇫🇷 France"].map((bubble, i) => (
+        {[
+          { flag: "🇳🇿", key: "place_nz" as const },
+          { flag: "🇮🇹", key: "place_italy" as const },
+          { flag: "🇵🇹", key: "place_portugal" as const },
+          { flag: "🇫🇷", key: "place_france" as const },
+        ].map((bubble, i) => (
           <span
-            key={bubble}
+            key={bubble.key}
             style={{ animationDelay: `${i * 120}ms` }}
             className="pop-in text-[10px] font-sans bg-blush-pale text-blush-deep px-2 py-1 rounded-full"
           >
-            {bubble}
+            {bubble.flag} {t(bubble.key)}
           </span>
         ))}
       </div>
@@ -748,7 +753,7 @@ export function StoryBehindIt() {
 
 /* 11 — PERSONALIZATION */
 export function Personalization() {
-  const { t } = useLanguage();
+  const { t, locale } = useLanguage();
   const [text, setText] = useState(() => loadMoment());
   const [moments, setMoments] = useState<SavedMoment[]>(() => loadMoments());
   const [generating, setGenerating] = useState<Record<string, boolean>>({});
@@ -813,7 +818,7 @@ export function Personalization() {
               <div key={i} className="border-b border-line last:border-0 pb-3 last:pb-0">
                 <p className="font-display italic text-[13px] text-ink">{m.text}</p>
                 <p className="font-sans text-[9px] text-clay/60 mt-0.5">
-                  {new Date(m.savedAt).toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" })}
+                  {new Date(m.savedAt).toLocaleDateString(locale, { month: "long", day: "numeric", year: "numeric" })}
                 </p>
 
                 {m.summary ? (
@@ -865,7 +870,7 @@ export function Personalization() {
 
 /* 12 — MY WARDROBE */
 export function MyWardrobe() {
-  const { t } = useLanguage();
+  const { t, locale } = useLanguage();
   const [items, setItems] = useState<WardrobeItem[]>(() => loadWardrobe());
   const [logging, setLogging] = useState(false);
   const [name, setName] = useState("");
@@ -1007,7 +1012,7 @@ export function MyWardrobe() {
             <span className="text-clay">{t("logged_label")}</span>
             <span className="text-ink font-medium">
               {it.loggedAt
-                ? new Date(it.loggedAt).toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" })
+                ? new Date(it.loggedAt).toLocaleDateString(locale, { month: "long", day: "numeric", year: "numeric" })
                 : "—"}
             </span>
           </div>

@@ -78,6 +78,8 @@ const dict = {
   lifespan: { en: "Lifespan", fr: "Durée de vie", pt: "Vida útil" },
   repairability: { en: "Repairability", fr: "Réparabilité", pt: "Reparabilidade" },
   material_value: { en: "70% Recycled Wool", fr: "70% de laine recyclée", pt: "70% de lã reciclada" },
+  product_name_l1: { en: "COS Black Wool", fr: "Manteau en Laine Noire", pt: "Casaco de Lã Preta" },
+  product_name_l2: { en: "Funnel-Neck Coat", fr: "à Col Cheminée COS", pt: "com Gola Funil COS" },
   made_in_value: { en: "Italy & Portugal", fr: "Italie et Portugal", pt: "Itália e Portugal" },
   wears_5: { en: "5 wears", fr: "5 usages", pt: "5 usos" },
   wears_30: { en: "30 wears", fr: "30 usages", pt: "30 usos" },
@@ -88,6 +90,7 @@ const dict = {
   place_italy: { en: "Italy", fr: "Italie", pt: "Itália" },
   place_portugal: { en: "Portugal", fr: "Portugal", pt: "Portugal" },
   place_paris: { en: "Paris", fr: "Paris", pt: "Paris" },
+  place_france: { en: "France", fr: "France", pt: "França" },
   place_nz: { en: "NZ", fr: "NZ", pt: "NZ" },
   place_full_nz: { en: "Canterbury Plains, NZ", fr: "Canterbury Plains, NZ", pt: "Canterbury Plains, NZ" },
   place_full_nz_short: { en: "Canterbury Plains", fr: "Canterbury Plains", pt: "Canterbury Plains" },
@@ -299,14 +302,18 @@ const dict = {
 
 export type TranslationKey = keyof typeof dict;
 
+const LOCALE_MAP: Record<Lang, string> = { en: "en-US", fr: "fr-FR", pt: "pt-PT" };
+
 const LanguageContext = createContext<{
   lang: Lang;
   setLang: (l: Lang) => void;
   t: (key: TranslationKey) => string;
+  locale: string;
 }>({
   lang: "en",
   setLang: () => {},
   t: (key) => dict[key]?.en ?? String(key),
+  locale: "en-US",
 });
 
 export function LanguageProvider({ children }: { children: ReactNode }) {
@@ -328,9 +335,10 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
 
   const setLang = (l: Lang) => setLangState(l);
   const t = (key: TranslationKey) => dict[key]?.[lang] ?? dict[key]?.en ?? String(key);
+  const locale = LOCALE_MAP[lang];
 
   return (
-    <LanguageContext.Provider value={{ lang, setLang, t }}>
+    <LanguageContext.Provider value={{ lang, setLang, t, locale }}>
       {children}
     </LanguageContext.Provider>
   );
