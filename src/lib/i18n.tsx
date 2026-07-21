@@ -98,6 +98,13 @@ const dict = {
   wears_5: { en: "5 wears", fr: "5 usages", pt: "5 usos" },
   wears_30: { en: "30 wears", fr: "30 usages", pt: "30 usos" },
   wears_100: { en: "100 wears", fr: "100 usages", pt: "100 usos" },
+  impact_per_wear: { en: "Impact per wear", fr: "Impact par port", pt: "Impacto por uso" },
+  atelier_title: { en: "The Atelier", fr: "L'Atelier", pt: "O Ateliê" },
+  atelier_intro: {
+    en: "Care is less about maintenance and more about preserving the shape, texture and character of a garment over time.",
+    fr: "L'entretien est moins une question de maintenance que de préservation de la forme, de la texture et du caractère d'un vêtement au fil du temps.",
+    pt: "Cuidar é menos sobre manutenção e mais sobre preservar a forma, a textura e o caráter de uma peça ao longo do tempo.",
+  },
   impact_high: { en: "High", fr: "Élevé", pt: "Alto" },
   impact_opt: { en: "Opt.", fr: "Opt.", pt: "Ideal" },
   impact_low: { en: "Low", fr: "Faible", pt: "Baixo" },
@@ -173,183 +180,42 @@ const dict = {
     pt: "As pequenas escolhas que o mantêm em uso por mais tempo.",
   },
 
-  next_recommended_care_title: { en: "Next Recommended Care", fr: "Prochain Entretien Recommandé", pt: "Próximo Cuidado Recomendado" },
-  next_suggested_service_title: { en: "Next Suggested Service", fr: "Prochain Service Suggéré", pt: "Próximo Serviço Sugerido" },
-
-  care_tier_excellent: {
-    en: "No maintenance is recommended at this time.",
-    fr: "Aucun entretien n'est recommandé pour le moment.",
-    pt: "Nenhuma manutenção é recomendada no momento.",
-  },
-  care_tier_moderate: {
-    en: "A light professional clean is recommended before continued seasonal use.",
-    fr: "Un léger nettoyage professionnel est recommandé avant une utilisation saisonnière continue.",
-    pt: "Uma limpeza profissional leve é recomendada antes do uso contínuo na estação.",
-  },
-  care_tier_heavy: {
-    en: "This garment would benefit from professional servicing before further regular wear.",
-    fr: "Ce vêtement bénéficierait d'un entretien professionnel avant une utilisation régulière prolongée.",
-    pt: "Esta peça se beneficiaria de manutenção profissional antes de mais uso regular.",
-  },
 
 
-  care_reasoning_before: { en: "Based on", fr: "Sur la base de", pt: "Com base em" },
-  care_reasoning_wears_word: { en: "recorded wears", fr: "ports enregistrés", pt: "usos registrados" },
-  care_reasoning_and_condition: { en: "and the garment's", fr: "et l'état", pt: "e a condição" },
-  care_reasoning_condition_word: { en: "condition", fr: "du vêtement", pt: "da peça" },
-
-  season_word_spring: { en: "spring", fr: "printemps", pt: "primavera" },
-  season_word_summer: { en: "summer", fr: "estivales", pt: "verão" },
-  season_word_autumn: { en: "autumn", fr: "automnales", pt: "outono" },
-  season_word_winter: { en: "winter", fr: "hivernales", pt: "inverno" },
-
-  condition_word_excellent: { en: "excellent", fr: "excellent", pt: "excelente" },
-
-  care_guidance_label: { en: "Care Guidance", fr: "Conseils d'Entretien", pt: "Orientação de Cuidados" },
-
-  atelier_title: { en: "The Atelier", fr: "L'Atelier", pt: "O Ateliê" },
-  atelier_intro: {
-    en: "A curated collection of the small rituals that keep this garment in service — the kind of care usually reserved for pieces meant to last.",
-    fr: "Une collection de petits rituels qui maintiennent ce vêtement en usage — le genre de soin habituellement réservé aux pièces destinées à durer.",
-    pt: "Uma coleção dos pequenos rituais que mantêm esta peça em uso — o tipo de cuidado normalmente reservado a peças feitas para durar.",
-  },
-  film_placeholder_label: { en: "Footage placeholder", fr: "Espace réservé au film", pt: "Espaço reservado para o vídeo" },
 
   ritual_hand_washing_title: { en: "Hand Washing", fr: "Lavage à la Main", pt: "Lavagem à Mão" },
-  ritual_hand_washing_explanation: {
-    en: "Cool water and slow, deliberate movement — never twisted, never wrung.",
-    fr: "Eau fraîche et mouvements lents et délibérés — jamais tordu, jamais essoré.",
-    pt: "Água fria e movimentos lentos e deliberados — nunca torcido, nunca espremido.",
-  },
-  ritual_hand_washing_material: {
-    en: "Wool fibres regain their shape with rest — washing less, and gently, extends that memory.",
-    fr: "Les fibres de laine reprennent leur forme au repos — laver moins, et en douceur, prolonge cette mémoire.",
-    pt: "As fibras de lã recuperam sua forma com o descanso — lavar menos, e com delicadeza, prolonga essa memória.",
+  ritual_hand_washing_line1: { en: "Cool water only", fr: "Eau froide uniquement", pt: "Somente água fria" },
+  ritual_hand_washing_line2: { en: "30°C maximum", fr: "30°C maximum", pt: "30°C no máximo" },
+
+  ritual_steaming_title: { en: "Steam", fr: "Vapeur", pt: "Vapor" },
+  ritual_steaming_line1: { en: "Steam rather than iron.", fr: "Vapeur plutôt que fer à repasser.", pt: "Vapor em vez de ferro de passar." },
+
+  ritual_brushing_title: { en: "Brush", fr: "Brosser", pt: "Escovar" },
+  ritual_brushing_line1: { en: "Brush gently after wear.", fr: "Brosser doucement après le port.", pt: "Escovar suavemente após o uso." },
+
+  ritual_folding_title: { en: "Fold", fr: "Plier", pt: "Dobrar" },
+  ritual_folding_line1: { en: "Fold instead of hanging.", fr: "Plier plutôt que suspendre.", pt: "Dobrar em vez de pendurar." },
+
+  ritual_storage_title: { en: "Store", fr: "Ranger", pt: "Guardar" },
+  ritual_storage_line1: { en: "Store in breathable cotton.", fr: "Ranger dans du coton respirant.", pt: "Guardar em algodão respirável." },
+
+  ritual_repair_title: { en: "Repair", fr: "Réparer", pt: "Reparar" },
+  ritual_repair_line1: { en: "Repair loose stitches early.", fr: "Réparer les coutures lâches tôt.", pt: "Reparar costuras soltas cedo." },
+
+  care_philosophy_title: { en: "Care Philosophy", fr: "Philosophie d'Entretien", pt: "Filosofia de Cuidado" },
+  care_philosophy_line1: { en: "Designed to be repaired.", fr: "Conçu pour être réparé.", pt: "Feito para ser reparado." },
+  care_philosophy_line2: { en: "Designed to be worn.", fr: "Conçu pour être porté.", pt: "Feito para ser usado." },
+  care_philosophy_line3: { en: "Designed to stay with you.", fr: "Conçu pour rester avec vous.", pt: "Feito para ficar com você." },
+  care_philosophy_maintenance_label: { en: "Estimated next maintenance", fr: "Prochain entretien estimé", pt: "Próxima manutenção estimada" },
+  care_philosophy_wears_remaining: { en: "After approximately {n} more wears.", fr: "Après environ {n} ports supplémentaires.", pt: "Após aproximadamente mais {n} usos." },
+  care_philosophy_quote: {
+    en: "The garments we keep are the ones we care for.",
+    fr: "Les vêtements que l'on garde sont ceux dont on prend soin.",
+    pt: "As roupas que guardamos são as que cuidamos.",
   },
 
-  ritual_steaming_title: { en: "Steaming", fr: "Défroissage à la Vapeur", pt: "Vaporização" },
-  ritual_steaming_explanation: {
-    en: "Steam relaxes the fibres without the flattening pressure of an iron.",
-    fr: "La vapeur détend les fibres sans la pression aplatissante d'un fer.",
-    pt: "O vapor relaxa as fibras sem a pressão achatante de um ferro." ,
-  },
-  ritual_steaming_material: {
-    en: "Heat and moisture together release wrinkles that heat alone cannot.",
-    fr: "La chaleur et l'humidité combinées défont les plis que la chaleur seule ne peut défaire.",
-    pt: "Calor e umidade juntos desfazem rugas que o calor sozinho não consegue." ,
-  },
 
-  ritual_brushing_title: { en: "Brushing & Pilling Care", fr: "Brossage et Entretien du Bouloches", pt: "Escovação e Cuidado com Pelotas" },
-  ritual_brushing_explanation: {
-    en: "A soft-bristled brush lifts surface fibres before they have a chance to mat into pills.",
-    fr: "Une brosse à poils doux soulève les fibres de surface avant qu'elles ne s'emmêlent en bouloches.",
-    pt: "Uma escova de cerdas macias levanta as fibras da superfície antes que se emaranhem em pelotas.",
-  },
-  ritual_brushing_material: {
-    en: "Regular brushing is the simplest way to keep wool looking newly woven.",
-    fr: "Un brossage régulier est le moyen le plus simple de garder la laine comme neuve.",
-    pt: "A escovação regular é a forma mais simples de manter a lã com aparência de recém-tecida.",
-  },
 
-  ritual_folding_title: { en: "Careful Folding", fr: "Pliage Soigné", pt: "Dobra Cuidadosa" },
-  ritual_folding_explanation: {
-    en: "Folded along its natural seams, never hung, to hold its shape through storage.",
-    fr: "Plié le long de ses coutures naturelles, jamais suspendu, pour conserver sa forme pendant le rangement.",
-    pt: "Dobrada ao longo de suas costuras naturais, nunca pendurada, para manter a forma durante o armazenamento.",
-  },
-  ritual_folding_material: {
-    en: "Hanging heavy wool stretches the shoulders over time; folding distributes the weight evenly.",
-    fr: "Suspendre de la laine lourde étire les épaules avec le temps ; le pliage répartit le poids uniformément.",
-    pt: "Pendurar lã pesada estica os ombros com o tempo; dobrar distribui o peso uniformemente.",
-  },
-
-  ritual_storage_title: { en: "Seasonal Storage", fr: "Rangement Saisonnier", pt: "Armazenamento Sazonal" },
-  ritual_storage_explanation: {
-    en: "Stored clean, breathable, and away from direct light between wears.",
-    fr: "Rangé propre, respirant, et à l'abri de la lumière directe entre les usages.",
-    pt: "Guardada limpa, respirável, e longe da luz direta entre os usos.",
-  },
-  ritual_storage_material: {
-    en: "Natural fibres need to breathe — sealed plastic traps moisture and invites moths.",
-    fr: "Les fibres naturelles ont besoin de respirer — le plastique scellé retient l'humidité et attire les mites.",
-    pt: "Fibras naturais precisam respirar — plástico selado retém umidade e atrai traças.",
-  },
-
-  ritual_repair_title: { en: "Repairing Loose Stitching", fr: "Réparation des Coutures Lâches", pt: "Reparo de Costuras Soltas" },
-  ritual_repair_explanation: {
-    en: "A single loose thread, caught early, is a five-minute mend instead of a lasting flaw.",
-    fr: "Un simple fil lâche, repéré tôt, est une réparation de cinq minutes plutôt qu'un défaut durable.",
-    pt: "Um único fio solto, notado cedo, é um reparo de cinco minutos em vez de um defeito duradouro.",
-  },
-  ritual_repair_material: {
-    en: "Repair is not a failure of the garment — it's evidence of a life well lived in it.",
-    fr: "La réparation n'est pas un échec du vêtement — c'est la preuve d'une vie bien vécue avec lui.",
-    pt: "O reparo não é uma falha da peça — é evidência de uma vida bem vivida nela.",
-  },
-
-  material_notes_title: { en: "Material Notes", fr: "Notes sur la Matière", pt: "Notas sobre o Material" },
-  material_note_1: {
-    en: "Wool fibres can bend back on themselves over 20,000 times without breaking — far more than cotton or silk.",
-    fr: "Les fibres de laine peuvent se plier sur elles-mêmes plus de 20 000 fois sans se rompre — bien plus que le coton ou la soie.",
-    pt: "As fibras de lã podem se dobrar sobre si mesmas mais de 20.000 vezes sem quebrar — muito mais que algodão ou seda.",
-  },
-  material_note_2: {
-    en: "Between wears, wool fibres slowly recover their shape — a day's rest does more than most people expect.",
-    fr: "Entre deux ports, les fibres de laine reprennent lentement leur forme — un jour de repos fait plus qu'on ne le pense.",
-    pt: "Entre os usos, as fibras de lã recuperam lentamente sua forma — um dia de descanso faz mais do que a maioria imagina.",
-  },
-  material_note_3: {
-    en: "Steaming is gentler than ironing because it relaxes fibres with moisture rather than flattening them with pressure and heat.",
-    fr: "La vapeur est plus douce que le repassage car elle détend les fibres par l'humidité plutôt que de les aplatir par la pression et la chaleur.",
-    pt: "Vaporizar é mais suave que passar a ferro porque relaxa as fibras com umidade em vez de achatá-las com pressão e calor.",
-  },
-  material_note_4: {
-    en: "A well-cared-for wool coat can outlast a decade of ordinary wear — provenance, not just fabric, is what ages well.",
-    fr: "Un manteau en laine bien entretenu peut durer plus d'une décennie d'usage ordinaire — c'est la provenance, pas seulement le tissu, qui vieillit bien.",
-    pt: "Um casaco de lã bem cuidado pode durar mais de uma década de uso comum — é a proveniência, não apenas o tecido, que envelhece bem.",
-  },
-  material_note_5: {
-    en: "Lanolin, wool's natural oil, gives it a quiet resistance to odour and moisture that synthetic fibres can't replicate.",
-    fr: "La lanoline, l'huile naturelle de la laine, lui confère une résistance discrète aux odeurs et à l'humidité que les fibres synthétiques ne peuvent reproduire.",
-    pt: "A lanolina, o óleo natural da lã, dá a ela uma resistência discreta a odores e umidade que fibras sintéticas não conseguem replicar.",
-  },
-
-  care_history_title: { en: "Care History", fr: "Historique d'Entretien", pt: "Histórico de Cuidados" },
-  care_history_subtitle: {
-    en: "Each act of care becomes part of this garment's provenance.",
-    fr: "Chaque geste d'entretien fait désormais partie de la provenance de ce vêtement.",
-    pt: "Cada gesto de cuidado passa a fazer parte da proveniência desta peça.",
-  },
-  care_history_cat_acquisition: { en: "Acquisition", fr: "Acquisition", pt: "Aquisição" },
-  care_history_title_acquisition: { en: "Passport issued", fr: "Passeport émis", pt: "Passaporte emitido" },
-  care_history_desc_acquisition: { en: "Garment entered active stewardship.", fr: "Le vêtement est entré en gestion active.", pt: "A peça entrou em gestão ativa." },
-  care_history_cat_first_care: { en: "Care", fr: "Entretien", pt: "Cuidado" },
-  care_history_title_first_care: { en: "First brushing", fr: "Premier brossage", pt: "Primeira escovação" },
-  care_history_desc_first_care: { en: "Routine surface care following initial wear.", fr: "Entretien de surface de routine après le premier port.", pt: "Cuidado de superfície de rotina após o primeiro uso." },
-  care_history_cat_maintenance: { en: "Maintenance", fr: "Entretien", pt: "Manutenção" },
-  care_history_title_maintenance: { en: "Professional cleaning", fr: "Nettoyage professionnel", pt: "Limpeza profissional" },
-  care_history_desc_maintenance: { en: "Seasonal clean ahead of winter storage.", fr: "Nettoyage saisonnier avant le stockage hivernal.", pt: "Limpeza sazonal antes do armazenamento de inverno." },
-  care_history_cat_conservation: { en: "Conservation", fr: "Conservation", pt: "Conservação" },
-  care_history_title_conservation: { en: "Loose stitching repaired", fr: "Couture lâche réparée", pt: "Costura solta reparada" },
-  care_history_desc_conservation: { en: "A cuff seam was reinforced during routine care.", fr: "Une couture de manchette a été renforcée lors d'un entretien de routine.", pt: "Uma costura do punho foi reforçada durante o cuidado de rotina." },
-
-  care_will_notify: {
-    en: "We'll let you know when its care profile changes.",
-    fr: "Nous vous informerons lorsque son profil d'entretien évoluera.",
-    pt: "Avisaremos quando o perfil de cuidados mudar.",
-  },
-
-  service_professional_cleaning: { en: "Professional cleaning before seasonal storage", fr: "Nettoyage professionnel avant le stockage saisonnier", pt: "Limpeza profissional antes do armazenamento sazonal" },
-  service_light_brushing: { en: "Light brushing after regular wear to preserve the wool fibres", fr: "Brossage léger après un port régulier pour préserver les fibres de laine", pt: "Escovação leve após uso regular para preservar as fibras de lã" },
-  service_wooden_hanger: { en: "Store on a broad wooden hanger in a cool, dry environment", fr: "Ranger sur un large cintre en bois dans un environnement frais et sec", pt: "Guardar em um cabide de madeira largo em ambiente fresco e seco" },
-
-  impact_per_wear: { en: "Impact per wear", fr: "Impact par port", pt: "Impacto por uso" },
-  tradeoff_honesty: { en: "Trade-off honesty", fr: "Honnêteté sur les compromis", pt: "Honestidade sobre compromissos" },
-  tradeoff_quote: {
-    en: "Blended fibres can make recycling more complex at end-of-life.",
-    fr: "Les fibres mélangées peuvent compliquer le recyclage en fin de vie.",
-    pt: "Fibras mistas podem tornar a reciclagem mais complexa no fim da vida útil.",
-  },
 
   // Sustainability
   sustainability: { en: "Sustainability", fr: "Durabilité", pt: "Sustentabilidade" },
