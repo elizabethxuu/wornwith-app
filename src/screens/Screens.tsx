@@ -242,10 +242,16 @@ export function ProductOverview() {
           <Check size={12} /> {t("dpp_verified")}
         </span>
       </div>
-      <div className="w-full h-64 rounded-card bg-blush-pale overflow-hidden mb-4 flex items-center justify-center">
+      <div
+        className="w-full h-64 rounded-card overflow-hidden mb-4 flex items-center justify-center"
+        style={{
+          backgroundImage:
+            "linear-gradient(90deg, #E8E2DD 0%, #F8F7F4 50%, #E8E2DD 100%), linear-gradient(to bottom, rgba(255,255,255,0.025), rgba(0,0,0,0.02))",
+        }}
+      >
         {imgError ? (
           <div className="text-center px-6">
-            <Shirt size={40} className="text-blush-deep mx-auto mb-2" strokeWidth={1} />
+            <Shirt size={40} className="text-clay mx-auto mb-2" strokeWidth={1} />
             <p className="font-sans text-[10px] text-clay">{t("photo_unavailable")}</p>
           </div>
         ) : (
