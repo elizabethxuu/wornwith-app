@@ -20,7 +20,7 @@ body {
 /* Visible, thin scrollbar for the phone-frame and live-app content areas */
 .visible-scrollbar {
   scrollbar-width: thin;
-  scrollbar-color: #C97A8C #F1E9EA;
+  scrollbar-color: #2B2622 #F1E9EA;
 }
 .visible-scrollbar::-webkit-scrollbar {
   width: 5px;
@@ -29,7 +29,7 @@ body {
   background: #F1E9EA;
 }
 .visible-scrollbar::-webkit-scrollbar-thumb {
-  background-color: #C97A8C;
+  background-color: #2B2622;
   border-radius: 8px;
 }
 
