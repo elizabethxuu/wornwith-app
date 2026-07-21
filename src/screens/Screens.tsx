@@ -410,10 +410,10 @@ export function ProductLifecycle() {
 export function SupplyChain() {
   const { t } = useLanguage();
   const chain = [
-    { icon: "🐑", label: t("wool_farm"), place: "NZ", code: "NZ-F4821" },
-    { icon: "🏭", label: t("milling"), place: "Italy", code: "IT-F9043" },
-    { icon: "🚢", label: t("ship"), place: "Portugal", code: "PT-F2217" },
-    { icon: "🏬", label: t("retail"), place: "Paris", code: "FR-F6631" },
+    { icon: "🐑", label: t("wool_farm"), place: "NZ", code: "NZ-F4821", bg: "#DCE6EC" },
+    { icon: "🏭", label: t("milling"), place: "Italy", code: "IT-F9043", bg: "#DDE3D5" },
+    { icon: "🚢", label: t("ship"), place: "Portugal", code: "PT-F2217", bg: "#ECE5DA" },
+    { icon: "🏬", label: t("retail"), place: "Paris", code: "FR-F6631", bg: "#D8E1E8" },
   ];
   return (
     <div className="h-full px-5 py-6 fade-up">
@@ -427,7 +427,10 @@ export function SupplyChain() {
               style={{ animationDelay: `${i * 150}ms` }}
               className="pop-in text-center w-14"
             >
-              <div className="w-11 h-11 mx-auto rounded-full bg-blush-pale flex items-center justify-center text-lg">
+              <div
+                className="w-11 h-11 mx-auto rounded-full flex items-center justify-center text-lg"
+                style={{ backgroundColor: c.bg }}
+              >
                 {c.icon}
               </div>
               <p className="text-[9px] font-sans font-semibold text-ink mt-1">{c.label}</p>
