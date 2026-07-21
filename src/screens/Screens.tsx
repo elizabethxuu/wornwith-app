@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Eyebrow, Donut, Card, JourneyMap, Pill, Disclaimer, EmptyState, ExpandableCard, ArchiveTransition, ArchiveTimeline, type ArchiveEntry, TodaysEdit } from "../components/UI";
+import { Eyebrow, Donut, Card, JourneyMap, Pill, Disclaimer, EmptyState, ExpandableCard, ArchiveTransition, ArchiveTimeline, type ArchiveEntry, TodaysEdit, CareRitualRow, type CareRitual } from "../components/UI";
 import { ChapterColorProvider, ARCHIVE_ACCENT_COLOR, useChapterColor } from "../lib/chapterColor";
 import { generateAI } from "../lib/aiService";
 import {
@@ -8,8 +8,6 @@ import {
   loadWardrobe,
   saveWardrobe,
   type WardrobeItem,
-  loadCareChecks,
-  saveCareChecks,
   loadMoments,
   addMoment,
   updateMomentSummary,
@@ -504,19 +502,31 @@ export function CareGuide() {
     [t("wears_30"), t("impact_opt"), "text-blush"],
     [t("wears_100"), t("impact_low"), "text-sage"],
   ];
-  const care = [
-    [t("cold_water"), t("max_30")],
-    [t("lay_flat"), t("never_hang_wet")],
-    [t("steam_dont_iron"), t("let_breathe")],
-    [t("fold_dont_hang"), t("away_sunlight")],
-  ];
-  const [checks, setChecks] = useState<boolean[]>(() => loadCareChecks());
 
-  const toggle = (i: number) => {
-    const updated = checks.map((c, idx) => (idx === i ? !c : c));
-    setChecks(updated);
-    saveCareChecks(updated);
-  };
+  const rituals: CareRitual[] = [
+    { icon: "💧", title: t("ritual_hand_washing_title"), explanation: t("ritual_hand_washing_explanation"), materialNote: t("ritual_hand_washing_material") },
+    { icon: "♨️", title: t("ritual_steaming_title"), explanation: t("ritual_steaming_explanation"), materialNote: t("ritual_steaming_material") },
+    { icon: "🪮", title: t("ritual_brushing_title"), explanation: t("ritual_brushing_explanation"), materialNote: t("ritual_brushing_material") },
+    { icon: "🤍", title: t("ritual_folding_title"), explanation: t("ritual_folding_explanation"), materialNote: t("ritual_folding_material") },
+    { icon: "📦", title: t("ritual_storage_title"), explanation: t("ritual_storage_explanation"), materialNote: t("ritual_storage_material") },
+    { icon: "🪡", title: t("ritual_repair_title"), explanation: t("ritual_repair_explanation"), materialNote: t("ritual_repair_material") },
+  ];
+
+  // Real rotation, not random — changes daily (day-of-year modulo the
+  // number of notes), so it's stable within a visit but genuinely cycles
+  // over time rather than picking a fresh one on every render.
+  const dayOfYear = Math.floor(
+    (Date.now() - new Date(new Date().getFullYear(), 0, 0).getTime()) / 86400000
+  );
+  const materialNoteKeys = ["material_note_1", "material_note_2", "material_note_3", "material_note_4", "material_note_5"] as const;
+  const todaysMaterialNote = t(materialNoteKeys[dayOfYear % materialNoteKeys.length]);
+
+  const careHistoryEntries: ArchiveEntry[] = [
+    { year: "2026", category: t("care_history_cat_acquisition"), title: t("care_history_title_acquisition"), description: t("care_history_desc_acquisition") },
+    { year: "2026", category: t("care_history_cat_first_care"), title: t("care_history_title_first_care"), description: t("care_history_desc_first_care") },
+    { year: "2027", category: t("care_history_cat_maintenance"), title: t("care_history_title_maintenance"), description: t("care_history_desc_maintenance") },
+    { year: "2028", category: t("care_history_cat_conservation"), title: t("care_history_title_conservation"), description: t("care_history_desc_conservation") },
+  ];
 
   return (
     <div className="h-full px-5 py-6 fade-up">
@@ -527,7 +537,7 @@ export function CareGuide() {
       <p className="text-[11px] text-clay font-sans mt-1 mb-4">{t("care_supporting_line")}</p>
 
       <Eyebrow>{t("impact_per_wear")}</Eyebrow>
-      <div className="flex justify-between mt-2 mb-5">
+      <div className="flex justify-between mt-2 mb-6">
         {wears.map(([label, tag, color]) => (
           <div key={label} className="text-center">
             <p className="font-sans text-[11px] text-ink">{label}</p>
@@ -536,21 +546,27 @@ export function CareGuide() {
         ))}
       </div>
 
-      <div className="divide-y divide-line border-y border-line mb-4">
-        {care.map(([label, sub], i) => (
-          <label key={label} className="flex items-center gap-3 py-2.5 cursor-pointer">
-            <input
-              type="checkbox"
-              checked={checks[i]}
-              onChange={() => toggle(i)}
-              className="accent-blush-deep w-4 h-4"
-            />
-            <div>
-              <p className={`font-sans text-[12px] ${checks[i] ? "text-clay line-through" : "text-ink"}`}>{label}</p>
-              <p className="font-sans text-[10px] text-clay">{sub}</p>
-            </div>
-          </label>
+      {/* The Atelier — replaces the old checklist. Each ritual is its own
+          expandable row: a placeholder for real conservation footage
+          (genuinely just a slow CSS gradient, not video — this environment
+          can't produce film), an editorial explanation, and a material
+          note. */}
+      <Eyebrow>{t("atelier_title")}</Eyebrow>
+      <p className="font-sans text-[11px] text-clay leading-relaxed mt-1.5 mb-3">
+        {t("atelier_intro")}
+      </p>
+      <div className="border-t border-line mb-6">
+        {rituals.map((ritual) => (
+          <CareRitualRow key={ritual.title} ritual={ritual} filmLabel={t("film_placeholder_label")} />
         ))}
+      </div>
+
+      {/* Material Notes — one fact, rotating daily */}
+      <div className="mb-6 pb-6 border-b border-line">
+        <Eyebrow>{t("material_notes_title")}</Eyebrow>
+        <p className="font-display italic text-[14px] text-ink leading-relaxed mt-2">
+          {todaysMaterialNote}
+        </p>
       </div>
 
       {/* Next Recommended Care — genuinely dynamic: real wear count, real
@@ -559,7 +575,7 @@ export function CareGuide() {
           keep the page light; auto-expands once care actually becomes
           relevant (moderate/heavy tier), since that's the moment the
           detail stops being optional reading. */}
-      <div className="mb-5 fade-up">
+      <div className="mb-6 fade-up">
         <Eyebrow>{t("next_recommended_care_title")}</Eyebrow>
         <p className="font-sans text-[12px] text-ink/85 leading-relaxed mt-2">
           {t(`care_tier_${careTier}` as TranslationKey)}
@@ -601,6 +617,18 @@ export function CareGuide() {
             </div>
           </div>
         </div>
+      </div>
+
+      {/* Care History — reuses the same timeline component as the
+          Ownership screen's Archive, since the underlying idea is
+          identical: real events, filled markers for what's happened,
+          hollow for what's projected. */}
+      <div className="mb-6">
+        <Eyebrow>{t("care_history_title")}</Eyebrow>
+        <p className="font-sans text-[11px] text-clay leading-relaxed mt-1 mb-4">
+          {t("care_history_subtitle")}
+        </p>
+        <ArchiveTimeline entries={careHistoryEntries} />
       </div>
 
       <div className="border-l-2 border-blush pl-3">

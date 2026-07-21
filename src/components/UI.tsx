@@ -938,3 +938,62 @@ export function ListeningRoom({
     </div>
   );
 }
+
+export type CareRitual = {
+  icon: string;
+  title: string;
+  explanation: string;
+  materialNote?: string;
+  historyNote?: string;
+};
+
+// A single expandable "ritual" row — replaces the old checklist item.
+// The film area is a clearly-labeled placeholder (a slow CSS gradient
+// drift, not real footage) since actual video production isn't something
+// this environment can do; everything else is fully real and functional.
+export function CareRitualRow({ ritual, filmLabel }: { ritual: CareRitual; filmLabel: string }) {
+  const [open, setOpen] = useState(false);
+  const color = useChapterColor();
+
+  return (
+    <div className="border-b border-line last:border-0">
+      <button
+        onClick={() => setOpen(!open)}
+        className="w-full flex items-center gap-3 py-3.5 text-left"
+      >
+        <span className="text-lg shrink-0">{ritual.icon}</span>
+        <span className="font-sans text-[13px] text-ink flex-1">{ritual.title}</span>
+        <span
+          className="text-clay transition-transform inline-block shrink-0"
+          style={{ transform: open ? "rotate(90deg)" : "rotate(0deg)" }}
+        >
+          ›
+        </span>
+      </button>
+
+      <div
+        className="grid transition-all duration-500 ease-in-out"
+        style={{ gridTemplateRows: open ? "1fr" : "0fr" }}
+      >
+        <div className="overflow-hidden">
+          <div className="pb-4 fade-up">
+            <div className="atelier-loop w-full h-32 rounded-xl flex items-center justify-center mb-3">
+              <p className="font-sans text-[9px] uppercase tracking-[0.14em] text-clay/60 bg-white/70 px-2.5 py-1 rounded-full">
+                {filmLabel}
+              </p>
+            </div>
+            <p className="font-sans text-[12px] text-ink/85 leading-relaxed">{ritual.explanation}</p>
+            {ritual.materialNote && (
+              <p className="font-display italic text-[12px] mt-2 leading-relaxed" style={{ color }}>
+                {ritual.materialNote}
+              </p>
+            )}
+            {ritual.historyNote && (
+              <p className="font-sans text-[10px] text-clay mt-2">{ritual.historyNote}</p>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}

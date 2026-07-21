@@ -61,3 +61,17 @@ body {
   to { opacity: 1; transform: scale(1) translateY(0); }
 }
 .pop-in { animation: popIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) both; }
+
+/* A slow, quiet motion for the Atelier ritual placeholders — standing in
+   for real footage we don't have the ability to shoot here. Deliberately
+   slow (6s) and low-contrast so it reads as "quiet ambient movement," not
+   a loading state. */
+@keyframes atelierDrift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+.atelier-loop {
+  background: linear-gradient(120deg, #F1EDE7 0%, #FAF8F5 35%, #EDE7E1 65%, #F1EDE7 100%);
+  background-size: 220% 220%;
+  animation: atelierDrift 6s ease-in-out infinite;
+}

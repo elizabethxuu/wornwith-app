@@ -82,27 +82,6 @@ export function saveWardrobe(items: WardrobeItem[]) {
   }
 }
 
-// Care checklist — which of the 4 care instructions the visitor has checked
-export function loadCareChecks(): boolean[] {
-  try {
-    const raw = localStorage.getItem(key("care-checks"));
-    if (!raw) return [false, false, false, false];
-    const parsed = JSON.parse(raw);
-    if (Array.isArray(parsed) && parsed.length === 4) return parsed;
-    return [false, false, false, false];
-  } catch {
-    return [false, false, false, false];
-  }
-}
-
-export function saveCareChecks(checks: boolean[]) {
-  try {
-    localStorage.setItem(key("care-checks"), JSON.stringify(checks));
-  } catch {
-    // ignore
-  }
-}
-
 // A running log of saved "when will you wear this" moments, most recent last
 export type SavedMoment = { text: string; savedAt: string; summary?: string };
 
