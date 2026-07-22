@@ -167,7 +167,6 @@ export function JourneyMap() {
   // opening" moment — once someone taps a different stop, later card
   // swaps just use the existing quick fade, not the full cinematic replay.
   const [everTapped, setEverTapped] = useState(false);
-  const [bloomSettled, setBloomSettled] = useState(false);
   const { stepStyle: revealStep } = useMountReveal();
 
   useEffect(() => {
@@ -323,36 +322,38 @@ export function JourneyMap() {
         </ComposableMap>
       </div>
 
-      {/* Tap-to-reveal detail card. First time the page opens: a slow
-          turquoise → cream → blush gradient bloom, settling back to the
-          card's normal resting color, with the text staggering in after.
-          Any tap after that just uses a quick fade — the elaborate
-          sequence is a one-time "opening the page" moment, not something
-          that replays every time someone explores a different stop. */}
-      {!everTapped ? (
-        <div
-          className={!bloomSettled ? "story-card-bloom" : ""}
-          onAnimationEnd={() => setBloomSettled(true)}
-          style={{
-            marginTop: "10px",
-            borderRadius: "12px",
-            padding: "16px",
-            border: "1px solid rgba(228,224,215,0.4)",
-            backgroundColor: bloomSettled ? "#FAF7F1" : undefined,
-            animationDelay: "300ms",
-            ...revealStep("translateY(16px)", 300, 550),
-          }}
-        >
+      {/* Tap-to-reveal detail card. The gradient is permanent — it never
+          settles to a flat color, on first load or after tapping a
+          different stop. Only the entrance (fade+rise) and the internal
+          text stagger are one-time "opening the page" moments; a tap on
+          a different stop just swaps the text with a quick fade, while
+          the drifting gradient underneath never stops or resets. */}
+      <div
+        className="story-card-gradient"
+        style={{
+          marginTop: "10px",
+          borderRadius: "12px",
+          padding: "16px",
+          border: "1px solid rgba(228,224,215,0.4)",
+          ...(!everTapped
+            ? revealStep("translateY(16px)", 300, 500)
+            : { opacity: 1, transform: "none" }),
+        }}
+      >
+        <div className={everTapped ? "fade-up" : ""} key={selected}>
           <div className="min-w-0">
             <p
               className="font-sans text-[9px] uppercase tracking-[0.14em] font-semibold"
-              style={{ color: "#A94C63", ...revealStep("translateY(8px)", 2100, 300) }}
+              style={{
+                color: "#A94C63",
+                ...(!everTapped ? revealStep("translateY(8px)", 800, 280) : {}),
+              }}
             >
               {t(stop.placeKey)}
             </p>
             <p
               className="font-display italic text-[15px] text-ink leading-snug mt-1.5"
-              style={revealStep("translateY(8px)", 2220, 300)}
+              style={!everTapped ? revealStep("translateY(8px)", 920, 280) : undefined}
             >
               {t(stop.blurbKey)}
             </p>
@@ -360,39 +361,16 @@ export function JourneyMap() {
           {stop.active && (
             <p
               className="font-display italic text-[12px] text-right mt-3"
-              style={{ color: "#2FC7D8", ...revealStep("translateY(8px)", 2340, 300) }}
+              style={{
+                color: "#2FC7D8",
+                ...(!everTapped ? revealStep("translateY(8px)", 1040, 280) : {}),
+              }}
             >
               {t("every_place_note")}
             </p>
           )}
         </div>
-      ) : (
-        <div
-          className="mt-2.5 rounded-xl px-4 py-4 fade-up border border-line/40"
-          style={{ backgroundColor: "#FAF7F1" }}
-          key={selected}
-        >
-          <div className="min-w-0">
-            <p
-              className="font-sans text-[9px] uppercase tracking-[0.14em] font-semibold"
-              style={{ color: "#A94C63" }}
-            >
-              {t(stop.placeKey)}
-            </p>
-            <p className="font-display italic text-[15px] text-ink leading-snug mt-1.5">
-              {t(stop.blurbKey)}
-            </p>
-          </div>
-          {stop.active && (
-            <p
-              className="font-display italic text-[12px] text-right mt-3"
-              style={{ color: "#2FC7D8" }}
-            >
-              {t("every_place_note")}
-            </p>
-          )}
-        </div>
-      )}
+      </div>
 
       <p className="font-sans text-[9px] text-clay/70 text-center mt-2">
         {t("tap_pin_hint")}

@@ -62,27 +62,26 @@ body {
 }
 .pop-in { animation: popIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) both; }
 
-/* Story page — the location card's one-time gradient bloom: turquoise
-   into cream into blush, then settles back to the card's normal resting
-   color once the sweep finishes. Plays once (no infinite/alternate). */
-@keyframes storyCardBloom {
+/* Story page — the Paris card's gradient never settles to a flat color;
+   it drifts continuously, extremely slowly, for as long as the card is
+   on screen. Only the three specified colors — no cream/beige stop. */
+@keyframes storyCardDrift {
   0% { background-position: 0% 50%; }
-  100% { background-position: 100% 50%; }
+  100% { background-position: 200% 50%; }
 }
-.story-card-bloom {
-  background-image: linear-gradient(90deg, #CDEFF5 0%, #F7F3ED 50%, #F3D8DE 100%);
-  background-size: 240% 100%;
-  background-position: 0% 50%;
-  animation: storyCardBloom 1.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+.story-card-gradient {
+  background-image: linear-gradient(90deg, #CDEFF5 0%, #BFEAF4 50%, #F3D8DE 100%);
+  background-size: 260% 100%;
+  animation: storyCardDrift 10s linear infinite;
 }
 
 /* A single, understated sparkle — small scale pulse + opacity flicker,
    once, no loop. Tiffany-box quiet, not a game-UI glitter burst. */
 @keyframes iconSparkleOnce {
   0% { transform: scale(1); opacity: 1; }
-  40% { transform: scale(1.08); opacity: 0.7; }
+  40% { transform: scale(1.05); opacity: 0.7; }
   100% { transform: scale(1); opacity: 1; }
 }
 .icon-sparkle-once {
-  animation: iconSparkleOnce 300ms ease-out;
+  animation: iconSparkleOnce 280ms ease-out;
 }
