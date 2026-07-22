@@ -461,10 +461,20 @@ const dict = {
 
   // Story
   story_behind_it: { en: "The story behind it", fr: "L'histoire derrière", pt: "A história por trás" },
-  story_p1: {
-    en: "Your coat began on sheep farms in New Zealand, before moving through European mills and into skilled hands in Portugal — designed to be worn, repaired, and passed on.",
-    fr: "Votre manteau a commencé dans des fermes ovines en Nouvelle-Zélande, avant de passer par des filatures européennes puis entre des mains expertes au Portugal — conçu pour être porté, réparé et transmis.",
-    pt: "Seu casaco começou em fazendas de ovelhas na Nova Zelândia, passou por fábricas europeias e chegou a mãos habilidosas em Portugal — feito para ser usado, reparado e repassado.",
+  story_sentence_1: {
+    en: "Your coat began on sheep farms in New Zealand,",
+    fr: "Votre manteau a commencé dans des fermes ovines en Nouvelle-Zélande,",
+    pt: "Seu casaco começou em fazendas de ovelhas na Nova Zelândia,",
+  },
+  story_sentence_2: {
+    en: "before moving through European mills and into skilled hands in Portugal —",
+    fr: "avant de passer par des filatures européennes puis entre des mains expertes au Portugal —",
+    pt: "passou por fábricas europeias e chegou a mãos habilidosas em Portugal —",
+  },
+  story_sentence_3: {
+    en: "designed to be worn, repaired, and passed on.",
+    fr: "conçu pour être porté, réparé et transmis.",
+    pt: "feito para ser usado, reparado e repassado.",
   },
   story_p2: {
     en: "Crafted from 70% recycled merino — it carries a lower footprint than 90% of comparable wool coats.",

@@ -163,11 +163,22 @@ export function JourneyMap() {
   // most relevant detail to show before anyone's tapped anything.
   const [selected, setSelected] = useState(journeyStops.length - 1);
   const [drawn, setDrawn] = useState(false);
+  // The elaborate bloom + staggered text reveal is a one-time "page
+  // opening" moment — once someone taps a different stop, later card
+  // swaps just use the existing quick fade, not the full cinematic replay.
+  const [everTapped, setEverTapped] = useState(false);
+  const [bloomSettled, setBloomSettled] = useState(false);
+  const { stepStyle: revealStep } = useMountReveal();
 
   useEffect(() => {
     const timer = setTimeout(() => setDrawn(true), 150);
     return () => clearTimeout(timer);
   }, []);
+
+  const selectStop = (i: number) => {
+    setSelected(i);
+    setEverTapped(true);
+  };
 
   const stop = journeyStops[selected];
 
@@ -242,7 +253,7 @@ export function JourneyMap() {
                   <circle
                     r={13}
                     fill="rgba(0,0,0,0.001)"
-                    onClick={() => setSelected(i)}
+                    onClick={() => selectStop(i)}
                     style={{ cursor: "pointer", pointerEvents: "all" }}
                   />
                   {/* Paris carries a soft blush watercolor halo at all times
@@ -293,7 +304,7 @@ export function JourneyMap() {
                     stroke="#FAF7F2"
                     strokeWidth={3}
                     strokeLinejoin="round"
-                    onClick={() => setSelected(i)}
+                    onClick={() => selectStop(i)}
                     style={{
                       cursor: "pointer",
                       fontFamily: "'Cormorant Garamond', serif",
@@ -312,34 +323,76 @@ export function JourneyMap() {
         </ComposableMap>
       </div>
 
-      {/* Tap-to-reveal detail card for whichever stop is selected — the
-          gradient now lives on the map itself, so this returns to a
-          quiet, flat cream card. Typography only, no decorative icon. */}
-      <div
-        className="mt-2.5 rounded-xl px-4 py-4 fade-up border border-line/40"
-        style={{ backgroundColor: "#FAF7F1" }}
-        key={selected}
-      >
-        <div className="min-w-0">
-          <p
-            className="font-sans text-[9px] uppercase tracking-[0.14em] font-semibold"
-            style={{ color: "#A94C63" }}
-          >
-            {t(stop.placeKey)}
-          </p>
-          <p className="font-display italic text-[15px] text-ink leading-snug mt-1.5">
-            {t(stop.blurbKey)}
-          </p>
+      {/* Tap-to-reveal detail card. First time the page opens: a slow
+          turquoise → cream → blush gradient bloom, settling back to the
+          card's normal resting color, with the text staggering in after.
+          Any tap after that just uses a quick fade — the elaborate
+          sequence is a one-time "opening the page" moment, not something
+          that replays every time someone explores a different stop. */}
+      {!everTapped ? (
+        <div
+          className={!bloomSettled ? "story-card-bloom" : ""}
+          onAnimationEnd={() => setBloomSettled(true)}
+          style={{
+            marginTop: "10px",
+            borderRadius: "12px",
+            padding: "16px",
+            border: "1px solid rgba(228,224,215,0.4)",
+            backgroundColor: bloomSettled ? "#FAF7F1" : undefined,
+            animationDelay: "300ms",
+            ...revealStep("translateY(16px)", 300, 550),
+          }}
+        >
+          <div className="min-w-0">
+            <p
+              className="font-sans text-[9px] uppercase tracking-[0.14em] font-semibold"
+              style={{ color: "#A94C63", ...revealStep("translateY(8px)", 2100, 300) }}
+            >
+              {t(stop.placeKey)}
+            </p>
+            <p
+              className="font-display italic text-[15px] text-ink leading-snug mt-1.5"
+              style={revealStep("translateY(8px)", 2220, 300)}
+            >
+              {t(stop.blurbKey)}
+            </p>
+          </div>
+          {stop.active && (
+            <p
+              className="font-display italic text-[12px] text-right mt-3"
+              style={{ color: "#2FC7D8", ...revealStep("translateY(8px)", 2340, 300) }}
+            >
+              {t("every_place_note")}
+            </p>
+          )}
         </div>
-        {stop.active && (
-          <p
-            className="font-display italic text-[12px] text-right mt-3"
-            style={{ color: "#2FC7D8" }}
-          >
-            {t("every_place_note")}
-          </p>
-        )}
-      </div>
+      ) : (
+        <div
+          className="mt-2.5 rounded-xl px-4 py-4 fade-up border border-line/40"
+          style={{ backgroundColor: "#FAF7F1" }}
+          key={selected}
+        >
+          <div className="min-w-0">
+            <p
+              className="font-sans text-[9px] uppercase tracking-[0.14em] font-semibold"
+              style={{ color: "#A94C63" }}
+            >
+              {t(stop.placeKey)}
+            </p>
+            <p className="font-display italic text-[15px] text-ink leading-snug mt-1.5">
+              {t(stop.blurbKey)}
+            </p>
+          </div>
+          {stop.active && (
+            <p
+              className="font-display italic text-[12px] text-right mt-3"
+              style={{ color: "#2FC7D8" }}
+            >
+              {t("every_place_note")}
+            </p>
+          )}
+        </div>
+      )}
 
       <p className="font-sans text-[9px] text-clay/70 text-center mt-2">
         {t("tap_pin_hint")}
@@ -1115,4 +1168,43 @@ export function useEditorialReveal(sessionKey: string) {
   };
 
   return { ref, visible, firstReveal, stepStyle };
+}
+
+// Simple mount-triggered reveal — used for the Story page's cinematic
+// sequence, which plays every time the screen opens (unlike the
+// session-gated Product page reveal). Flips true one frame after mount so
+// CSS transitions actually animate from their initial state instead of
+// snapping straight to visible.
+export function useMountReveal() {
+  const [visible, setVisible] = useState(false);
+  const reducedMotionRef = useRef(false);
+
+  useEffect(() => {
+    reducedMotionRef.current =
+      typeof window !== "undefined" &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reducedMotionRef.current) {
+      setVisible(true);
+      return;
+    }
+    const raf = requestAnimationFrame(() => setVisible(true));
+    return () => cancelAnimationFrame(raf);
+  }, []);
+
+  const stepStyle = (
+    translateFrom: string,
+    delayMs: number,
+    durationMs: number
+  ): React.CSSProperties => {
+    if (reducedMotionRef.current) {
+      return { opacity: 1, transform: "none" };
+    }
+    return {
+      opacity: visible ? 1 : 0,
+      transform: visible ? "translate(0,0)" : translateFrom,
+      transition: `opacity ${durationMs}ms cubic-bezier(0.16,1,0.3,1) ${delayMs}ms, transform ${durationMs}ms cubic-bezier(0.16,1,0.3,1) ${delayMs}ms`,
+    };
+  };
+
+  return { visible, reducedMotion: reducedMotionRef.current, stepStyle };
 }
