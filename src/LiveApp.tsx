@@ -28,7 +28,7 @@ import {
 function buildLiveScreens(goToScreen: (index: number) => void) {
   return [
     <Welcome key="welcome" />,
-    <ProductOverview key="overview" onExploreJourney={() => goToScreen(7)} />,
+    <ProductOverview key="overview" onExploreJourney={() => goToScreen(2)} />,
     <ProductLifecycle key="lifecycle" />,
     <SupplyChain key="supply" />,
     <CareGuide key="care" />,

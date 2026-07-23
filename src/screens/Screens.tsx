@@ -320,10 +320,12 @@ export function ProductOverview({ onExploreJourney }: { onExploreJourney?: () =>
             </p>
           </div>
 
-          {/* Real navigation now — jumps directly to the Story page
-              (index 7), not just the next screen in sequence, and its
-              editorial reveal begins immediately since that's already
-              wired to trigger on mount. */}
+          {/* Real navigation — jumps directly to the Journey / Product
+              Lifecycle page (index 2), not just the next screen in
+              sequence, preserving the editorial progression: how it was
+              made, then care, then wardrobe, then story. Its timeline
+              animation begins immediately since that page's entrance
+              animations are already mount-triggered. */}
           <button
             onClick={(e) => {
               e.stopPropagation();
