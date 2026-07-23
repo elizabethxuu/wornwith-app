@@ -226,9 +226,10 @@ export function Welcome() {
 
 
 /* 4 — PRODUCT OVERVIEW */
-export function ProductOverview() {
+export function ProductOverview({ onExploreJourney }: { onExploreJourney?: () => void } = {}) {
   const { t } = useLanguage();
   const [imgError, setImgError] = useState(false);
+  const [ctaFading, setCtaFading] = useState(false);
   const { ref: editorialRef, visible: editorialVisible, stepStyle: editorialStep } = useEditorialReveal(
     "wornwith:craftedRevealPlayed"
   );
@@ -319,18 +320,36 @@ export function ProductOverview() {
             </p>
           </div>
 
-          {/* Plain text, not a button — tapping it falls through to the
-              screen's existing forward-navigation tap zone, so it's
-              genuinely functional without any new navigation wiring. */}
-          <p
-            className="group inline-flex items-center gap-1 font-sans text-[10px] font-medium mt-2.5 cursor-pointer"
-            style={{ color: "#8E3D52", ...editorialStep("translateX(-5px)", 1150, 300) }}
+          {/* Real navigation now — jumps directly to the Story page
+              (index 7), not just the next screen in sequence, and its
+              editorial reveal begins immediately since that's already
+              wired to trigger on mount. */}
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              if (ctaFading) return;
+              setCtaFading(true);
+              setTimeout(() => onExploreJourney?.(), 180);
+            }}
+            className="group inline-flex items-center gap-1 font-sans text-[10px] font-medium mt-2.5 cursor-pointer transition-opacity duration-200"
+            style={{
+              color: "#8E3D52",
+              opacity: ctaFading ? 0.7 : 1,
+              ...editorialStep("translateX(-5px)", 1150, 300),
+            }}
           >
-            <span className="group-hover:underline underline-offset-2 transition-colors group-hover:text-[#7A2F42]">
+            <span className="relative inline-block group-hover:text-[#99425A] transition-colors duration-200">
               {t("product_editorial_cta")}
+              {/* A true left-to-right underline sweep (scaleX from the
+                  left edge), not the instant on/off of a plain
+                  text-underline utility. */}
+              <span
+                className="absolute left-0 -bottom-0.5 w-full h-px origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-200"
+                style={{ backgroundColor: "#99425A" }}
+              />
             </span>
             <span className="inline-block transition-transform duration-200 group-hover:translate-x-[3px]">→</span>
-          </p>
+          </button>
         </div>
       </div>
 

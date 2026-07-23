@@ -25,18 +25,20 @@ import {
 // Real users arrive here because they already scanned the physical tag with
 // the iPhone Camera app. No fake scan-simulation screen — go straight from
 // "verifying" into the passport.
-const liveScreens = [
-  <Welcome key="welcome" />,
-  <ProductOverview key="overview" />,
-  <ProductLifecycle key="lifecycle" />,
-  <SupplyChain key="supply" />,
-  <CareGuide key="care" />,
-  <SustainabilityMetrics key="sustainability" />,
-  <WhatsNext key="next" />,
-  <StoryBehindIt key="story" />,
-  <Personalization key="personalize" />,
-  <MyWardrobe key="wardrobe" />,
-];
+function buildLiveScreens(goToScreen: (index: number) => void) {
+  return [
+    <Welcome key="welcome" />,
+    <ProductOverview key="overview" onExploreJourney={() => goToScreen(7)} />,
+    <ProductLifecycle key="lifecycle" />,
+    <SupplyChain key="supply" />,
+    <CareGuide key="care" />,
+    <SustainabilityMetrics key="sustainability" />,
+    <WhatsNext key="next" />,
+    <StoryBehindIt key="story" />,
+    <Personalization key="personalize" />,
+    <MyWardrobe key="wardrobe" />,
+  ];
+}
 
 // One label per screen above, used as the subtle section indicator next to
 // the progress bar. Kept as translation keys so it follows the language
@@ -71,6 +73,10 @@ export default function LiveApp() {
   const { t } = useLanguage();
   const [bootState, setBootState] = useState<BootState>("verifying");
   const [index, setIndex] = useState(0);
+  // Built inside the component (not as a module-level constant) so
+  // screens like ProductOverview can be given a real "jump to a specific
+  // screen" callback, not just the generic forward-tap gesture.
+  const liveScreens = buildLiveScreens((i) => setIndex(i));
   const [showClosing, setShowClosing] = useState(false);
   const [legalPage, setLegalPage] = useState<"none" | "privacy" | "terms" | "accessibility" | "release-notes">("none");
 
