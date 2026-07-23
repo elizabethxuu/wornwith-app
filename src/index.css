@@ -62,6 +62,22 @@ body {
 }
 .pop-in { animation: popIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) both; }
 
+/* Product page — Crafted to Last panel's one-time traveling blush wash.
+   A large, heavily blurred highlight drifts left to right once, fading
+   in and out gently at each end so it never "pops," then disappears for
+   good — not a loop, not a shimmer. */
+@keyframes craftedWashSweep {
+  0% { transform: translateX(-55%); opacity: 0; }
+  20% { opacity: 1; }
+  80% { opacity: 1; }
+  100% { transform: translateX(55%); opacity: 0; }
+}
+.crafted-wash {
+  background: radial-gradient(ellipse 60% 100% at center, rgba(233, 201, 210, 0.10), transparent 70%);
+  filter: blur(18px);
+  animation: craftedWashSweep 2s ease-in-out both;
+}
+
 /* Story page — the Paris card's gradient never stops, never settles. An
    all-blush palette now — no turquoise inside the card, turquoise stays
    reserved for the journey/route/navigation elements elsewhere on the

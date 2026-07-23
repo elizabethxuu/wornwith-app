@@ -230,6 +230,44 @@ export function ProductOverview({ onExploreJourney }: { onExploreJourney?: () =>
   const { t } = useLanguage();
   const [imgError, setImgError] = useState(false);
   const [ctaFading, setCtaFading] = useState(false);
+
+  // A one-time, bespoke-timed entrance for the Crafted to Last panel —
+  // each element has its own specific delay/duration/easing per spec, so
+  // this is a small local helper rather than the shared useMountReveal
+  // hook (which uses one fixed curve for everything).
+  const [craftedMounted, setCraftedMounted] = useState(false);
+  const [craftedReducedMotion, setCraftedReducedMotion] = useState(false);
+  useEffect(() => {
+    const reduced =
+      typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    setCraftedReducedMotion(reduced);
+    if (reduced) {
+      setCraftedMounted(true);
+      return;
+    }
+    const timer = setTimeout(() => setCraftedMounted(true), 20);
+    return () => clearTimeout(timer);
+  }, []);
+
+  const craftedReveal = (
+    translateFrom: string,
+    delayMs: number,
+    durationMs: number,
+    easing = "0.16,1,0.3,1"
+  ): React.CSSProperties => {
+    if (craftedReducedMotion) return { opacity: 1, transform: "none" };
+    return {
+      opacity: craftedMounted ? 1 : 0,
+      transform: craftedMounted ? "translate(0,0)" : translateFrom,
+      transition: `opacity ${durationMs}ms cubic-bezier(${easing}) ${delayMs}ms, transform ${durationMs}ms cubic-bezier(${easing}) ${delayMs}ms`,
+    };
+  };
+
+  // The one-time traveling blush wash only plays if motion isn't reduced,
+  // and only once — it's driven by the same craftedMounted flag rather
+  // than looping.
+  const craftedWashActive = craftedMounted && !craftedReducedMotion;
+
   const rows = [
     [t("material"), t("material_value")],
     [t("made_in"), t("made_in_value")],
@@ -284,25 +322,38 @@ export function ProductOverview({ onExploreJourney }: { onExploreJourney?: () =>
       </p>
       <div style={{ borderTop: "1px solid rgba(142,61,82,0.18)" }} className="mb-4" />
 
-      {/* A compact editorial pull-quote, not a staged reveal — simple,
-          calm, present immediately so the spec table below stays visible
-          without scrolling. Soft blush background, rounded corners, no
-          border, no shadow, no gradient, no entrance animation. */}
+      {/* A slow editorial reveal — the panel rises into place, a soft
+          one-time blush wash drifts across it, then the headline, each
+          sentence, and finally the CTA fade in in sequence. Same
+          two-column layout as before; only the appearance is new. */}
       <div
-        className="flex items-center gap-4 px-4 py-3.5 mb-4 rounded-lg"
-        style={{ backgroundColor: "#FCF5F6" }}
+        className="relative flex items-center gap-4 px-4 py-3.5 mb-4 rounded-lg overflow-hidden"
+        style={{ backgroundColor: "#FCF5F6", ...craftedReveal("translateY(18px)", 350, 600, ".22,.61,.36,1") }}
       >
-        <div className="flex-[7] min-w-0">
+        {craftedWashActive && (
+          <div
+            aria-hidden
+            className="absolute inset-0 pointer-events-none crafted-wash"
+            style={{ animationDelay: "350ms" }}
+          />
+        )}
+        <div className="relative flex-[7] min-w-0">
           <p
             className="font-display italic text-[15px] leading-snug"
-            style={{ color: "#8E3D52" }}
+            style={{ color: "#8E3D52", ...craftedReveal("translateY(8px)", 950, 450) }}
           >
             {t("product_editorial_headline")}
           </p>
           <div className="mt-1.5 space-y-0">
-            <p className="font-sans text-[9px] text-clay leading-tight">{t("product_editorial_copy_1")}</p>
-            <p className="font-sans text-[9px] text-clay leading-tight">{t("product_editorial_copy_2")}</p>
-            <p className="font-sans text-[9px] text-clay leading-tight">{t("product_editorial_copy_3")}</p>
+            <p className="font-sans text-[9px] text-clay leading-tight" style={craftedReveal("translateY(6px)", 1400, 350)}>
+              {t("product_editorial_copy_1")}
+            </p>
+            <p className="font-sans text-[9px] text-clay leading-tight" style={craftedReveal("translateY(6px)", 1520, 350)}>
+              {t("product_editorial_copy_2")}
+            </p>
+            <p className="font-sans text-[9px] text-clay leading-tight" style={craftedReveal("translateY(6px)", 1640, 350)}>
+              {t("product_editorial_copy_3")}
+            </p>
           </div>
         </div>
 
@@ -319,20 +370,17 @@ export function ProductOverview({ onExploreJourney }: { onExploreJourney?: () =>
             setCtaFading(true);
             setTimeout(() => onExploreJourney?.(), 180);
           }}
-          className="flex-[3] group flex items-center justify-center gap-1 font-sans text-[10px] font-medium cursor-pointer transition-opacity duration-200"
-          style={{ color: "#8E3D52", opacity: ctaFading ? 0.7 : 1 }}
+          className="relative flex-[3] group flex items-center justify-center gap-1 font-sans text-[10px] font-medium cursor-pointer transition-opacity duration-200"
+          style={{
+            color: "#8E3D52",
+            opacity: ctaFading ? 0.7 : 1,
+            ...craftedReveal("translateX(10px)", 1990, 300),
+          }}
         >
-          <span className="relative inline-block group-hover:text-[#99425A] transition-colors duration-[180ms]">
+          <span className="inline-block group-hover:text-[#6E2F41] transition-colors duration-[180ms]">
             {t("product_editorial_cta")}
-            {/* A true left-to-right underline sweep (scaleX from the
-                left edge), not the instant on/off of a plain
-                text-underline utility. */}
-            <span
-              className="absolute left-0 -bottom-0.5 w-full h-px origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-[180ms]"
-              style={{ backgroundColor: "#99425A" }}
-            />
           </span>
-          <span className="inline-block transition-transform duration-[180ms] group-hover:translate-x-[3px]">→</span>
+          <span className="inline-block transition-transform duration-[180ms] group-hover:translate-x-[4px]">→</span>
         </button>
       </div>
 
