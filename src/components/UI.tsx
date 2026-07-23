@@ -348,7 +348,7 @@ export function JourneyMap() {
           {stop.active && (
             <p
               className="font-display italic text-[12px] text-right mt-3"
-              style={{ color: "#2FC7D8" }}
+              style={{ color: "#3B3532" }}
             >
               {t("every_place_note")}
             </p>
