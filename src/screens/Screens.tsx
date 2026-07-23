@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Eyebrow, Donut, Card, JourneyMap, Pill, Disclaimer, EmptyState, ExpandableCard, ArchiveTransition, ArchiveTimeline, type ArchiveEntry, TodaysEdit, CareRitualRow, type CareRitual, useEditorialReveal, useMountReveal } from "../components/UI";
+import { Eyebrow, Donut, Card, JourneyMap, Pill, Disclaimer, EmptyState, ExpandableCard, ArchiveTransition, ArchiveTimeline, type ArchiveEntry, TodaysEdit, CareRitualRow, type CareRitual, useMountReveal } from "../components/UI";
 import { ChapterColorProvider, ARCHIVE_ACCENT_COLOR, useChapterColor } from "../lib/chapterColor";
 import { generateAI } from "../lib/aiService";
 import {
@@ -230,9 +230,6 @@ export function ProductOverview({ onExploreJourney }: { onExploreJourney?: () =>
   const { t } = useLanguage();
   const [imgError, setImgError] = useState(false);
   const [ctaFading, setCtaFading] = useState(false);
-  const { ref: editorialRef, visible: editorialVisible, stepStyle: editorialStep } = useEditorialReveal(
-    "wornwith:craftedRevealPlayed"
-  );
   const rows = [
     [t("material"), t("material_value")],
     [t("made_in"), t("made_in_value")],
@@ -285,74 +282,58 @@ export function ProductOverview({ onExploreJourney }: { onExploreJourney?: () =>
       >
         {t("product_editorial_label")}
       </p>
-      <div style={{ borderTop: "1px solid rgba(142,61,82,0.18)" }} className="mb-5" />
+      <div style={{ borderTop: "1px solid rgba(142,61,82,0.18)" }} className="mb-4" />
 
-      {/* The animated reveal — soft blush background fades in first, then
-          the title, then each supporting-copy fragment staggers in, then
-          the CTA. Full sequence plays once per session; after that,
-          re-entering the viewport is just a quick simple fade. */}
-      <div ref={editorialRef} className="relative mb-4 rounded-lg overflow-hidden">
-        <div
-          className="absolute inset-0"
-          style={{
-            backgroundColor: "#FCF5F6",
-            opacity: editorialVisible ? 1 : 0,
-            transition: "opacity 350ms ease-out",
-          }}
-        />
-        <div className="relative px-4 py-4">
+      {/* A compact editorial pull-quote, not a staged reveal — simple,
+          calm, present immediately so the spec table below stays visible
+          without scrolling. Soft blush background, rounded corners, no
+          border, no shadow, no gradient, no entrance animation. */}
+      <div
+        className="flex items-center gap-4 px-4 py-3.5 mb-4 rounded-lg"
+        style={{ backgroundColor: "#FCF5F6" }}
+      >
+        <div className="flex-[7] min-w-0">
           <p
-            className="font-display italic text-[16px] leading-snug"
-            style={{ color: "#8E3D52", ...editorialStep("translateY(8px)", 350, 400) }}
+            className="font-display italic text-[15px] leading-snug"
+            style={{ color: "#8E3D52" }}
           >
             {t("product_editorial_headline")}
           </p>
-
-          <div className="mt-2.5 space-y-0.5">
-            <p className="font-sans text-[10px] text-clay leading-relaxed" style={editorialStep("translateY(4px)", 750, 350)}>
-              {t("product_editorial_copy_1")}
-            </p>
-            <p className="font-sans text-[10px] text-clay leading-relaxed" style={editorialStep("translateY(4px)", 870, 350)}>
-              {t("product_editorial_copy_2")}
-            </p>
-            <p className="font-sans text-[10px] text-clay leading-relaxed" style={editorialStep("translateY(4px)", 990, 350)}>
-              {t("product_editorial_copy_3")}
-            </p>
+          <div className="mt-1.5 space-y-0">
+            <p className="font-sans text-[9px] text-clay leading-tight">{t("product_editorial_copy_1")}</p>
+            <p className="font-sans text-[9px] text-clay leading-tight">{t("product_editorial_copy_2")}</p>
+            <p className="font-sans text-[9px] text-clay leading-tight">{t("product_editorial_copy_3")}</p>
           </div>
-
-          {/* Real navigation — jumps directly to the Journey / Product
-              Lifecycle page (index 2), not just the next screen in
-              sequence, preserving the editorial progression: how it was
-              made, then care, then wardrobe, then story. Its timeline
-              animation begins immediately since that page's entrance
-              animations are already mount-triggered. */}
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              if (ctaFading) return;
-              setCtaFading(true);
-              setTimeout(() => onExploreJourney?.(), 180);
-            }}
-            className="group inline-flex items-center gap-1 font-sans text-[10px] font-medium mt-2.5 cursor-pointer transition-opacity duration-200"
-            style={{
-              color: "#8E3D52",
-              opacity: ctaFading ? 0.7 : 1,
-              ...editorialStep("translateX(-5px)", 1150, 300),
-            }}
-          >
-            <span className="relative inline-block group-hover:text-[#99425A] transition-colors duration-200">
-              {t("product_editorial_cta")}
-              {/* A true left-to-right underline sweep (scaleX from the
-                  left edge), not the instant on/off of a plain
-                  text-underline utility. */}
-              <span
-                className="absolute left-0 -bottom-0.5 w-full h-px origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-200"
-                style={{ backgroundColor: "#99425A" }}
-              />
-            </span>
-            <span className="inline-block transition-transform duration-200 group-hover:translate-x-[3px]">→</span>
-          </button>
         </div>
+
+        {/* Real navigation — jumps directly to the Journey / Product
+            Lifecycle page (index 2), not just the next screen in
+            sequence, preserving the editorial progression: how it was
+            made, then care, then wardrobe, then story. Its timeline
+            animation begins immediately since that page's entrance
+            animations are already mount-triggered. */}
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            if (ctaFading) return;
+            setCtaFading(true);
+            setTimeout(() => onExploreJourney?.(), 180);
+          }}
+          className="flex-[3] group flex items-center justify-center gap-1 font-sans text-[10px] font-medium cursor-pointer transition-opacity duration-200"
+          style={{ color: "#8E3D52", opacity: ctaFading ? 0.7 : 1 }}
+        >
+          <span className="relative inline-block group-hover:text-[#99425A] transition-colors duration-[180ms]">
+            {t("product_editorial_cta")}
+            {/* A true left-to-right underline sweep (scaleX from the
+                left edge), not the instant on/off of a plain
+                text-underline utility. */}
+            <span
+              className="absolute left-0 -bottom-0.5 w-full h-px origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-[180ms]"
+              style={{ backgroundColor: "#99425A" }}
+            />
+          </span>
+          <span className="inline-block transition-transform duration-[180ms] group-hover:translate-x-[3px]">→</span>
+        </button>
       </div>
 
       <div className="divide-y divide-line border-y border-line">
