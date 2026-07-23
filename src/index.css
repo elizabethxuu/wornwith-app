@@ -62,17 +62,19 @@ body {
 }
 .pop-in { animation: popIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) both; }
 
-/* Story page — the Paris card's gradient never settles to a flat color;
-   it drifts continuously, extremely slowly, for as long as the card is
-   on screen. Only the three specified colors — no cream/beige stop. */
+/* Story page — the Paris card's gradient never stops, never settles. An
+   all-blush palette now — no turquoise inside the card, turquoise stays
+   reserved for the journey/route/navigation elements elsewhere on the
+   page. Extremely slow, almost imperceptible drift. */
 @keyframes storyCardDrift {
   0% { background-position: 0% 50%; }
-  100% { background-position: 200% 50%; }
+  100% { background-position: 200% 200%; }
 }
 .story-card-gradient {
-  background-image: linear-gradient(90deg, #CDEFF5 0%, #BFEAF4 50%, #F3D8DE 100%);
-  background-size: 260% 100%;
-  animation: storyCardDrift 10s linear infinite;
+  background-color: #FBF7F7;
+  background-image: linear-gradient(120deg, #FDF8FA 0%, #F6E7EC 35%, #F2D6DE 65%, #F7E9EF 100%);
+  background-size: 250% 250%;
+  animation: storyCardDrift 20s linear infinite;
 }
 
 /* A single, understated sparkle — small scale pulse + opacity flicker,

@@ -163,11 +163,6 @@ export function JourneyMap() {
   // most relevant detail to show before anyone's tapped anything.
   const [selected, setSelected] = useState(journeyStops.length - 1);
   const [drawn, setDrawn] = useState(false);
-  // The elaborate bloom + staggered text reveal is a one-time "page
-  // opening" moment — once someone taps a different stop, later card
-  // swaps just use the existing quick fade, not the full cinematic replay.
-  const [everTapped, setEverTapped] = useState(false);
-  const { stepStyle: revealStep } = useMountReveal();
 
   useEffect(() => {
     const timer = setTimeout(() => setDrawn(true), 150);
@@ -176,7 +171,6 @@ export function JourneyMap() {
 
   const selectStop = (i: number) => {
     setSelected(i);
-    setEverTapped(true);
   };
 
   const stop = journeyStops[selected];
@@ -322,12 +316,11 @@ export function JourneyMap() {
         </ComposableMap>
       </div>
 
-      {/* Tap-to-reveal detail card. The gradient is permanent — it never
-          settles to a flat color, on first load or after tapping a
-          different stop. Only the entrance (fade+rise) and the internal
-          text stagger are one-time "opening the page" moments; a tap on
-          a different stop just swaps the text with a quick fade, while
-          the drifting gradient underneath never stops or resets. */}
+      {/* The card itself never fades or slides in — it's permanently
+          visible from the moment the page renders. The only motion here
+          is the slow drifting gradient (defined in index.css); tapping a
+          different stop just swaps the text with a quick fade, not the
+          card's opacity. */}
       <div
         className="story-card-gradient"
         style={{
@@ -335,25 +328,19 @@ export function JourneyMap() {
           borderRadius: "12px",
           padding: "16px",
           border: "1px solid rgba(228,224,215,0.4)",
-          ...(!everTapped
-            ? revealStep("translateY(16px)", 300, 500)
-            : { opacity: 1, transform: "none" }),
         }}
       >
-        <div className={everTapped ? "fade-up" : ""} key={selected}>
+        <div className="fade-up" key={selected}>
           <div className="min-w-0">
             <p
               className="font-sans text-[9px] uppercase tracking-[0.14em] font-semibold"
-              style={{
-                color: "#A94C63",
-                ...(!everTapped ? revealStep("translateY(8px)", 800, 280) : {}),
-              }}
+              style={{ color: "#2F2A28" }}
             >
               {t(stop.placeKey)}
             </p>
             <p
-              className="font-display italic text-[15px] text-ink leading-snug mt-1.5"
-              style={!everTapped ? revealStep("translateY(8px)", 920, 280) : undefined}
+              className="font-display italic text-[15px] leading-snug mt-1.5"
+              style={{ color: "#3B3532" }}
             >
               {t(stop.blurbKey)}
             </p>
@@ -361,10 +348,7 @@ export function JourneyMap() {
           {stop.active && (
             <p
               className="font-display italic text-[12px] text-right mt-3"
-              style={{
-                color: "#2FC7D8",
-                ...(!everTapped ? revealStep("translateY(8px)", 1040, 280) : {}),
-              }}
+              style={{ color: "#2FC7D8" }}
             >
               {t("every_place_note")}
             </p>
