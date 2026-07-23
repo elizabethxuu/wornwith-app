@@ -565,7 +565,14 @@ export type ArchiveEntry = {
 // per-entry blocks (category/title/description) and, per design direction,
 // no literal "projected" label: completed entries get a filled marker,
 // future ones a hollow marker, and that's the only signal.
-export function ArchiveTimeline({ entries }: { entries: ArchiveEntry[] }) {
+export function ArchiveTimeline({
+  entries,
+  showProjectedTag = false,
+}: {
+  entries: ArchiveEntry[];
+  showProjectedTag?: boolean;
+}) {
+  const { t } = useLanguage();
   const currentYear = new Date().getFullYear();
   const color = useChapterColor();
   return (
@@ -588,10 +595,18 @@ export function ArchiveTimeline({ entries }: { entries: ArchiveEntry[] }) {
                 }}
               />
               <p
-                className="font-sans text-[9px] uppercase tracking-[0.14em] font-semibold transition-colors duration-500"
+                className="font-sans text-[9px] uppercase tracking-[0.14em] font-semibold transition-colors duration-500 flex items-center gap-1.5"
                 style={{ color: isFuture ? "#6E635A" : color }}
               >
-                {e.year} · {e.category}
+                <span>{e.year} · {e.category}</span>
+                {isFuture && showProjectedTag && (
+                  <span
+                    className="font-sans text-[8px] font-semibold uppercase tracking-wide px-1.5 py-0.5 rounded-full"
+                    style={{ color: "#6E635A", backgroundColor: "#EDEBE7" }}
+                  >
+                    {t("archive_projected_tag")}
+                  </span>
+                )}
               </p>
               <p className={`font-display italic text-base mt-0.5 ${isFuture ? "text-clay" : "text-ink"}`}>
                 {e.title}

@@ -39,6 +39,7 @@ import {
   Heart,
   Share,
   Bookmark,
+  Pencil,
 } from "lucide-react";
 
 /* 1 — SKELETON LOADER */
@@ -1030,6 +1031,10 @@ export function Personalization() {
   const [lastAIError, setLastAIError] = useState<string | null>(null);
   const [ownershipRecord, setOwnershipRecord] = useState<OwnershipRecord>(() => loadOwnershipRecord());
   const [ownershipSaved, setOwnershipSaved] = useState(false);
+  // Which single field (if any) is currently expanded into an editable
+  // input — tapping the pencil on a row opens just that one, tapping
+  // away or blurring closes it back to read-only text.
+  const [editingField, setEditingField] = useState<keyof OwnershipRecord | null>(null);
 
   const updateOwnershipField = (field: keyof OwnershipRecord, value: string) => {
     const updated = { ...ownershipRecord, [field]: value };
@@ -1037,6 +1042,53 @@ export function Personalization() {
     saveOwnershipRecord(updated);
     setOwnershipSaved(true);
     setTimeout(() => setOwnershipSaved(false), 1600);
+  };
+
+  // Every field — pre-filled or blank — renders identically: a label, a
+  // value or muted placeholder, and a pencil that expands just that row
+  // into an editable input. autoValue is only passed for fields that can
+  // genuinely be derived from real passport data (Purchase Date,
+  // Condition, Wear Count); Owner has no real value to pull from since
+  // there's no account system here, so it stays genuinely blank until
+  // someone fills it in themselves.
+  const renderOwnershipField = (
+    field: keyof OwnershipRecord,
+    labelKey: TranslationKey,
+    autoValue?: string
+  ) => {
+    const isEditing = editingField === field;
+    const displayValue = ownershipRecord[field] || autoValue || "";
+    return (
+      <div key={field}>
+        <p className="text-[9px] font-sans font-semibold text-clay uppercase tracking-wide mb-1">
+          {t(labelKey)}
+        </p>
+        {isEditing ? (
+          <input
+            autoFocus
+            defaultValue={ownershipRecord[field] || ""}
+            onBlur={(e) => {
+              updateOwnershipField(field, e.target.value.trim());
+              setEditingField(null);
+            }}
+            className="font-sans text-[12px] text-ink w-full bg-transparent focus:outline-none border-b border-blush py-1"
+          />
+        ) : (
+          <div className="flex items-center justify-between border-b border-line py-1">
+            <p className={`font-sans text-[12px] ${displayValue ? "text-ink" : "text-clay/60 italic"}`}>
+              {displayValue || t("field_not_added")}
+            </p>
+            <button
+              onClick={() => setEditingField(field)}
+              aria-label={t(labelKey)}
+              className="text-clay/60 shrink-0 ml-2"
+            >
+              <Pencil size={12} strokeWidth={1.5} />
+            </button>
+          </div>
+        )}
+      </div>
+    );
   };
 
   // Curator's Notes: real generation, but cached for the day so opening
@@ -1181,10 +1233,13 @@ export function Personalization() {
             <p className="font-sans text-[10px] uppercase tracking-[0.14em] font-semibold transition-colors duration-500" style={{ color: ARCHIVE_ACCENT_COLOR }}>
               {t("from_the_archives_title")}
             </p>
-            <p className="font-sans text-[11px] text-clay mt-1 mb-5 leading-relaxed">
+            <p className="font-sans text-[11px] text-clay mt-1 mb-3 leading-relaxed">
               {t("from_the_archives_subtitle")}
             </p>
-            <ArchiveTimeline entries={archiveEntries} />
+            <p className="font-sans text-[10px] text-clay/80 italic mb-5 leading-relaxed">
+              {t("archive_framing_line")}
+            </p>
+            <ArchiveTimeline entries={archiveEntries} showProjectedTag />
           </div>
         </ChapterColorProvider>
 
@@ -1215,60 +1270,41 @@ export function Personalization() {
           </div>
         </div>
 
-        {/* Ownership Record — the persistent repository. Autosaves on
-            blur, same pattern as the Wardrobe editing panel. Condition
-            and Wear Count here are the same source of truth read by the
-            Product page's "Your Garment" table, so an edit here is
-            genuinely visible there too, not a cosmetic duplicate field. */}
+        {/* Ownership Record — progressive disclosure. Owner, Purchase
+            Date, Condition and Wear Count arrive pre-filled from real
+            passport data (the same source of truth the Product page
+            reads), shown read-only with a pencil to edit inline — one
+            field at a time, not the whole form at once. Purchase Location
+            /Price/Retailer sit inside a collapsed accordion since they're
+            one-time, optional, and blank by default. Repair History,
+            Favourite Memories, Travel History and Notes are deliberately
+            NOT here — those build up through "+ Save another moment"
+            instead of sitting as empty boxes on first load. */}
         <div className="mb-6">
           <Eyebrow>{t("ownership_record_title")}</Eyebrow>
           <p className="font-sans text-[10px] text-clay leading-relaxed mt-1 mb-3">
             {t("ownership_record_subtitle")}
           </p>
+
           <div className="space-y-3">
-            {(
-              [
-                ["owner", "field_owner"],
-                ["purchaseDate", "field_purchase_date"],
-                ["purchaseLocation", "field_purchase_location"],
-                ["purchasePrice", "field_purchase_price"],
-                ["originalRetailer", "field_original_retailer"],
-                ["condition", "field_condition"],
-                ["wearCount", "field_wear_count"],
-              ] as [keyof OwnershipRecord, TranslationKey][]
-            ).map(([field, labelKey]) => (
-              <div key={field}>
-                <p className="text-[9px] font-sans font-semibold text-clay uppercase tracking-wide mb-1">
-                  {t(labelKey)}
-                </p>
-                <input
-                  defaultValue={ownershipRecord[field] || ""}
-                  onBlur={(e) => updateOwnershipField(field, e.target.value.trim())}
-                  className="font-sans text-[12px] text-ink w-full bg-transparent focus:outline-none border-b border-line focus:border-blush py-1"
-                />
-              </div>
-            ))}
-            {(
-              [
-                ["repairHistory", "field_repair_history"],
-                ["favoriteMemories", "field_favorite_memories"],
-                ["travelHistory", "field_travel_history"],
-                ["notes", "field_notes"],
-              ] as [keyof OwnershipRecord, TranslationKey][]
-            ).map(([field, labelKey]) => (
-              <div key={field}>
-                <p className="text-[9px] font-sans font-semibold text-clay uppercase tracking-wide mb-1">
-                  {t(labelKey)}
-                </p>
-                <textarea
-                  defaultValue={ownershipRecord[field] || ""}
-                  onBlur={(e) => updateOwnershipField(field, e.target.value.trim())}
-                  rows={2}
-                  className="font-sans text-[12px] text-ink w-full bg-transparent resize-none focus:outline-none border border-transparent focus:border-line rounded-lg -mx-1 px-1"
-                />
-              </div>
-            ))}
+            {renderOwnershipField("owner", "field_owner")}
+            {renderOwnershipField("purchaseDate", "field_purchase_date", GARMENT.ownedSince)}
+            {renderOwnershipField("condition", "field_condition", t("excellent"))}
+            {renderOwnershipField("wearCount", "field_wear_count", GARMENT.timesWorn)}
           </div>
+
+          <ExpandableCard title={t("purchase_details_title")}>
+            <div className="space-y-3">
+              {renderOwnershipField("purchaseLocation", "field_purchase_location")}
+              {renderOwnershipField("purchasePrice", "field_purchase_price")}
+              {renderOwnershipField("originalRetailer", "field_original_retailer")}
+            </div>
+          </ExpandableCard>
+
+          <p className="font-sans text-[9px] text-clay/70 leading-relaxed mt-3 italic">
+            {t("ownership_narrative_hint")}
+          </p>
+
           {ownershipSaved && (
             <p className="font-sans text-[10px] text-sage fade-up mt-2">{t("saved_confirmation")}</p>
           )}

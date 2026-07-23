@@ -332,6 +332,12 @@ const dict = {
     fr: "Chaque port, réparation et voyage contribue à la provenance de ce vêtement.",
     pt: "Cada uso, reparo e jornada contribui para a proveniência desta peça.",
   },
+  archive_framing_line: {
+    en: "Your archive so far, plus what a well-cared-for coat's next few years might look like.",
+    fr: "Vos archives à ce jour, ainsi qu'un aperçu des prochaines années d'un manteau bien entretenu.",
+    pt: "Seu arquivo até agora, além de uma previsão dos próximos anos de um casaco bem cuidado.",
+  },
+  archive_projected_tag: { en: "Projected", fr: "Projeté", pt: "Projetado" },
   archive_cat_acquisition: { en: "Acquisition", fr: "Acquisition", pt: "Aquisição" },
   archive_title_acquisition: { en: "Purchased", fr: "Acheté", pt: "Comprado" },
   archive_desc_acquisition: { en: "Entered into your collection.", fr: "Entré dans votre collection.", pt: "Adicionado à sua coleção." },
@@ -341,20 +347,20 @@ const dict = {
   archive_desc_journey: { en: "First memory recorded.", fr: "Premier souvenir enregistré.", pt: "Primeira memória registrada." },
 
   archive_cat_maintenance: { en: "Maintenance", fr: "Entretien", pt: "Manutenção" },
-  archive_title_maintenance: { en: "Buttons professionally repaired", fr: "Boutons réparés professionnellement", pt: "Botões reparados profissionalmente" },
-  archive_desc_maintenance: { en: "Routine care preserved the original construction.", fr: "Un entretien de routine a préservé la construction d'origine.", pt: "Cuidados de rotina preservaram a construção original." },
+  archive_title_maintenance: { en: "Buttons may need professional repair", fr: "Les boutons pourraient nécessiter une réparation professionnelle", pt: "Os botões podem precisar de reparo profissional" },
+  archive_desc_maintenance: { en: "Around year 2, based on typical wear.", fr: "Vers la 2e année, selon l'usure habituelle.", pt: "Por volta do ano 2, com base no desgaste típico." },
 
   archive_cat_milestone: { en: "Milestone", fr: "Étape Marquante", pt: "Marco" },
-  archive_title_milestone: { en: "50 wears recorded", fr: "50 ports enregistrés", pt: "50 usos registrados" },
-  archive_desc_milestone: { en: "A significant longevity milestone.", fr: "Une étape importante de longévité.", pt: "Um marco importante de longevidade." },
+  archive_title_milestone: { en: "May reach 50 wears", fr: "Pourrait atteindre 50 ports", pt: "Pode alcançar 50 usos" },
+  archive_desc_milestone: { en: "Around year 2, at typical wear frequency.", fr: "Vers la 2e année, à une fréquence d'usage habituelle.", pt: "Por volta do ano 2, em frequência de uso típica." },
 
   archive_cat_restoration: { en: "Restoration", fr: "Restauration", pt: "Restauração" },
-  archive_title_restoration: { en: "Buttons replaced", fr: "Boutons remplacés", pt: "Botões substituídos" },
-  archive_desc_restoration: { en: "Components renewed to extend service life.", fr: "Composants renouvelés pour prolonger la durée de vie.", pt: "Componentes renovados para prolongar a vida útil." },
+  archive_title_restoration: { en: "Buttons may need replacing", fr: "Les boutons pourraient devoir être remplacés", pt: "Os botões podem precisar ser substituídos" },
+  archive_desc_restoration: { en: "Around year 3, to extend service life.", fr: "Vers la 3e année, pour prolonger la durée de vie.", pt: "Por volta do ano 3, para prolongar a vida útil." },
 
   archive_cat_transfer: { en: "Transfer", fr: "Transfert", pt: "Transferência" },
-  archive_title_transfer: { en: "Ownership transferred", fr: "Propriété transférée", pt: "Propriedade transferida" },
-  archive_desc_transfer: { en: "Digital provenance transferred with the garment.", fr: "Provenance numérique transférée avec le vêtement.", pt: "Proveniência digital transferida com a peça." },
+  archive_title_transfer: { en: "Ownership may transfer", fr: "La propriété pourrait être transférée", pt: "A propriedade pode ser transferida" },
+  archive_desc_transfer: { en: "If passed on, digital provenance would transfer with it.", fr: "Si transmis, la provenance numérique serait transférée avec lui.", pt: "Se repassada, a proveniência digital seria transferida junto." },
 
   // Curator's Notes
   curators_notes_title: { en: "Curator's Notes", fr: "Notes du Conservateur", pt: "Notas do Curador" },
@@ -713,6 +719,13 @@ const dict = {
   field_favorite_memories: { en: "Favourite Memories", fr: "Souvenirs Préférés", pt: "Memórias Favoritas" },
   field_travel_history: { en: "Travel History", fr: "Historique de Voyage", pt: "Histórico de Viagens" },
   field_notes: { en: "Notes", fr: "Notes", pt: "Notas" },
+  field_not_added: { en: "Not added yet", fr: "Pas encore ajouté", pt: "Ainda não adicionado" },
+  purchase_details_title: { en: "Purchase Details", fr: "Détails d'Achat", pt: "Detalhes da Compra" },
+  ownership_narrative_hint: {
+    en: "Repairs, memories and travel history build up over time through the moments you save above.",
+    fr: "Les réparations, souvenirs et voyages s'accumulent au fil du temps grâce aux moments que vous enregistrez ci-dessus.",
+    pt: "Reparos, memórias e viagens se acumulam com o tempo através dos momentos que você salva acima.",
+  },
 
   // Wardrobe
   my_wardrobe: { en: "My Wardrobe", fr: "Ma Garde-robe", pt: "Meu Guarda-roupa" },
