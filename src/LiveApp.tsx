@@ -18,6 +18,8 @@ import {
   MyWardrobe,
   PrivacyPolicyScreen,
   TermsOfUseScreen,
+  AccessibilityScreen,
+  ReleaseNotesScreen,
 } from "./screens/Screens";
 
 // Real users arrive here because they already scanned the physical tag with
@@ -70,7 +72,7 @@ export default function LiveApp() {
   const [bootState, setBootState] = useState<BootState>("verifying");
   const [index, setIndex] = useState(0);
   const [showClosing, setShowClosing] = useState(false);
-  const [legalPage, setLegalPage] = useState<"none" | "privacy" | "terms">("none");
+  const [legalPage, setLegalPage] = useState<"none" | "privacy" | "terms" | "accessibility" | "release-notes">("none");
 
   const runVerification = () => {
     setBootState("verifying");
@@ -236,6 +238,10 @@ export default function LiveApp() {
             <PrivacyPolicyScreen onBack={() => setLegalPage("none")} />
           ) : legalPage === "terms" ? (
             <TermsOfUseScreen onBack={() => setLegalPage("none")} />
+          ) : legalPage === "accessibility" ? (
+            <AccessibilityScreen onBack={() => setLegalPage("none")} />
+          ) : legalPage === "release-notes" ? (
+            <ReleaseNotesScreen onBack={() => setLegalPage("none")} />
           ) : (
             liveScreens[index]
           )}
@@ -246,7 +252,7 @@ export default function LiveApp() {
       {/* Minimal legal footer — shown above nav on every screen, rendered
           once here rather than duplicated per-screen. Real buttons, not
           external links — both open the dedicated in-app screens. */}
-      <div className="flex items-center justify-center gap-4 px-4 pt-2 shrink-0">
+      <div className="flex flex-wrap items-center justify-center gap-x-3.5 gap-y-1 px-4 pt-2 shrink-0">
         <p className="font-sans text-[9px] text-clay/60">{t("footer_copyright")}</p>
         <button
           onClick={() => setLegalPage("privacy")}
@@ -259,6 +265,18 @@ export default function LiveApp() {
           className="font-sans text-[9px] text-clay/60 hover:underline underline-offset-2"
         >
           {t("footer_terms")}
+        </button>
+        <button
+          onClick={() => setLegalPage("accessibility")}
+          className="font-sans text-[9px] text-clay/60 hover:underline underline-offset-2"
+        >
+          {t("footer_accessibility")}
+        </button>
+        <button
+          onClick={() => setLegalPage("release-notes")}
+          className="font-sans text-[9px] text-clay/60 hover:underline underline-offset-2"
+        >
+          {t("footer_release_notes")}
         </button>
       </div>
 
