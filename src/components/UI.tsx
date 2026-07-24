@@ -94,7 +94,7 @@ export function Card({
 }: {
   children: React.ReactNode;
   className?: string;
-  onClick?: () => void;
+  onClick?: (e: React.MouseEvent) => void;
 }) {
   return (
     <div className={`bg-paper border border-line rounded-card px-5 py-4 ${className}`} onClick={onClick}>

@@ -200,7 +200,10 @@ export function Welcome() {
             </div>
           )}
         </div>
-        <Card className="w-full text-left cursor-pointer" onClick={() => setShowVerificationInfo(true)}>
+        <Card
+          className="w-full text-left cursor-pointer"
+          onClick={(e) => { e.stopPropagation(); setShowVerificationInfo(true); }}
+        >
           <p className="text-[10px] font-sans font-semibold text-sage uppercase tracking-wide mb-1">
             {t("verified_passport")}
           </p>
