@@ -62,6 +62,7 @@ export function CameraScan({ onComplete }: { onComplete?: () => void } = {}) {
   const { t } = useLanguage();
   const [scanned, setScanned] = useState(false);
   const [scanning, setScanning] = useState(false);
+  const [flashing, setFlashing] = useState(false);
   const [exiting, setExiting] = useState(false);
 
   const handleScan = () => {
@@ -82,13 +83,18 @@ export function CameraScan({ onComplete }: { onComplete?: () => void } = {}) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // After the success text has had a moment to register, a quick white
+  // flash — a camera-shutter beat, not a loading transition — then
+  // dissolves straight into Welcome.
   useEffect(() => {
     if (!scanned || !onComplete) return;
-    const holdTimer = setTimeout(() => setExiting(true), 700);
-    const exitTimer = setTimeout(() => onComplete(), 1000);
+    const flashTimer = setTimeout(() => setFlashing(true), 500);
+    const exitTimer = setTimeout(() => setExiting(true), 750);
+    const completeTimer = setTimeout(() => onComplete(), 950);
     return () => {
-      clearTimeout(holdTimer);
+      clearTimeout(flashTimer);
       clearTimeout(exitTimer);
+      clearTimeout(completeTimer);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [scanned]);
@@ -115,6 +121,9 @@ export function CameraScan({ onComplete }: { onComplete?: () => void } = {}) {
           <Check size={16} className="text-ink" /> {t("qr_scan_successful")}
         </p>
       )}
+      {/* The chic beat — a quick, bright white flash right before the
+          screen dissolves into Welcome. Plays once, no loop. */}
+      {flashing && <div className="absolute inset-0 bg-white white-flash-once" />}
     </div>
   );
 }

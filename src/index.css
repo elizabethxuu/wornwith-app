@@ -53,6 +53,15 @@ body {
   animation: scanLineSweepMono 0.8s linear;
 }
 
+@keyframes whiteFlashOnce {
+  0% { opacity: 0; }
+  35% { opacity: 1; }
+  100% { opacity: 0; }
+}
+.white-flash-once {
+  animation: whiteFlashOnce 400ms ease-out both;
+}
+
 @keyframes fadeUp {
   from { opacity: 0; transform: translateY(8px); }
   to { opacity: 1; transform: translateY(0); }
