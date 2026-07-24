@@ -90,7 +90,7 @@ export function CameraScan({ onComplete }: { onComplete?: () => void } = {}) {
     if (!scanned || !onComplete) return;
     const flashTimer = setTimeout(() => setFlashing(true), 650);
     const exitTimer = setTimeout(() => setExiting(true), 800);
-    const completeTimer = setTimeout(() => onComplete(), 920);
+    const completeTimer = setTimeout(() => onComplete(), 1120);
     return () => {
       clearTimeout(flashTimer);
       clearTimeout(exitTimer);
@@ -368,14 +368,14 @@ export function ProductOverview({ onExploreJourney }: { onExploreJourney?: () =>
             style={{ animationDelay: "350ms" }}
           />
         )}
-        <div className="relative flex-[7] min-w-0">
+        <div className="relative flex-[3] min-w-0">
           <p
             className="font-display italic text-[15px] leading-snug"
             style={{ color: "#8E3D52", ...craftedReveal("translateY(8px)", 950, 450) }}
           >
             {t("product_editorial_headline")}
           </p>
-          <p className="mt-2.5 font-sans text-[12px] text-clay leading-relaxed">
+          <p className="mt-3 font-sans text-[13px] text-clay leading-[1.7]">
             <span className="inline-block" style={craftedReveal("translateY(6px)", 1400, 350)}>{t("product_editorial_copy_1")}</span>{" "}
             <span className="inline-block" style={craftedReveal("translateY(6px)", 1520, 350)}>{t("product_editorial_copy_2")}</span>{" "}
             <span className="inline-block" style={craftedReveal("translateY(6px)", 1640, 350)}>{t("product_editorial_copy_3")}</span>
@@ -395,7 +395,7 @@ export function ProductOverview({ onExploreJourney }: { onExploreJourney?: () =>
             setCtaFading(true);
             setTimeout(() => onExploreJourney?.(), 180);
           }}
-          className="relative flex-[3] group flex items-center justify-center gap-1 font-sans text-[10px] font-medium cursor-pointer transition-opacity duration-200"
+          className="relative flex-[1] group flex items-center justify-center gap-1 font-sans text-[10px] font-medium cursor-pointer transition-opacity duration-200"
           style={{
             color: "#8E3D52",
             opacity: ctaFading ? 0.7 : 1,
