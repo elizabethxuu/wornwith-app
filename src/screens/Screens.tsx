@@ -1054,7 +1054,8 @@ export function Personalization() {
   const renderOwnershipField = (
     field: keyof OwnershipRecord,
     labelKey: TranslationKey,
-    autoValue?: string
+    autoValue?: string,
+    required?: boolean
   ) => {
     const isEditing = editingField === field;
     const displayValue = ownershipRecord[field] || autoValue || "";
@@ -1062,6 +1063,7 @@ export function Personalization() {
       <div key={field}>
         <p className="text-[9px] font-sans font-semibold text-clay uppercase tracking-wide mb-1">
           {t(labelKey)}
+          {required && <span className="text-red-500 ml-0.5">*</span>}
         </p>
         {isEditing ? (
           <input
@@ -1074,14 +1076,14 @@ export function Personalization() {
             className="font-sans text-[12px] text-ink w-full bg-transparent focus:outline-none border-b border-blush py-1"
           />
         ) : (
-          <div className="flex items-center justify-between border-b border-line py-1">
+          <div className="flex items-center border-b border-line py-1">
             <p className={`font-sans text-[12px] ${displayValue ? "text-ink" : "text-clay/60 italic"}`}>
               {displayValue || t("field_not_added")}
             </p>
             <button
               onClick={() => setEditingField(field)}
               aria-label={t(labelKey)}
-              className="text-clay/60 shrink-0 ml-2"
+              className="text-clay/60 shrink-0 ml-1.5"
             >
               <Pencil size={12} strokeWidth={1.5} />
             </button>
@@ -1287,7 +1289,7 @@ export function Personalization() {
           </p>
 
           <div className="space-y-3">
-            {renderOwnershipField("owner", "field_owner")}
+            {renderOwnershipField("owner", "field_owner", undefined, true)}
             {renderOwnershipField("purchaseDate", "field_purchase_date", GARMENT.ownedSince)}
             {renderOwnershipField("condition", "field_condition", t("excellent"))}
             {renderOwnershipField("wearCount", "field_wear_count", GARMENT.timesWorn)}
