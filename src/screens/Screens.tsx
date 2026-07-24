@@ -202,7 +202,7 @@ export function Welcome() {
             <button onClick={() => setShowRws(!showRws)} className="underline underline-offset-2">
               RWS
             </button>
-            {" "}&nbsp;◆&nbsp; DPP-ID: {GARMENT.dppId}
+            {" "}&nbsp;<span style={{ fontSize: "0.6em", verticalAlign: "middle" }}>◆</span>&nbsp; DPP-ID: {GARMENT.dppId}
           </p>
           {showRws && (
             <div className="bg-blush-pale/50 rounded-xl px-4 py-3 -mt-3 fade-up">
