@@ -59,39 +59,63 @@ export function SkeletonLoader() {
 
 /* 2 — CAMERA SCAN */
 export function CameraScan({ onComplete }: { onComplete?: () => void } = {}) {
-  const [settled, setSettled] = useState(false);
+  const { t } = useLanguage();
+  const [scanned, setScanned] = useState(false);
+  const [scanning, setScanning] = useState(false);
   const [exiting, setExiting] = useState(false);
 
-  // A quiet, breathless moment — not an interaction. Starts as a pure
-  // white flash, settles into the app's cream a beat later, then
-  // dissolves into Welcome. No icon, no copy, nothing to read — the
-  // pause itself is the point.
+  const handleScan = () => {
+    if (scanned || scanning) return;
+    setScanning(true);
+    setTimeout(() => {
+      setScanned(true);
+      setScanning(false);
+    }, 800);
+  };
+
+  // Auto-plays once on mount when used as the real "you just scanned the
+  // tag" moment in the live boot sequence.
   useEffect(() => {
-    const settleTimer = setTimeout(() => setSettled(true), 220);
-    return () => clearTimeout(settleTimer);
+    if (!onComplete) return;
+    const startTimer = setTimeout(() => handleScan(), 250);
+    return () => clearTimeout(startTimer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
-    if (!onComplete) return;
-    const holdTimer = setTimeout(() => setExiting(true), 650);
-    const exitTimer = setTimeout(() => onComplete(), 950);
+    if (!scanned || !onComplete) return;
+    const holdTimer = setTimeout(() => setExiting(true), 700);
+    const exitTimer = setTimeout(() => onComplete(), 1000);
     return () => {
       clearTimeout(holdTimer);
       clearTimeout(exitTimer);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [onComplete]);
+  }, [scanned]);
 
   return (
     <div
-      onClick={() => !onComplete && setSettled(true)}
-      className="h-full w-full"
+      onClick={handleScan}
+      className="relative h-full w-full flex items-center justify-center bg-cream overflow-hidden cursor-pointer transition-opacity duration-300"
       style={{
-        backgroundColor: settled ? "#FBF9F6" : "#FFFFFF",
         opacity: exiting ? 0 : 1,
-        transition: "background-color 900ms cubic-bezier(0.22,0.61,0.36,1), opacity 300ms ease",
+        border: "3px solid #1A1A1A",
       }}
-    />
+    >
+      {scanning && (
+        // A single black line sweeping the full height — monochrome,
+        // quiet, no color accent.
+        <div className="absolute inset-x-0 top-0 h-[2px] bg-[#1A1A1A] scan-line-sweep-mono" />
+      )}
+      {["top-4 left-4 border-t-2 border-l-2", "top-4 right-4 border-t-2 border-r-2", "bottom-4 left-4 border-b-2 border-l-2", "bottom-4 right-4 border-b-2 border-r-2"].map((pos, i) => (
+        <div key={i} className={`absolute w-8 h-8 border-[#1A1A1A] ${pos}`} />
+      ))}
+      {scanned && (
+        <p className="relative flex items-center gap-1.5 text-sm text-ink font-sans fade-up">
+          <Check size={16} className="text-ink" /> {t("qr_scan_successful")}
+        </p>
+      )}
+    </div>
   );
 }
 

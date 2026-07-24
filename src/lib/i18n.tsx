@@ -15,6 +15,7 @@ const dict = {
   verifying: { en: "Verifying passport…", fr: "Vérification du passeport…", pt: "Verificando passaporte…" },
 
   // Camera scan
+  qr_scan_successful: { en: "QR scan successful", fr: "Scan QR réussi", pt: "Digitalização de QR concluída" },
 
   // Welcome
   welcome_to: { en: "Welcome to", fr: "Bienvenue sur", pt: "Bem-vindo ao" },

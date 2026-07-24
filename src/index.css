@@ -43,6 +43,16 @@ body {
   animation: shimmer 1.6s infinite linear;
 }
 
+@keyframes scanLineSweepMono {
+  0% { top: 0%; opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { top: 100%; opacity: 0; }
+}
+.scan-line-sweep-mono {
+  animation: scanLineSweepMono 0.8s linear;
+}
+
 @keyframes fadeUp {
   from { opacity: 0; transform: translateY(8px); }
   to { opacity: 1; transform: translateY(0); }
