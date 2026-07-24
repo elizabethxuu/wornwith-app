@@ -19,6 +19,7 @@ export const CHAPTER_COLORS: string[] = [
   "#2FC7D8", // 7 Story — Ocean turquoise + blush/burgundy editorial palette
   "#A66A73", // 8 Personalization — Ownership — Dusty Burgundy
   "#556B8A", // 9 My Wardrobe — Today's Edit — Midnight Blue
+  "#3B342F", // 10 Closing — The Story Continues — Charcoal (echoes Welcome)
 ];
 
 // Used specifically for the "From the Archives" sub-section inside the

@@ -268,6 +268,7 @@ const dict = {
   section_next_chapter: { en: "Next Chapter", fr: "Prochain Chapitre", pt: "Próximo Capítulo" },
   section_story: { en: "Story", fr: "Histoire", pt: "História" },
   section_wardrobe: { en: "Wardrobe", fr: "Garde-robe", pt: "Guarda-roupa" },
+  section_end: { en: "End", fr: "Fin", pt: "Fim" },
 
   wool_farming_card_title: { en: "About this wool farm", fr: "À propos de cette ferme", pt: "Sobre esta fazenda de lã" },
   wool_farming_cert_label: { en: "Certification", fr: "Certification", pt: "Certificação" },

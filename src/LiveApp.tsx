@@ -21,6 +21,7 @@ import {
   TermsOfUseScreen,
   AccessibilityScreen,
   ReleaseNotesScreen,
+  ClosingScreen,
 } from "./screens/Screens";
 
 // Real users arrive here because they already scanned the physical tag with
@@ -38,6 +39,7 @@ function buildLiveScreens(goToScreen: (index: number) => void) {
     <StoryBehindIt key="story" />,
     <Personalization key="personalize" />,
     <MyWardrobe key="wardrobe" />,
+    <ClosingScreen key="closing" onReturnToWardrobe={() => goToScreen(9)} />,
   ];
 }
 
@@ -55,6 +57,7 @@ const sectionKeys = [
   "section_story",
   "section_ownership",
   "section_wardrobe",
+  "section_end",
 ] as const;
 
 type BootState = "verifying" | "scanning" | "ready" | "offline" | "not-found";
@@ -78,7 +81,6 @@ export default function LiveApp() {
   // screens like ProductOverview can be given a real "jump to a specific
   // screen" callback, not just the generic forward-tap gesture.
   const liveScreens = buildLiveScreens((i) => setIndex(i));
-  const [showClosing, setShowClosing] = useState(false);
   const [legalPage, setLegalPage] = useState<"none" | "privacy" | "terms" | "accessibility" | "release-notes">("none");
 
   const runVerification = () => {
@@ -113,10 +115,6 @@ export default function LiveApp() {
       setLegalPage("none");
       return;
     }
-    if (index === liveScreens.length - 1) {
-      setShowClosing(true);
-      return;
-    }
     setIndex((i) => Math.min(liveScreens.length - 1, i + 1));
   };
 
@@ -132,6 +130,10 @@ export default function LiveApp() {
     if (x < width * 0.3) {
       goPrev();
     } else {
+      // Reaching the ending is the one deliberate exception to "tap
+      // anywhere advances" — it should only happen via the explicit
+      // right arrow, not an incidental tap on the last real page.
+      if (index === liveScreens.length - 2) return;
       goNext();
     }
   };
@@ -184,35 +186,6 @@ export default function LiveApp() {
 
   const isFirst = index === 0;
   const isLast = index === liveScreens.length - 1;
-
-  if (showClosing) {
-    return (
-      <div className="h-[100dvh] w-full bg-paper flex flex-col items-center justify-center px-8 fade-up" style={{ animationDuration: "800ms" }}>
-        <p className="font-sans text-[10px] uppercase tracking-[0.2em] font-semibold text-clay">
-          {t("story_continues_title")}
-        </p>
-        <p className="font-display italic text-2xl text-ink text-center mt-4 leading-snug">
-          {t("thank_you_wearing_care")}
-        </p>
-        <p className="font-sans text-[13px] text-ink/80 text-center mt-6 leading-relaxed max-w-xs">
-          {t("closing_craftsmanship_line")}
-        </p>
-        <p className="font-sans text-[13px] text-ink/80 text-center mt-4 leading-relaxed max-w-xs">
-          {t("closing_stewardship_line")}
-        </p>
-        <p className="font-display italic text-[13px] text-clay text-center mt-8">
-          {t("closing_evolve_line")}
-        </p>
-
-        <button
-          onClick={() => setShowClosing(false)}
-          className="mt-12 border border-line rounded-full px-6 py-2.5 font-sans text-[12px] text-ink"
-        >
-          {t("return_to_wardrobe")}
-        </button>
-      </div>
-    );
-  }
 
   return (
     <div className="h-[100dvh] w-full bg-paper flex flex-col overflow-hidden relative">
