@@ -134,7 +134,7 @@ export function Welcome() {
 
   return (
     <div className="h-full flex flex-col p-3 text-center fade-up">
-      <div className="w-full h-full flex flex-col items-center justify-center gap-7 border border-ink/70 rounded-[32px] px-7 py-10 overflow-y-auto no-scrollbar">
+      <div className="w-full h-full flex flex-col items-center justify-start gap-7 border border-ink/70 rounded-[32px] px-7 py-10 overflow-y-auto no-scrollbar">
         <div className="w-full flex flex-col items-center gap-7">
           <Eyebrow>{t("dpp_eyebrow")}</Eyebrow>
           <div>
