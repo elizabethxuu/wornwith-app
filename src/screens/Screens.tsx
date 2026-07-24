@@ -117,10 +117,11 @@ export function CameraScan({ onComplete }: { onComplete?: () => void } = {}) {
         <div key={i} className={`absolute w-8 h-8 border-[#1A1A1A] ${pos}`} />
       ))}
       {/* A small rounded-rectangle marker anchored near the bottom of
-          the frame — a quiet visual anchor, not a logo or icon. */}
+          the frame — presses in right as the scan begins, like it's the
+          tag actually being tapped, then releases back. */}
       <div
-        className="absolute bottom-16 left-1/2 -translate-x-1/2 w-24 h-14 rounded-xl"
-        style={{ border: "2px solid #1A1A1A" }}
+        className={`absolute bottom-16 left-1/2 w-24 h-14 rounded-xl ${scanning ? "tap-press" : ""}`}
+        style={{ border: "2px solid #1A1A1A", transform: "translateX(-50%)" }}
       />
       {scanned && (
         <p className="relative flex items-center gap-1.5 text-sm text-ink font-sans fade-up">
