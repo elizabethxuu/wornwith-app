@@ -1029,10 +1029,10 @@ export function VoiceNoteRecorder() {
     <button
       onClick={state === "recording" ? stopRecording : startRecording}
       disabled={state === "requesting"}
-      className="flex items-center gap-2 border border-[#1A1A1A] rounded-full px-4 py-2 font-sans text-[11px] text-[#1A1A1A] disabled:opacity-50 transition-colors duration-300"
+      className="flex items-center gap-2 bg-[#1A1A1A] rounded-full px-4 py-2 font-sans text-[11px] text-white disabled:opacity-50 transition-colors duration-300"
     >
       {state === "recording" ? (
-        <Square size={12} fill="#1A1A1A" />
+        <Square size={12} fill="#FFFFFF" />
       ) : (
         <AudioLines size={14} />
       )}
