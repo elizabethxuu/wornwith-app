@@ -71,14 +71,14 @@ export function CameraScan({ onComplete }: { onComplete?: () => void } = {}) {
     setTimeout(() => {
       setScanned(true);
       setScanning(false);
-    }, 800);
+    }, 420);
   };
 
   // Auto-plays once on mount when used as the real "you just scanned the
   // tag" moment in the live boot sequence.
   useEffect(() => {
     if (!onComplete) return;
-    const startTimer = setTimeout(() => handleScan(), 250);
+    const startTimer = setTimeout(() => handleScan(), 120);
     return () => clearTimeout(startTimer);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -88,9 +88,9 @@ export function CameraScan({ onComplete }: { onComplete?: () => void } = {}) {
   // dissolves straight into Welcome.
   useEffect(() => {
     if (!scanned || !onComplete) return;
-    const flashTimer = setTimeout(() => setFlashing(true), 500);
-    const exitTimer = setTimeout(() => setExiting(true), 750);
-    const completeTimer = setTimeout(() => onComplete(), 950);
+    const flashTimer = setTimeout(() => setFlashing(true), 260);
+    const exitTimer = setTimeout(() => setExiting(true), 400);
+    const completeTimer = setTimeout(() => onComplete(), 520);
     return () => {
       clearTimeout(flashTimer);
       clearTimeout(exitTimer);

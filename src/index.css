@@ -50,7 +50,7 @@ body {
   100% { top: 100%; opacity: 0; }
 }
 .scan-line-sweep-mono {
-  animation: scanLineSweepMono 0.8s linear;
+  animation: scanLineSweepMono 0.42s linear;
 }
 
 @keyframes whiteFlashOnce {
@@ -59,7 +59,7 @@ body {
   100% { opacity: 0; }
 }
 .white-flash-once {
-  animation: whiteFlashOnce 400ms ease-out both;
+  animation: whiteFlashOnce 260ms ease-out both;
 }
 
 @keyframes fadeUp {
