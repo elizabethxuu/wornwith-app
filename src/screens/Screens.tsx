@@ -189,8 +189,10 @@ export function Welcome() {
             </div>
           )}
 
-          <div className="w-24 h-28 rounded-xl bg-blush-pale flex items-center justify-center">
-            <Heart size={40} className="text-blush-deep" strokeWidth={1} fill="#C97A8C" />
+          <div style={{ perspective: "800px" }}>
+            <div className="w-24 h-28 rounded-xl bg-blush-pale flex items-center justify-center card-flip-lr">
+              <Heart size={40} className="text-blush-deep" strokeWidth={1} fill="#C97A8C" />
+            </div>
           </div>
           <p className="font-sans text-[11px] text-clay tracking-wide">
             {GARMENT.brandSku} &nbsp;✦&nbsp;{" "}
