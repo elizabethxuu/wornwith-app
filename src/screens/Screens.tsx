@@ -116,6 +116,12 @@ export function CameraScan({ onComplete }: { onComplete?: () => void } = {}) {
       {["top-4 left-4 border-t-2 border-l-2", "top-4 right-4 border-t-2 border-r-2", "bottom-4 left-4 border-b-2 border-l-2", "bottom-4 right-4 border-b-2 border-r-2"].map((pos, i) => (
         <div key={i} className={`absolute w-8 h-8 border-[#1A1A1A] ${pos}`} />
       ))}
+      {/* A small rounded-rectangle marker anchored near the bottom of
+          the frame — a quiet visual anchor, not a logo or icon. */}
+      <div
+        className="absolute bottom-16 left-1/2 -translate-x-1/2 w-24 h-14 rounded-xl"
+        style={{ border: "2px solid #1A1A1A" }}
+      />
       {scanned && (
         <p className="relative flex items-center gap-1.5 text-sm text-ink font-sans fade-up">
           <Check size={16} className="text-ink" /> {t("qr_scan_successful")}
