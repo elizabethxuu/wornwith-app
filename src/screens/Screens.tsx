@@ -182,11 +182,14 @@ export function Welcome() {
               {t("what_is_this")}
             </button>
           ) : (
-            <div className="bg-blush-pale/50 rounded-xl px-4 py-3 -mt-3 fade-up">
-              <p className="font-sans text-[11px] text-ink/80 leading-relaxed text-left">
+            <button
+              onClick={() => setShowInfo(false)}
+              className="bg-blush-pale/50 rounded-xl px-4 py-3 -mt-3 fade-up text-left cursor-pointer"
+            >
+              <p className="font-sans text-[11px] text-ink/80 leading-relaxed">
                 {t("dpp_explainer")}
               </p>
-            </div>
+            </button>
           )}
 
           <div style={{ perspective: "800px" }}>
@@ -199,7 +202,7 @@ export function Welcome() {
             <button onClick={() => setShowRws(!showRws)} className="underline underline-offset-2">
               RWS
             </button>
-            {" "}&nbsp;·&nbsp; DPP-ID: {GARMENT.dppId}
+            {" "}&nbsp;◆&nbsp; DPP-ID: {GARMENT.dppId}
           </p>
           {showRws && (
             <div className="bg-blush-pale/50 rounded-xl px-4 py-3 -mt-3 fade-up">
