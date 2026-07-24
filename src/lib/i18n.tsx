@@ -710,6 +710,8 @@ const dict = {
     fr: "La première expérience complète de passeport numérique, conçue pour célébrer le savoir-faire, la transparence et la longévité.",
     pt: "A primeira experiência completa de Passaporte Digital do Produto, feita para celebrar o artesanato, a transparência e a longevidade.",
   },
+  release_notes_date: { en: "July 2026", fr: "Juillet 2026", pt: "Julho de 2026" },
+  release_notes_version: { en: "Version 1.0 • Build 2026.1", fr: "Version 1.0 • Build 2026.1", pt: "Versão 1.0 • Build 2026.1" },
   whats_new_title: { en: "What's New", fr: "Nouveautés", pt: "Novidades" },
 
   rn_editorial_title: { en: "Editorial Storytelling", fr: "Récit Éditorial", pt: "Narrativa Editorial" },
