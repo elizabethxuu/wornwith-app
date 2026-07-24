@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { createPortal } from "react-dom";
 import { Mic, Square } from "lucide-react";
 import { ComposableMap, Geographies, Geography, Marker, Line, ZoomableGroup } from "react-simple-maps";
 import { useLanguage, type TranslationKey } from "../lib/i18n";
@@ -1189,19 +1190,31 @@ export function VerificationInfoPanel({ open, onClose }: { open: boolean; onClos
 
   if (!open) return null;
 
-  return (
-    <div className="fixed inset-0 z-50" onClick={(e) => e.stopPropagation()}>
+  // Rendered via portal directly to document.body, not inline in the
+  // screen's own tree. Every screen's root div uses the fade-up
+  // animation class, which — via animation-fill-mode: both — leaves a
+  // permanent transform: translateY(0) on that element even after the
+  // animation finishes. Any active transform on an ancestor creates a
+  // new containing block for position: fixed descendants, so without
+  // this portal the panel was only ever "fixed" relative to that
+  // screen's div, not the true viewport — which is exactly why it could
+  // appear to cut off partway down the screen instead of covering it.
+  return createPortal(
+    <div className="fixed inset-0 h-[100dvh] w-full z-50" onClick={(e) => e.stopPropagation()}>
       <div
-        className="absolute inset-0 bg-ink/40 transition-opacity duration-300"
+        className="absolute inset-0 h-[100dvh] bg-ink/40 transition-opacity duration-300"
         onClick={onClose}
       />
-      <div className="absolute bottom-0 inset-x-0 bg-paper rounded-t-[28px] border-t border-line px-6 pt-5 pb-8 fade-up">
+      <div
+        className="absolute bottom-0 inset-x-0 max-h-[85dvh] overflow-y-auto bg-paper rounded-t-[28px] border-t border-line px-6 pt-5 fade-up"
+        style={{ paddingBottom: "max(env(safe-area-inset-bottom), 32px)" }}
+      >
         <div className="flex items-center justify-between mb-3">
           <p className="font-display italic text-xl text-ink">{t("verification_panel_title")}</p>
           <button
             onClick={onClose}
             aria-label={t("close_label")}
-            className="w-7 h-7 rounded-full flex items-center justify-center text-clay border border-line"
+            className="w-7 h-7 rounded-full flex items-center justify-center text-clay border border-line shrink-0"
           >
             ×
           </button>
@@ -1210,6 +1223,7 @@ export function VerificationInfoPanel({ open, onClose }: { open: boolean; onClos
           {t("verification_panel_body")}
         </p>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
