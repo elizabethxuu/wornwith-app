@@ -392,6 +392,14 @@ const dict = {
   listen_label: { en: "Listen", fr: "Écouter", pt: "Ouvir" },
   stop_label: { en: "Stop", fr: "Arrêter", pt: "Parar" },
   voice_unavailable: { en: "Spoken briefing isn't supported in this browser.", fr: "Le bulletin audio n'est pas pris en charge par ce navigateur.", pt: "O boletim falado não é compatível com este navegador." },
+  recording_label: { en: "Recording…", fr: "Enregistrement…", pt: "Gravando…" },
+  play_note_label: { en: "Play note", fr: "Lire la note", pt: "Ouvir nota" },
+  note_saved_label: { en: "Saved", fr: "Enregistré", pt: "Salvo" },
+  re_record_label: { en: "Re-record", fr: "Réenregistrer", pt: "Regravar" },
+  delete_note_label: { en: "Delete", fr: "Supprimer", pt: "Excluir" },
+  mic_unavailable: { en: "Microphone isn't available in this browser.", fr: "Le microphone n'est pas disponible dans ce navigateur.", pt: "O microfone não está disponível neste navegador." },
+  mic_permission_denied: { en: "Microphone access was denied.", fr: "L'accès au microphone a été refusé.", pt: "O acesso ao microfone foi negado." },
+  voice_note_transcript_label: { en: "Transcript", fr: "Transcription", pt: "Transcrição" },
 
   alternatives_title: { en: "Also Consider", fr: "À Considérer Aussi", pt: "Considere Também" },
 

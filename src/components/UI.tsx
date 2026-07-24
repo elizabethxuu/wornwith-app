@@ -1,10 +1,11 @@
 import { useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
-import { Mic, Square } from "lucide-react";
+import { Mic, Square, AudioLines, Trash2 } from "lucide-react";
 import { ComposableMap, Geographies, Geography, Marker, Line, ZoomableGroup } from "react-simple-maps";
 import { useLanguage, type TranslationKey } from "../lib/i18n";
 import type { WardrobeItem } from "../lib/persistence";
-import { requestVoice } from "../lib/voice";
+import { loadVoiceNote, saveVoiceNote, deleteVoiceNote, type VoiceNote } from "../lib/persistence";
+import { requestVoice, transcribeVoiceNote } from "../lib/voice";
 import { useChapterColor } from "../lib/chapterColor";
 import { getCurrentSeason } from "../lib/careRecommendation";
 import { getTimeOfDay, selectAtmosphere, spotifySearchUrl, type Atmosphere } from "../lib/interlude";
@@ -657,8 +658,6 @@ export function TodaysEdit({ wardrobe }: { wardrobe: WardrobeItem[] }) {
   const reasoningKey = getReasoningKey(weather);
   const notWornKey = getNotWornPhraseKey(days);
 
-  const briefingText = [t(observationKey as TranslationKey), itemName + ".", t(reasoningKey as TranslationKey)].join(" ");
-
   const careSeasonForAtmosphere = getCurrentSeason();
   const timeOfDay = getTimeOfDay();
   const atmosphere = selectAtmosphere(careSeasonForAtmosphere, timeOfDay, weather?.rainLikely ?? false);
@@ -783,12 +782,7 @@ export function TodaysEdit({ wardrobe }: { wardrobe: WardrobeItem[] }) {
         <p className="font-sans text-[10px] uppercase tracking-[0.14em] font-semibold text-blush-deep mb-2">
           {t("morning_brief_title")}
         </p>
-        <VoicePlayer
-          text={briefingText}
-          listenLabel={t("listen_label")}
-          stopLabel={t("stop_label")}
-          unavailableLabel={t("voice_unavailable")}
-        />
+        <VoiceNoteRecorder />
       </div>
 
       {/* Also Consider */}
@@ -887,6 +881,162 @@ export function VoicePlayer({
         <Mic size={13} style={{ color }} />
       )}
       {state === "playing" ? stopLabel : listenLabel}
+    </button>
+  );
+}
+
+// Records and saves a short voice note in the browser — genuinely
+// functional via MediaRecorder, no fake states. When ELEVENLABS_API_KEY
+// is configured (api/transcribe.js), the recording is also sent to
+// ElevenLabs Speech-to-Text for a transcript; without a key, the note
+// still saves and plays back perfectly, just without a transcript. This
+// is a separate component from VoicePlayer above (which reads text
+// aloud) since recording someone's own voice and playing synthesized
+// speech are fundamentally different mechanisms, not variants of the
+// same one.
+export function VoiceNoteRecorder() {
+  const { t } = useLanguage();
+  const [state, setState] = useState<"idle" | "requesting" | "recording" | "recorded" | "unavailable" | "denied">(
+    () => (loadVoiceNote() ? "recorded" : "idle")
+  );
+  const [note, setNote] = useState<VoiceNote | null>(() => loadVoiceNote());
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [transcribing, setTranscribing] = useState(false);
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const chunksRef = useRef<Blob[]>([]);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+
+  const startRecording = async () => {
+    if (!navigator.mediaDevices?.getUserMedia || typeof MediaRecorder === "undefined") {
+      setState("unavailable");
+      return;
+    }
+    setState("requesting");
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const recorder = new MediaRecorder(stream);
+      chunksRef.current = [];
+      recorder.ondataavailable = (e) => {
+        if (e.data.size > 0) chunksRef.current.push(e.data);
+      };
+      recorder.onstop = () => {
+        stream.getTracks().forEach((track) => track.stop());
+        const blob = new Blob(chunksRef.current, { type: recorder.mimeType || "audio/webm" });
+        const reader = new FileReader();
+        reader.onloadend = async () => {
+          const dataUrl = reader.result as string;
+          const newNote: VoiceNote = { audioDataUrl: dataUrl, createdAt: new Date().toISOString() };
+          setNote(newNote);
+          saveVoiceNote(newNote);
+          setState("recorded");
+
+          // Transcription is a background enhancement — the note is
+          // already saved and playable before this even starts.
+          const base64 = dataUrl.split(",")[1];
+          if (base64) {
+            setTranscribing(true);
+            const transcript = await transcribeVoiceNote(base64, blob.type);
+            setTranscribing(false);
+            if (transcript) {
+              const withTranscript = { ...newNote, transcript };
+              setNote(withTranscript);
+              saveVoiceNote(withTranscript);
+            }
+          }
+        };
+        reader.readAsDataURL(blob);
+      };
+      mediaRecorderRef.current = recorder;
+      recorder.start();
+      setState("recording");
+    } catch {
+      setState("denied");
+    }
+  };
+
+  const stopRecording = () => {
+    mediaRecorderRef.current?.stop();
+  };
+
+  const togglePlayback = () => {
+    if (!note) return;
+    if (isPlaying) {
+      audioRef.current?.pause();
+      setIsPlaying(false);
+      return;
+    }
+    const audio = new Audio(note.audioDataUrl);
+    audioRef.current = audio;
+    audio.onended = () => setIsPlaying(false);
+    audio.play();
+    setIsPlaying(true);
+  };
+
+  const handleDelete = () => {
+    audioRef.current?.pause();
+    setIsPlaying(false);
+    deleteVoiceNote();
+    setNote(null);
+    setState("idle");
+  };
+
+  if (state === "unavailable") {
+    return <p className="font-sans text-[10px] text-clay/70">{t("mic_unavailable")}</p>;
+  }
+  if (state === "denied") {
+    return <p className="font-sans text-[10px] text-clay/70">{t("mic_permission_denied")}</p>;
+  }
+
+  // Recorded — playback + re-record/delete, plus transcript once/if it
+  // arrives.
+  if (state === "recorded" && note) {
+    return (
+      <div>
+        <div className="flex items-center gap-2 flex-wrap">
+          <button
+            onClick={togglePlayback}
+            className="flex items-center gap-2 border border-[#1A1A1A] rounded-full px-4 py-2 font-sans text-[11px] text-[#1A1A1A]"
+          >
+            {isPlaying ? <Square size={12} fill="#1A1A1A" /> : <AudioLines size={14} />}
+            {isPlaying ? t("stop_label") : t("play_note_label")}
+          </button>
+          <button onClick={startRecording} className="font-sans text-[10px] text-clay underline underline-offset-2">
+            {t("re_record_label")}
+          </button>
+          <button onClick={handleDelete} aria-label={t("delete_note_label")} className="text-clay/60">
+            <Trash2 size={13} />
+          </button>
+        </div>
+        {transcribing && (
+          <p className="font-sans text-[9px] text-clay/60 mt-2 italic">…</p>
+        )}
+        {note.transcript && (
+          <div className="mt-2">
+            <p className="font-sans text-[9px] uppercase tracking-wide text-clay/70 mb-0.5">
+              {t("voice_note_transcript_label")}
+            </p>
+            <p className="font-sans text-[11px] text-ink/80 leading-relaxed italic">{note.transcript}</p>
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  // Idle / requesting / recording — the pill button. Label stays
+  // "Listen" at rest per request; switches to "Recording…" while active
+  // so the state is never ambiguous.
+  return (
+    <button
+      onClick={state === "recording" ? stopRecording : startRecording}
+      disabled={state === "requesting"}
+      className="flex items-center gap-2 border border-[#1A1A1A] rounded-full px-4 py-2 font-sans text-[11px] text-[#1A1A1A] disabled:opacity-50 transition-colors duration-300"
+    >
+      {state === "recording" ? (
+        <Square size={12} fill="#1A1A1A" />
+      ) : (
+        <AudioLines size={14} />
+      )}
+      {state === "recording" ? t("recording_label") : t("listen_label")}
     </button>
   );
 }

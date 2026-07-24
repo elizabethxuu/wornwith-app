@@ -35,3 +35,23 @@ export async function requestVoice(text: string): Promise<VoiceResult> {
 
   return { mode: "unavailable" };
 }
+
+// Sends a recorded voice note to ElevenLabs Speech-to-Text (see
+// api/transcribe.js). Returns the transcript, or null if transcription
+// isn't configured/available — the caller should treat that as "no
+// transcript," not an error, since the audio itself is already saved and
+// playable regardless of whether a transcript comes back.
+export async function transcribeVoiceNote(audioBase64: string, mimeType: string): Promise<string | null> {
+  try {
+    const res = await fetch("/api/transcribe", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ audioBase64, mimeType }),
+    });
+    if (!res.ok) return null;
+    const data = await res.json();
+    return typeof data.text === "string" && data.text.trim() ? data.text.trim() : null;
+  } catch {
+    return null;
+  }
+}

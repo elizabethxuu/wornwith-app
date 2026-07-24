@@ -66,6 +66,41 @@ export function saveOwnershipRecord(record: OwnershipRecord) {
   }
 }
 
+// A single recorded voice note attached to the Morning Brief — audio as
+// a base64 data URL (works with the existing localStorage pattern used
+// for wardrobe photos), plus an optional transcript from ElevenLabs
+// Speech-to-Text when that's configured.
+export type VoiceNote = {
+  audioDataUrl: string;
+  transcript?: string;
+  createdAt: string; // ISO timestamp
+};
+
+export function loadVoiceNote(): VoiceNote | null {
+  try {
+    const raw = localStorage.getItem(key("morning-brief-voice-note"));
+    return raw ? JSON.parse(raw) : null;
+  } catch {
+    return null;
+  }
+}
+
+export function saveVoiceNote(note: VoiceNote) {
+  try {
+    localStorage.setItem(key("morning-brief-voice-note"), JSON.stringify(note));
+  } catch {
+    // ignore
+  }
+}
+
+export function deleteVoiceNote() {
+  try {
+    localStorage.removeItem(key("morning-brief-voice-note"));
+  } catch {
+    // ignore
+  }
+}
+
 export function loadMoment(): string {
   try {
     return localStorage.getItem(key("moment")) ?? "";
