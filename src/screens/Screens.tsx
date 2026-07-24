@@ -59,85 +59,39 @@ export function SkeletonLoader() {
 
 /* 2 — CAMERA SCAN */
 export function CameraScan({ onComplete }: { onComplete?: () => void } = {}) {
-  const { t } = useLanguage();
-  const [scanned, setScanned] = useState(false);
-  const [scanning, setScanning] = useState(false);
+  const [settled, setSettled] = useState(false);
   const [exiting, setExiting] = useState(false);
 
-  const handleScan = () => {
-    if (scanned || scanning) return;
-    setScanning(true);
-    setTimeout(() => {
-      setScanned(true);
-      setScanning(false);
-    }, 900);
-  };
-
-  // Auto-plays once on mount when used as the real "you just scanned the
-  // tag" moment in the live boot sequence — a visitor arriving here
-  // already scanned the physical tag to get here, so this replays that
-  // instead of asking them to tap again. The DeckPreview usage (no
-  // onComplete passed) still requires a tap, since that's a presenter
-  // walking through the flow manually.
+  // A quiet, breathless moment — not an interaction. Starts as a pure
+  // white flash, settles into the app's cream a beat later, then
+  // dissolves into Welcome. No icon, no copy, nothing to read — the
+  // pause itself is the point.
   useEffect(() => {
-    if (!onComplete) return;
-    const startTimer = setTimeout(() => handleScan(), 300);
-    return () => clearTimeout(startTimer);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    const settleTimer = setTimeout(() => setSettled(true), 220);
+    return () => clearTimeout(settleTimer);
   }, []);
 
   useEffect(() => {
-    if (!scanned || !onComplete) return;
-    const holdTimer = setTimeout(() => setExiting(true), 700);
-    const exitTimer = setTimeout(() => onComplete(), 1050);
+    if (!onComplete) return;
+    const holdTimer = setTimeout(() => setExiting(true), 650);
+    const exitTimer = setTimeout(() => onComplete(), 950);
     return () => {
       clearTimeout(holdTimer);
       clearTimeout(exitTimer);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [scanned]);
+  }, [onComplete]);
 
   return (
     <div
-      onClick={handleScan}
-      className="relative h-full flex flex-col items-center justify-end px-6 pb-8 bg-ink/95 transition-opacity duration-300 overflow-hidden cursor-pointer"
+      onClick={() => !onComplete && setSettled(true)}
+      className="h-full w-full"
       style={{
+        backgroundColor: settled ? "#FBF9F6" : "#FFFFFF",
         opacity: exiting ? 0 : 1,
-        border: scanning || scanned ? "3px solid #4ADE80" : "3px solid rgba(255,255,255,0.25)",
-        transition: "opacity 300ms ease, border-color 300ms ease",
+        transition: "background-color 900ms cubic-bezier(0.22,0.61,0.36,1), opacity 300ms ease",
       }}
-    >
-      {scanning && (
-        <>
-          {/* The sweep now travels the full height of the screen, not a
-              small card — the whole viewport reads as the scanner. */}
-          <div className="absolute inset-x-0 top-0 h-[2px] bg-[#4ADE80] scan-line-sweep-full" />
-          <div className="absolute inset-0 bg-[#4ADE80]/5 pointer-events-none" />
-        </>
-      )}
-      {/* Corner brackets anchored to the screen's own edges instead of a
-          small centered card. */}
-      {["top-4 left-4 border-t-2 border-l-2", "top-4 right-4 border-t-2 border-r-2", "bottom-4 left-4 border-b-2 border-l-2", "bottom-4 right-4 border-b-2 border-r-2"].map((pos, i) => (
-        <div
-          key={i}
-          className={`absolute w-8 h-8 ${pos}`}
-          style={{
-            borderColor: scanning || scanned ? "#4ADE80" : "rgba(255,255,255,0.8)",
-            transition: "border-color 300ms ease",
-          }}
-        />
-      ))}
-
-      <div className="relative h-16 flex items-center">
-        {scanned ? (
-          <p className="flex items-center gap-1.5 text-sm text-white font-sans fade-up">
-            <Check size={16} className="text-[#4ADE80]" /> {t("scan_successful")}
-          </p>
-        ) : (
-          <p className="text-white/50 text-xs font-sans">{t("tap_to_scan")}</p>
-        )}
-      </div>
-    </div>
+    />
   );
 }
 

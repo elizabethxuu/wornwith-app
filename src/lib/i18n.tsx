@@ -15,8 +15,6 @@ const dict = {
   verifying: { en: "Verifying passport…", fr: "Vérification du passeport…", pt: "Verificando passaporte…" },
 
   // Camera scan
-  tap_to_scan: { en: "Tap the tag to scan", fr: "Touchez l'étiquette pour scanner", pt: "Toque na etiqueta para escanear" },
-  scan_successful: { en: "Scan successful", fr: "Scan réussi", pt: "Digitalização concluída" },
 
   // Welcome
   welcome_to: { en: "Welcome to", fr: "Bienvenue sur", pt: "Bem-vindo ao" },
