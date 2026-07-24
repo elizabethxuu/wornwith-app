@@ -24,11 +24,12 @@ export async function requestVoice(text: string): Promise<VoiceResult> {
   }
 
   // No premium voice configured. The browser's built-in speech synthesis
-  // is a real, working fallback, but it's not the intended production
-  // voice — so it's deliberately gated to development only. In production
-  // without a premium key, playback disables gracefully instead of
-  // shipping a robotic voice as if it were the finished experience.
-  if (import.meta.env.DEV && "speechSynthesis" in window) {
+  // is a real, working fallback — genuinely enabled everywhere now
+  // (previously gated to development only, which meant "Listen" never
+  // worked on the live site at all). Premium still takes over
+  // automatically the moment ELEVENLABS_API_KEY is configured, with zero
+  // changes needed here.
+  if ("speechSynthesis" in window) {
     return { mode: "browser" };
   }
 

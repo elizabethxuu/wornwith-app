@@ -622,17 +622,6 @@ export function ArchiveTimeline({
   );
 }
 
-// Converts "#556B8A" + an opacity fraction into an rgba() string — used
-// for the Interlude button's subtle hover tint, since inline styles can't
-// express :hover directly and the accent color is dynamic (chapter-driven).
-function hexToRgba(hex: string, alpha: number): string {
-  const clean = hex.replace("#", "");
-  const r = parseInt(clean.substring(0, 2), 16);
-  const g = parseInt(clean.substring(2, 4), 16);
-  const b = parseInt(clean.substring(4, 6), 16);
-  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
-}
-
 export function TodaysEdit({ wardrobe }: { wardrobe: WardrobeItem[] }) {
   const { t } = useLanguage();
   const color = useChapterColor();
@@ -721,14 +710,11 @@ export function TodaysEdit({ wardrobe }: { wardrobe: WardrobeItem[] }) {
           onClick={() => setInterludeState("transitioning")}
           onMouseEnter={() => setEnterButtonHovered(true)}
           onMouseLeave={() => setEnterButtonHovered(false)}
-          className={`font-sans text-[12px] rounded-full px-6 py-2.5 mt-4 border transition-all duration-300 active:opacity-70 cursor-pointer ${
+          className={`font-sans text-[12px] text-white rounded-full px-6 py-2.5 mt-4 transition-all duration-300 active:opacity-70 cursor-pointer ${
             showEntranceHint ? "fade-up" : ""
           }`}
           style={{
-            borderWidth: "1px",
-            borderColor: color,
-            color,
-            backgroundColor: enterButtonHovered ? hexToRgba(color, 0.07) : "#FFFFFF",
+            backgroundColor: enterButtonHovered ? "#0F1A33" : "#1B2951",
             animationDelay: showEntranceHint ? "800ms" : undefined,
           }}
         >
@@ -1025,11 +1011,14 @@ export type CareRitual = {
 // A single expandable "ritual" row — quiet by design. No film, no extra
 // notes, just a title and a short instruction, in keeping with "no heavy
 // accordion styling."
-export function CareRitualRow({ ritual }: { ritual: CareRitual }) {
+export function CareRitualRow({ ritual, entranceDelayMs }: { ritual: CareRitual; entranceDelayMs?: number }) {
   const [open, setOpen] = useState(false);
 
   return (
-    <div className="border-b border-line last:border-0">
+    <div
+      className={`border-b border-line last:border-0 ${entranceDelayMs !== undefined ? "fade-up" : ""}`}
+      style={entranceDelayMs !== undefined ? { animationDelay: `${entranceDelayMs}ms` } : undefined}
+    >
       <button
         onClick={() => setOpen(!open)}
         className="w-full flex items-center gap-3 py-3 text-left"

@@ -59,42 +59,89 @@ export function SkeletonLoader() {
 }
 
 /* 2 — CAMERA SCAN */
-export function CameraScan() {
+export function CameraScan({ onComplete }: { onComplete?: () => void } = {}) {
   const { t } = useLanguage();
   const [scanned, setScanned] = useState(false);
-  const [flash, setFlash] = useState(false);
+  const [scanning, setScanning] = useState(false);
+  const [exiting, setExiting] = useState(false);
 
   const handleScan = () => {
-    if (scanned) return;
-    setFlash(true);
+    if (scanned || scanning) return;
+    setScanning(true);
     setTimeout(() => {
       setScanned(true);
-      setFlash(false);
-    }, 350);
+      setScanning(false);
+    }, 650);
   };
 
+  // Auto-plays once on mount when used as the real "you just scanned the
+  // tag" moment in the live boot sequence — a visitor arriving here
+  // already scanned the physical tag to get here, so this replays that
+  // instead of asking them to tap again. The DeckPreview usage (no
+  // onComplete passed) still requires a tap, since that's a presenter
+  // walking through the flow manually.
+  useEffect(() => {
+    if (!onComplete) return;
+    const startTimer = setTimeout(() => handleScan(), 300);
+    return () => clearTimeout(startTimer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    if (!scanned || !onComplete) return;
+    const holdTimer = setTimeout(() => setExiting(true), 700);
+    const exitTimer = setTimeout(() => onComplete(), 1050);
+    return () => {
+      clearTimeout(holdTimer);
+      clearTimeout(exitTimer);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [scanned]);
+
   return (
-    <div className="h-full flex flex-col items-center justify-between px-6 py-8 bg-ink/95">
+    <div
+      className="h-full flex flex-col items-center justify-between px-6 py-8 bg-ink/95 transition-opacity duration-300"
+      style={{ opacity: exiting ? 0 : 1 }}
+    >
       <div />
       <div
         onClick={handleScan}
-        className="relative w-[220px] h-[280px] border-2 border-white/30 rounded-2xl flex items-center justify-center cursor-pointer"
+        className="relative w-[220px] h-[280px] rounded-2xl flex items-center justify-center cursor-pointer overflow-hidden"
+        style={{
+          border: scanning || scanned ? "2px solid #4ADE80" : "2px solid rgba(255,255,255,0.3)",
+          transition: "border-color 300ms ease",
+        }}
       >
-        {flash && <div className="absolute inset-0 bg-white scan-flash rounded-2xl" />}
+        {scanning && (
+          <>
+            {/* A single horizontal line sweeping straight down the frame
+                — the classic "document scanning" read, not a flash. */}
+            <div className="absolute inset-x-0 top-0 h-[2px] bg-[#4ADE80] scan-line-sweep" />
+            <div className="absolute inset-0 bg-[#4ADE80]/5 pointer-events-none" />
+          </>
+        )}
         <div className="bg-cream rounded-lg w-[150px] h-[190px] flex flex-col items-center justify-between py-6 shadow-xl">
           <p className="font-sans text-[10px] tracking-widest text-clay">COS</p>
           <QrCode size={44} className="text-ink" strokeWidth={1.2} />
           <p className="font-display italic text-xs text-blush-deep">{t("scan_me")}</p>
         </div>
-        {/* corner brackets */}
+        {/* corner brackets — turn green in step with the border once
+            scanning starts, instead of staying a fixed white always */}
         {["top-2 left-2 border-t-2 border-l-2", "top-2 right-2 border-t-2 border-r-2", "bottom-2 left-2 border-b-2 border-l-2", "bottom-2 right-2 border-b-2 border-r-2"].map((pos, i) => (
-          <div key={i} className={`absolute w-6 h-6 border-white ${pos}`} />
+          <div
+            key={i}
+            className={`absolute w-6 h-6 ${pos}`}
+            style={{
+              borderColor: scanning || scanned ? "#4ADE80" : "rgba(255,255,255,1)",
+              transition: "border-color 300ms ease",
+            }}
+          />
         ))}
       </div>
       <div className="h-16 flex items-center">
         {scanned ? (
           <p className="flex items-center gap-1.5 text-sm text-white font-sans fade-up">
-            <Check size={16} className="text-blush" /> {t("scan_successful")}
+            <Check size={16} className="text-[#4ADE80]" /> {t("scan_successful")}
           </p>
         ) : (
           <p className="text-white/50 text-xs font-sans">{t("tap_to_scan")}</p>
@@ -345,17 +392,11 @@ export function ProductOverview({ onExploreJourney }: { onExploreJourney?: () =>
           >
             {t("product_editorial_headline")}
           </p>
-          <div className="mt-1.5 space-y-0">
-            <p className="font-sans text-[9px] text-clay leading-tight" style={craftedReveal("translateY(6px)", 1400, 350)}>
-              {t("product_editorial_copy_1")}
-            </p>
-            <p className="font-sans text-[9px] text-clay leading-tight" style={craftedReveal("translateY(6px)", 1520, 350)}>
-              {t("product_editorial_copy_2")}
-            </p>
-            <p className="font-sans text-[9px] text-clay leading-tight" style={craftedReveal("translateY(6px)", 1640, 350)}>
-              {t("product_editorial_copy_3")}
-            </p>
-          </div>
+          <p className="mt-2.5 font-sans text-[12px] text-clay leading-relaxed">
+            <span className="inline-block" style={craftedReveal("translateY(6px)", 1400, 350)}>{t("product_editorial_copy_1")} </span>
+            <span className="inline-block" style={craftedReveal("translateY(6px)", 1520, 350)}>{t("product_editorial_copy_2")} </span>
+            <span className="inline-block" style={craftedReveal("translateY(6px)", 1640, 350)}>{t("product_editorial_copy_3")}</span>
+          </p>
         </div>
 
         {/* Real navigation — jumps directly to the Journey / Product
@@ -638,7 +679,7 @@ export function CareGuide() {
       </h2>
       <p className="text-[11px] text-clay font-sans mt-1 mb-5">{t("care_supporting_line")}</p>
 
-      <div className="border-t border-line pt-5 mb-5">
+      <div className="border-t border-line pt-5 mb-5 fade-up" style={{ animationDelay: "100ms" }}>
         <Eyebrow>{t("impact_per_wear")}</Eyebrow>
         <div className="flex justify-between mt-2">
           {wears.map(([label, tag, color]) => (
@@ -650,22 +691,25 @@ export function CareGuide() {
         </div>
       </div>
 
-      <div className="border-t border-line pt-5 mb-2">
+      <div className="border-t border-line pt-5 mb-2 fade-up" style={{ animationDelay: "220ms" }}>
         <Eyebrow>{t("atelier_title")}</Eyebrow>
         <p className="font-sans text-[12px] text-ink/85 leading-relaxed mt-2 mb-1">
           {t("atelier_intro")}
         </p>
       </div>
       <div className="border-t border-line">
-        {rituals.map((ritual) => (
-          <CareRitualRow key={ritual.title} ritual={ritual} />
+        {rituals.map((ritual, i) => (
+          <CareRitualRow key={ritual.title} ritual={ritual} entranceDelayMs={340 + i * 80} />
         ))}
       </div>
 
       {/* Care Philosophy — a reflective close rather than a maintenance
           log. The wears-remaining figure is still a real computation from
           the recorded wear count, just framed gently. */}
-      <div className="border-t border-line pt-5 mt-2">
+      <div
+        className="border-t border-line pt-5 mt-2 fade-up"
+        style={{ animationDelay: `${340 + rituals.length * 80 + 150}ms` }}
+      >
         <Eyebrow>{t("care_philosophy_title")}</Eyebrow>
         <p className="font-display italic text-[17px] text-ink leading-snug mt-2">
           {t("care_philosophy_line1")}

@@ -6,6 +6,7 @@ import { useLanguage } from "./lib/i18n";
 import { ChapterColorProvider, CHAPTER_COLORS, INACTIVE_PROGRESS_COLOR } from "./lib/chapterColor";
 import {
   SkeletonLoader,
+  CameraScan,
   Welcome,
   ProductOverview,
   ProductLifecycle,
@@ -56,7 +57,7 @@ const sectionKeys = [
   "section_wardrobe",
 ] as const;
 
-type BootState = "verifying" | "ready" | "offline" | "not-found";
+type BootState = "verifying" | "scanning" | "ready" | "offline" | "not-found";
 
 function checkDppId(): boolean {
   // If the URL carries a dpp param (the way a real scanned tag would), it
@@ -91,7 +92,7 @@ export default function LiveApp() {
         setBootState("not-found");
         return;
       }
-      setBootState("ready");
+      setBootState("scanning");
     }, 1400);
   };
 
@@ -139,6 +140,14 @@ export default function LiveApp() {
     return (
       <div className="h-[100dvh] w-full bg-paper">
         <SkeletonLoader />
+      </div>
+    );
+  }
+
+  if (bootState === "scanning") {
+    return (
+      <div className="h-[100dvh] w-full">
+        <CameraScan onComplete={() => setBootState("ready")} />
       </div>
     );
   }
