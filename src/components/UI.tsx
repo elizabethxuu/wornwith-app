@@ -89,12 +89,14 @@ export function Donut({
 export function Card({
   children,
   className = "",
+  onClick,
 }: {
   children: React.ReactNode;
   className?: string;
+  onClick?: () => void;
 }) {
   return (
-    <div className={`bg-paper border border-line rounded-card px-5 py-4 ${className}`}>
+    <div className={`bg-paper border border-line rounded-card px-5 py-4 ${className}`} onClick={onClick}>
       {children}
     </div>
   );
@@ -1174,4 +1176,40 @@ export function useMountReveal() {
   };
 
   return { visible, reducedMotion: reducedMotionRef.current, stepStyle };
+}
+
+// One reusable "About this verification" panel, triggered from three
+// different screens (Passport, Product, Story). A bottom sheet on the
+// scale this app runs at (single-column mobile-first), dismissible via
+// backdrop tap or the close button — matches the app's existing rounded
+// corners, borders, and serif-italic heading treatment rather than
+// introducing a new visual language.
+export function VerificationInfoPanel({ open, onClose }: { open: boolean; onClose: () => void }) {
+  const { t } = useLanguage();
+
+  if (!open) return null;
+
+  return (
+    <div className="fixed inset-0 z-50" onClick={(e) => e.stopPropagation()}>
+      <div
+        className="absolute inset-0 bg-ink/40 transition-opacity duration-300"
+        onClick={onClose}
+      />
+      <div className="absolute bottom-0 inset-x-0 bg-paper rounded-t-[28px] border-t border-line px-6 pt-5 pb-8 fade-up">
+        <div className="flex items-center justify-between mb-3">
+          <p className="font-display italic text-xl text-ink">{t("verification_panel_title")}</p>
+          <button
+            onClick={onClose}
+            aria-label={t("close_label")}
+            className="w-7 h-7 rounded-full flex items-center justify-center text-clay border border-line"
+          >
+            ×
+          </button>
+        </div>
+        <p className="font-sans text-[13px] text-clay leading-relaxed">
+          {t("verification_panel_body")}
+        </p>
+      </div>
+    </div>
+  );
 }

@@ -593,6 +593,13 @@ const dict = {
   footer_privacy: { en: "Privacy Policy", fr: "Politique de Confidentialité", pt: "Política de Privacidade" },
   footer_terms: { en: "Terms of Use", fr: "Conditions d'Utilisation", pt: "Termos de Uso" },
   legal_back: { en: "Back", fr: "Retour", pt: "Voltar" },
+  close_label: { en: "Close", fr: "Fermer", pt: "Fechar" },
+  verification_panel_title: { en: "About this verification", fr: "À propos de cette vérification", pt: "Sobre esta verificação" },
+  verification_panel_body: {
+    en: "This passport's history is recorded on an immutable ledger, so entries can't be altered after the fact. In this demo, verification is illustrative — a production version would anchor to a live blockchain record.",
+    fr: "L'historique de ce passeport est enregistré sur un registre immuable, de sorte que les entrées ne peuvent pas être modifiées après coup. Dans cette démo, la vérification est illustrative — une version en production s'ancrerait à un registre blockchain en direct.",
+    pt: "O histórico deste passaporte é registrado em um registro imutável, de modo que as entradas não podem ser alteradas depois de feitas. Nesta demonstração, a verificação é ilustrativa — uma versão de produção seria ancorada a um registro de blockchain real.",
+  },
 
   privacy_eyebrow: { en: "Privacy", fr: "Confidentialité", pt: "Privacidade" },
   privacy_title: { en: "Your wardrobe belongs to you.", fr: "Votre garde-robe vous appartient.", pt: "Seu guarda-roupa pertence a você." },

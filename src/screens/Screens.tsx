@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Eyebrow, Donut, Card, JourneyMap, Pill, Disclaimer, EmptyState, ExpandableCard, ArchiveTransition, ArchiveTimeline, type ArchiveEntry, TodaysEdit, CareRitualRow, type CareRitual, useMountReveal } from "../components/UI";
+import { Eyebrow, Donut, Card, JourneyMap, Pill, Disclaimer, EmptyState, ExpandableCard, ArchiveTransition, ArchiveTimeline, type ArchiveEntry, TodaysEdit, CareRitualRow, type CareRitual, useMountReveal, VerificationInfoPanel } from "../components/UI";
 import { ChapterColorProvider, ARCHIVE_ACCENT_COLOR, useChapterColor } from "../lib/chapterColor";
 import { generateAI } from "../lib/aiService";
 import {
@@ -146,6 +146,7 @@ export function Welcome() {
   const { t, lang, setLang } = useLanguage();
   const [showInfo, setShowInfo] = useState(false);
   const [showRws, setShowRws] = useState(false);
+  const [showVerificationInfo, setShowVerificationInfo] = useState(false);
   const [viewCount, setViewCount] = useState<number | null>(null);
 
   useEffect(() => {
@@ -212,7 +213,7 @@ export function Welcome() {
             </div>
           )}
         </div>
-        <Card className="w-full text-left">
+        <Card className="w-full text-left cursor-pointer" onClick={() => setShowVerificationInfo(true)}>
           <p className="text-[10px] font-sans font-semibold text-sage uppercase tracking-wide mb-1">
             {t("verified_passport")}
           </p>
@@ -258,6 +259,7 @@ export function Welcome() {
 
         <Disclaimer />
       </div>
+      <VerificationInfoPanel open={showVerificationInfo} onClose={() => setShowVerificationInfo(false)} />
     </div>
   );
 }
@@ -268,6 +270,7 @@ export function ProductOverview({ onExploreJourney }: { onExploreJourney?: () =>
   const { t } = useLanguage();
   const [imgError, setImgError] = useState(false);
   const [ctaFading, setCtaFading] = useState(false);
+  const [showVerificationInfo, setShowVerificationInfo] = useState(false);
 
   // A one-time, bespoke-timed entrance for the Crafted to Last panel —
   // each element has its own specific delay/duration/easing per spec, so
@@ -318,9 +321,12 @@ export function ProductOverview({ onExploreJourney }: { onExploreJourney?: () =>
       <Eyebrow>{t("section_product")}</Eyebrow>
       <div className="flex items-center gap-1.5 text-clay text-xs font-sans mt-1 mb-4">
         <ChevronLeft size={14} /> <span>{GARMENT.brand} {t("wool_jacket")}</span>
-        <span className="ml-auto flex items-center gap-1 text-sage text-[10px]">
+        <button
+          onClick={(e) => { e.stopPropagation(); setShowVerificationInfo(true); }}
+          className="ml-auto flex items-center gap-1 text-sage text-[10px]"
+        >
           <Check size={12} /> {t("dpp_verified")}
-        </span>
+        </button>
       </div>
       <div
         className="w-full h-64 rounded-card overflow-hidden mb-4 flex items-center justify-center"
@@ -432,6 +438,7 @@ export function ProductOverview({ onExploreJourney }: { onExploreJourney?: () =>
           <div className="flex justify-between"><span className="text-clay">{t("condition")}</span><span className="text-sage font-medium">{loadOwnershipRecord().condition || t("excellent")}</span></div>
         </div>
       </div>
+      <VerificationInfoPanel open={showVerificationInfo} onClose={() => setShowVerificationInfo(false)} />
     </div>
   );
 }
@@ -934,6 +941,7 @@ export function StoryBehindIt() {
   const storyColor = useChapterColor();
   const [shareState, setShareState] = useState<"idle" | "shared" | "copied">("idle");
   const [savedToWardrobe, setSavedToWardrobe] = useState(false);
+  const [showVerificationInfo, setShowVerificationInfo] = useState(false);
 
   const handleShare = async () => {
     const shareData = {
@@ -988,12 +996,15 @@ export function StoryBehindIt() {
       <JourneyMap />
       <div style={storyReveal("translateY(16px)", 1330, 500)}>
         <Card>
-          <div className="flex items-center justify-between mb-3">
+          <button
+            onClick={(e) => { e.stopPropagation(); setShowVerificationInfo(true); }}
+            className="w-full flex items-center justify-between mb-3"
+          >
             <span className="flex items-center gap-1 text-[11px] font-sans text-sage font-medium">
               <Check size={12} /> {t("verified_passport")}
             </span>
             <span className="text-[10px] font-sans text-clay">{t("story_date_value")} · {t("blockchain_word")}</span>
-          </div>
+          </button>
           <div className="flex items-center gap-1.5 mb-2">
             <Sparkles
               size={13}
@@ -1045,6 +1056,7 @@ export function StoryBehindIt() {
           {savedToWardrobe ? t("saved") : t("save_to_wardrobe")}
         </button>
       </div>
+      <VerificationInfoPanel open={showVerificationInfo} onClose={() => setShowVerificationInfo(false)} />
     </div>
   );
 }
