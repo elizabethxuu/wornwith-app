@@ -53,6 +53,10 @@ body {
   animation: scanLineSweep 0.65s linear;
   box-shadow: 0 0 8px 1px rgba(74, 222, 128, 0.6);
 }
+.scan-line-sweep-full {
+  animation: scanLineSweep 0.9s linear;
+  box-shadow: 0 0 10px 2px rgba(74, 222, 128, 0.6);
+}
 
 @keyframes fadeUp {
   from { opacity: 0; transform: translateY(8px); }

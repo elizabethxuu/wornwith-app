@@ -22,7 +22,6 @@ import { GARMENT, getEstimatedYearsRemaining } from "../lib/garment";
 import { getCareRecommendation } from "../lib/careRecommendation";
 import { useLanguage, type TranslationKey } from "../lib/i18n";
 import {
-  QrCode,
   Check,
   ChevronLeft,
   Sparkles,
@@ -71,7 +70,7 @@ export function CameraScan({ onComplete }: { onComplete?: () => void } = {}) {
     setTimeout(() => {
       setScanned(true);
       setScanning(false);
-    }, 650);
+    }, 900);
   };
 
   // Auto-plays once on mount when used as the real "you just scanned the
@@ -100,45 +99,36 @@ export function CameraScan({ onComplete }: { onComplete?: () => void } = {}) {
 
   return (
     <div
-      className="h-full flex flex-col items-center justify-between px-6 py-8 bg-ink/95 transition-opacity duration-300"
-      style={{ opacity: exiting ? 0 : 1 }}
+      onClick={handleScan}
+      className="relative h-full flex flex-col items-center justify-end px-6 pb-8 bg-ink/95 transition-opacity duration-300 overflow-hidden cursor-pointer"
+      style={{
+        opacity: exiting ? 0 : 1,
+        border: scanning || scanned ? "3px solid #4ADE80" : "3px solid rgba(255,255,255,0.25)",
+        transition: "opacity 300ms ease, border-color 300ms ease",
+      }}
     >
-      <div />
-      <div
-        onClick={handleScan}
-        className="relative w-[220px] h-[280px] rounded-2xl flex items-center justify-center cursor-pointer overflow-hidden"
-        style={{
-          border: scanning || scanned ? "2px solid #4ADE80" : "2px solid rgba(255,255,255,0.3)",
-          transition: "border-color 300ms ease",
-        }}
-      >
-        {scanning && (
-          <>
-            {/* A single horizontal line sweeping straight down the frame
-                — the classic "document scanning" read, not a flash. */}
-            <div className="absolute inset-x-0 top-0 h-[2px] bg-[#4ADE80] scan-line-sweep" />
-            <div className="absolute inset-0 bg-[#4ADE80]/5 pointer-events-none" />
-          </>
-        )}
-        <div className="bg-cream rounded-lg w-[150px] h-[190px] flex flex-col items-center justify-between py-6 shadow-xl">
-          <p className="font-sans text-[10px] tracking-widest text-clay">COS</p>
-          <QrCode size={44} className="text-ink" strokeWidth={1.2} />
-          <p className="font-display italic text-xs text-blush-deep">{t("scan_me")}</p>
-        </div>
-        {/* corner brackets — turn green in step with the border once
-            scanning starts, instead of staying a fixed white always */}
-        {["top-2 left-2 border-t-2 border-l-2", "top-2 right-2 border-t-2 border-r-2", "bottom-2 left-2 border-b-2 border-l-2", "bottom-2 right-2 border-b-2 border-r-2"].map((pos, i) => (
-          <div
-            key={i}
-            className={`absolute w-6 h-6 ${pos}`}
-            style={{
-              borderColor: scanning || scanned ? "#4ADE80" : "rgba(255,255,255,1)",
-              transition: "border-color 300ms ease",
-            }}
-          />
-        ))}
-      </div>
-      <div className="h-16 flex items-center">
+      {scanning && (
+        <>
+          {/* The sweep now travels the full height of the screen, not a
+              small card — the whole viewport reads as the scanner. */}
+          <div className="absolute inset-x-0 top-0 h-[2px] bg-[#4ADE80] scan-line-sweep-full" />
+          <div className="absolute inset-0 bg-[#4ADE80]/5 pointer-events-none" />
+        </>
+      )}
+      {/* Corner brackets anchored to the screen's own edges instead of a
+          small centered card. */}
+      {["top-4 left-4 border-t-2 border-l-2", "top-4 right-4 border-t-2 border-r-2", "bottom-4 left-4 border-b-2 border-l-2", "bottom-4 right-4 border-b-2 border-r-2"].map((pos, i) => (
+        <div
+          key={i}
+          className={`absolute w-8 h-8 ${pos}`}
+          style={{
+            borderColor: scanning || scanned ? "#4ADE80" : "rgba(255,255,255,0.8)",
+            transition: "border-color 300ms ease",
+          }}
+        />
+      ))}
+
+      <div className="relative h-16 flex items-center">
         {scanned ? (
           <p className="flex items-center gap-1.5 text-sm text-white font-sans fade-up">
             <Check size={16} className="text-[#4ADE80]" /> {t("scan_successful")}
