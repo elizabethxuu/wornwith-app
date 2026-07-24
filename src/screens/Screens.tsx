@@ -267,6 +267,14 @@ export function ProductOverview({ onExploreJourney }: { onExploreJourney?: () =>
   const { t } = useLanguage();
   const [imgError, setImgError] = useState(false);
   const [ctaFading, setCtaFading] = useState(false);
+  const [dppSparkle, setDppSparkle] = useState(false);
+  useEffect(() => {
+    const reducedMotion =
+      typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reducedMotion) return;
+    const timer = setTimeout(() => setDppSparkle(true), 500);
+    return () => clearTimeout(timer);
+  }, []);
   const [showVerificationInfo, setShowVerificationInfo] = useState(false);
 
   // A one-time, bespoke-timed entrance for the Crafted to Last panel —
@@ -320,9 +328,9 @@ export function ProductOverview({ onExploreJourney }: { onExploreJourney?: () =>
         <ChevronLeft size={14} /> <span>{GARMENT.brand} {t("wool_jacket")}</span>
         <button
           onClick={(e) => { e.stopPropagation(); setShowVerificationInfo(true); }}
-          className="ml-auto flex items-center gap-1 text-sage text-[10px]"
+          className="ml-auto flex items-center gap-1 text-sage text-[10px] font-semibold"
         >
-          <Check size={12} /> {t("dpp_verified")}
+          <Check size={13} strokeWidth={3} className={dppSparkle ? "icon-sparkle-once" : ""} /> {t("dpp_verified")}
         </button>
       </div>
       <div
@@ -368,7 +376,7 @@ export function ProductOverview({ onExploreJourney }: { onExploreJourney?: () =>
           sentence, and finally the CTA fade in in sequence. Same
           two-column layout as before; only the appearance is new. */}
       <div
-        className="relative flex items-center gap-4 px-4 py-3.5 mb-4 rounded-lg overflow-hidden"
+        className="relative flex items-center gap-4 px-4 py-2.5 mb-4 rounded-lg overflow-hidden"
         style={{ backgroundColor: "#FCF5F6", ...craftedReveal("translateY(18px)", 350, 600, ".22,.61,.36,1") }}
       >
         {craftedWashActive && (
@@ -385,7 +393,7 @@ export function ProductOverview({ onExploreJourney }: { onExploreJourney?: () =>
           >
             {t("product_editorial_headline")}
           </p>
-          <p className="mt-3 font-sans text-[13px] text-clay leading-[1.7]">
+          <p className="mt-2 font-sans text-[13px] text-clay leading-[1.6]">
             <span className="inline-block" style={craftedReveal("translateY(6px)", 1400, 350)}>{t("product_editorial_copy_1")}</span>{" "}
             <span className="inline-block" style={craftedReveal("translateY(6px)", 1520, 350)}>{t("product_editorial_copy_2")}</span>{" "}
             <span className="inline-block" style={craftedReveal("translateY(6px)", 1640, 350)}>{t("product_editorial_copy_3")}</span>
@@ -412,8 +420,12 @@ export function ProductOverview({ onExploreJourney }: { onExploreJourney?: () =>
             ...craftedReveal("translateX(10px)", 1990, 300),
           }}
         >
-          <span className="inline-block group-hover:text-[#6E2F41] transition-colors duration-[180ms]">
+          <span className="relative inline-block group-hover:text-[#6E2F41] transition-colors duration-[180ms]">
             {t("product_editorial_cta")}
+            <span
+              className="absolute left-0 -bottom-0.5 w-full h-px origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-300 ease-out"
+              style={{ backgroundColor: "#6E2F41" }}
+            />
           </span>
           <span className="inline-block transition-transform duration-[180ms] group-hover:translate-x-[4px]">→</span>
         </button>
