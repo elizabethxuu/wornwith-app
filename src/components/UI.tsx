@@ -167,10 +167,23 @@ export function JourneyMap() {
   // most relevant detail to show before anyone's tapped anything.
   const [selected, setSelected] = useState(journeyStops.length - 1);
   const [drawn, setDrawn] = useState(false);
+  const [mapVisible, setMapVisible] = useState(false);
+  const [arrivalPulsePlayed, setArrivalPulsePlayed] = useState(false);
 
   useEffect(() => {
-    const timer = setTimeout(() => setDrawn(true), 150);
-    return () => clearTimeout(timer);
+    const visibleTimer = setTimeout(() => setMapVisible(true), 60);
+    const drawTimer = setTimeout(() => setDrawn(true), 350);
+    // The arrival pulse plays once, after the route has finished drawing
+    // in — not an infinite loop. journeyStops.length - 1 segments, drawn
+    // sequentially (not overlapping), so this is timed to land right as
+    // the line reaches Paris.
+    const segments = journeyStops.length - 1;
+    const pulseTimer = setTimeout(() => setArrivalPulsePlayed(true), 350 + segments * 700 + 900);
+    return () => {
+      clearTimeout(visibleTimer);
+      clearTimeout(drawTimer);
+      clearTimeout(pulseTimer);
+    };
   }, []);
 
   const selectStop = (i: number) => {
@@ -182,13 +195,16 @@ export function JourneyMap() {
   return (
     <div className="w-full mb-4" onClick={(e) => e.stopPropagation()}>
       <div
-        className="w-full border border-line/60 rounded-card overflow-hidden transition-shadow duration-500"
+        className="w-full border border-line/60 rounded-card overflow-hidden"
         style={{
           backgroundImage:
             "radial-gradient(ellipse 60% 55% at 50% 32%, rgba(235,201,210,0.32) 0%, transparent 72%), " +
             "radial-gradient(ellipse 50% 45% at 86% 82%, rgba(47,199,216,0.20) 0%, transparent 72%), " +
             "linear-gradient(180deg, #FDFBF7 0%, #FAF7F1 100%)",
           boxShadow: "0 1px 3px rgba(0,0,0,0.02)",
+          opacity: mapVisible ? 1 : 0,
+          transform: mapVisible ? "translateY(0) scale(1)" : "translateY(10px) scale(0.985)",
+          transition: "opacity 700ms cubic-bezier(0.22,0.61,0.36,1), transform 700ms cubic-bezier(0.22,0.61,0.36,1), box-shadow 500ms ease",
         }}
       >
         <ComposableMap
@@ -234,7 +250,7 @@ export function JourneyMap() {
                 style={{
                   strokeDasharray: "1px",
                   strokeDashoffset: drawn ? 0 : 1,
-                  transition: `stroke-dashoffset 0.9s ease ${i * 0.35}s`,
+                  transition: `stroke-dashoffset 0.7s cubic-bezier(0.4,0,0.2,1) ${i * 0.7}s`,
                 }}
               />
             ))}
@@ -259,10 +275,10 @@ export function JourneyMap() {
                   {s.active && (
                     <circle r={13} fill="#EBC9D2" fillOpacity={0.35} style={{ pointerEvents: "none" }} />
                   )}
-                  {s.active && (
-                    <circle r={8} fill={stopColor} fillOpacity={0.25}>
-                      <animate attributeName="r" values="6;10;6" dur="2.6s" repeatCount="indefinite" />
-                      <animate attributeName="fill-opacity" values="0.3;0.1;0.3" dur="2.6s" repeatCount="indefinite" />
+                  {s.active && arrivalPulsePlayed && (
+                    <circle r={6} fill={stopColor} fillOpacity={0.3}>
+                      <animate attributeName="r" values="6;11;6" dur="1.1s" begin="0s" repeatCount="1" fill="freeze" />
+                      <animate attributeName="fill-opacity" values="0.32;0;0" dur="1.1s" begin="0s" repeatCount="1" fill="freeze" />
                     </circle>
                   )}
                   <circle
