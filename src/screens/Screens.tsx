@@ -88,9 +88,9 @@ export function CameraScan({ onComplete }: { onComplete?: () => void } = {}) {
   // dissolves straight into Welcome.
   useEffect(() => {
     if (!scanned || !onComplete) return;
-    const flashTimer = setTimeout(() => setFlashing(true), 260);
-    const exitTimer = setTimeout(() => setExiting(true), 400);
-    const completeTimer = setTimeout(() => onComplete(), 520);
+    const flashTimer = setTimeout(() => setFlashing(true), 650);
+    const exitTimer = setTimeout(() => setExiting(true), 800);
+    const completeTimer = setTimeout(() => onComplete(), 920);
     return () => {
       clearTimeout(flashTimer);
       clearTimeout(exitTimer);
