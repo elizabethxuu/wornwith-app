@@ -54,14 +54,14 @@ export function fetchWeather(): Promise<WeatherData | null> {
 // description — "COS Black Wool Funnel-Neck Coat" -> "your black wool
 // coat". Full product names are reserved for the Product Passport screen
 // specifically, per the editorial writing style.
-export function naturalName(name: string): string {
+export function naturalName(name: string, yourWord: string = "your"): string {
   const cleaned = name
     .replace(/^COS\s+/i, "")
-    .replace(/^The\s+/i, "")
+    .replace(/^(The|Le|La|Les|O|A|Os|As)\s+/i, "")
     .replace(/\bFunnel-Neck\b/i, "")
     .replace(/\s+/g, " ")
     .trim();
-  return `your ${cleaned.toLowerCase()}`;
+  return `${yourWord} ${cleaned.toLowerCase()}`;
 }
 
 // Capitalizes only the first character — for sentence-start display,
@@ -75,6 +75,7 @@ const COLD_KEYWORDS = ["wool", "coat", "knit", "trench", "overshirt"];
 
 export type FeaturedPick = {
   name: string;
+  nameKey?: WardrobeItem["nameKey"];
   isMainGarment: boolean;
   loggedAt?: string;
   worn?: string;
@@ -115,7 +116,7 @@ export function pickFeaturedItem(
   }
 
   if (best && best.score > 0) {
-    return { name: best.item.name, isMainGarment: false, loggedAt: best.item.loggedAt, worn: best.item.worn };
+    return { name: best.item.name, nameKey: best.item.nameKey, isMainGarment: false, loggedAt: best.item.loggedAt, worn: best.item.worn };
   }
 
   return { name: GARMENT.name, isMainGarment: true };

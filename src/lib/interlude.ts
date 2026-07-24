@@ -1,13 +1,17 @@
 import type { Season } from "./careRecommendation";
+import type { TranslationKey } from "./i18n";
 
 export type TimeOfDay = "morning" | "afternoon" | "evening" | "night";
 
-export type ReadingPick = { author: string; title: string; note: string };
+// Author and book title stay as literal proper nouns (standard convention
+// — a title isn't usually retitled across storefronts/languages). The
+// note is a translation key, since that's genuine editorial prose.
+export type ReadingPick = { author: string; title: string; noteKey: TranslationKey };
 
 export type Atmosphere = {
   key: string;
-  title: string;
-  description: string[]; // short cinematic lines, rendered one per line
+  titleKey: TranslationKey;
+  descriptionKeys: TranslationKey[]; // short cinematic lines, rendered one per line
   artists: string[];
   reading: ReadingPick[];
 };
@@ -27,117 +31,86 @@ export function getTimeOfDay(date: Date = new Date()): TimeOfDay {
 // clichés," "never sound like AI") is much more reliably hit by a small
 // set of genuinely well-written moods than by prompting a model fresh
 // every time, and it means this never depends on the AI service being up.
+// All text below is translation keys — see i18n.tsx for EN/FR/PT copy.
 const ATMOSPHERES: Atmosphere[] = [
   {
     key: "after_rain",
-    title: "After Rain",
-    description: [
-      "A cool city after rainfall.",
-      "Soft tailoring. Quiet galleries.",
-      "The sound of footsteps on old stone.",
-    ],
+    titleKey: "atmosphere_after_rain_title",
+    descriptionKeys: ["atmosphere_after_rain_desc_1", "atmosphere_after_rain_desc_2", "atmosphere_after_rain_desc_3"],
     artists: ["Rhye", "José González", "This Is The Kit"],
     reading: [
-      { author: "Olga Tokarczuk", title: "Flights", note: "Fragments that drift like weather." },
-      { author: "Ocean Vuong", title: "On Earth We're Briefly Gorgeous", note: "Tender, unhurried, and quietly devastating." },
+      { author: "Olga Tokarczuk", title: "Flights", noteKey: "book_note_flights" },
+      { author: "Ocean Vuong", title: "On Earth We're Briefly Gorgeous", noteKey: "book_note_on_earth" },
     ],
   },
   {
     key: "first_espresso",
-    title: "First Espresso",
-    description: [
-      "The city still half-asleep.",
-      "Steam rising from a small cup.",
-      "A day not yet decided.",
-    ],
+    titleKey: "atmosphere_first_espresso_title",
+    descriptionKeys: ["atmosphere_first_espresso_desc_1", "atmosphere_first_espresso_desc_2", "atmosphere_first_espresso_desc_3"],
     artists: ["The Paper Kites", "Men I Trust", "London Grammar"],
     reading: [
-      { author: "Sarah Manguso", title: "Ongoingness", note: "Brief, exact, and quietly profound." },
-      { author: "Patti Smith", title: "M Train", note: "A wandering, unhurried kind of memoir." },
+      { author: "Sarah Manguso", title: "Ongoingness", noteKey: "book_note_ongoingness" },
+      { author: "Patti Smith", title: "M Train", noteKey: "book_note_m_train" },
     ],
   },
   {
     key: "north_window",
-    title: "North Window",
-    description: [
-      "Grey light through tall glass.",
-      "A room that asks for nothing.",
-      "Wool, wood smoke, and long silences.",
-    ],
+    titleKey: "atmosphere_north_window_title",
+    descriptionKeys: ["atmosphere_north_window_desc_1", "atmosphere_north_window_desc_2", "atmosphere_north_window_desc_3"],
     artists: ["Nick Drake", "Daughter", "Bon Iver"],
     reading: [
-      { author: "Tove Ditlevsen", title: "The Copenhagen Trilogy", note: "Spare, unflinching, and quietly devastating." },
-      { author: "Annie Ernaux", title: "A Man's Place", note: "Precise, restrained, and deeply felt." },
+      { author: "Tove Ditlevsen", title: "The Copenhagen Trilogy", noteKey: "book_note_copenhagen_trilogy" },
+      { author: "Annie Ernaux", title: "A Man's Place", noteKey: "book_note_a_mans_place" },
     ],
   },
   {
     key: "winter_sun",
-    title: "Winter Sun",
-    description: [
-      "Low light across bare branches.",
-      "A coat worth stepping out in.",
-      "The particular clarity of cold, bright air.",
-    ],
+    titleKey: "atmosphere_winter_sun_title",
+    descriptionKeys: ["atmosphere_winter_sun_desc_1", "atmosphere_winter_sun_desc_2", "atmosphere_winter_sun_desc_3"],
     artists: ["Bon Iver", "Novo Amor", "Daughter"],
     reading: [
-      { author: "Tove Ditlevsen", title: "The Copenhagen Trilogy", note: "Spare, unflinching, and quietly devastating." },
-      { author: "Annie Ernaux", title: "A Man's Place", note: "Precise, restrained, and deeply felt." },
+      { author: "Tove Ditlevsen", title: "The Copenhagen Trilogy", noteKey: "book_note_copenhagen_trilogy" },
+      { author: "Annie Ernaux", title: "A Man's Place", noteKey: "book_note_a_mans_place" },
     ],
   },
   {
     key: "between_seasons",
-    title: "Between Seasons",
-    description: [
-      "Neither warm nor cold.",
-      "A wardrobe caught between two seasons.",
-      "Light that changes its mind by the hour.",
-    ],
+    titleKey: "atmosphere_between_seasons_title",
+    descriptionKeys: ["atmosphere_between_seasons_desc_1", "atmosphere_between_seasons_desc_2", "atmosphere_between_seasons_desc_3"],
     artists: ["Alice Phoebe Lou", "Patrick Watson", "Novo Amor"],
     reading: [
-      { author: "Yiyun Li", title: "Where Reasons End", note: "Spare and devastating in equal measure." },
-      { author: "Rachel Cusk", title: "Outline", note: "Observant, restrained and quietly human." },
+      { author: "Yiyun Li", title: "Where Reasons End", noteKey: "book_note_where_reasons_end" },
+      { author: "Rachel Cusk", title: "Outline", noteKey: "book_note_outline" },
     ],
   },
   {
     key: "quiet_modernism",
-    title: "Quiet Modernism",
-    description: [
-      "Clean lines. Warm concrete.",
-      "A room that says little and means it.",
-      "Evening arriving without announcement.",
-    ],
+    titleKey: "atmosphere_quiet_modernism_title",
+    descriptionKeys: ["atmosphere_quiet_modernism_desc_1", "atmosphere_quiet_modernism_desc_2", "atmosphere_quiet_modernism_desc_3"],
     artists: ["London Grammar", "This Is The Kit", "Fink"],
     reading: [
-      { author: "Rachel Cusk", title: "Outline", note: "Observant, restrained and quietly human." },
-      { author: "Sarah Manguso", title: "Ongoingness", note: "Brief, exact, and quietly profound." },
+      { author: "Rachel Cusk", title: "Outline", noteKey: "book_note_outline" },
+      { author: "Sarah Manguso", title: "Ongoingness", noteKey: "book_note_ongoingness" },
     ],
   },
   {
     key: "glasshouse",
-    title: "Glasshouse",
-    description: [
-      "Warm air through an open window.",
-      "Green light through glass and leaves.",
-      "A held breath before evening.",
-    ],
+    titleKey: "atmosphere_glasshouse_title",
+    descriptionKeys: ["atmosphere_glasshouse_desc_1", "atmosphere_glasshouse_desc_2", "atmosphere_glasshouse_desc_3"],
     artists: ["Men I Trust", "Rhye", "Alice Phoebe Lou"],
     reading: [
-      { author: "Deborah Levy", title: "The Cost of Living", note: "A thoughtful companion for slow afternoons and changing light." },
-      { author: "Ocean Vuong", title: "On Earth We're Briefly Gorgeous", note: "Tender, unhurried, and quietly devastating." },
+      { author: "Deborah Levy", title: "The Cost of Living", noteKey: "book_note_cost_of_living" },
+      { author: "Ocean Vuong", title: "On Earth We're Briefly Gorgeous", noteKey: "book_note_on_earth" },
     ],
   },
   {
     key: "late_afternoon",
-    title: "Late Afternoon",
-    description: [
-      "Long shadows across the room.",
-      "The day slowing down before it ends.",
-      "Coffee gone cold, forgotten mid-thought.",
-    ],
+    titleKey: "atmosphere_late_afternoon_title",
+    descriptionKeys: ["atmosphere_late_afternoon_desc_1", "atmosphere_late_afternoon_desc_2", "atmosphere_late_afternoon_desc_3"],
     artists: ["Agnes Obel", "Novo Amor", "Fink"],
     reading: [
-      { author: "Rachel Cusk", title: "Outline", note: "Observant, restrained and quietly human." },
-      { author: "Deborah Levy", title: "The Cost of Living", note: "A thoughtful companion for slow afternoons and changing light." },
+      { author: "Rachel Cusk", title: "Outline", noteKey: "book_note_outline" },
+      { author: "Deborah Levy", title: "The Cost of Living", noteKey: "book_note_cost_of_living" },
     ],
   },
 ];

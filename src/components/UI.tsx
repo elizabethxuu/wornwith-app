@@ -651,7 +651,8 @@ export function TodaysEdit({ wardrobe }: { wardrobe: WardrobeItem[] }) {
   }, []);
 
   const featured = pickFeaturedItem(wardrobe, weather);
-  const itemName = naturalName(featured.name);
+  const featuredDisplayName = featured.nameKey ? t(featured.nameKey) : featured.name;
+  const itemName = naturalName(featuredDisplayName, t("your_prefix"));
   const alternatives = pickAlternatives(wardrobe, featured.name, 3);
   const days = daysSinceLogged(featured.loggedAt);
   const wornCount = parseWornCount(featured.worn) || 18;
@@ -714,7 +715,7 @@ export function TodaysEdit({ wardrobe }: { wardrobe: WardrobeItem[] }) {
           {t("interlude_title")}
         </p>
         <p className="font-sans text-[11px] text-clay mt-1">{t("interlude_supporting")}</p>
-        <p className="font-display italic text-base text-ink mt-1.5">{atmosphere.title}</p>
+        <p className="font-display italic text-base text-ink mt-1.5">{t(atmosphere.titleKey)}</p>
 
         <button
           onClick={() => setInterludeState("transitioning")}
@@ -811,7 +812,7 @@ export function TodaysEdit({ wardrobe }: { wardrobe: WardrobeItem[] }) {
             {alternatives.map((a) => (
               <li key={a.name} className="font-sans text-[11px] text-ink/80 flex items-start gap-1.5">
                 <span className="text-clay shrink-0">·</span>
-                <span>{capitalizeFirst(naturalName(a.name))}</span>
+                <span>{capitalizeFirst(naturalName(a.nameKey ? t(a.nameKey) : a.name, t("your_prefix")))}</span>
               </li>
             ))}
           </ul>
@@ -942,7 +943,7 @@ export function ListeningRoom({
             className="font-display italic text-2xl text-ink mt-3 fade-up text-center"
             style={{ animationDelay: "300ms" }}
           >
-            {atmosphere.title}
+            {t(atmosphere.titleKey)}
           </p>
         </div>
       ) : (
@@ -958,16 +959,16 @@ export function ListeningRoom({
             <p className="font-sans text-[10px] uppercase tracking-[0.14em] font-semibold" style={{ color: accentColor }}>
               {t("todays_atmosphere_title")}
             </p>
-            <p className="font-display italic text-3xl text-ink mt-2">{atmosphere.title}</p>
+            <p className="font-display italic text-3xl text-ink mt-2">{t(atmosphere.titleKey)}</p>
           </div>
 
           <div className="fade-up mt-10" style={{ animationDelay: "150ms" }}>
             <p className="font-sans text-[10px] uppercase tracking-[0.14em] font-semibold text-clay mb-3">
               {t("editorial_notes_title")}
             </p>
-            {atmosphere.description.map((line, i) => (
+            {atmosphere.descriptionKeys.map((key, i) => (
               <p key={i} className="font-display italic text-[15px] text-ink leading-loose">
-                {line}
+                {t(key)}
               </p>
             ))}
           </div>
@@ -992,7 +993,7 @@ export function ListeningRoom({
                 <div key={book.title}>
                   <p className="font-sans text-[13px] text-ink font-medium">{book.author}</p>
                   <p className="font-display italic text-[13px] text-ink/80">{book.title}</p>
-                  <p className="font-sans text-[11px] text-clay mt-0.5">{book.note}</p>
+                  <p className="font-sans text-[11px] text-clay mt-0.5">{t(book.noteKey)}</p>
                 </div>
               ))}
             </div>

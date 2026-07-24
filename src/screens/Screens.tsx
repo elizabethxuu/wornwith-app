@@ -458,7 +458,7 @@ export function ProductLifecycle() {
       cardTitle: t("chapter_card_title"),
       rows: [
         [t("chapter_status_label"), t("chapter_status_value")],
-        [t("chapter_verified_label"), GARMENT.verifiedDate],
+        [t("chapter_verified_label"), t("owned_since_date")],
         [t("chapter_owner_label"), t("chapter_owner_value")],
       ] as [string, string][],
       learnMoreLabel: t("view_this_chapter"),
@@ -1290,7 +1290,7 @@ export function Personalization() {
 
           <div className="space-y-3">
             {renderOwnershipField("owner", "field_owner", undefined, true)}
-            {renderOwnershipField("purchaseDate", "field_purchase_date", GARMENT.ownedSince)}
+            {renderOwnershipField("purchaseDate", "field_purchase_date", t("owned_since_date"))}
             {renderOwnershipField("condition", "field_condition", t("excellent"))}
             {renderOwnershipField("wearCount", "field_wear_count", GARMENT.timesWorn)}
           </div>
@@ -1465,7 +1465,7 @@ export function MyWardrobe() {
     .filter(({ it }) => {
       const matchesSearch =
         !search.trim() ||
-        it.name.toLowerCase().includes(search.toLowerCase()) ||
+        (it.nameKey ? t(it.nameKey) : it.name).toLowerCase().includes(search.toLowerCase()) ||
         it.note.toLowerCase().includes(search.toLowerCase());
       const matchesDate = !dateFilter || it.loggedAt === dateFilter;
       return matchesSearch && matchesDate;
@@ -1548,8 +1548,16 @@ export function MyWardrobe() {
 
         {/* Editable Title */}
         <input
-          defaultValue={it.name}
-          onBlur={(e) => e.target.value.trim() && updateItemField(idx, "name", e.target.value.trim())}
+          defaultValue={it.nameKey ? t(it.nameKey) : it.name}
+          onBlur={(e) => {
+            const value = e.target.value.trim();
+            if (!value) return;
+            const updated = items.map((item, i) =>
+              i === idx ? { ...item, name: value, nameKey: undefined } : item
+            );
+            setItems(updated);
+            saveWardrobe(updated);
+          }}
           className="font-display italic text-2xl text-ink leading-tight w-full bg-transparent focus:outline-none focus:border-b focus:border-blush"
         />
 
@@ -1741,7 +1749,7 @@ export function MyWardrobe() {
               )}
               <div className="flex-1 min-w-0">
                 <p className="font-sans text-[13px] font-medium text-ink flex items-center gap-1.5 flex-wrap">
-                  {it.name}
+                  {it.nameKey ? t(it.nameKey) : it.name}
                   {it.tag && (
                     <span className="text-[9px] text-sage border border-sage/40 rounded-full px-1.5 py-0.5">
                       {it.tag}

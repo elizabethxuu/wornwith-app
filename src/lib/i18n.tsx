@@ -379,6 +379,7 @@ const dict = {
 
   // Today's Edit
   todays_edit_title: { en: "Today's Edit", fr: "La Sélection du Jour", pt: "A Seleção de Hoje" },
+  your_prefix: { en: "your", fr: "votre", pt: "seu" },
 
   weather_unavailable: { en: "Enable location access for real-time weather.", fr: "Activez l'accès à la position pour la météo en temps réel.", pt: "Ative o acesso à localização para clima em tempo real." },
 
@@ -404,6 +405,61 @@ const dict = {
     fr: "Un accompagnement discret à la recommandation du jour.",
     pt: "Um acompanhamento discreto para a recomendação de hoje.",
   },
+
+  atmosphere_after_rain_title: { en: "After Rain", fr: "Après la Pluie", pt: "Depois da Chuva" },
+  atmosphere_after_rain_desc_1: { en: "A cool city after rainfall.", fr: "Une ville fraîche après la pluie.", pt: "Uma cidade fresca após a chuva." },
+  atmosphere_after_rain_desc_2: { en: "Soft tailoring. Quiet galleries.", fr: "Une coupe douce. Des galeries silencieuses.", pt: "Alfaiataria suave. Galerias silenciosas." },
+  atmosphere_after_rain_desc_3: { en: "The sound of footsteps on old stone.", fr: "Le bruit des pas sur une pierre ancienne.", pt: "O som de passos sobre pedra antiga." },
+
+  atmosphere_first_espresso_title: { en: "First Espresso", fr: "Premier Espresso", pt: "Primeiro Espresso" },
+  atmosphere_first_espresso_desc_1: { en: "The city still half-asleep.", fr: "La ville encore à moitié endormie.", pt: "A cidade ainda meio adormecida." },
+  atmosphere_first_espresso_desc_2: { en: "Steam rising from a small cup.", fr: "De la vapeur s'élevant d'une petite tasse.", pt: "Vapor subindo de uma xícara pequena." },
+  atmosphere_first_espresso_desc_3: { en: "A day not yet decided.", fr: "Une journée pas encore décidée.", pt: "Um dia ainda não decidido." },
+
+  atmosphere_north_window_title: { en: "North Window", fr: "Fenêtre Nord", pt: "Janela Norte" },
+  atmosphere_north_window_desc_1: { en: "Grey light through tall glass.", fr: "Une lumière grise à travers de hautes vitres.", pt: "Luz cinzenta através de vidros altos." },
+  atmosphere_north_window_desc_2: { en: "A room that asks for nothing.", fr: "Une pièce qui ne demande rien.", pt: "Um cômodo que não pede nada." },
+  atmosphere_north_window_desc_3: { en: "Wool, wood smoke, and long silences.", fr: "Laine, fumée de bois et longs silences.", pt: "Lã, fumaça de lenha e longos silêncios." },
+
+  atmosphere_winter_sun_title: { en: "Winter Sun", fr: "Soleil d'Hiver", pt: "Sol de Inverno" },
+  atmosphere_winter_sun_desc_1: { en: "Low light across bare branches.", fr: "Une lumière basse sur des branches nues.", pt: "Luz baixa sobre galhos nus." },
+  atmosphere_winter_sun_desc_2: { en: "A coat worth stepping out in.", fr: "Un manteau qui mérite qu'on sorte.", pt: "Um casaco que vale a pena vestir para sair." },
+  atmosphere_winter_sun_desc_3: { en: "The particular clarity of cold, bright air.", fr: "La clarté particulière d'un air froid et lumineux.", pt: "A clareza particular do ar frio e luminoso." },
+
+  atmosphere_between_seasons_title: { en: "Between Seasons", fr: "Entre les Saisons", pt: "Entre Estações" },
+  atmosphere_between_seasons_desc_1: { en: "Neither warm nor cold.", fr: "Ni chaud ni froid.", pt: "Nem quente nem frio." },
+  atmosphere_between_seasons_desc_2: { en: "A wardrobe caught between two seasons.", fr: "Une garde-robe prise entre deux saisons.", pt: "Um guarda-roupa entre duas estações." },
+  atmosphere_between_seasons_desc_3: { en: "Light that changes its mind by the hour.", fr: "Une lumière qui change d'avis à chaque heure.", pt: "Uma luz que muda de ideia a cada hora." },
+
+  atmosphere_quiet_modernism_title: { en: "Quiet Modernism", fr: "Modernisme Discret", pt: "Modernismo Discreto" },
+  atmosphere_quiet_modernism_desc_1: { en: "Clean lines. Warm concrete.", fr: "Des lignes épurées. Du béton chaleureux.", pt: "Linhas limpas. Concreto acolhedor." },
+  atmosphere_quiet_modernism_desc_2: { en: "A room that says little and means it.", fr: "Une pièce qui dit peu et le pense vraiment.", pt: "Um cômodo que diz pouco e é sincero." },
+  atmosphere_quiet_modernism_desc_3: { en: "Evening arriving without announcement.", fr: "Le soir arrivant sans prévenir.", pt: "A noite chegando sem aviso." },
+
+  atmosphere_glasshouse_title: { en: "Glasshouse", fr: "Serre de Verre", pt: "Casa de Vidro" },
+  atmosphere_glasshouse_desc_1: { en: "Warm air through an open window.", fr: "Un air chaud à travers une fenêtre ouverte.", pt: "Ar quente por uma janela aberta." },
+  atmosphere_glasshouse_desc_2: { en: "Green light through glass and leaves.", fr: "Une lumière verte à travers le verre et les feuilles.", pt: "Luz verde através do vidro e das folhas." },
+  atmosphere_glasshouse_desc_3: { en: "A held breath before evening.", fr: "Un souffle retenu avant le soir.", pt: "Uma respiração suspensa antes do entardecer." },
+
+  atmosphere_late_afternoon_title: { en: "Late Afternoon", fr: "Fin d'Après-midi", pt: "Fim de Tarde" },
+  atmosphere_late_afternoon_desc_1: { en: "Long shadows across the room.", fr: "De longues ombres traversant la pièce.", pt: "Longas sombras atravessando o cômodo." },
+  atmosphere_late_afternoon_desc_2: { en: "The day slowing down before it ends.", fr: "La journée qui ralentit avant de finir.", pt: "O dia desacelerando antes de terminar." },
+  atmosphere_late_afternoon_desc_3: { en: "Coffee gone cold, forgotten mid-thought.", fr: "Un café refroidi, oublié en pleine pensée.", pt: "Um café frio, esquecido no meio de um pensamento." },
+
+  book_note_flights: { en: "Fragments that drift like weather.", fr: "Des fragments qui dérivent comme le temps.", pt: "Fragmentos que vagam como o clima." },
+  book_note_on_earth: { en: "Tender, unhurried, and quietly devastating.", fr: "Tendre, posé, et discrètement bouleversant.", pt: "Terno, sem pressa, e discretamente devastador." },
+  book_note_ongoingness: { en: "Brief, exact, and quietly profound.", fr: "Bref, précis, et discrètement profond.", pt: "Breve, exato, e discretamente profundo." },
+  book_note_m_train: { en: "A wandering, unhurried kind of memoir.", fr: "Un mémoire vagabond, sans hâte.", pt: "Uma memória errante, sem pressa." },
+  book_note_copenhagen_trilogy: { en: "Spare, unflinching, and quietly devastating.", fr: "Sobre, sans détour, et discrètement bouleversant.", pt: "Contido, direto, e discretamente devastador." },
+  book_note_a_mans_place: { en: "Precise, restrained, and deeply felt.", fr: "Précis, retenu, et profondément ressenti.", pt: "Preciso, contido, e profundamente sentido." },
+  book_note_where_reasons_end: { en: "Spare and devastating in equal measure.", fr: "Sobre et bouleversant à parts égales.", pt: "Contido e devastador em igual medida." },
+  book_note_outline: { en: "Observant, restrained and quietly human.", fr: "Observateur, retenu et discrètement humain.", pt: "Observador, contido e discretamente humano." },
+  book_note_cost_of_living: {
+    en: "A thoughtful companion for slow afternoons and changing light.",
+    fr: "Une compagnie précieuse pour les après-midis lents et la lumière changeante.",
+    pt: "Uma companhia pensativa para tardes lentas e luz em mudança.",
+  },
+
   enter_listening_room: { en: "Enter the Listening Room", fr: "Entrer dans la Salle d'Écoute", pt: "Entrar na Sala de Escuta" },
   listening_room_title: { en: "The Listening Room", fr: "La Salle d'Écoute", pt: "A Sala de Escuta" },
   todays_atmosphere_title: { en: "Today's Atmosphere", fr: "L'Atmosphère du Jour", pt: "A Atmosfera de Hoje" },
@@ -739,6 +795,9 @@ const dict = {
   save_memory: { en: "Save memory", fr: "Enregistrer le souvenir", pt: "Salvar memória" },
   cancel: { en: "Cancel", fr: "Annuler", pt: "Cancelar" },
   log_a_memory: { en: "+ Log a memory", fr: "+ Ajouter un souvenir", pt: "+ Registrar uma memória" },
+  seed_name_marais: { en: "The Marais Coat", fr: "Le Manteau Marais", pt: "O Casaco Marais" },
+  seed_name_silk: { en: "Silk Slip Dress", fr: "Robe Nuisette en Soie", pt: "Vestido Slip de Seda" },
+  seed_name_linen: { en: "Linen Trousers", fr: "Pantalon en Lin", pt: "Calça de Linho" },
   seed_note_marais: { en: "March dinner · Paris, New York", fr: "Dîner de mars · Paris, New York", pt: "Jantar de março · Paris, Nova York" },
   seed_note_silk: { en: "June birthday · London", fr: "Anniversaire de juin · Londres", pt: "Aniversário de junho · Londres" },
   seed_note_linen: { en: "Last: Lisbon trip", fr: "Dernière fois : voyage à Lisbonne", pt: "Última vez: viagem a Lisboa" },
