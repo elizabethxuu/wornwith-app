@@ -2132,23 +2132,17 @@ export function ReleaseNotesScreen({ onBack }: { onBack: () => void }) {
         <ChevronLeft size={14} /> {t("legal_back")}
       </button>
 
-      <h1
-        className="font-display text-[38px] leading-[1.05] mt-1"
-        style={{ color: "#1A1A1A", letterSpacing: "0.01em" }}
-      >
-        {t("release_notes_eyebrow")}
-      </h1>
-      <p className="font-sans text-[16px] font-medium mt-3" style={{ color: "#8E3D52" }}>
+      <Eyebrow>{t("release_notes_eyebrow")}</Eyebrow>
+      <h2 className="font-display italic text-2xl text-ink leading-tight mt-1">
         {t("release_notes_title")}
-      </p>
-      <p className="font-sans text-[14px] text-clay mt-1" style={{ letterSpacing: "0.02em" }}>
+      </h2>
+      <p className="font-sans text-[12px] text-clay mt-1" style={{ letterSpacing: "0.02em" }}>
         {t("release_notes_date")}
       </p>
-      <p className="font-sans text-[12px] mt-1" style={{ color: "#8A8A8A" }}>
+      <p className="font-sans text-[11px] mt-0.5" style={{ color: "#8A8A8A" }}>
         {t("release_notes_version")}
       </p>
-
-      <p className="font-sans text-[12px] text-clay leading-relaxed mt-8">
+      <p className="font-sans text-[12px] text-clay leading-relaxed mt-3">
         {t("release_notes_subtitle")}
       </p>
 
