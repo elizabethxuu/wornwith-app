@@ -42,8 +42,8 @@ const dict = {
   },
   rws_explainer: {
     en: "Responsible Wool Standard — an independent certification verifying the wool came from farms that meet strict animal welfare and land management requirements.",
-    fr: "Responsible Wool Standard — une certification indépendante garantissant que la laine provient de fermes respectant des exigences strictes en matière de bien-être animal et de gestion des terres.",
-    pt: "Responsible Wool Standard — uma certificação independente que garante que a lã veio de fazendas que atendem a rigorosos requisitos de bem-estar animal e gestão da terra.",
+    fr: "Norme de Laine Responsable (RWS) — une certification indépendante garantissant que la laine provient de fermes respectant des exigences strictes en matière de bien-être animal et de gestion des terres.",
+    pt: "Padrão de Lã Responsável (RWS) — uma certificação independente que garante que a lã veio de fazendas que atendem a rigorosos requisitos de bem-estar animal e gestão da terra.",
   },
   stop_blurb_nz: {
     en: "Where the coat's story begins — wool sheared from sheep raised on open pasture.",
@@ -273,7 +273,7 @@ const dict = {
 
   wool_farming_card_title: { en: "About this wool farm", fr: "À propos de cette ferme", pt: "Sobre esta fazenda de lã" },
   wool_farming_cert_label: { en: "Certification", fr: "Certification", pt: "Certificação" },
-  wool_farming_cert_value: { en: "Responsible Wool Standard", fr: "Responsible Wool Standard", pt: "Responsible Wool Standard" },
+  wool_farming_cert_value: { en: "Responsible Wool Standard", fr: "Norme de Laine Responsable", pt: "Padrão de Lã Responsável" },
   wool_farming_region_label: { en: "Region", fr: "Région", pt: "Região" },
   wool_farming_region_value: { en: "Canterbury Plains, New Zealand", fr: "Canterbury Plains, Nouvelle-Zélande", pt: "Canterbury Plains, Nova Zelândia" },
   wool_farming_climate_label: { en: "Climate", fr: "Climat", pt: "Clima" },
