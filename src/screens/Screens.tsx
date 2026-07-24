@@ -389,8 +389,8 @@ export function ProductOverview({ onExploreJourney }: { onExploreJourney?: () =>
             {t("product_editorial_headline")}
           </p>
           <p className="mt-2.5 font-sans text-[12px] text-clay leading-relaxed">
-            <span className="inline-block" style={craftedReveal("translateY(6px)", 1400, 350)}>{t("product_editorial_copy_1")} </span>
-            <span className="inline-block" style={craftedReveal("translateY(6px)", 1520, 350)}>{t("product_editorial_copy_2")} </span>
+            <span className="inline-block" style={craftedReveal("translateY(6px)", 1400, 350)}>{t("product_editorial_copy_1")}</span>{" "}
+            <span className="inline-block" style={craftedReveal("translateY(6px)", 1520, 350)}>{t("product_editorial_copy_2")}</span>{" "}
             <span className="inline-block" style={craftedReveal("translateY(6px)", 1640, 350)}>{t("product_editorial_copy_3")}</span>
           </p>
         </div>
