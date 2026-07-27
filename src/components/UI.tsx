@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import { Mic, Square, AudioLines, Trash2 } from "lucide-react";
+import { QRCodeSVG } from "qrcode.react";
 import { ComposableMap, Geographies, Geography, Marker, Line, ZoomableGroup } from "react-simple-maps";
 import { useLanguage, type TranslationKey } from "../lib/i18n";
 import type { WardrobeItem } from "../lib/persistence";
@@ -1388,6 +1389,123 @@ export function VerificationInfoPanel({ open, onClose }: { open: boolean; onClos
         <p className="font-sans text-[13px] text-clay leading-relaxed">
           {t("verification_panel_body")}
         </p>
+      </div>
+    </div>,
+    document.body
+  );
+}
+
+// The real, functional "Share Passport" experience — a bottom sheet with
+// three genuinely working options, not a native share-sheet shortcut.
+// PDF uses the browser's real print-to-PDF (window.print), QR renders an
+// actual scannable code for the current URL, and Copy Link copies the
+// real address. Same portal pattern as VerificationInfoPanel, for the
+// same reason (escaping the fade-up transform containing-block issue).
+export function ShareSheet({ open, onClose }: { open: boolean; onClose: () => void }) {
+  const { t } = useLanguage();
+  const [showQr, setShowQr] = useState(false);
+  const [linkCopied, setLinkCopied] = useState(false);
+
+  if (!open) return null;
+
+  const shareUrl = typeof window !== "undefined" ? window.location.href : "https://wornwith.care";
+
+  const handleCopyLink = async () => {
+    try {
+      await navigator.clipboard.writeText(shareUrl);
+      setLinkCopied(true);
+      setTimeout(() => setLinkCopied(false), 2000);
+    } catch {
+      // clipboard access can fail (permissions, insecure context) — the
+      // link is still visible/selectable in the QR view as a fallback
+    }
+  };
+
+  const handleGeneratePdf = () => {
+    window.print();
+  };
+
+  return createPortal(
+    <div className="fixed inset-0 h-[100dvh] w-full z-50" onClick={(e) => e.stopPropagation()}>
+      <div
+        className="absolute inset-0 h-[100dvh] bg-ink/40 transition-opacity duration-300"
+        onClick={onClose}
+      />
+      <div
+        className="absolute bottom-0 inset-x-0 max-h-[85dvh] overflow-y-auto bg-paper rounded-t-[28px] border-t border-line px-6 pt-5 fade-up"
+        style={{ paddingBottom: "max(env(safe-area-inset-bottom), 32px)" }}
+      >
+        <div className="flex items-center justify-between mb-1">
+          <p className="font-display italic text-xl text-ink">{t("share_sheet_title")}</p>
+          <button
+            onClick={onClose}
+            aria-label={t("close_label")}
+            className="w-7 h-7 rounded-full flex items-center justify-center text-clay border border-line shrink-0"
+          >
+            ×
+          </button>
+        </div>
+        <p className="font-sans text-[12px] text-clay leading-relaxed mb-5">
+          {t("share_sheet_subtitle")}
+        </p>
+
+        <div className="divide-y divide-line border-y border-line">
+          <div className="py-3.5">
+            <p className="font-sans text-[13px] text-ink font-medium">{t("sharing_pdf_title")}</p>
+            <p className="font-sans text-[11px] text-clay mt-0.5 leading-relaxed">{t("share_sheet_pdf_desc")}</p>
+            <button
+              onClick={handleGeneratePdf}
+              className="font-sans text-[11px] font-medium mt-1.5"
+              style={{ color: "#8E3D52" }}
+            >
+              → {t("share_sheet_pdf_action")}
+            </button>
+          </div>
+
+          <div className="py-3.5">
+            <p className="font-sans text-[13px] text-ink font-medium">{t("sharing_qr_title")}</p>
+            <p className="font-sans text-[11px] text-clay mt-0.5 leading-relaxed">{t("share_sheet_qr_desc")}</p>
+            {!showQr ? (
+              <button
+                onClick={() => setShowQr(true)}
+                className="font-sans text-[11px] font-medium mt-1.5"
+                style={{ color: "#8E3D52" }}
+              >
+                → {t("share_sheet_qr_action")}
+              </button>
+            ) : (
+              <div className="mt-3 fade-up flex flex-col items-center">
+                <div className="bg-white p-3 rounded-xl border border-line">
+                  <QRCodeSVG value={shareUrl} size={140} fgColor="#2B2622" />
+                </div>
+                <p className="font-sans text-[10px] text-clay/70 mt-2 text-center">{t("scan_qr_hint")}</p>
+              </div>
+            )}
+          </div>
+
+          <div className="py-3.5">
+            <p className="font-sans text-[13px] text-ink font-medium">{t("sharing_link_title")}</p>
+            <p className="font-sans text-[11px] text-clay mt-0.5 leading-relaxed">{t("share_sheet_link_desc")}</p>
+            <button
+              onClick={handleCopyLink}
+              className="font-sans text-[11px] font-medium mt-1.5"
+              style={{ color: "#8E3D52" }}
+            >
+              → {linkCopied ? t("link_copied_confirmation") : t("share_sheet_link_action")}
+            </button>
+          </div>
+        </div>
+
+        <p className="font-sans text-[10px] text-clay/70 leading-relaxed mt-4 text-center">
+          {t("share_sheet_footer_note")}
+        </p>
+
+        <button
+          onClick={onClose}
+          className="w-full mt-4 border border-line rounded-full py-2.5 font-sans text-[12px] text-ink"
+        >
+          {t("cancel_label")}
+        </button>
       </div>
     </div>,
     document.body

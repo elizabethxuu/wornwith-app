@@ -22,6 +22,7 @@ import {
   AccessibilityScreen,
   ReleaseNotesScreen,
   ClosingScreen,
+  AboutPassportScreen,
 } from "./screens/Screens";
 
 // Real users arrive here because they already scanned the physical tag with
@@ -81,7 +82,7 @@ export default function LiveApp() {
   // screens like ProductOverview can be given a real "jump to a specific
   // screen" callback, not just the generic forward-tap gesture.
   const liveScreens = buildLiveScreens((i) => setIndex(i));
-  const [legalPage, setLegalPage] = useState<"none" | "privacy" | "terms" | "accessibility" | "release-notes">("none");
+  const [legalPage, setLegalPage] = useState<"none" | "privacy" | "terms" | "accessibility" | "release-notes" | "about-passport">("none");
 
   const runVerification = () => {
     setBootState("verifying");
@@ -188,10 +189,10 @@ export default function LiveApp() {
   const isLast = index === liveScreens.length - 1;
 
   return (
-    <div className="h-[100dvh] w-full bg-paper flex flex-col overflow-hidden relative">
+    <div className="app-shell h-[100dvh] w-full bg-paper flex flex-col overflow-hidden relative">
       {/* subtle current-section label — now tinted per chapter */}
       <p
-        className="font-sans text-[9px] font-semibold uppercase tracking-[0.15em] text-center shrink-0 transition-colors duration-500"
+        className="font-sans text-[9px] font-semibold uppercase tracking-[0.15em] text-center shrink-0 transition-colors duration-500 print:hidden"
         style={{ paddingTop: "max(env(safe-area-inset-top), 10px)", color: CHAPTER_COLORS[index] }}
       >
         {t(sectionKeys[index])}
@@ -201,7 +202,7 @@ export default function LiveApp() {
           color, so the bar reads as a single quiet marker of where you are,
           not a multi-colored progress fill */}
       <div
-        className="flex gap-1 px-3 shrink-0 mt-1.5"
+        className="flex gap-1 px-3 shrink-0 mt-1.5 print:hidden"
       >
         {liveScreens.map((_, i) => (
           <div
@@ -230,6 +231,8 @@ export default function LiveApp() {
             <AccessibilityScreen onBack={() => setLegalPage("none")} />
           ) : legalPage === "release-notes" ? (
             <ReleaseNotesScreen onBack={() => setLegalPage("none")} />
+          ) : legalPage === "about-passport" ? (
+            <AboutPassportScreen onBack={() => setLegalPage("none")} />
           ) : (
             liveScreens[index]
           )}
@@ -240,7 +243,7 @@ export default function LiveApp() {
       {/* Minimal legal footer — shown above nav on every screen, rendered
           once here rather than duplicated per-screen. Real buttons, not
           external links — both open the dedicated in-app screens. */}
-      <div className="flex flex-wrap items-center justify-center gap-x-3.5 gap-y-1 px-4 pt-2 shrink-0">
+      <div className="flex flex-wrap items-center justify-center gap-x-3.5 gap-y-1 px-4 pt-2 shrink-0 print:hidden">
         <p className="font-sans text-[9px] text-clay/60">{t("footer_copyright")}</p>
         <button
           onClick={() => setLegalPage("privacy")}
@@ -266,6 +269,12 @@ export default function LiveApp() {
         >
           {t("footer_release_notes")}
         </button>
+        <button
+          onClick={() => setLegalPage("about-passport")}
+          className="font-sans text-[9px] text-clay/60 hover:underline underline-offset-2"
+        >
+          {t("footer_about_passport")}
+        </button>
       </div>
 
       {/* Visible, unambiguous nav bar — the tap-zones in the content area
@@ -273,7 +282,7 @@ export default function LiveApp() {
           move forward/back. Fixed outside the scrollable content so it can
           never overlap whatever text happens to be on a given screen. */}
       <div
-        className="flex items-center justify-between px-4 shrink-0 border-t border-line"
+        className="flex items-center justify-between px-4 shrink-0 border-t border-line print:hidden"
         style={{ paddingTop: "10px", paddingBottom: "max(env(safe-area-inset-bottom), 10px)" }}
       >
         {!isFirst ? (

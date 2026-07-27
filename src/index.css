@@ -133,3 +133,21 @@ body {
 .icon-sparkle-once {
   animation: iconSparkleOnce 280ms ease-out;
 }
+
+/* Print (used by the Share Passport "Generate PDF" action, which relies
+   on the browser's native print-to-PDF). Without this, printing would
+   just clip to one viewport-height page and include the chrome — the
+   print:hidden classes on nav/footer/progress bar handle the chrome, and
+   this releases the fixed-height/scroll constraints so multi-paragraph
+   content actually paginates across multiple pages instead of being cut
+   off after one screen's worth. */
+@media print {
+  .app-shell {
+    height: auto !important;
+    overflow: visible !important;
+  }
+  .app-shell > div {
+    overflow: visible !important;
+    height: auto !important;
+  }
+}
