@@ -1,32 +1,28 @@
-# React + TypeScript + Vite
+wornwith.care
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+A Digital Product Passport (DPP), designed as an experience rather than a compliance artifact.
 
-Currently, two official plugins are available:
+Live demo: wornwith.care
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+What this is
 
-## React Compiler
+By 2030, the EU's Ecodesign for Sustainable Products Regulation (ESPR) will require fashion brands to disclose material origin, supply chain, care guidance, and end-of-life pathways for the garments they sell. The regulation defines what has to be disclosed — it says nothing about how that moment should feel.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+wornwith.care is a reference implementation of what that experience could be: a mobile-first DPP built around a single garment (a COS wool coat), covering product origin, supply chain, care, environmental impact, end-of-life pathways, and post-purchase ownership tracking.
 
-## Expanding the Oxlint configuration
+Built solo — strategy, UX, content, and a working deployed product.
 
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
+Stack
+Design: Figma
+AI-assisted planning & content: Claude
+Development: Cursor
+Deployment: Vercel
+Scope
 
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
-```
+This is a single-SKU prototype, not a production system. The QR entry point is simulated; there's no live brand catalog or backend data pipeline behind it. See the PRD for the full requirements, scope decisions, and open risks — including the data provenance and multi-SKU scaling questions this prototype doesn't yet solve.
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+More context
+PRD — problem framing, requirements, success metrics, risks
+Tradeoffs — three real decisions made building this, and why
+
+All product data shown in the live demo is illustrative, for demonstration purposes only.
