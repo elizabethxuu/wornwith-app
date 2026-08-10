@@ -32,7 +32,7 @@ function buildLiveScreens(goToScreen: (index: number) => void) {
   return [
     <Welcome key="welcome" />,
     <ProductOverview key="overview" onExploreJourney={() => goToScreen(2)} />,
-    <ProductLifecycle key="lifecycle" />,
+    <ProductLifecycle key="lifecycle" onViewChapter={() => goToScreen(7)} />,
     <SupplyChain key="supply" />,
     <CareGuide key="care" />,
     <SustainabilityMetrics key="sustainability" />,

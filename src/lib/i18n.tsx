@@ -279,7 +279,6 @@ const dict = {
   wool_farming_climate_value: { en: "Temperate — ideal for merino", fr: "Tempéré — idéal pour le mérinos", pt: "Temperado — ideal para merino" },
   wool_farming_season_label: { en: "Shearing season", fr: "Saison de tonte", pt: "Temporada de tosquia" },
   wool_farming_season_value: { en: "Spring (Sept–Nov)", fr: "Printemps (sept.–nov.)", pt: "Primavera (set.–nov.)" },
-  learn_more: { en: "Learn more", fr: "En savoir plus", pt: "Saiba mais" },
 
   manufacturing_card_title: { en: "About this mill", fr: "À propos de cette filature", pt: "Sobre esta fábrica" },
   manufacturing_mill_label: { en: "Mill", fr: "Filature", pt: "Fábrica" },
@@ -292,8 +291,6 @@ const dict = {
   manufacturing_renewable_value: { en: "65%", fr: "65%", pt: "65%" },
 
   learn_wool_farm: { en: "Learn about the wool farm", fr: "Découvrir la ferme de laine", pt: "Conhecer a fazenda de lã" },
-  meet_the_mill: { en: "Meet the mill", fr: "Découvrir la filature", pt: "Conhecer a fábrica" },
-  explore_the_atelier: { en: "Explore the atelier", fr: "Découvrir l'atelier", pt: "Explorar o ateliê" },
   view_this_chapter: { en: "View this chapter", fr: "Voir ce chapitre", pt: "Ver este capítulo" },
 
   atelier_card_title: { en: "About this atelier", fr: "À propos de cet atelier", pt: "Sobre este ateliê" },

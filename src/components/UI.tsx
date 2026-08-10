@@ -478,6 +478,7 @@ export function ExpandableCard({
   footerText,
   learnMoreHref,
   learnMoreLabel,
+  onLearnMoreClick,
   defaultOpen = false,
   children,
 }: {
@@ -487,6 +488,11 @@ export function ExpandableCard({
   footerText?: string;
   learnMoreHref?: string;
   learnMoreLabel?: string;
+  // For internal navigation (e.g. "View this Chapter" jumping to another
+  // screen) — a real state-change callback, not an anchor tag. Distinct
+  // from learnMoreHref, which is exclusively for genuine external
+  // references and always opens in a new tab.
+  onLearnMoreClick?: () => void;
   defaultOpen?: boolean;
   children?: React.ReactNode;
 }) {
@@ -526,15 +532,24 @@ export function ExpandableCard({
               {footerText}
             </p>
           )}
-          {learnMoreHref && (
-            <a
-              href={learnMoreHref}
-              target="_blank"
-              rel="noopener noreferrer"
+          {onLearnMoreClick ? (
+            <button
+              onClick={(e) => { e.stopPropagation(); onLearnMoreClick(); }}
               className="inline-block mt-3 font-sans text-[11px] text-blush-deep underline underline-offset-2"
             >
               {learnMoreLabel}
-            </a>
+            </button>
+          ) : (
+            learnMoreHref && (
+              <a
+                href={learnMoreHref}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-block mt-3 font-sans text-[11px] text-blush-deep underline underline-offset-2"
+              >
+                {learnMoreLabel}
+              </a>
+            )
           )}
         </div>
       )}

@@ -458,7 +458,7 @@ export function ProductOverview({ onExploreJourney }: { onExploreJourney?: () =>
 }
 
 /* 5 — PRODUCT LIFECYCLE */
-export function ProductLifecycle() {
+export function ProductLifecycle({ onViewChapter }: { onViewChapter?: () => void } = {}) {
   const { t } = useLanguage();
   const stops = [
     { icon: "🐑", title: t("wool_farming"), place: t("place_full_nz_short"), flag: "🇳🇿" },
@@ -492,8 +492,8 @@ export function ProductLifecycle() {
         [t("manufacturing_since_label"), t("manufacturing_since_value")],
         [t("manufacturing_renewable_label"), t("manufacturing_renewable_value")],
       ] as [string, string][],
-      learnMoreLabel: t("meet_the_mill"),
-      learnMoreHref: "https://www.cos.com",
+      learnMoreLabel: undefined,
+      learnMoreHref: undefined,
     },
     {
       cardTitle: t("atelier_card_title"),
@@ -503,8 +503,8 @@ export function ProductLifecycle() {
         [t("atelier_specialism_label"), t("atelier_specialism_value")],
         [t("atelier_hands_label"), t("atelier_hands_value")],
       ] as [string, string][],
-      learnMoreLabel: t("explore_the_atelier"),
-      learnMoreHref: "https://www.cos.com",
+      learnMoreLabel: undefined,
+      learnMoreHref: undefined,
     },
     {
       cardTitle: t("chapter_card_title"),
@@ -514,7 +514,7 @@ export function ProductLifecycle() {
         [t("chapter_owner_label"), t("chapter_owner_value")],
       ] as [string, string][],
       learnMoreLabel: t("view_this_chapter"),
-      learnMoreHref: "https://www.cos.com",
+      onLearnMoreClick: onViewChapter,
     },
   ];
 
@@ -568,6 +568,7 @@ export function ProductLifecycle() {
         rows={activeDetail.rows}
         learnMoreHref={activeDetail.learnMoreHref}
         learnMoreLabel={activeDetail.learnMoreLabel}
+        onLearnMoreClick={activeDetail.onLearnMoreClick}
       />
     </div>
   );
@@ -651,8 +652,6 @@ export function SupplyChain() {
           [t("manufacturing_since_label"), t("manufacturing_since_value")],
           [t("manufacturing_renewable_label"), t("manufacturing_renewable_value")],
         ]}
-        learnMoreHref="https://www.cos.com"
-        learnMoreLabel={t("learn_more")}
       />
     </div>
   );
