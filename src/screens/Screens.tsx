@@ -42,7 +42,7 @@ import {
   Sparkle,
 } from "lucide-react";
 
-/* 1 — SKELETON LOADER */
+/* 1: SKELETON LOADER */
 export function SkeletonLoader() {
   const { t } = useLanguage();
   return (
@@ -58,7 +58,7 @@ export function SkeletonLoader() {
   );
 }
 
-/* 2 — CAMERA SCAN */
+/* 2: CAMERA SCAN */
 export function CameraScan({ onComplete }: { onComplete?: () => void } = {}) {
   const { t } = useLanguage();
   const [scanned, setScanned] = useState(false);
@@ -85,7 +85,7 @@ export function CameraScan({ onComplete }: { onComplete?: () => void } = {}) {
   }, []);
 
   // After the success text has had a moment to register, a quick white
-  // flash — a camera-shutter beat, not a loading transition — then
+  // flash, a camera-shutter beat, not a loading transition, then
   // dissolves straight into Welcome.
   useEffect(() => {
     if (!scanned || !onComplete) return;
@@ -110,7 +110,7 @@ export function CameraScan({ onComplete }: { onComplete?: () => void } = {}) {
       }}
     >
       {scanning && (
-        // A single black line sweeping the full height — monochrome,
+        // A single black line sweeping the full height, monochrome,
         // quiet, no color accent.
         <div className="absolute inset-x-0 top-0 h-[2px] bg-[#1A1A1A] scan-line-sweep-mono" />
       )}
@@ -118,7 +118,7 @@ export function CameraScan({ onComplete }: { onComplete?: () => void } = {}) {
         <div key={i} className={`absolute w-8 h-8 border-[#1A1A1A] ${pos}`} />
       ))}
       {/* A small rounded-rectangle marker anchored near the bottom of
-          the frame — presses in right as the scan begins, like it's the
+          the frame, presses in right as the scan begins, like it's the
           tag actually being tapped, then releases back. */}
       <div
         className={`absolute bottom-16 left-1/2 w-24 h-14 rounded-xl ${scanning ? "tap-press" : ""}`}
@@ -129,14 +129,14 @@ export function CameraScan({ onComplete }: { onComplete?: () => void } = {}) {
           <Check size={16} className="text-ink" /> {t("qr_scan_successful")}
         </p>
       )}
-      {/* The chic beat — a quick, bright white flash right before the
+      {/* The chic beat, a quick, bright white flash right before the
           screen dissolves into Welcome. Plays once, no loop. */}
       {flashing && <div className="absolute inset-0 bg-white white-flash-once" />}
     </div>
   );
 }
 
-/* 3 — WELCOME */
+/* 3: WELCOME */
 export function Welcome() {
   const { t, lang, setLang } = useLanguage();
   const [showInfo, setShowInfo] = useState(false);
@@ -145,7 +145,7 @@ export function Welcome() {
   const [viewCount, setViewCount] = useState<number | null>(null);
 
   useEffect(() => {
-    // A real, shared counter across every visitor — not fake or per-browser.
+    // A real, shared counter across every visitor, not fake or per-browser.
     // Only increments once per browser session so refreshing the page (or
     // navigating back to this screen) doesn't inflate the count.
     const alreadyCounted = sessionStorage.getItem("wornwith:counted");
@@ -161,7 +161,7 @@ export function Welcome() {
       })
       .catch(() => {
         // Public API can be flaky/blocked (adblockers, offline demo, etc.)
-        // — fail silently rather than show an error for something this minor.
+        //, fail silently rather than show an error for something this minor.
       });
   }, []);
 
@@ -270,7 +270,7 @@ export function Welcome() {
 }
 
 
-/* 4 — PRODUCT OVERVIEW */
+/* 4: PRODUCT OVERVIEW */
 export function ProductOverview({ onExploreJourney }: { onExploreJourney?: () => void } = {}) {
   const { t } = useLanguage();
   const [imgError, setImgError] = useState(false);
@@ -285,7 +285,7 @@ export function ProductOverview({ onExploreJourney }: { onExploreJourney?: () =>
   }, []);
   const [showVerificationInfo, setShowVerificationInfo] = useState(false);
 
-  // A one-time, bespoke-timed entrance for the Crafted to Last panel —
+  // A one-time, bespoke-timed entrance for the Crafted to Last panel,
   // each element has its own specific delay/duration/easing per spec, so
   // this is a small local helper rather than the shared useMountReveal
   // hook (which uses one fixed curve for everything).
@@ -318,7 +318,7 @@ export function ProductOverview({ onExploreJourney }: { onExploreJourney?: () =>
   };
 
   // The one-time traveling blush wash only plays if motion isn't reduced,
-  // and only once — it's driven by the same craftedMounted flag rather
+  // and only once, it's driven by the same craftedMounted flag rather
   // than looping.
   const craftedWashActive = craftedMounted && !craftedReducedMotion;
 
@@ -370,7 +370,7 @@ export function ProductOverview({ onExploreJourney }: { onExploreJourney?: () =>
         {t("tagline_coat")}
       </p>
 
-      {/* Static editorial heading — never animates, always visible */}
+      {/* Static editorial heading, never animates, always visible */}
       <p
         className="font-sans text-[13px] uppercase font-medium mb-2"
         style={{ color: "#8E3D52", letterSpacing: "0.20em" }}
@@ -379,7 +379,7 @@ export function ProductOverview({ onExploreJourney }: { onExploreJourney?: () =>
       </p>
       <div style={{ borderTop: "1px solid rgba(142,61,82,0.18)" }} className="mb-4" />
 
-      {/* A slow editorial reveal — the panel rises into place, a soft
+      {/* A slow editorial reveal, the panel rises into place, a soft
           one-time blush wash drifts across it, then the headline, each
           sentence, and finally the CTA fade in in sequence. Same
           two-column layout as before; only the appearance is new. */}
@@ -408,7 +408,7 @@ export function ProductOverview({ onExploreJourney }: { onExploreJourney?: () =>
           </p>
         </div>
 
-        {/* Real navigation — jumps directly to the Journey / Product
+        {/* Real navigation, jumps directly to the Journey / Product
             Lifecycle page (index 2), not just the next screen in
             sequence, preserving the editorial progression: how it was
             made, then care, then wardrobe, then story. Its timeline
@@ -460,7 +460,7 @@ export function ProductOverview({ onExploreJourney }: { onExploreJourney?: () =>
   );
 }
 
-/* 5 — PRODUCT LIFECYCLE */
+/* 5: PRODUCT LIFECYCLE */
 export function ProductLifecycle({ onViewChapter }: { onViewChapter?: () => void } = {}) {
   const { t } = useLanguage();
   const stops = [
@@ -470,7 +470,7 @@ export function ProductLifecycle({ onViewChapter }: { onViewChapter?: () => void
     { icon: "🧣", title: t("with_you_now"), place: t("place_full_paris"), flag: "🇫🇷" },
   ];
   // The timeline's last stop ("With you now") is where the garment
-  // currently is, so that's the sensible default selection — but every
+  // currently is, so that's the sensible default selection, but every
   // row is tappable, and the card beneath adapts to whichever chapter is
   // selected rather than always describing the wool farm.
   const [selected, setSelected] = useState(stops.length - 1);
@@ -577,7 +577,7 @@ export function ProductLifecycle({ onViewChapter }: { onViewChapter?: () => void
   );
 }
 
-/* 6 — SUPPLY CHAIN */
+/* 6: SUPPLY CHAIN */
 export function SupplyChain() {
   const { t } = useLanguage();
   const chain = [
@@ -660,7 +660,7 @@ export function SupplyChain() {
   );
 }
 
-/* 7 — CARE TO EXTEND LIFE */
+/* 7: CARE TO EXTEND LIFE */
 export function CareGuide() {
   const { t } = useLanguage();
   const { wearCount: careWearCount } = getCareRecommendation();
@@ -680,7 +680,7 @@ export function CareGuide() {
   ];
 
   // Same real computation used elsewhere (next maintenance countdown from
-  // actual recorded wear count) — reframed here as reflective copy rather
+  // actual recorded wear count), reframed here as reflective copy rather
   // than a functional recommendation.
   const nextMaintenanceIn = Math.max(2, 20 - (careWearCount % 20));
 
@@ -716,7 +716,7 @@ export function CareGuide() {
         ))}
       </div>
 
-      {/* Care Philosophy — a reflective close rather than a maintenance
+      {/* Care Philosophy, a reflective close rather than a maintenance
           log. The wears-remaining figure is still a real computation from
           the recorded wear count, just framed gently. */}
       <div
@@ -742,7 +742,7 @@ export function CareGuide() {
   );
 }
 
-/* 8 — SUSTAINABILITY METRICS */
+/* 8: SUSTAINABILITY METRICS */
 export function SustainabilityMetrics() {
   const { t } = useLanguage();
   return (
@@ -794,7 +794,7 @@ export function SustainabilityMetrics() {
   );
 }
 
-/* 9 — WHAT'S NEXT */
+/* 9: WHAT'S NEXT */
 export function WhatsNext() {
   const { t } = useLanguage();
   const [locationQuery, setLocationQuery] = useState<string | null>(null);
@@ -951,7 +951,7 @@ export function WhatsNext() {
   );
 }
 
-/* 10 — THE STORY BEHIND IT */
+/* 10: THE STORY BEHIND IT */
 export function StoryBehindIt() {
   const { t } = useLanguage();
   const storyColor = useChapterColor();
@@ -976,7 +976,7 @@ export function StoryBehindIt() {
   const [sparkleStart, setSparkleStart] = useState(false);
 
   // The sparkle needs its own delay synced to when the Story card actually
-  // becomes visible — a CSS animation on a still-invisible element (parent
+  // becomes visible, a CSS animation on a still-invisible element (parent
   // opacity: 0) runs to completion unseen, so without this it would
   // already be over by the time anyone could see it.
   useEffect(() => {
@@ -1058,7 +1058,7 @@ export function StoryBehindIt() {
   );
 }
 
-/* 11 — PERSONALIZATION */
+/* 11: PERSONALIZATION */
 export function Personalization() {
   const { t } = useLanguage();
   const [text, setText] = useState(() => loadMoment());
@@ -1075,7 +1075,7 @@ export function Personalization() {
   const [ownershipRecord, setOwnershipRecord] = useState<OwnershipRecord>(() => loadOwnershipRecord());
   const [ownershipSaved, setOwnershipSaved] = useState(false);
   // Which single field (if any) is currently expanded into an editable
-  // input — tapping the pencil on a row opens just that one, tapping
+  // input, tapping the pencil on a row opens just that one, tapping
   // away or blurring closes it back to read-only text.
   const [editingField, setEditingField] = useState<keyof OwnershipRecord | null>(null);
 
@@ -1087,7 +1087,7 @@ export function Personalization() {
     setTimeout(() => setOwnershipSaved(false), 1600);
   };
 
-  // Every field — pre-filled or blank — renders identically: a label, a
+  // Every field, pre-filled or blank, renders identically: a label, a
   // value or muted placeholder, and a pencil that expands just that row
   // into an editable input. autoValue is only passed for fields that can
   // genuinely be derived from real passport data (Purchase Date,
@@ -1138,7 +1138,7 @@ export function Personalization() {
 
   // Curator's Notes: real generation, but cached for the day so opening
   // this screen repeatedly doesn't re-call the API every time. Falls back
-  // silently to the static editorial copy if generation fails — this
+  // silently to the static editorial copy if generation fails, this
   // section is never blank and never stuck loading.
   useEffect(() => {
     if (view !== "archive") return;
@@ -1165,11 +1165,11 @@ export function Personalization() {
         try {
           localStorage.setItem(cacheKey, JSON.stringify({ date: todayKey, text: result.content }));
         } catch {
-          // storage full or unavailable — not worth failing over
+          // storage full or unavailable, not worth failing over
         }
       }
       // On failure, curatorsNotes stays null and the static fallback copy
-      // renders instead — no error state needed for this one, since the
+      // renders instead, no error state needed for this one, since the
       // static copy is a genuinely good fallback, not a degraded one.
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -1184,7 +1184,7 @@ export function Personalization() {
     } else {
       setFailed((f) => ({ ...f, [savedAt]: true }));
       setLastAIError(result.error || "Unknown error");
-      // Temporary, for live debugging — surfaces the real upstream error
+      // Temporary, for live debugging, surfaces the real upstream error
       // instead of only the generic retry UI, so it doesn't require
       // opening the network tab or Vercel logs to see.
       // eslint-disable-next-line no-console
@@ -1234,7 +1234,7 @@ export function Personalization() {
   if (view === "archive") {
     return (
       <div className="h-full px-5 py-6 fade-up overflow-y-auto">
-        {/* AI Reflection — featured, at the top */}
+        {/* AI Reflection, featured, at the top */}
         {latestMoment && (
           <div className="mb-8">
             <p className="font-sans text-[10px] uppercase tracking-[0.14em] font-semibold text-blush-deep mb-2">
@@ -1271,7 +1271,7 @@ export function Personalization() {
           </div>
         )}
 
-        {/* From the Archives — its own Deep Plum accent, distinct from the
+        {/* From the Archives, its own Deep Plum accent, distinct from the
             Dusty Burgundy used for the rest of the Ownership screen */}
         <ChapterColorProvider color={ARCHIVE_ACCENT_COLOR}>
           <div className="mb-8 fade-up" style={{ animationDelay: "150ms" }}>
@@ -1288,10 +1288,10 @@ export function Personalization() {
           </div>
         </ChapterColorProvider>
 
-        {/* Curator's Notes — deliberately no card, generous white space.
+        {/* Curator's Notes, deliberately no card, generous white space.
             Real AI generation, cached once per day so it doesn't
             regenerate on every visit, with a graceful fallback to static
-            editorial copy if generation fails or hasn't loaded yet — this
+            editorial copy if generation fails or hasn't loaded yet, this
             section should never be blank or stuck loading. */}
         <div className="mb-8 py-2 fade-up" style={{ animationDelay: "650ms" }}>
           <p className="font-sans text-[10px] uppercase tracking-[0.14em] font-semibold text-blush-deep mb-3">
@@ -1302,7 +1302,7 @@ export function Personalization() {
           </p>
         </div>
 
-        {/* Ownership Summary — simplified */}
+        {/* Ownership Summary, simplified */}
         <div className="mb-6">
           <Eyebrow>{t("ownership_summary_title")}</Eyebrow>
           <div className="mt-2 space-y-1.5 font-sans text-[12px]">
@@ -1315,15 +1315,15 @@ export function Personalization() {
           </div>
         </div>
 
-        {/* Ownership Record — progressive disclosure. Owner, Purchase
+        {/* Ownership Record, progressive disclosure. Owner, Purchase
             Date, Condition and Wear Count arrive pre-filled from real
             passport data (the same source of truth the Product page
-            reads), shown read-only with a pencil to edit inline — one
+            reads), shown read-only with a pencil to edit inline, one
             field at a time, not the whole form at once. Purchase Location
             /Price/Retailer sit inside a collapsed accordion since they're
             one-time, optional, and blank by default. Repair History,
             Favourite Memories, Travel History and Notes are deliberately
-            NOT here — those build up through "+ Save another moment"
+            NOT here, those build up through "+ Save another moment"
             instead of sitting as empty boxes on first load. */}
         <div className="mb-6">
           <Eyebrow>{t("ownership_record_title")}</Eyebrow>
@@ -1403,7 +1403,7 @@ export function Personalization() {
   );
 }
 
-/* 12 — MY WARDROBE */
+/* 12: MY WARDROBE */
 export function MyWardrobe() {
   const { t, locale } = useLanguage();
   const [items, setItems] = useState<WardrobeItem[]>(() => loadWardrobe());
@@ -1422,7 +1422,7 @@ export function MyWardrobe() {
       const compressed = await compressImage(file);
       setPhoto(compressed);
     } catch {
-      // ignore — photo is optional, don't block the rest of the form
+      // ignore, photo is optional, don't block the rest of the form
     }
   };
 
@@ -1466,7 +1466,7 @@ export function MyWardrobe() {
   };
 
   // A single generic updater used by every editable field in the detail
-  // view — autosaves immediately and briefly shows "Saved" (matching the
+  // view, autosaves immediately and briefly shows "Saved" (matching the
   // rest of the app's calm fade language, not a jarring toast).
   const updateItemField = (index: number, field: keyof WardrobeItem, value: string) => {
     const updated = items.map((it, i) => (i === index ? { ...it, [field]: value } : it));
@@ -1487,7 +1487,7 @@ export function MyWardrobe() {
       saveWardrobe(updated);
       flashSaved();
     } catch {
-      // ignore — photo upload failing shouldn't block anything else
+      // ignore, photo upload failing shouldn't block anything else
     } finally {
       setPhotoUploading(false);
     }
@@ -1550,7 +1550,7 @@ export function MyWardrobe() {
           )}
         </div>
 
-        {/* Interactive photo — tap the empty state to upload, tap an
+        {/* Interactive photo, tap the empty state to upload, tap an
             existing photo to replace it, small × to remove it. */}
         <div className="relative mb-4">
           <label className="block cursor-pointer">
@@ -1625,7 +1625,7 @@ export function MyWardrobe() {
         <div className="divide-y divide-line border-y border-line font-sans text-[12px]">
           <div className="flex justify-between py-2.5">
             <span className="text-clay">{t("brand_label")}</span>
-            <span className="text-ink font-medium">{it.brand || "—"}</span>
+            <span className="text-ink font-medium">{it.brand || "-"}</span>
           </div>
           <div className="flex justify-between py-2.5">
             <span className="text-clay">{t("worn_label")}</span>
@@ -1636,7 +1636,7 @@ export function MyWardrobe() {
             <span className="text-ink font-medium">
               {it.loggedAt
                 ? new Date(it.loggedAt).toLocaleDateString(locale, { month: "long", day: "numeric", year: "numeric" })
-                : "—"}
+                : "-"}
             </span>
           </div>
         </div>
@@ -1662,7 +1662,7 @@ export function MyWardrobe() {
           />
         </div>
 
-        {/* Optional fields — Occasion, Season, Favourite Outfit Notes */}
+        {/* Optional fields, Occasion, Season, Favourite Outfit Notes */}
         <div className="mt-4 space-y-3">
           <div>
             <p className="text-[9px] font-sans font-semibold text-clay uppercase tracking-wide mb-1">
@@ -1893,7 +1893,7 @@ export function MyWardrobe() {
   );
 }
 
-/* PRIVACY POLICY — reached only via the footer link, keeps the same
+/* PRIVACY POLICY, reached only via the footer link, keeps the same
    application shell (progress bar, nav arrows, margins, typography); this
    just swaps what renders in the content area. */
 export function PrivacyPolicyScreen({ onBack }: { onBack: () => void }) {
@@ -1971,7 +1971,7 @@ export function PrivacyPolicyScreen({ onBack }: { onBack: () => void }) {
   );
 }
 
-/* TERMS OF USE — same shell, same pattern as Privacy above. */
+/* TERMS OF USE, same shell, same pattern as Privacy above. */
 export function TermsOfUseScreen({ onBack }: { onBack: () => void }) {
   const { t } = useLanguage();
 
@@ -2038,7 +2038,7 @@ export function TermsOfUseScreen({ onBack }: { onBack: () => void }) {
   );
 }
 
-/* ACCESSIBILITY — same editorial shell as Privacy/Terms. */
+/* ACCESSIBILITY, same editorial shell as Privacy/Terms. */
 export function AccessibilityScreen({ onBack }: { onBack: () => void }) {
   const { t } = useLanguage();
 
@@ -2107,7 +2107,7 @@ export function AccessibilityScreen({ onBack }: { onBack: () => void }) {
   );
 }
 
-/* RELEASE NOTES — same editorial shell, structured as small labeled
+/* RELEASE NOTES, same editorial shell, structured as small labeled
    groups rather than legal sections, but identical visual language. */
 export function ReleaseNotesScreen({ onBack }: { onBack: () => void }) {
   const { t } = useLanguage();
@@ -2174,10 +2174,10 @@ export function ReleaseNotesScreen({ onBack }: { onBack: () => void }) {
   );
 }
 
-/* CLOSING — now a genuine indexed page (the 11th), reached only via the
+/* CLOSING, now a genuine indexed page (the 11th), reached only via the
    right nav arrow on the last real screen, not a generic tap-anywhere
    overlay. Same shell, same chrome, same transition as every other
-   screen — no special fade-to-white, no modal. */
+   screen, no special fade-to-white, no modal. */
 export function ClosingScreen({ onReturnToWardrobe }: { onReturnToWardrobe: () => void }) {
   const { t } = useLanguage();
   return (
@@ -2208,7 +2208,7 @@ export function ClosingScreen({ onReturnToWardrobe }: { onReturnToWardrobe: () =
   );
 }
 
-/* ABOUT THIS PASSPORT — same editorial shell as Privacy/Terms/Accessibility,
+/* ABOUT THIS PASSPORT, same editorial shell as Privacy/Terms/Accessibility,
    with Product-page-style spec rows for Data Sources, and Material/
    Lifespan-style rows for Data Confidence and Passport Sharing. */
 export function AboutPassportScreen({ onBack }: { onBack: () => void }) {

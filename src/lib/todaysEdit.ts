@@ -12,7 +12,7 @@ export type WeatherData = {
   rainLikely: boolean;
 };
 
-// Open-Meteo is a free, keyless weather API — no signup, no API key, works
+// Open-Meteo is a free, keyless weather API, no signup, no API key, works
 // directly from the browser. Real data, not simulated, as long as the
 // visitor grants location access.
 export function fetchWeather(): Promise<WeatherData | null> {
@@ -51,7 +51,7 @@ export function fetchWeather(): Promise<WeatherData | null> {
 }
 
 // Converts a formal item/product name into a natural, lowercase spoken
-// description — "COS Black Wool Funnel-Neck Coat" -> "your black wool
+// description, "COS Black Wool Funnel-Neck Coat" -> "your black wool
 // coat". Full product names are reserved for the Product Passport screen
 // specifically, per the editorial writing style.
 export function naturalName(name: string, yourWord: string = "your"): string {
@@ -64,7 +64,7 @@ export function naturalName(name: string, yourWord: string = "your"): string {
   return `${yourWord} ${cleaned.toLowerCase()}`;
 }
 
-// Capitalizes only the first character — for sentence-start display,
+// Capitalizes only the first character, for sentence-start display,
 // unlike CSS `capitalize` which title-cases every word.
 export function capitalizeFirst(s: string): string {
   return s.charAt(0).toUpperCase() + s.slice(1);
@@ -110,7 +110,7 @@ export function pickFeaturedItem(
   const best = scored[0];
 
   if ((isCold || isWet) && (!best || best.score <= 0)) {
-    // Nothing in the wardrobe reads as cold-weather outerwear — the coat
+    // Nothing in the wardrobe reads as cold-weather outerwear, the coat
     // this whole passport is about is the honest answer.
     return { name: GARMENT.name, isMainGarment: true };
   }
@@ -130,7 +130,7 @@ export function pickAlternatives(
   return wardrobe.filter((it) => it.name !== featuredName).slice(0, count);
 }
 
-// Days since an item's last recorded activity — a real computed value from
+// Days since an item's last recorded activity, a real computed value from
 // its loggedAt date, not a fabricated number. Returns null if unknown.
 export function daysSinceLogged(loggedAt?: string): number | null {
   if (!loggedAt) return null;
@@ -140,7 +140,7 @@ export function daysSinceLogged(loggedAt?: string): number | null {
 
 // Picks which editorial observation reads truest for the real numbers,
 // without ever surfacing a percentage or a technical term. Genuinely
-// data-driven — just translated into magazine-copy language instead of a
+// data-driven, just translated into magazine-copy language instead of a
 // weather-app readout.
 export function getWeatherObservationKey(w: WeatherData): string {
   if (w.rainLikely) return "obs_rain";

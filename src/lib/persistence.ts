@@ -1,5 +1,5 @@
 // Persists visitor data in their own browser (localStorage), scoped per
-// garment via DPP_ID. No backend needed — this is enough for a real,
+// garment via DPP_ID. No backend needed, this is enough for a real,
 // working demo where someone's input survives a refresh or a return visit.
 // Note: this is per-device/per-browser only. It won't sync across a
 // person's phone and laptop, and clearing browser data clears it.
@@ -8,7 +8,7 @@ import { FORMSPREE_ENDPOINT } from "./config";
 
 // Sends captured data to you (not just the visitor's own browser) if a
 // Formspree endpoint is configured. Fails silently if not configured or if
-// the request fails — this is a nice-to-have, not something that should
+// the request fails, this is a nice-to-have, not something that should
 // ever break the actual experience for a visitor.
 function sendToFormspree(payload: Record<string, string>) {
   if (!FORMSPREE_ENDPOINT) return;
@@ -17,7 +17,7 @@ function sendToFormspree(payload: Record<string, string>) {
     headers: { "Content-Type": "application/json", Accept: "application/json" },
     body: JSON.stringify(payload),
   }).catch(() => {
-    // ignore — this should never block the visitor's actual experience
+    // ignore, this should never block the visitor's actual experience
   });
 }
 
@@ -27,10 +27,10 @@ function key(name: string) {
   return `wornwith:${DPP_ID}:${name}`;
 }
 
-// The Ownership Memory Repository — one persisted record per garment,
+// The Ownership Memory Repository, one persisted record per garment,
 // covering everything a real provenance record would track. Kept as a
 // flat, plainly-typed object (no nested logic, no derived fields) so it
-// could later be hashed and anchored on-chain without any UI changes —
+// could later be hashed and anchored on-chain without any UI changes,
 // "blockchain-ready" here means "clean, stable schema," not an actual
 // chain integration, which would need a real wallet/contract layer this
 // environment can't provide.
@@ -66,7 +66,7 @@ export function saveOwnershipRecord(record: OwnershipRecord) {
   }
 }
 
-// A single recorded voice note attached to the Morning Brief — audio as
+// A single recorded voice note attached to the Morning Brief, audio as
 // a base64 data URL (works with the existing localStorage pattern used
 // for wardrobe photos), plus an optional transcript from ElevenLabs
 // Speech-to-Text when that's configured.
@@ -192,7 +192,7 @@ export function addMoment(text: string): SavedMoment[] {
 }
 
 // Patches a specific moment with its AI-generated reflection once it comes
-// back from the API — matched by savedAt since that's set at creation and
+// back from the API, matched by savedAt since that's set at creation and
 // never changes.
 export function updateMomentSummary(savedAt: string, summary: string): SavedMoment[] {
   const moments = loadMoments();
@@ -206,7 +206,7 @@ export function updateMomentSummary(savedAt: string, summary: string): SavedMome
 }
 
 // Call this when a visitor explicitly logs a new wardrobe memory or saves
-// this garment to their wardrobe — a real, meaningful signal worth sending,
+// this garment to their wardrobe, a real, meaningful signal worth sending,
 // as opposed to every incidental list mutation (like deleting an item).
 export function logWardrobeEvent(item: WardrobeItem) {
   sendToFormspree({
@@ -218,7 +218,7 @@ export function logWardrobeEvent(item: WardrobeItem) {
   });
 }
 
-// Compresses a photo before storing it — localStorage has a ~5-10MB total
+// Compresses a photo before storing it, localStorage has a ~5-10MB total
 // budget, so a handful of full-resolution phone photos would blow through
 // that fast. This resizes to a max dimension and re-encodes as JPEG.
 export function compressImage(file: File, maxDimension = 480, quality = 0.7): Promise<string> {

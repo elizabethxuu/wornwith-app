@@ -9,7 +9,7 @@ export function parseWearCount(worn: string): number {
   return match ? parseInt(match[0], 10) : 0;
 }
 
-// Wear thresholds — genuinely tied to the recorded count, not fixed copy.
+// Wear thresholds, genuinely tied to the recorded count, not fixed copy.
 // A garment doesn't need professional attention until real wear
 // accumulates; these bands are deliberately generous, matching the
 // "quiet, not alarmist" tone the brief asks for.
@@ -20,7 +20,7 @@ export function getCareTier(wearCount: number): CareTier {
 }
 
 // Real current season from today's date (Northern Hemisphere, matching
-// the garment's stated origin/care context) — recalculates on its own as
+// the garment's stated origin/care context), recalculates on its own as
 // time passes, nothing hardcoded.
 export function getCurrentSeason(date: Date = new Date()): Season {
   const month = date.getMonth(); // 0-11

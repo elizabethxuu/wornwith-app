@@ -1,7 +1,7 @@
 // Vercel serverless function for premium AI voice narration.
 //
 // This is the real integration point, not a placeholder to be rewritten
-// later — it already speaks ElevenLabs' actual API. It's simply inactive
+// later, it already speaks ElevenLabs' actual API. It's simply inactive
 // until an ELEVENLABS_API_KEY is added in Vercel's Environment Variables
 // (Settings → Environment Variables), same pattern as the Gemini/Anthropic
 // key for AI reflections. No frontend changes are needed when you add it.

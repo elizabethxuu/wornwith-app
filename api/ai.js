@@ -2,7 +2,7 @@ import { EDITORIAL_SYSTEM_PROMPT } from "./_lib/editorialVoice.js";
 import { FEATURES } from "./_lib/prompts.js";
 import { generateWithGemini, GEMINI_MODEL } from "./_lib/geminiClient.js";
 
-// Same debugging note as geminiClient.js — unconditional logging for now,
+// Same debugging note as geminiClient.js, unconditional logging for now,
 // while tracking down the 502s. Re-gate to non-production once resolved.
 function log(...args) {
   console.log("[ai:debug]", ...args);
@@ -45,7 +45,7 @@ export default async function handler(req, res) {
     const content = await generateWithGemini(fullPrompt, featureConfig.maxTokens);
     respond(res, 200, { success: true, content, feature }, start);
   } catch (err) {
-    // 4. Never swallowed — the real message and, where we have it, the
+    // 4. Never swallowed, the real message and, where we have it, the
     // real upstream detail both go back in the response body, not just
     // a generic "couldn't generate" string.
     log("generateWithGemini threw:", err.message, "| status:", err.status, "| detail:", err.detail);

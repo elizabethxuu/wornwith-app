@@ -29,7 +29,7 @@ export default function PrintableTag() {
         </h1>
         <p className="font-sans text-xs text-clay mt-2">
           This QR points to <span className="text-ink">{QR_VALUE}</span>.
-          Point the iPhone Camera app at it directly — no app install needed,
+          Point the iPhone Camera app at it directly, no app install needed,
           it opens straight into the passport.
         </p>
       </div>

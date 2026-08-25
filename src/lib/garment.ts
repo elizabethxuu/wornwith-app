@@ -1,6 +1,6 @@
 // This is the one place all garment-specific facts live. Right now it's
 // hardcoded to a single demo coat, but every screen reads from here rather
-// than hardcoding its own copy of "COS Black Wool Funnel-Neck Coat" —
+// than hardcoding its own copy of "COS Black Wool Funnel-Neck Coat",
 // which is the seam where this would connect to a real product catalog or
 // database (one row per DPP-ID) instead of a single hardcoded object.
 
@@ -27,7 +27,7 @@ export const GARMENT = {
 };
 
 // Computes "X+ years" remaining automatically from today's date instead of
-// a hardcoded string — updates on its own as time passes, no manual edits.
+// a hardcoded string, updates on its own as time passes, no manual edits.
 export function getEstimatedYearsRemaining(): string {
   const msPerYear = 1000 * 60 * 60 * 24 * 365.25;
   const yearsOwned = (Date.now() - GARMENT.ownedSinceDate.getTime()) / msPerYear;

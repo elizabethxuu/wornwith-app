@@ -32,7 +32,7 @@ const screens = [
 ];
 
 // The first two screens (verifying / scan simulation) come before the
-// passport itself starts, so they don't have a chapter color — everything
+// passport itself starts, so they don't have a chapter color, everything
 // from Welcome onward maps into CHAPTER_COLORS.
 const DEFAULT_ACCENT = "#C97A8C";
 function chapterColorFor(index: number): string {

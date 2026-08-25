@@ -51,7 +51,7 @@ export function Donut({
 
   useEffect(() => {
     // Kick off the fill on the next tick so the browser paints the 0%
-    // state first — otherwise React batches straight to the final value
+    // state first, otherwise React batches straight to the final value
     // and the stroke transition never has anything to animate from.
     const t = setTimeout(() => setDisplayed(percent), 50);
     return () => clearTimeout(t);
@@ -106,7 +106,7 @@ export function Card({
 }
 
 const worldMapUrl = "/data/world-110m.json";
-// Per-country watercolor wash — France (Paris) is the one deliberate
+// Per-country watercolor wash, France (Paris) is the one deliberate
 // burgundy focal point; NZ gets the turquoise primary; Italy reads
 // slightly warmer; Portugal stays neutral, per the brief.
 const COUNTRY_WASH: Record<string, { fill: string; opacity: number }> = {
@@ -175,7 +175,7 @@ export function JourneyMap() {
     const visibleTimer = setTimeout(() => setMapVisible(true), 60);
     const drawTimer = setTimeout(() => setDrawn(true), 350);
     // The arrival pulse plays once, after the route has finished drawing
-    // in — not an infinite loop. journeyStops.length - 1 segments, drawn
+    // in, not an infinite loop. journeyStops.length - 1 segments, drawn
     // sequentially (not overlapping), so this is timed to land right as
     // the line reaches Paris.
     const segments = journeyStops.length - 1;
@@ -260,7 +260,7 @@ export function JourneyMap() {
               const stopColor = STOP_ACCENTS[i];
               return (
                 <Marker key={s.labelKey} coordinates={s.coords}>
-                  {/* Invisible larger touch target — the visible dot below is
+                  {/* Invisible larger touch target, the visible dot below is
                       deliberately small/precise, but a ~4-6px dot is too small
                       to reliably tap on a phone, so this circle underneath
                       captures taps across a much wider radius. */}
@@ -271,7 +271,7 @@ export function JourneyMap() {
                     style={{ cursor: "pointer", pointerEvents: "all" }}
                   />
                   {/* Paris carries a soft blush watercolor halo at all times
-                      — it's the one deliberate burgundy focal point on the
+                     , it's the one deliberate burgundy focal point on the
                       map, not just another stop. */}
                   {s.active && (
                     <circle r={13} fill="#EBC9D2" fillOpacity={0.35} style={{ pointerEvents: "none" }} />
@@ -337,7 +337,7 @@ export function JourneyMap() {
         </ComposableMap>
       </div>
 
-      {/* The card itself never fades or slides in — it's permanently
+      {/* The card itself never fades or slides in, it's permanently
           visible from the moment the page renders. The only motion here
           is the slow drifting gradient (defined in index.css); tapping a
           different stop just swaps the text with a quick fade, not the
@@ -489,7 +489,7 @@ export function ExpandableCard({
   learnMoreHref?: string;
   learnMoreLabel?: string;
   // For internal navigation (e.g. "View this Chapter" jumping to another
-  // screen) — a real state-change callback, not an anchor tag. Distinct
+  // screen), a real state-change callback, not an anchor tag. Distinct
   // from learnMoreHref, which is exclusively for genuine external
   // references and always opens in a new tab.
   onLearnMoreClick?: () => void;
@@ -558,7 +558,7 @@ export function ExpandableCard({
 }
 
 
-// Calm, editorial loading transition — cycles through a few short phrases
+// Calm, editorial loading transition, cycles through a few short phrases
 // with a subtle fade, then calls onDone. Deliberately no progress bar or
 // spinner, per the "luxury, not dashboard" direction.
 export function ArchiveTransition({
@@ -597,7 +597,7 @@ export type ArchiveEntry = {
   description: string;
 };
 
-// The editorial replacement for the old plain lifecycle timeline — bigger
+// The editorial replacement for the old plain lifecycle timeline, bigger
 // per-entry blocks (category/title/description) and, per design direction,
 // no literal "projected" label: completed entries get a filled marker,
 // future ones a hollow marker, and that's the only signal.
@@ -696,7 +696,7 @@ export function TodaysEdit({ wardrobe }: { wardrobe: WardrobeItem[] }) {
   const [interludeState, setInterludeState] = useState<"closed" | "transitioning" | "open">("closed");
   // The delayed entrance animation on the "Enter the Listening Room"
   // button should only ever happen once, the very first time someone
-  // encounters it — checked and persisted via localStorage, not a
+  // encounters it, checked and persisted via localStorage, not a
   // per-session flag, so it genuinely never repeats on later visits.
   const [showEntranceHint] = useState<boolean>(() => {
     try {
@@ -721,7 +721,7 @@ export function TodaysEdit({ wardrobe }: { wardrobe: WardrobeItem[] }) {
         {weather ? t(observationKey as TranslationKey) : t("obs_default")}
       </p>
 
-      {/* Recommended garment — the actual hero moment */}
+      {/* Recommended garment, the actual hero moment */}
       <p className="font-display italic text-lg mt-4 transition-colors duration-500" style={{ color }}>
         {capitalizeFirst(itemName)}
       </p>
@@ -729,9 +729,9 @@ export function TodaysEdit({ wardrobe }: { wardrobe: WardrobeItem[] }) {
         {t(reasoningKey as TranslationKey)}
       </p>
 
-      {/* Interlude — sits between Recommended Garment and Why This Piece,
+      {/* Interlude, sits between Recommended Garment and Why This Piece,
           per the required flow. Calm teaser card, no artwork, no player
-          chrome — the atmosphere title as an invitation, with a distinct
+          chrome, the atmosphere title as an invitation, with a distinct
           secondary-style entrance button beneath it. */}
       <div className="mt-5 py-4 border-t border-b border-line">
         <p className="font-sans text-[10px] uppercase tracking-[0.14em] font-semibold" style={{ color }}>
@@ -766,7 +766,7 @@ export function TodaysEdit({ wardrobe }: { wardrobe: WardrobeItem[] }) {
         />
       )}
 
-      {/* Weather Summary — simplified, no raw metrics */}
+      {/* Weather Summary, simplified, no raw metrics */}
       <div className="mt-5">
         {weatherStatus === "ready" && weather ? (
           <div className="flex items-center gap-5 font-sans text-[11px] text-clay">
@@ -809,7 +809,7 @@ export function TodaysEdit({ wardrobe }: { wardrobe: WardrobeItem[] }) {
         </ul>
       </div>
 
-      {/* Morning Brief — reusable voice player, premium-ready */}
+      {/* Morning Brief, reusable voice player, premium-ready */}
       <div className="mt-5">
         <p className="font-sans text-[10px] uppercase tracking-[0.14em] font-semibold text-blush-deep mb-2">
           {t("morning_brief_title")}
@@ -843,7 +843,7 @@ export function TodaysEdit({ wardrobe }: { wardrobe: WardrobeItem[] }) {
         <p className="font-sans text-[11px] text-sage mb-0.5">{t("ready_to_wear")}</p>
         <p className="font-sans text-[11px] text-sage mb-2">{t("recently_maintained")}</p>
         <p className="font-sans text-[10px] text-clay">
-          {t("estimated_maintenance")} — {t("estimated_after_wears").replace("{n}", String(nextMaintenanceIn))}
+          {t("estimated_maintenance")}: {t("estimated_after_wears").replace("{n}", String(nextMaintenanceIn))}
         </p>
       </div>
     </div>
@@ -852,7 +852,7 @@ export function TodaysEdit({ wardrobe }: { wardrobe: WardrobeItem[] }) {
 
 
 // A reusable narration player. The UI is finished and won't need to change
-// when premium voice goes live — it already renders the same play/stop
+// when premium voice goes live, it already renders the same play/stop
 // button regardless of which mode is actually speaking underneath.
 export function VoicePlayer({
   text,
@@ -917,7 +917,7 @@ export function VoicePlayer({
   );
 }
 
-// Records and saves a short voice note in the browser — genuinely
+// Records and saves a short voice note in the browser, genuinely
 // functional via MediaRecorder, no fake states. When ELEVENLABS_API_KEY
 // is configured (api/transcribe.js), the recording is also sent to
 // ElevenLabs Speech-to-Text for a transcript; without a key, the note
@@ -962,7 +962,7 @@ export function VoiceNoteRecorder() {
           saveVoiceNote(newNote);
           setState("recorded");
 
-          // Transcription is a background enhancement — the note is
+          // Transcription is a background enhancement, the note is
           // already saved and playable before this even starts.
           const base64 = dataUrl.split(",")[1];
           if (base64) {
@@ -1019,7 +1019,7 @@ export function VoiceNoteRecorder() {
     return <p className="font-sans text-[10px] text-clay/70">{t("mic_permission_denied")}</p>;
   }
 
-  // Recorded — playback + re-record/delete, plus transcript once/if it
+  // Recorded, playback + re-record/delete, plus transcript once/if it
   // arrives.
   if (state === "recorded" && note) {
     return (
@@ -1054,7 +1054,7 @@ export function VoiceNoteRecorder() {
     );
   }
 
-  // Idle / requesting / recording — the pill button. Label stays
+  // Idle / requesting / recording, the pill button. Label stays
   // "Listen" at rest per request; switches to "Recording…" while active
   // so the state is never ambiguous.
   return (
@@ -1073,11 +1073,11 @@ export function VoiceNoteRecorder() {
   );
 }
 
-// The immersive full-screen "room" — covers the app chrome entirely
+// The immersive full-screen "room", covers the app chrome entirely
 // (progress bar, nav arrows included) for the "entering a quiet space"
 // feel the brief asks for. Two phases: a brief white-space transition
 // showing only INTERLUDE + the atmosphere title, then a staggered reveal
-// of the room's sections. No spring animation, no parallax — opacity and
+// of the room's sections. No spring animation, no parallax, opacity and
 // small vertical offsets only.
 export function ListeningRoom({
   atmosphere,
@@ -1193,7 +1193,7 @@ export type CareRitual = {
   lines: string[];
 };
 
-// A single expandable "ritual" row — quiet by design. No film, no extra
+// A single expandable "ritual" row, quiet by design. No film, no extra
 // notes, just a title and a short instruction, in keeping with "no heavy
 // accordion styling."
 export function CareRitualRow({ ritual, entranceDelayMs }: { ritual: CareRitual; entranceDelayMs?: number }) {
@@ -1322,7 +1322,7 @@ export function useEditorialReveal(sessionKey: string) {
   return { ref, visible, firstReveal, stepStyle };
 }
 
-// Simple mount-triggered reveal — used for the Story page's cinematic
+// Simple mount-triggered reveal, used for the Story page's cinematic
 // sequence, which plays every time the screen opens (unlike the
 // session-gated Product page reveal). Flips true one frame after mount so
 // CSS transitions actually animate from their initial state instead of
@@ -1364,7 +1364,7 @@ export function useMountReveal() {
 // One reusable "About this verification" panel, triggered from three
 // different screens (Passport, Product, Story). A bottom sheet on the
 // scale this app runs at (single-column mobile-first), dismissible via
-// backdrop tap or the close button — matches the app's existing rounded
+// backdrop tap or the close button, matches the app's existing rounded
 // corners, borders, and serif-italic heading treatment rather than
 // introducing a new visual language.
 export function VerificationInfoPanel({ open, onClose }: { open: boolean; onClose: () => void }) {
@@ -1374,12 +1374,12 @@ export function VerificationInfoPanel({ open, onClose }: { open: boolean; onClos
 
   // Rendered via portal directly to document.body, not inline in the
   // screen's own tree. Every screen's root div uses the fade-up
-  // animation class, which — via animation-fill-mode: both — leaves a
+  // animation class, which, via animation-fill-mode: both, leaves a
   // permanent transform: translateY(0) on that element even after the
   // animation finishes. Any active transform on an ancestor creates a
   // new containing block for position: fixed descendants, so without
   // this portal the panel was only ever "fixed" relative to that
-  // screen's div, not the true viewport — which is exactly why it could
+  // screen's div, not the true viewport, which is exactly why it could
   // appear to cut off partway down the screen instead of covering it.
   return createPortal(
     <div className="fixed inset-0 h-[100dvh] w-full z-50" onClick={(e) => e.stopPropagation()}>
@@ -1410,7 +1410,7 @@ export function VerificationInfoPanel({ open, onClose }: { open: boolean; onClos
   );
 }
 
-// The real, functional "Share Passport" experience — a bottom sheet with
+// The real, functional "Share Passport" experience, a bottom sheet with
 // three genuinely working options, not a native share-sheet shortcut.
 // PDF uses the browser's real print-to-PDF (window.print), QR renders an
 // actual scannable code for the current URL, and Copy Link copies the
@@ -1431,7 +1431,7 @@ export function ShareSheet({ open, onClose }: { open: boolean; onClose: () => vo
       setLinkCopied(true);
       setTimeout(() => setLinkCopied(false), 2000);
     } catch {
-      // clipboard access can fail (permissions, insecure context) — the
+      // clipboard access can fail (permissions, insecure context), the
       // link is still visible/selectable in the QR view as a fallback
     }
   };

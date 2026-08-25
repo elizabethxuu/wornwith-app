@@ -5,7 +5,7 @@
 // transcription API, not a placeholder. It's inactive until
 // ELEVENLABS_API_KEY is set in Vercel's Environment Variables. Without a
 // key, the frontend still saves and plays back the recorded audio just
-// fine — a transcript is an enhancement, not a requirement, so this fails
+// fine, a transcript is an enhancement, not a requirement, so this fails
 // gracefully rather than blocking the core recording feature.
 
 export default async function handler(req, res) {

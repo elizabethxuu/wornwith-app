@@ -26,7 +26,7 @@ import {
 } from "./screens/Screens";
 
 // Real users arrive here because they already scanned the physical tag with
-// the iPhone Camera app. No fake scan-simulation screen — go straight from
+// the iPhone Camera app. No fake scan-simulation screen, go straight from
 // "verifying" into the passport.
 function buildLiveScreens(goToScreen: (index: number) => void) {
   return [
@@ -120,7 +120,7 @@ export default function LiveApp() {
   };
 
   const handleTap = (e: React.MouseEvent) => {
-    // Don't hijack taps meant for actual controls — inputs, textareas,
+    // Don't hijack taps meant for actual controls, inputs, textareas,
     // buttons, links, and checkboxes should just work normally.
     const target = e.target as HTMLElement;
     if (target.closest("input, textarea, button, a, label, select")) {
@@ -132,7 +132,7 @@ export default function LiveApp() {
       goPrev();
     } else {
       // Reaching the ending is the one deliberate exception to "tap
-      // anywhere advances" — it should only happen via the explicit
+      // anywhere advances", it should only happen via the explicit
       // right arrow, not an incidental tap on the last real page.
       if (index === liveScreens.length - 2) return;
       goNext();
@@ -190,7 +190,7 @@ export default function LiveApp() {
 
   return (
     <div className="app-shell h-[100dvh] w-full bg-paper flex flex-col overflow-hidden relative">
-      {/* subtle current-section label — now tinted per chapter */}
+      {/* subtle current-section label, now tinted per chapter */}
       <p
         className="font-sans text-[9px] font-semibold uppercase tracking-[0.15em] text-center shrink-0 transition-colors duration-500 print:hidden"
         style={{ paddingTop: "max(env(safe-area-inset-top), 10px)", color: CHAPTER_COLORS[index] }}
@@ -198,7 +198,7 @@ export default function LiveApp() {
         {t(sectionKeys[index])}
       </p>
 
-      {/* story-style progress bar — each segment carries its own chapter's
+      {/* story-style progress bar, each segment carries its own chapter's
           color, so the bar reads as a single quiet marker of where you are,
           not a multi-colored progress fill */}
       <div
@@ -240,9 +240,9 @@ export default function LiveApp() {
       </div>
 
 
-      {/* Minimal legal footer — shown above nav on every screen, rendered
+      {/* Minimal legal footer, shown above nav on every screen, rendered
           once here rather than duplicated per-screen. Real buttons, not
-          external links — both open the dedicated in-app screens. */}
+          external links, both open the dedicated in-app screens. */}
       <div className="flex flex-wrap items-center justify-center gap-x-3.5 gap-y-1 px-4 pt-2 shrink-0 print:hidden">
         <p className="font-sans text-[9px] text-clay/60">{t("footer_copyright")}</p>
         <button
@@ -277,7 +277,7 @@ export default function LiveApp() {
         </button>
       </div>
 
-      {/* Visible, unambiguous nav bar — the tap-zones in the content area
+      {/* Visible, unambiguous nav bar, the tap-zones in the content area
           still work too, but this makes it obvious at a glance that you can
           move forward/back. Fixed outside the scrollable content so it can
           never overlap whatever text happens to be on a given screen. */}

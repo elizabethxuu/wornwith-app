@@ -4,7 +4,7 @@ import type { TranslationKey } from "./i18n";
 export type TimeOfDay = "morning" | "afternoon" | "evening" | "night";
 
 // Author and book title stay as literal proper nouns (standard convention
-// — a title isn't usually retitled across storefronts/languages). The
+//, a title isn't usually retitled across storefronts/languages). The
 // note is a translation key, since that's genuine editorial prose.
 export type ReadingPick = { author: string; title: string; noteKey: TranslationKey };
 
@@ -16,7 +16,7 @@ export type Atmosphere = {
   reading: ReadingPick[];
 };
 
-// Real current time of day — recalculates on its own, nothing hardcoded.
+// Real current time of day, recalculates on its own, nothing hardcoded.
 export function getTimeOfDay(date: Date = new Date()): TimeOfDay {
   const hour = date.getHours();
   if (hour >= 5 && hour < 11) return "morning";
@@ -25,13 +25,13 @@ export function getTimeOfDay(date: Date = new Date()): TimeOfDay {
   return "night";
 }
 
-// A curated bank of atmospheres — editorial writing, not live-generated.
+// A curated bank of atmospheres, editorial writing, not live-generated.
 // Kept deliberately curated rather than AI-generated per request: the
 // prompt's own brief for the tone this needs ("write beautifully," "avoid
 // clichés," "never sound like AI") is much more reliably hit by a small
 // set of genuinely well-written moods than by prompting a model fresh
 // every time, and it means this never depends on the AI service being up.
-// All text below is translation keys — see i18n.tsx for EN/FR/PT copy.
+// All text below is translation keys, see i18n.tsx for EN/FR/PT copy.
 const ATMOSPHERES: Atmosphere[] = [
   {
     key: "after_rain",
@@ -119,7 +119,7 @@ function findAtmosphere(key: string): Atmosphere {
   return ATMOSPHERES.find((a) => a.key === key) ?? ATMOSPHERES[ATMOSPHERES.length - 1];
 }
 
-// Real selection logic — priority-ordered rules over actual season, time
+// Real selection logic, priority-ordered rules over actual season, time
 // of day, and rain likelihood. Deterministic, not random: the same
 // conditions always produce the same atmosphere, the way a genuinely
 // curated recommendation would.
@@ -149,7 +149,7 @@ export function selectAtmosphere(
   return findAtmosphere("late_afternoon");
 }
 
-// A real, functional link — no Spotify API key needed. Opens Spotify's
+// A real, functional link, no Spotify API key needed. Opens Spotify's
 // public search for the atmosphere's artists, which is the honest version
 // of "continue the atmosphere" without building an embedded player.
 export function spotifySearchUrl(atmosphere: Atmosphere): string {

@@ -6,8 +6,8 @@ const STORAGE_KEY = "wornwith:lang";
 
 // Every user-facing string in the app, keyed and translated. Data values
 // that are proper nouns, measurements, or codes (place names, percentages,
-// certification codes, DPP IDs) intentionally stay as-is across languages —
-// that's normal for real product passports too (a GOTS certificate doesn't
+// certification codes, DPP IDs) intentionally stay as-is across languages.
+// That's normal for real product passports too (a GOTS certificate doesn't
 // get translated).
 const dict = {
   // Skeleton loader
@@ -21,9 +21,9 @@ const dict = {
   welcome_to: { en: "Welcome to", fr: "Bienvenue sur", pt: "Bem-vindo ao" },
   what_is_this: { en: "What is this?", fr: "Qu'est-ce que c'est ?", pt: "O que é isto?" },
   dpp_explainer: {
-    en: "A Digital Product Passport is a record every garment sold in the EU will be required to carry by 2028–2029 — where it was made, what it's made of, and how to care for it. This is one designer's take on what that moment could actually feel like.",
-    fr: "Un Passeport Numérique Produit est un enregistrement que chaque vêtement vendu dans l'UE devra porter d'ici 2028–2029 — où il a été fabriqué, de quoi il est fait, et comment en prendre soin. Voici la vision d'une créatrice de ce moment.",
-    pt: "Um Passaporte Digital do Produto é um registro que toda peça de roupa vendida na UE deverá ter até 2028–2029 — onde foi feita, do que é feita e como cuidar dela. Esta é a visão de uma designer sobre como esse momento poderia ser.",
+    en: "A Digital Product Passport is a record every garment sold in the EU will be required to carry by 2028–2029, where it was made, what it's made of, and how to care for it. This is one designer's take on what that moment could actually feel like.",
+    fr: "Un Passeport Numérique Produit est un enregistrement que chaque vêtement vendu dans l'UE devra porter d'ici 2028–2029, où il a été fabriqué, de quoi il est fait, et comment en prendre soin. Voici la vision d'une créatrice de ce moment.",
+    pt: "Um Passaporte Digital do Produto é um registro que toda peça de roupa vendida na UE deverá ter até 2028–2029, onde foi feita, do que é feita e como cuidar dela. Esta é a visão de uma designer sobre como esse momento poderia ser.",
   },
   verified_passport: { en: "Verified Passport", fr: "Passeport Vérifié", pt: "Passaporte Verificado" },
   stored_ledger: { en: "Stored on secure digital ledger", fr: "Stocké sur un registre numérique sécurisé", pt: "Armazenado em registro digital seguro" },
@@ -39,14 +39,14 @@ const dict = {
     pt: "Toque em uma etapa para saber mais · belisque para ampliar",
   },
   rws_explainer: {
-    en: "Responsible Wool Standard — an independent certification verifying the wool came from farms that meet strict animal welfare and land management requirements.",
-    fr: "Norme de Laine Responsable (RWS) — une certification indépendante garantissant que la laine provient de fermes respectant des exigences strictes en matière de bien-être animal et de gestion des terres.",
-    pt: "Padrão de Lã Responsável (RWS) — uma certificação independente que garante que a lã veio de fazendas que atendem a rigorosos requisitos de bem-estar animal e gestão da terra.",
+    en: "Responsible Wool Standard: an independent certification verifying the wool came from farms that meet strict animal welfare and land management requirements.",
+    fr: "Norme de Laine Responsable (RWS) : une certification indépendante garantissant que la laine provient de fermes respectant des exigences strictes en matière de bien-être animal et de gestion des terres.",
+    pt: "Padrão de Lã Responsável (RWS): uma certificação independente que garante que a lã veio de fazendas que atendem a rigorosos requisitos de bem-estar animal e gestão da terra.",
   },
   stop_blurb_nz: {
-    en: "Where the coat's story begins — wool sheared from sheep raised on open pasture.",
-    fr: "Là où l'histoire du manteau commence — laine tondue sur des moutons élevés en plein pâturage.",
-    pt: "Onde a história do casaco começa — lã tosquiada de ovelhas criadas em pastagens abertas.",
+    en: "Where the coat's story begins: wool sheared from sheep raised on open pasture.",
+    fr: "Là où l'histoire du manteau commence : laine tondue sur des moutons élevés en plein pâturage.",
+    pt: "Onde a história do casaco começa: lã tosquiada de ovelhas criadas em pastagens abertas.",
   },
   stop_blurb_italy: {
     en: "Raw wool is cleaned, spun into yarn, and woven into cloth by third-generation millers.",
@@ -54,14 +54,14 @@ const dict = {
     pt: "A lã bruta é limpa, fiada e tecida por moleiros de terceira geração.",
   },
   stop_blurb_portugal: {
-    en: "Skilled hands cut and construct each panel — the same ateliers COS has worked with for years.",
-    fr: "Des mains expertes coupent et assemblent chaque panneau — les mêmes ateliers depuis des années.",
-    pt: "Mãos habilidosas cortam e montam cada painel — os mesmos ateliês há anos.",
+    en: "Skilled hands cut and construct each panel, the same ateliers COS has worked with for years.",
+    fr: "Des mains expertes coupent et assemblent chaque panneau, les mêmes ateliers depuis des années.",
+    pt: "Mãos habilidosas cortam e montam cada painel, os mesmos ateliês há anos.",
   },
   stop_blurb_paris: {
-    en: "The coat's most recent chapter — wherever you are, right now, wearing it.",
-    fr: "Le dernier chapitre du manteau — où que vous soyez, en ce moment, en le portant.",
-    pt: "O capítulo mais recente do casaco — onde quer que você esteja, agora, usando-o.",
+    en: "The coat's most recent chapter, wherever you are, right now, wearing it.",
+    fr: "Le dernier chapitre du manteau, où que vous soyez, en ce moment, en le portant.",
+    pt: "O capítulo mais recente do casaco, onde quer que você esteja, agora, usando-o.",
   },
   viewed_times: { en: "This passport has been viewed", fr: "Ce passeport a été consulté", pt: "Este passaporte foi visualizado" },
   every_place_note: { en: "Every place adds to its story.", fr: "Chaque lieu enrichit son histoire.", pt: "Cada lugar acrescenta à sua história." },
@@ -74,9 +74,9 @@ const dict = {
 
   product_editorial_label: { en: "Crafted to Last", fr: "Conçu pour Durer", pt: "Feito para Durar" },
   product_editorial_headline: {
-    en: "This coat was designed to become part of your life—not just your wardrobe.",
-    fr: "Ce manteau a été conçu pour faire partie de votre vie — pas seulement de votre garde-robe.",
-    pt: "Este casaco foi feito para fazer parte da sua vida — não apenas do seu guarda-roupa.",
+    en: "This coat was designed to become part of your life, not just your wardrobe.",
+    fr: "Ce manteau a été conçu pour faire partie de votre vie, pas seulement de votre garde-robe.",
+    pt: "Este casaco foi feito para fazer parte da sua vida, não apenas do seu guarda-roupa.",
   },
   product_editorial_copy_1: {
     en: "A timeless wool silhouette made from 70% recycled fibres,",
@@ -276,7 +276,7 @@ const dict = {
   wool_farming_region_label: { en: "Region", fr: "Région", pt: "Região" },
   wool_farming_region_value: { en: "Canterbury Plains, New Zealand", fr: "Canterbury Plains, Nouvelle-Zélande", pt: "Canterbury Plains, Nova Zelândia" },
   wool_farming_climate_label: { en: "Climate", fr: "Climat", pt: "Clima" },
-  wool_farming_climate_value: { en: "Temperate — ideal for merino", fr: "Tempéré — idéal pour le mérinos", pt: "Temperado — ideal para merino" },
+  wool_farming_climate_value: { en: "Temperate, ideal for merino", fr: "Tempéré, idéal pour le mérinos", pt: "Temperado, ideal para merino" },
   wool_farming_season_label: { en: "Shearing season", fr: "Saison de tonte", pt: "Temporada de tosquia" },
   wool_farming_season_value: { en: "Spring (Sept–Nov)", fr: "Printemps (sept.–nov.)", pt: "Primavera (set.–nov.)" },
 
@@ -361,9 +361,9 @@ const dict = {
   // Curator's Notes
   curators_notes_title: { en: "Curator's Notes", fr: "Notes du Conservateur", pt: "Notas do Curador" },
   curators_notes_body: {
-    en: "This garment has matured through four winters, travelled across three cities and remained in exceptional condition. Rather than being replaced, it has been maintained, repaired and continuously worn — an ownership pattern that reflects the principles of circular design. Its documented history suggests a product intended to endure well beyond the industry average.",
-    fr: "Ce vêtement a mûri à travers quatre hivers, voyagé dans trois villes et est resté dans un état exceptionnel. Plutôt que d'être remplacé, il a été entretenu, réparé et porté continuellement — une habitude de possession qui reflète les principes du design circulaire. Son histoire documentée suggère un produit conçu pour durer bien au-delà de la moyenne du secteur.",
-    pt: "Esta peça amadureceu ao longo de quatro invernos, viajou por três cidades e permaneceu em condição excepcional. Em vez de ser substituída, foi mantida, reparada e usada continuamente — um padrão de posse que reflete os princípios do design circular. Sua história documentada sugere um produto feito para durar muito além da média do setor.",
+    en: "This garment has matured through four winters, travelled across three cities and remained in exceptional condition. Rather than being replaced, it has been maintained, repaired and continuously worn, an ownership pattern that reflects the principles of circular design. Its documented history suggests a product intended to endure well beyond the industry average.",
+    fr: "Ce vêtement a mûri à travers quatre hivers, voyagé dans trois villes et est resté dans un état exceptionnel. Plutôt que d'être remplacé, il a été entretenu, réparé et porté continuellement, une habitude de possession qui reflète les principes du design circulaire. Son histoire documentée suggère un produit conçu pour durer bien au-delà de la moyenne du secteur.",
+    pt: "Esta peça amadureceu ao longo de quatro invernos, viajou por três cidades e permaneceu em condição excepcional. Em vez de ser substituída, foi mantida, reparada e usada continuamente, um padrão de posse que reflete os princípios do design circular. Sua história documentada sugere um produto feito para durar muito além da média do setor.",
   },
 
   // Ownership Summary
@@ -475,7 +475,7 @@ const dict = {
   ready_to_wear: { en: "Ready to wear", fr: "Prêt à porter", pt: "Pronto para usar" },
   estimated_after_wears: { en: "Estimated after {n} additional wears", fr: "Estimé après {n} ports supplémentaires", pt: "Estimado após mais {n} usos" },
 
-  // Editorial weather observations — no percentages, no technical terms
+  // Editorial weather observations: no percentages, no technical terms
   obs_rain: { en: "Light rain later today makes outerwear a thoughtful choice.", fr: "De la pluie légère plus tard aujourd'hui fait de la veste un choix judicieux.", pt: "Chuva leve mais tarde hoje torna o casaco uma escolha ponderada." },
   obs_warming: { en: "The day begins cool before warming into the afternoon.", fr: "La journée commence fraîche avant de se réchauffer dans l'après-midi.", pt: "O dia começa frio antes de esquentar à tarde." },
   obs_cool: { en: "Cool temperatures favour soft wool layers today.", fr: "Les températures fraîches favorisent les couches de laine douce aujourd'hui.", pt: "As temperaturas frias favorecem camadas macias de lã hoje." },
@@ -514,15 +514,15 @@ const dict = {
   find_tailor: { en: "Find a tailor nearby", fr: "Trouver un tailleur à proximité", pt: "Encontrar um costureiro próximo" },
   return_to_cos: { en: "Return to COS", fr: "Retourner chez COS", pt: "Devolver à COS" },
   location_note: {
-    en: "Thrift and Repair open a nearby-places search — your browser may ask for location access.",
-    fr: "Donner et Réparer ouvrent une recherche à proximité — votre navigateur peut demander l'accès à votre position.",
-    pt: "Doar e Consertar abrem uma busca de locais próximos — seu navegador pode pedir acesso à localização.",
+    en: "Thrift and Repair open a nearby-places search. Your browser may ask for location access.",
+    fr: "Donner et Réparer ouvrent une recherche à proximité. Votre navigateur peut demander l'accès à votre position.",
+    pt: "Doar e Consertar abrem uma busca de locais próximos. Seu navegador pode pedir acesso à localização.",
   },
   why_brands_participate: { en: "Why COS participates", fr: "Pourquoi COS participe", pt: "Por que a COS participa" },
   brand_incentive_note: {
-    en: "Every resell, repair, or return routed through this passport gives COS a repeat touchpoint with you — and first right of refusal when the garment eventually leaves your closet.",
-    fr: "Chaque revente, réparation ou retour effectué via ce passeport donne à COS un point de contact récurrent avec vous — et la priorité lorsque le vêtement quittera votre garde-robe.",
-    pt: "Cada revenda, reparo ou devolução feito através deste passaporte dá à COS um ponto de contato recorrente com você — e prioridade quando a peça eventualmente sair do seu guarda-roupa.",
+    en: "Every resell, repair, or return routed through this passport gives COS a repeat touchpoint with you, and first right of refusal when the garment eventually leaves your closet.",
+    fr: "Chaque revente, réparation ou retour effectué via ce passeport donne à COS un point de contact récurrent avec vous, et la priorité lorsque le vêtement quittera votre garde-robe.",
+    pt: "Cada revenda, reparo ou devolução feito através deste passaporte dá à COS um ponto de contato recorrente com você, e prioridade quando a peça eventualmente sair do seu guarda-roupa.",
   },
 
   // Story
@@ -533,9 +533,9 @@ const dict = {
     pt: "Seu casaco começou em fazendas de ovelhas na Nova Zelândia,",
   },
   story_sentence_2: {
-    en: "before moving through European mills and into skilled hands in Portugal —",
-    fr: "avant de passer par des filatures européennes puis entre des mains expertes au Portugal —",
-    pt: "passou por fábricas europeias e chegou a mãos habilidosas em Portugal —",
+    en: "before moving through European mills and into skilled hands in Portugal,",
+    fr: "avant de passer par des filatures européennes puis entre des mains expertes au Portugal,",
+    pt: "passou por fábricas europeias e chegou a mãos habilidosas em Portugal,",
   },
   story_sentence_3: {
     en: "designed to be worn, repaired, and passed on.",
@@ -543,9 +543,9 @@ const dict = {
     pt: "feito para ser usado, reparado e repassado.",
   },
   story_p2: {
-    en: "Crafted from 70% recycled merino — it carries a lower footprint than 90% of comparable wool coats.",
-    fr: "Confectionné à partir de 70% de mérinos recyclé — son empreinte est inférieure à 90% des manteaux en laine comparables.",
-    pt: "Feito com 70% de merino reciclado — tem uma pegada menor que 90% dos casacos de lã comparáveis.",
+    en: "Crafted from 70% recycled merino, it carries a lower footprint than 90% of comparable wool coats.",
+    fr: "Confectionné à partir de 70% de mérinos recyclé, son empreinte est inférieure à 90% des manteaux en laine comparables.",
+    pt: "Feito com 70% de merino reciclado, tem uma pegada menor que 90% dos casacos de lã comparáveis.",
   },
   crafted_to_last: { en: "Crafted to last. Designed to return.", fr: "Fabriqué pour durer. Conçu pour revenir.", pt: "Feito para durar. Projetado para retornar." },
   share_passport: { en: "Share passport", fr: "Partager le passeport", pt: "Compartilhar passaporte" },
@@ -601,9 +601,9 @@ const dict = {
   close_label: { en: "Close", fr: "Fermer", pt: "Fechar" },
   verification_panel_title: { en: "About this verification", fr: "À propos de cette vérification", pt: "Sobre esta verificação" },
   verification_panel_body: {
-    en: "This passport's history is recorded on an immutable ledger, so entries can't be altered after the fact. In this demo, verification is illustrative — a production version would anchor to a live blockchain record.",
-    fr: "L'historique de ce passeport est enregistré sur un registre immuable, de sorte que les entrées ne peuvent pas être modifiées après coup. Dans cette démo, la vérification est illustrative — une version en production s'ancrerait à un registre blockchain en direct.",
-    pt: "O histórico deste passaporte é registrado em um registro imutável, de modo que as entradas não podem ser alteradas depois de feitas. Nesta demonstração, a verificação é ilustrativa — uma versão de produção seria ancorada a um registro de blockchain real.",
+    en: "This passport's history is recorded on an immutable ledger, so entries can't be altered after the fact. In this demo, verification is illustrative. A production version would anchor to a live blockchain record.",
+    fr: "L'historique de ce passeport est enregistré sur un registre immuable, de sorte que les entrées ne peuvent pas être modifiées après coup. Dans cette démo, la vérification est illustrative. Une version en production s'ancrerait à un registre blockchain en direct.",
+    pt: "O histórico deste passaporte é registrado em um registro imutável, de modo que as entradas não podem ser alteradas depois de feitas. Nesta demonstração, a verificação é ilustrativa. Uma versão de produção seria ancorada a um registro de blockchain real.",
   },
 
   privacy_eyebrow: { en: "Privacy", fr: "Confidentialité", pt: "Privacidade" },
@@ -842,9 +842,9 @@ const dict = {
 
   ownership_record_title: { en: "Ownership Record", fr: "Registre de Propriété", pt: "Registro de Propriedade" },
   ownership_record_subtitle: {
-    en: "A private, persistent record of this garment's provenance — yours to complete over time.",
-    fr: "Un registre privé et permanent de la provenance de ce vêtement — à compléter au fil du temps.",
-    pt: "Um registro privado e permanente da proveniência desta peça — para completar ao longo do tempo.",
+    en: "A private, persistent record of this garment's provenance, yours to complete over time.",
+    fr: "Un registre privé et permanent de la provenance de ce vêtement, à compléter au fil du temps.",
+    pt: "Um registro privado e permanente da proveniência desta peça, para completar ao longo do tempo.",
   },
   field_owner: { en: "Owner", fr: "Propriétaire", pt: "Proprietário" },
   field_purchase_date: { en: "Purchase Date", fr: "Date d'Achat", pt: "Data de Compra" },
@@ -873,7 +873,7 @@ const dict = {
   items_label: { en: "items", fr: "articles", pt: "itens" },
   worn_label: { en: "Worn", fr: "Porté", pt: "Usado" },
   what_is_it: { en: "What is it? e.g. Wool Trench Coat", fr: "Qu'est-ce que c'est ? ex. Trench en laine", pt: "O que é? ex. Trench de lã" },
-  memory_placeholder: { en: "The memory — where, when, why it mattered", fr: "Le souvenir — où, quand, pourquoi c'était important", pt: "A memória — onde, quando, por que importou" },
+  memory_placeholder: { en: "The memory: where, when, why it mattered", fr: "Le souvenir : où, quand, pourquoi c'était important", pt: "A memória: onde, quando, por que importou" },
   save_memory: { en: "Save memory", fr: "Enregistrer le souvenir", pt: "Salvar memória" },
   cancel: { en: "Cancel", fr: "Annuler", pt: "Cancelar" },
   log_a_memory: { en: "+ Log a memory", fr: "+ Ajouter un souvenir", pt: "+ Registrar uma memória" },
@@ -896,9 +896,9 @@ const dict = {
   remove_from_wardrobe: { en: "Remove from wardrobe", fr: "Retirer de la garde-robe", pt: "Remover do guarda-roupa" },
   wardrobe_empty_title: { en: "Nothing here yet", fr: "Rien ici pour l'instant", pt: "Nada aqui ainda" },
   wardrobe_empty_subtitle: {
-    en: "Scan a tag to add the first piece — and the first memory that comes with it.",
-    fr: "Scannez une étiquette pour ajouter la première pièce — et le premier souvenir qui l'accompagne.",
-    pt: "Escaneie uma etiqueta para adicionar a primeira peça — e a primeira memória que vem com ela.",
+    en: "Scan a tag to add the first piece, and the first memory that comes with it.",
+    fr: "Scannez une étiquette pour ajouter la première pièce, et le premier souvenir qui l'accompagne.",
+    pt: "Escaneie uma etiqueta para adicionar a primeira peça, e a primeira memória que vem com ela.",
   },
   scan_a_tag: { en: "Scan a tag", fr: "Scanner une étiquette", pt: "Escanear uma etiqueta" },
   connection_eyebrow: { en: "Connection", fr: "Connexion", pt: "Conexão" },
@@ -924,9 +924,9 @@ const dict = {
     pt: "Em vez disso, digite uma cidade ou CEP, e encontraremos um costureiro ou ponto de doação próximo.",
   },
   city_postcode: { en: "City or postcode", fr: "Ville ou code postal", pt: "Cidade ou CEP" },
-  photo_added_hint: { en: "Photo added — tap to change", fr: "Photo ajoutée — touchez pour changer", pt: "Foto adicionada — toque para alterar" },
+  photo_added_hint: { en: "Photo added, tap to change", fr: "Photo ajoutée, touchez pour changer", pt: "Foto adicionada, toque para alterar" },
   generating_reflection: { en: "Generating a reflection…", fr: "Génération d'une réflexion…", pt: "Gerando uma reflexão…" },
-  reflection_failed: { en: "Couldn't generate a reflection — try again", fr: "Impossible de générer une réflexion — réessayer", pt: "Não foi possível gerar uma reflexão — tentar novamente" },
+  reflection_failed: { en: "Couldn't generate a reflection, try again", fr: "Impossible de générer une réflexion, réessayer", pt: "Não foi possível gerar uma reflexão, tentar novamente" },
   generate_reflection: { en: "Generate a reflection", fr: "Générer une réflexion", pt: "Gerar uma reflexão" },
   add_photo_hint: { en: "Add a photo (optional)", fr: "Ajouter une photo (facultatif)", pt: "Adicionar uma foto (opcional)" },
   search_button: { en: "Search", fr: "Rechercher", pt: "Buscar" },
@@ -971,8 +971,8 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
     const entry = dict[key];
     if (!entry) {
       // A missing dictionary entry is a real bug (like the accidentally-
-      // deleted care_tier_excellent key), but the raw key name — e.g.
-      // "care_tier_excellent" — must never render as visible copy. Warn
+      // deleted care_tier_excellent key), but the raw key name (e.g.
+      // "care_tier_excellent") must never render as visible copy. Warn
       // loudly in development so it gets caught, fail silently (empty
       // string) in production so a person never sees an implementation
       // detail.

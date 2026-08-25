@@ -1,7 +1,7 @@
 // Both gemini-2.0-flash and gemini-2.5-flash-lite failed for the same
 // underlying reason: hardcoded, pinned model versions go stale as Google
 // cuts off new-user access to older models. The actual fix is to stop
-// pinning a specific version — "gemini-flash-latest" is Google's rolling
+// pinning a specific version, "gemini-flash-latest" is Google's rolling
 // alias that always points to their current recommended Flash model and
 // updates automatically on their end, so this class of failure shouldn't
 // recur. Still overridable via GEMINI_MODEL if needed.
@@ -12,7 +12,7 @@ const MAX_RETRIES = 2;
 export { GEMINI_MODEL };
 
 // NOTE: while actively debugging the 502s, this logs unconditionally
-// (not gated to non-production) — Vercel's function logs are the only
+// (not gated to non-production), Vercel's function logs are the only
 // way to see this on the live deployment, and the deployment itself runs
 // with VERCEL_ENV=production, so a dev-only gate would have hidden
 // exactly the logs needed right now. Re-add a production gate once this
@@ -44,7 +44,7 @@ async function callGeminiOnce(fullPrompt, maxTokens, apiKey) {
     // 1. Full Gemini HTTP status, always logged.
     log("Gemini HTTP status:", response.status, response.statusText);
 
-    // Read the raw body as text FIRST, before attempting JSON.parse — this
+    // Read the raw body as text FIRST, before attempting JSON.parse, this
     // way, if parsing fails, we still have the actual bytes Gemini sent
     // back instead of losing them.
     const rawText = await response.text();
@@ -72,7 +72,7 @@ async function callGeminiOnce(fullPrompt, maxTokens, apiKey) {
     try {
       data = JSON.parse(rawText);
     } catch (parseErr) {
-      // 3. JSON parsing error on a 200 response — this is a real,
+      // 3. JSON parsing error on a 200 response, this is a real,
       // surfaced failure, not silently treated as empty success.
       log("JSON parse error on 200 response:", parseErr.message);
       const err = new Error(`Response parsing failed: ${parseErr.message}`);
@@ -114,7 +114,7 @@ async function callGeminiOnce(fullPrompt, maxTokens, apiKey) {
     return text;
   } catch (err) {
     // 4. Any thrown exception, logged with its full detail before it
-    // propagates up — nothing gets swallowed silently here.
+    // propagates up, nothing gets swallowed silently here.
     log("Exception in callGeminiOnce:", err.message, err.detail ? `| detail: ${err.detail.slice(0, 500)}` : "");
     throw err;
   } finally {
