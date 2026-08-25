@@ -1024,7 +1024,7 @@ export function StoryBehindIt() {
           <p className="font-display italic text-[15px] text-ink leading-relaxed" style={storyReveal("translateY(6px)", 2650, 300)}>
             {t("story_sentence_3")}
           </p>
-          <p className="font-sans text-[12px] text-clay leading-relaxed mt-3" style={storyReveal("translateY(6px)", 2770, 300)}>
+          <p className="font-display italic text-[15px] text-ink leading-relaxed mt-3" style={storyReveal("translateY(6px)", 2770, 300)}>
             {t("story_p2")}
           </p>
           <p className="font-display italic text-[13px] text-ink mt-3" style={storyReveal("translateY(6px)", 2890, 300)}>
