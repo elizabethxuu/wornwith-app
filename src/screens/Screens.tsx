@@ -39,7 +39,7 @@ import {
   Share,
   Bookmark,
   Pencil,
-  Diamond,
+  Sparkle,
 } from "lucide-react";
 
 /* 1 — SKELETON LOADER */
@@ -200,11 +200,11 @@ export function Welcome() {
           </div>
           <p className="font-sans text-[11px] text-clay tracking-wide flex items-center justify-center flex-wrap gap-x-1.5">
             <span>{GARMENT.brandSku}</span>
-            <Diamond size={9} className="text-clay shrink-0" fill="currentColor" strokeWidth={0} />
+            <Sparkle size={10} className="text-clay shrink-0" fill="currentColor" strokeWidth={0} />
             <button onClick={() => setShowRws(!showRws)} className="underline underline-offset-2">
               RWS
             </button>
-            <Diamond size={9} className="text-clay shrink-0" fill="currentColor" strokeWidth={0} />
+            <Sparkle size={10} className="text-clay shrink-0" fill="currentColor" strokeWidth={0} />
             <span>DPP-ID: {GARMENT.dppId}</span>
           </p>
           {showRws && (
