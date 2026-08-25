@@ -39,6 +39,8 @@ import {
   Share,
   Bookmark,
   Pencil,
+  Sparkle,
+  Diamond,
 } from "lucide-react";
 
 /* 1 — SKELETON LOADER */
@@ -197,12 +199,14 @@ export function Welcome() {
               <Heart size={40} className="text-blush-deep" strokeWidth={1} fill="#C97A8C" />
             </div>
           </div>
-          <p className="font-sans text-[11px] text-clay tracking-wide">
-            {GARMENT.brandSku} &nbsp;✦&nbsp;{" "}
+          <p className="font-sans text-[11px] text-clay tracking-wide flex items-center justify-center flex-wrap gap-x-1.5">
+            <span>{GARMENT.brandSku}</span>
+            <Sparkle size={10} className="text-clay shrink-0" fill="currentColor" strokeWidth={0} />
             <button onClick={() => setShowRws(!showRws)} className="underline underline-offset-2">
               RWS
             </button>
-            {" "}&nbsp;<span style={{ fontSize: "0.6em", verticalAlign: "middle" }}>◆</span>&nbsp; DPP-ID: {GARMENT.dppId}
+            <Diamond size={9} className="text-clay shrink-0" fill="currentColor" strokeWidth={0} />
+            <span>DPP-ID: {GARMENT.dppId}</span>
           </p>
           {showRws && (
             <div className="bg-blush-pale/50 rounded-xl px-4 py-3 -mt-3 fade-up">
