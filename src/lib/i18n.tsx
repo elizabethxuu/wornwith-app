@@ -699,6 +699,7 @@ const dict = {
   data_source_manufacturing_label: { en: "Manufacturing Records", fr: "Registres de Fabrication", pt: "Registros de Fabricação" },
   data_source_owner_label: { en: "Owner Contributions", fr: "Contributions du Propriétaire", pt: "Contribuições do Proprietário" },
   data_source_updated_label: { en: "Last Updated", fr: "Dernière Mise à Jour", pt: "Última Atualização" },
+  about_passport_last_updated_value: { en: "August 2026", fr: "août 2026", pt: "agosto de 2026" },
   data_source_verified_value: { en: "Verified", fr: "Vérifié", pt: "Verificado" },
   data_source_active_value: { en: "Active", fr: "Actif", pt: "Ativo" },
 

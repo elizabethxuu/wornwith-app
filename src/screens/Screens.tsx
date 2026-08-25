@@ -2251,7 +2251,7 @@ export function AboutPassportScreen({ onBack }: { onBack: () => void }) {
           {specRow(t("data_source_brand_label"), `✓ ${t("data_source_verified_value")}`)}
           {specRow(t("data_source_manufacturing_label"), `✓ ${t("data_source_verified_value")}`)}
           {specRow(t("data_source_owner_label"), `✓ ${t("data_source_active_value")}`)}
-          {specRow(t("data_source_updated_label"), t("verified_date_value"))}
+          {specRow(t("data_source_updated_label"), t("about_passport_last_updated_value"))}
         </div>
       </div>
 
