@@ -6,6 +6,7 @@ import { ComposableMap, Geographies, Geography, Marker, Line, ZoomableGroup } fr
 import { useLanguage, type TranslationKey } from "../lib/i18n";
 import type { WardrobeItem } from "../lib/persistence";
 import { loadVoiceNote, saveVoiceNote, deleteVoiceNote, type VoiceNote } from "../lib/persistence";
+import { generatePassportPdf } from "../lib/pdfExport";
 import { requestVoice, transcribeVoiceNote } from "../lib/voice";
 import { useChapterColor } from "../lib/chapterColor";
 import { getCurrentSeason } from "../lib/careRecommendation";
@@ -1412,14 +1413,16 @@ export function VerificationInfoPanel({ open, onClose }: { open: boolean; onClos
 
 // The real, functional "Share Passport" experience, a bottom sheet with
 // three genuinely working options, not a native share-sheet shortcut.
-// PDF uses the browser's real print-to-PDF (window.print), QR renders an
-// actual scannable code for the current URL, and Copy Link copies the
-// real address. Same portal pattern as VerificationInfoPanel, for the
-// same reason (escaping the fade-up transform containing-block issue).
+// PDF generates a real multi-page document from live app data (see
+// lib/pdfExport.ts), QR renders an actual scannable code for the current
+// URL, and Copy Link copies the real address. Same portal pattern as
+// VerificationInfoPanel, for the same reason (escaping the fade-up
+// transform containing-block issue).
 export function ShareSheet({ open, onClose }: { open: boolean; onClose: () => void }) {
   const { t } = useLanguage();
   const [showQr, setShowQr] = useState(false);
   const [linkCopied, setLinkCopied] = useState(false);
+  const [pdfState, setPdfState] = useState<"idle" | "preparing" | "ready" | "error">("idle");
 
   if (!open) return null;
 
@@ -1436,8 +1439,17 @@ export function ShareSheet({ open, onClose }: { open: boolean; onClose: () => vo
     }
   };
 
-  const handleGeneratePdf = () => {
-    window.print();
+  const handleGeneratePdf = async () => {
+    if (pdfState === "preparing") return;
+    setPdfState("preparing");
+    try {
+      await generatePassportPdf();
+      setPdfState("ready");
+      setTimeout(() => setPdfState("idle"), 2200);
+    } catch {
+      setPdfState("error");
+      setTimeout(() => setPdfState("idle"), 2500);
+    }
   };
 
   return createPortal(
@@ -1470,10 +1482,17 @@ export function ShareSheet({ open, onClose }: { open: boolean; onClose: () => vo
             <p className="font-sans text-[11px] text-clay mt-0.5 leading-relaxed">{t("share_sheet_pdf_desc")}</p>
             <button
               onClick={handleGeneratePdf}
-              className="font-sans text-[11px] font-medium mt-1.5"
+              disabled={pdfState === "preparing"}
+              className="font-sans text-[11px] font-medium mt-1.5 disabled:opacity-60"
               style={{ color: "#8E3D52" }}
             >
-              → {t("share_sheet_pdf_action")}
+              {pdfState === "preparing"
+                ? t("pdf_preparing_label")
+                : pdfState === "ready"
+                ? t("pdf_ready_label")
+                : pdfState === "error"
+                ? t("pdf_error_label")
+                : `→ ${t("share_sheet_pdf_action")}`}
             </button>
           </div>
 

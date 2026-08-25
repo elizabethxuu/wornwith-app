@@ -9,7 +9,7 @@ const STORAGE_KEY = "wornwith:lang";
 // certification codes, DPP IDs) intentionally stay as-is across languages.
 // That's normal for real product passports too (a GOTS certificate doesn't
 // get translated).
-const dict = {
+export const dict = {
   // Skeleton loader
   dpp_eyebrow: { en: "Digital Product Passport", fr: "Passeport Numérique Produit", pt: "Passaporte Digital do Produto" },
   verifying: { en: "Verifying passport…", fr: "Vérification du passeport…", pt: "Verificando passaporte…" },
@@ -732,6 +732,9 @@ const dict = {
   share_sheet_subtitle: { en: "Choose how you'd like to share this passport.", fr: "Choisissez comment partager ce passeport.", pt: "Escolha como deseja compartilhar este passaporte." },
   share_sheet_pdf_desc: { en: "A beautifully formatted passport suitable for printing or sharing.", fr: "Un passeport joliment mis en forme, adapté à l'impression ou au partage.", pt: "Um passaporte lindamente formatado, adequado para impressão ou compartilhamento." },
   share_sheet_pdf_action: { en: "Generate PDF", fr: "Générer le PDF", pt: "Gerar PDF" },
+  pdf_preparing_label: { en: "Preparing your passport...", fr: "Préparation de votre passeport...", pt: "Preparando seu passaporte..." },
+  pdf_ready_label: { en: "Passport ready.", fr: "Passeport prêt.", pt: "Passaporte pronto." },
+  pdf_error_label: { en: "Couldn't generate the PDF, try again", fr: "Impossible de générer le PDF, réessayer", pt: "Não foi possível gerar o PDF, tentar novamente" },
   share_sheet_qr_desc: { en: "Open this passport on another device.", fr: "Ouvrez ce passeport sur un autre appareil.", pt: "Abra este passaporte em outro dispositivo." },
   share_sheet_qr_action: { en: "Generate QR Code", fr: "Générer le Code QR", pt: "Gerar Código QR" },
   share_sheet_link_desc: { en: "Always points to the latest verified version.", fr: "Pointe toujours vers la dernière version vérifiée.", pt: "Sempre aponta para a versão verificada mais recente." },
