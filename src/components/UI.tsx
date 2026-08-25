@@ -1405,6 +1405,44 @@ export function VerificationInfoPanel({ open, onClose }: { open: boolean; onClos
         <p className="font-sans text-[13px] text-clay leading-relaxed">
           {t("verification_panel_body")}
         </p>
+
+        {/* Ledger table, same verified-vs-projected visual logic as the
+            "From the Archives" timeline: accent/solid for verified rows,
+            muted/de-emphasized for the one projected row. */}
+        <div className="mt-6 pt-5 border-t border-line">
+          <div className="flex items-start justify-between gap-3 mb-3">
+            <p className="font-sans text-[10px] text-clay/80 leading-relaxed">
+              {t("ledger_caption")}
+            </p>
+            <span className="font-sans text-[9px] text-clay/60 italic shrink-0 mt-0.5">
+              {t("ledger_illustrative_label")}
+            </span>
+          </div>
+          <div className="grid grid-cols-[1.1fr_1.3fr_1fr_0.9fr] gap-x-1.5 pb-1.5 border-b border-line">
+            <span className="font-sans text-[8px] font-semibold uppercase tracking-wide text-clay">{t("ledger_col_date")}</span>
+            <span className="font-sans text-[8px] font-semibold uppercase tracking-wide text-clay">{t("ledger_col_event")}</span>
+            <span className="font-sans text-[8px] font-semibold uppercase tracking-wide text-clay">{t("ledger_col_hash")}</span>
+            <span className="font-sans text-[8px] font-semibold uppercase tracking-wide text-clay text-right">{t("ledger_col_status")}</span>
+          </div>
+          {[
+            { date: "5 Apr 2026", event: t("ledger_event_created"), hash: "0x4f2a\u20269c1e", projected: false },
+            { date: "12 Apr 2026", event: t("ledger_event_transferred"), hash: "0x7b31\u20264a02", projected: false },
+            { date: "2 Jun 2026", event: t("ledger_event_moment_logged"), hash: "0xe910\u20267d5f", projected: false },
+            { date: t("ledger_date_repair"), event: t("ledger_event_repair_projected"), hash: "-", projected: true },
+          ].map((row, i) => (
+            <div
+              key={i}
+              className={`grid grid-cols-[1.1fr_1.3fr_1fr_0.9fr] gap-x-1.5 py-2 border-b border-line/60 last:border-0 ${row.projected ? "opacity-55" : ""}`}
+            >
+              <span className="font-sans text-[9.5px] text-ink">{row.date}</span>
+              <span className="font-sans text-[9.5px] text-ink">{row.event}</span>
+              <span className="font-mono text-[9px] text-clay/70">{row.hash}</span>
+              <span className={`font-sans text-[9.5px] font-medium text-right ${row.projected ? "text-clay" : "text-sage"}`}>
+                {row.projected ? t("ledger_status_projected") : t("ledger_status_verified")}
+              </span>
+            </div>
+          ))}
+        </div>
       </div>
     </div>,
     document.body

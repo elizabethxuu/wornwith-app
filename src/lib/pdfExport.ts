@@ -1,5 +1,5 @@
 // Generates the complete Digital Product Passport as a real, multi-page,
-// selectable-text PDF — built with jsPDF's native text/drawing API, not
+// selectable-text PDF, built with jsPDF's native text/drawing API, not
 // html2canvas on the current viewport. Every value is read live from the
 // same data sources the app itself renders from (GARMENT, the Ownership
 // Record, the Wardrobe list), so a person's actual saved memories,
@@ -9,7 +9,7 @@
 // Honest scope note: this covers every section of the passport with real
 // content, but two simplifications were necessary. First, typography uses
 // jsPDF's built-in Times (serif) and Helvetica (sans) font families rather
-// than the exact Cormorant Garamond / Inter used on the web — embedding a
+// than the exact Cormorant Garamond / Inter used on the web, embedding a
 // custom font family into a PDF is a real, separate undertaking (base64-
 // encoding the font file into a jsPDF font module) that was out of scope
 // here. Second, the interactive route map isn't reproduced as a graphic;
@@ -54,7 +54,7 @@ function makeT(lang: Lang) {
   };
 }
 
-// Loads the product image as a data URL so it can be embedded — fetch()
+// Loads the product image as a data URL so it can be embedded, fetch()
 // works here since this runs in the browser, not a server context.
 async function loadImageDataUrl(path: string): Promise<string | null> {
   try {
@@ -163,7 +163,7 @@ export async function generatePassportPdf(): Promise<void> {
     cursor.y += 9;
   };
 
-  // ---------- PAGE 1 — Cover ----------
+  // ---------- PAGE 1, Cover ----------
   doc.setFont("helvetica", "bold");
   doc.setFontSize(8);
   setColor(COLOR.clay);
@@ -178,7 +178,7 @@ export async function generatePassportPdf(): Promise<void> {
       doc.addImage(imageDataUrl, "PNG", (PAGE_W - imgW) / 2, cursor.y, imgW, imgH, undefined, "FAST");
       cursor.y += imgH + 10;
     } catch {
-      // Image failed to decode/embed — continue without it rather than
+      // Image failed to decode/embed, continue without it rather than
       // failing the whole export.
     }
   }
@@ -229,7 +229,7 @@ export async function generatePassportPdf(): Promise<void> {
   doc.text(t("eu_regulated") || "EU Regulated \u00b7 ESPR 2028\u20132029", PAGE_W / 2, cursor.y, { align: "center" });
   cursor.y += 10;
 
-  // ---------- PAGE 2 — Product Information + Crafted to Last ----------
+  // ---------- PAGE 2, Product Information + Crafted to Last ----------
   newPage();
   eyebrow(t("section_product") || "Product");
   headline(GARMENT.name, 18);
@@ -255,7 +255,7 @@ export async function generatePassportPdf(): Promise<void> {
   row(t("times_worn") || "Times worn", ownership.wearCount || GARMENT.timesWorn);
   row(t("condition") || "Condition", ownership.condition || GARMENT.condition);
 
-  // ---------- PAGE 3 — Journey / Origin ----------
+  // ---------- PAGE 3, Journey / Origin ----------
   newPage();
   eyebrow(t("section_journey") || "Journey");
   headline(t("supply_chain_title") || "Where it came from", 16);
@@ -275,7 +275,7 @@ export async function generatePassportPdf(): Promise<void> {
   row(t("manufacturing_mill_label") || "Mill", t("manufacturing_mill_value") || "");
   row(t("manufacturing_since_label") || "Since", t("manufacturing_since_value") || "");
 
-  // ---------- PAGE 4 — Care ----------
+  // ---------- PAGE 4, Care ----------
   newPage();
   eyebrow(t("care") || "Care");
   headline(t("designed_years") || "Designed for years, not seasons.", 16);
@@ -294,7 +294,7 @@ export async function generatePassportPdf(): Promise<void> {
     [t("care_philosophy_line1"), t("care_philosophy_line2"), t("care_philosophy_line3")].filter(Boolean).join(" ")
   );
 
-  // ---------- PAGE 5 — Sustainability / Environmental Performance ----------
+  // ---------- PAGE 5, Sustainability / Environmental Performance ----------
   newPage();
   eyebrow(t("section_impact") || "Sustainability");
   headline(t("env_performance_title") || "Environmental Performance", 16);
@@ -306,7 +306,7 @@ export async function generatePassportPdf(): Promise<void> {
   row(t("env_metric_sourced") || "Responsibly sourced wool fibres", t("env_metric_sourced_value") || "");
   row(t("env_metric_water") || "Water conserved during production", t("env_metric_water_value") || "");
 
-  // ---------- PAGE 6 — Story Behind It ----------
+  // ---------- PAGE 6, Story Behind It ----------
   newPage();
   eyebrow(t("section_story") || "Story");
   headline(t("story_behind_it") || "The Story Behind It", 16);
@@ -323,7 +323,7 @@ export async function generatePassportPdf(): Promise<void> {
   doc.text(t("crafted_to_last") || "", MARGIN, cursor.y);
   cursor.y += 10;
 
-  // ---------- PAGE 7 — Ownership ----------
+  // ---------- PAGE 7, Ownership ----------
   newPage();
   eyebrow(t("section_ownership") || "Ownership");
   headline(t("designed_return") || "A record that grows with you.", 16);
@@ -357,7 +357,7 @@ export async function generatePassportPdf(): Promise<void> {
     body(ownership.notes);
   }
 
-  // ---------- PAGE 8 — Wardrobe ----------
+  // ---------- PAGE 8, Wardrobe ----------
   if (wardrobe.length > 0) {
     newPage();
     eyebrow(t("section_wardrobe") || "Wardrobe");
@@ -374,7 +374,7 @@ export async function generatePassportPdf(): Promise<void> {
     }
   }
 
-  // ---------- PAGE 9 — About / Verification / Data Sources / Confidence ----------
+  // ---------- PAGE 9, About / Verification / Data Sources / Confidence ----------
   newPage();
   eyebrow(t("about_passport_eyebrow") || "About this Passport");
   headline(t("about_passport_title") || "A living record of craftsmanship.", 16);
@@ -393,7 +393,7 @@ export async function generatePassportPdf(): Promise<void> {
   row(t("data_source_owner_label") || "Owner Contributions", t("data_source_active_value") || "Active");
   row(t("data_source_updated_label") || "Last Updated", t("about_passport_last_updated_value") || "");
 
-  // ---------- FINAL PAGE — Provenance & Closing ----------
+  // ---------- FINAL PAGE, Provenance & Closing ----------
   newPage();
   eyebrow(t("section_passport") || "Passport");
   headline(t("closing_evolve_line") || "Crafted to last. Designed to evolve.", 16);
@@ -407,7 +407,7 @@ export async function generatePassportPdf(): Promise<void> {
   setColor(COLOR.clay);
   doc.text(t("footer_copyright") || "\u00a9 2026 Elizabeth Xu", PAGE_W / 2, PAGE_H - MARGIN, { align: "center" });
 
-  // Page numbers on every page — elegant, minimal.
+  // Page numbers on every page, elegant, minimal.
   const totalPages = doc.getNumberOfPages();
   for (let i = 1; i <= totalPages; i++) {
     doc.setPage(i);
