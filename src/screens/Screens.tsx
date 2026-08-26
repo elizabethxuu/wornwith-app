@@ -35,11 +35,9 @@ import {
   CalendarDays,
   Camera,
   MapPinOff,
-  Heart,
   Share,
   Bookmark,
   Pencil,
-  Sparkle,
 } from "lucide-react";
 
 /* 1: SKELETON LOADER */
@@ -194,18 +192,28 @@ export function Welcome() {
           )}
 
           <div style={{ perspective: "800px" }}>
-            <div className="w-24 h-28 rounded-xl bg-blush-pale flex items-center justify-center card-flip-lr">
-              <Heart size={40} className="text-blush-deep" strokeWidth={1} fill="#C97A8C" />
+            <div className="relative w-24 h-28 rounded-xl overflow-hidden card-flip-lr">
+              <img
+                src="/images/welcome-portrait.png"
+                alt=""
+                className="w-full h-full object-cover"
+              />
+              <div
+                className="absolute inset-0"
+                style={{
+                  background: "linear-gradient(180deg, rgba(201,122,140,0.22) 0%, rgba(201,122,140,0.08) 60%, rgba(201,122,140,0.20) 100%)",
+                }}
+              />
             </div>
           </div>
           <p className="font-sans text-[11px] text-clay tracking-wide flex items-center justify-center flex-wrap gap-x-1.5">
             <span>{GARMENT.brandSku}</span>
-            <Sparkle size={10} className="text-clay shrink-0" fill="currentColor" strokeWidth={0} />
+            <span>·</span>
             <button onClick={() => setShowRws(!showRws)} className="underline underline-offset-2">
               RWS
             </button>
-            <Sparkle size={10} className="text-clay shrink-0" fill="currentColor" strokeWidth={0} />
-            <span>{t("display_code_label")}: {GARMENT.dppId}</span>
+            <span>·</span>
+            <span>{GARMENT.dppId}</span>
           </p>
           {showRws && (
             <div className="bg-blush-pale/50 rounded-xl px-4 py-3 -mt-3 fade-up">
