@@ -378,6 +378,14 @@ export const dict = {
 
   // Today's Edit
   todays_edit_title: { en: "Today's Edit", fr: "La Sélection du Jour", pt: "A Seleção de Hoje" },
+  ask_anything_placeholder: { en: "Ask anything about your wardrobe\u2026", fr: "Posez une question sur votre garde-robe\u2026", pt: "Pergunte algo sobre seu guarda-roupa\u2026" },
+  ask_anything_fallback: {
+    en: "I can help with questions like \u201cWhat should I wear today?\u201d, \u201cWhat haven't I worn in a while?\u201d, or \u201cWhat's ready to wear right now?\u201d",
+    fr: "Je peux répondre à des questions comme \u00ab\u00a0Que devrais-je porter aujourd'hui\u00a0?\u00a0\u00bb, \u00ab\u00a0Qu'est-ce que je n'ai pas porté depuis longtemps\u00a0?\u00a0\u00bb, ou \u00ab\u00a0Qu'est-ce qui est prêt à porter maintenant\u00a0?\u00a0\u00bb",
+    pt: "Posso ajudar com perguntas como \u201cO que devo vestir hoje?\u201d, \u201cO que não uso há um tempo?\u201d, ou \u201cO que está pronto para usar agora?\u201d",
+  },
+  ask_anything_not_worn_intro: { en: "It's been a while since you wore", fr: "Cela fait un moment que vous n'avez pas porté", pt: "Faz um tempo que você não usa" },
+  ask_anything_empty_wardrobe: { en: "Add a piece to your wardrobe first, then ask again.", fr: "Ajoutez d'abord une pièce à votre garde-robe, puis reposez la question.", pt: "Adicione uma peça ao seu guarda-roupa primeiro e pergunte novamente." },
   your_prefix: { en: "your", fr: "votre", pt: "seu" },
 
   weather_unavailable: { en: "Enable location access for real-time weather.", fr: "Activez l'accès à la position pour la météo en temps réel.", pt: "Ative o acesso à localização para clima em tempo real." },

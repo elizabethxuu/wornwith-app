@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
-import { Mic, Square, AudioLines, Trash2 } from "lucide-react";
+import { Mic, Square, AudioLines, Trash2, Plus, ArrowUp } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
 import { ComposableMap, Geographies, Geography, Marker, Line, ZoomableGroup } from "react-simple-maps";
 import { useLanguage, type TranslationKey } from "../lib/i18n";
@@ -655,6 +655,148 @@ export function ArchiveTimeline({
           );
         })}
       </div>
+    </div>
+  );
+}
+
+// A direct-entry point into the same information Today's Edit and Garment
+// Readiness already surface, just reachable by typing a question instead
+// of scrolling. Deliberately narrow rather than open-ended: it pattern-
+// matches against the three query types it can answer reliably (per the
+// brief's own preference for "a narrower, reliable feature" over a broad
+// unreliable one) and reuses the exact same deterministic functions
+// TodaysEdit calls (pickFeaturedItem, naturalName, daysSinceLogged), not
+// a new AI call, and not a duplicate of TodaysEdit's own internal state,
+// since this renders as a sibling above it rather than needing to touch
+// or restructure that component at all.
+export function AskAnythingBar({ wardrobe }: { wardrobe: WardrobeItem[] }) {
+  const { t } = useLanguage();
+  const [query, setQuery] = useState("");
+  const [answer, setAnswer] = useState<string | null>(null);
+  const [thinking, setThinking] = useState(false);
+
+  const answerQuery = async (raw: string) => {
+    const q = raw.trim().toLowerCase();
+    if (!q) return;
+    setThinking(true);
+    setAnswer(null);
+
+    if (wardrobe.length === 0) {
+      setTimeout(() => {
+        setAnswer(t("ask_anything_empty_wardrobe"));
+        setThinking(false);
+      }, 300);
+      return;
+    }
+
+    // Type C, readiness/condition, checked first since "ready to wear"
+    // and "wear today" share the word "wear."
+    if (/ready|readiness|condition/.test(q)) {
+      const lines = [t("reason_condition"), t("ready_to_wear"), t("recently_maintained")].filter(Boolean);
+      setTimeout(() => {
+        setAnswer(lines.join(" "));
+        setThinking(false);
+      }, 350);
+      return;
+    }
+
+    // Type B, hasn't been worn in a while: real computation across the
+    // actual wardrobe, not a canned answer.
+    if (/haven'?t worn|not worn|worn in a while|long time/.test(q)) {
+      let oldest: WardrobeItem | null = null;
+      let oldestDays = -1;
+      for (const item of wardrobe) {
+        const days = daysSinceLogged(item.loggedAt);
+        if (days !== null && days > oldestDays) {
+          oldestDays = days;
+          oldest = item;
+        }
+      }
+      setTimeout(() => {
+        if (oldest) {
+          const displayName = oldest.nameKey ? t(oldest.nameKey) || oldest.name : oldest.name;
+          setAnswer(`${t("ask_anything_not_worn_intro")} ${naturalName(displayName, t("your_prefix"))}.`);
+        } else {
+          setAnswer(t("ask_anything_fallback"));
+        }
+        setThinking(false);
+      }, 350);
+      return;
+    }
+
+    // Type A, "what should I wear", the same weather-aware pick Today's
+    // Edit itself shows.
+    if (/wear today|wear now|should i wear|what to wear/.test(q)) {
+      const weather = await fetchWeather();
+      const featured = pickFeaturedItem(wardrobe, weather);
+      const displayName = featured.nameKey ? t(featured.nameKey) || featured.name : featured.name;
+      const itemName = naturalName(displayName, t("your_prefix"));
+      const reasoningKey = getReasoningKey(weather);
+      setAnswer(`${capitalizeFirst(itemName)}. ${t(reasoningKey as TranslationKey)}`);
+      setThinking(false);
+      return;
+    }
+
+    // No confident match, say so plainly rather than guessing.
+    setTimeout(() => {
+      setAnswer(t("ask_anything_fallback"));
+      setThinking(false);
+    }, 300);
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    answerQuery(query);
+  };
+
+  return (
+    <div className="mb-6">
+      <form
+        onSubmit={handleSubmit}
+        className="rounded-2xl px-3.5 pt-3 pb-2.5"
+        style={{ backgroundColor: "#FBF3F0" }}
+      >
+        <input
+          type="text"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder={t("ask_anything_placeholder")}
+          className="w-full bg-transparent font-sans text-[13px] text-ink placeholder:text-clay/60 focus:outline-none"
+        />
+        <div className="flex items-center justify-between mt-2">
+          <button
+            type="button"
+            aria-label="Add"
+            className="w-7 h-7 rounded-full border border-clay/25 text-clay flex items-center justify-center shrink-0"
+          >
+            <Plus size={14} />
+          </button>
+          <div className="flex items-center gap-2">
+            <span className="w-7 h-7 rounded-full border border-clay/25 text-clay flex items-center justify-center shrink-0">
+              <Mic size={13} />
+            </span>
+            <button
+              type="submit"
+              aria-label="Submit"
+              disabled={!query.trim()}
+              className="w-7 h-7 rounded-full flex items-center justify-center shrink-0 text-white disabled:opacity-40 transition-opacity"
+              style={{ backgroundColor: "#C97A8C" }}
+            >
+              <ArrowUp size={14} />
+            </button>
+          </div>
+        </div>
+      </form>
+
+      {(thinking || answer) && (
+        <div className="mt-2.5 px-1 fade-up">
+          {thinking ? (
+            <p className="font-sans text-[11px] text-clay/70 italic">…</p>
+          ) : (
+            <p className="font-display italic text-[14px] text-ink leading-relaxed">{answer}</p>
+          )}
+        </div>
+      )}
     </div>
   );
 }

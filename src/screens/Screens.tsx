@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Eyebrow, Donut, Card, JourneyMap, Pill, Disclaimer, EmptyState, ExpandableCard, ArchiveTransition, ArchiveTimeline, type ArchiveEntry, TodaysEdit, CareRitualRow, type CareRitual, useMountReveal, VerificationInfoPanel, ShareSheet } from "../components/UI";
+import { Eyebrow, Donut, Card, JourneyMap, Pill, Disclaimer, EmptyState, ExpandableCard, ArchiveTransition, ArchiveTimeline, type ArchiveEntry, TodaysEdit, AskAnythingBar, CareRitualRow, type CareRitual, useMountReveal, VerificationInfoPanel, ShareSheet } from "../components/UI";
 import { ChapterColorProvider, ARCHIVE_ACCENT_COLOR, useChapterColor } from "../lib/chapterColor";
 import { generateAI } from "../lib/aiService";
 import {
@@ -1720,6 +1720,7 @@ export function MyWardrobe() {
 
   return (
     <div className="h-full px-5 py-6 fade-up">
+      <AskAnythingBar wardrobe={items} />
       <TodaysEdit wardrobe={items} />
       <Eyebrow>{t("my_wardrobe")}</Eyebrow>
       <h2 className="font-display italic text-xl text-ink mt-1 mb-3">
