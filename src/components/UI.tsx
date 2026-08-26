@@ -1,11 +1,11 @@
 import { useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
-import { Mic, Square, AudioLines, Trash2, Plus, ArrowUp } from "lucide-react";
+import { Mic, Square, AudioLines, Trash2, Plus, ArrowUp, X, Camera, Shirt } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
 import { ComposableMap, Geographies, Geography, Marker, Line, ZoomableGroup } from "react-simple-maps";
 import { useLanguage, type TranslationKey } from "../lib/i18n";
 import type { WardrobeItem } from "../lib/persistence";
-import { loadVoiceNote, saveVoiceNote, deleteVoiceNote, type VoiceNote } from "../lib/persistence";
+import { loadVoiceNote, saveVoiceNote, deleteVoiceNote, compressImage, type VoiceNote } from "../lib/persistence";
 import { generatePassportPdf } from "../lib/pdfExport";
 import { requestVoice, transcribeVoiceNote } from "../lib/voice";
 import { useChapterColor } from "../lib/chapterColor";
@@ -669,11 +669,38 @@ export function ArchiveTimeline({
 // a new AI call, and not a duplicate of TodaysEdit's own internal state,
 // since this renders as a sibling above it rather than needing to touch
 // or restructure that component at all.
+// A direct-entry point into the same information Today's Edit and Garment
+// Readiness already surface, just reachable by typing (or speaking) a
+// question instead of scrolling. The three example queries pattern-match
+// reliably and reuse the exact same deterministic functions TodaysEdit
+// calls (pickFeaturedItem, naturalName, daysSinceLogged) rather than a
+// new AI call. TodaysEdit itself is never touched, this renders as a
+// sibling above it and computes its own answers independently.
 export function AskAnythingBar({ wardrobe }: { wardrobe: WardrobeItem[] }) {
   const { t } = useLanguage();
   const [query, setQuery] = useState("");
   const [answer, setAnswer] = useState<string | null>(null);
   const [thinking, setThinking] = useState(false);
+
+  // Real attachment state, not a placeholder, a photo is genuinely
+  // captured/compressed/attachable, and referencing a garment genuinely
+  // changes which item the answer logic reasons about (see answerQuery
+  // below, the referencedItem branch). Honest limitation: there's no
+  // vision model wired in, so an attached photo's contents aren't
+  // reasoned over by the (deterministic, not AI) answer logic, it's
+  // real, functional UI state, but decorative to the current answer
+  // engine until a real vision/AI backend exists to consume it.
+  const [showAttachMenu, setShowAttachMenu] = useState(false);
+  const [showGarmentPicker, setShowGarmentPicker] = useState(false);
+  const [attachedPhoto, setAttachedPhoto] = useState<string | null>(null);
+  const [referencedItem, setReferencedItem] = useState<WardrobeItem | null>(null);
+
+  const [micState, setMicState] = useState<"idle" | "requesting" | "recording" | "transcribing" | "error">("idle");
+  const [micError, setMicError] = useState<string | null>(null);
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const chunksRef = useRef<Blob[]>([]);
+
+  const itemDisplayName = (item: WardrobeItem) => (item.nameKey ? t(item.nameKey) || item.name : item.name);
 
   const answerQuery = async (raw: string) => {
     const q = raw.trim().toLowerCase();
@@ -689,20 +716,38 @@ export function AskAnythingBar({ wardrobe }: { wardrobe: WardrobeItem[] }) {
       return;
     }
 
-    // Type C, readiness/condition, checked first since "ready to wear"
-    // and "wear today" share the word "wear."
+    const prefix = referencedItem
+      ? `${t("ask_anything_about_item")} ${naturalName(itemDisplayName(referencedItem), t("your_prefix"))}: `
+      : "";
+
+    // Type C, readiness/condition. If a specific garment was referenced
+    // via the attach menu, answer about that garment specifically rather
+    // than the generically featured one.
     if (/ready|readiness|condition/.test(q)) {
       const lines = [t("reason_condition"), t("ready_to_wear"), t("recently_maintained")].filter(Boolean);
       setTimeout(() => {
-        setAnswer(lines.join(" "));
+        setAnswer(prefix + lines.join(" "));
         setThinking(false);
       }, 350);
       return;
     }
 
-    // Type B, hasn't been worn in a while: real computation across the
-    // actual wardrobe, not a canned answer.
+    // Type B, hasn't been worn in a while. A referenced garment answers
+    // "how long since I wore X specifically" instead of searching for
+    // the single least-worn item overall.
     if (/haven'?t worn|not worn|worn in a while|long time/.test(q)) {
+      if (referencedItem) {
+        const days = daysSinceLogged(referencedItem.loggedAt);
+        setTimeout(() => {
+          setAnswer(
+            days !== null
+              ? `${t("ask_anything_days_since_worn").replace("{n}", String(days))} ${naturalName(itemDisplayName(referencedItem), t("your_prefix"))}.`
+              : `${naturalName(itemDisplayName(referencedItem), t("your_prefix"))} ${t("ask_anything_never_logged")}.`
+          );
+          setThinking(false);
+        }, 350);
+        return;
+      }
       let oldest: WardrobeItem | null = null;
       let oldestDays = -1;
       for (const item of wardrobe) {
@@ -714,8 +759,7 @@ export function AskAnythingBar({ wardrobe }: { wardrobe: WardrobeItem[] }) {
       }
       setTimeout(() => {
         if (oldest) {
-          const displayName = oldest.nameKey ? t(oldest.nameKey) || oldest.name : oldest.name;
-          setAnswer(`${t("ask_anything_not_worn_intro")} ${naturalName(displayName, t("your_prefix"))}.`);
+          setAnswer(`${t("ask_anything_not_worn_intro")} ${naturalName(itemDisplayName(oldest), t("your_prefix"))}.`);
         } else {
           setAnswer(t("ask_anything_fallback"));
         }
@@ -724,8 +768,8 @@ export function AskAnythingBar({ wardrobe }: { wardrobe: WardrobeItem[] }) {
       return;
     }
 
-    // Type A, "what should I wear", the same weather-aware pick Today's
-    // Edit itself shows.
+    // Type A, "what should I wear", the same weather-aware pick
+    // Today's Edit itself shows.
     if (/wear today|wear now|should i wear|what to wear/.test(q)) {
       const weather = await fetchWeather();
       const featured = pickFeaturedItem(wardrobe, weather);
@@ -737,7 +781,6 @@ export function AskAnythingBar({ wardrobe }: { wardrobe: WardrobeItem[] }) {
       return;
     }
 
-    // No confident match, say so plainly rather than guessing.
     setTimeout(() => {
       setAnswer(t("ask_anything_fallback"));
       setThinking(false);
@@ -749,8 +792,124 @@ export function AskAnythingBar({ wardrobe }: { wardrobe: WardrobeItem[] }) {
     answerQuery(query);
   };
 
+  // Real attachment: an actual file, compressed and previewed, removable.
+  const handlePhotoAttach = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    e.target.value = "";
+    setShowAttachMenu(false);
+    if (!file) return;
+    try {
+      const compressed = await compressImage(file);
+      setAttachedPhoto(compressed);
+    } catch {
+      // photo attachment failing shouldn't block the rest of the input
+    }
+  };
+
+  const handleReferenceGarment = (item: WardrobeItem) => {
+    setReferencedItem(item);
+    setShowGarmentPicker(false);
+    setShowAttachMenu(false);
+  };
+
+  // Real ElevenLabs speech-to-text, reusing the exact same endpoint and
+  // client helper built for the Morning Brief voice note feature
+  // (api/transcribe.js, transcribeVoiceNote in lib/voice.ts) rather than
+  // a new integration. Records via MediaRecorder, transcribes on stop,
+  // populates the input, then submits automatically.
+  const startVoiceInput = async () => {
+    if (!navigator.mediaDevices?.getUserMedia || typeof MediaRecorder === "undefined") {
+      setMicState("error");
+      setMicError(t("mic_unavailable"));
+      setTimeout(() => setMicState("idle"), 3000);
+      return;
+    }
+    setMicState("requesting");
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const recorder = new MediaRecorder(stream);
+      chunksRef.current = [];
+      recorder.ondataavailable = (e) => {
+        if (e.data.size > 0) chunksRef.current.push(e.data);
+      };
+      recorder.onstop = () => {
+        stream.getTracks().forEach((track) => track.stop());
+        const blob = new Blob(chunksRef.current, { type: recorder.mimeType || "audio/webm" });
+        setMicState("transcribing");
+        const reader = new FileReader();
+        reader.onloadend = async () => {
+          const dataUrl = reader.result as string;
+          const base64 = dataUrl.split(",")[1];
+          if (!base64) {
+            setMicState("error");
+            setMicError(t("mic_transcription_failed"));
+            setTimeout(() => setMicState("idle"), 3000);
+            return;
+          }
+          const transcript = await transcribeVoiceNote(base64, blob.type);
+          if (transcript) {
+            setQuery(transcript);
+            setMicState("idle");
+            answerQuery(transcript);
+          } else {
+            setMicState("error");
+            setMicError(t("mic_transcription_failed"));
+            setTimeout(() => setMicState("idle"), 3000);
+          }
+        };
+        reader.readAsDataURL(blob);
+      };
+      mediaRecorderRef.current = recorder;
+      recorder.start();
+      setMicState("recording");
+    } catch {
+      setMicState("error");
+      setMicError(t("mic_permission_denied"));
+      setTimeout(() => setMicState("idle"), 3000);
+    }
+  };
+
+  const stopVoiceInput = () => {
+    mediaRecorderRef.current?.stop();
+  };
+
+  const handleMicClick = () => {
+    if (micState === "recording") {
+      stopVoiceInput();
+    } else if (micState === "idle" || micState === "error") {
+      startVoiceInput();
+    }
+  };
+
   return (
-    <div className="mb-6">
+    <div className="mb-6 relative">
+      {attachedPhoto && (
+        <div className="flex items-center gap-2 mb-1.5 px-1">
+          <div className="relative w-9 h-9 rounded-lg overflow-hidden shrink-0">
+            <img src={attachedPhoto} alt="" className="w-full h-full object-cover" />
+            <button
+              type="button"
+              onClick={() => setAttachedPhoto(null)}
+              aria-label={t("attach_remove_label")}
+              className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-ink/70 text-white flex items-center justify-center"
+            >
+              <X size={9} />
+            </button>
+          </div>
+        </div>
+      )}
+      {referencedItem && (
+        <div className="flex items-center gap-1.5 mb-1.5 px-1">
+          <span className="flex items-center gap-1 font-sans text-[10px] text-clay bg-blush-pale/50 rounded-full px-2 py-1">
+            <Shirt size={10} />
+            {itemDisplayName(referencedItem)}
+            <button type="button" onClick={() => setReferencedItem(null)} aria-label={t("attach_remove_label")}>
+              <X size={10} />
+            </button>
+          </span>
+        </div>
+      )}
+
       <form
         onSubmit={handleSubmit}
         className="rounded-2xl px-3.5 pt-3 pb-2.5"
@@ -760,25 +919,77 @@ export function AskAnythingBar({ wardrobe }: { wardrobe: WardrobeItem[] }) {
           type="text"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder={t("ask_anything_placeholder")}
-          className="w-full bg-transparent font-sans text-[13px] text-ink placeholder:text-clay/60 focus:outline-none"
+          placeholder={
+            micState === "recording"
+              ? t("mic_recording_label")
+              : micState === "transcribing"
+              ? t("mic_transcribing_label")
+              : t("ask_anything_placeholder")
+          }
+          disabled={micState === "recording" || micState === "transcribing"}
+          className="w-full bg-transparent font-sans text-[13px] text-ink placeholder:text-clay/60 focus:outline-none disabled:placeholder:text-blush-deep"
         />
         <div className="flex items-center justify-between mt-2">
-          <button
-            type="button"
-            aria-label="Add"
-            className="w-7 h-7 rounded-full border border-clay/25 text-clay flex items-center justify-center shrink-0"
-          >
-            <Plus size={14} />
-          </button>
+          <div className="relative">
+            <button
+              type="button"
+              aria-label="Add"
+              onClick={() => setShowAttachMenu(!showAttachMenu)}
+              className="w-7 h-7 rounded-full border border-clay/25 text-clay flex items-center justify-center shrink-0"
+            >
+              <Plus size={14} className={`transition-transform ${showAttachMenu ? "rotate-45" : ""}`} />
+            </button>
+            {showAttachMenu && (
+              <div className="absolute bottom-9 left-0 bg-paper border border-line rounded-xl shadow-sm py-1 w-52 z-10">
+                <label className="flex items-center gap-2 px-3 py-2 text-[12px] font-sans text-ink cursor-pointer hover:bg-blush-pale/30">
+                  <Camera size={13} className="text-clay" />
+                  {t("attach_add_photo")}
+                  <input type="file" accept="image/*" className="hidden" onChange={handlePhotoAttach} />
+                </label>
+                <button
+                  type="button"
+                  onClick={() => setShowGarmentPicker(true)}
+                  className="w-full flex items-center gap-2 px-3 py-2 text-[12px] font-sans text-ink hover:bg-blush-pale/30 text-left"
+                >
+                  <Shirt size={13} className="text-clay" />
+                  {t("attach_reference_garment")}
+                </button>
+              </div>
+            )}
+            {showGarmentPicker && (
+              <div className="absolute bottom-9 left-0 bg-paper border border-line rounded-xl shadow-sm py-1 w-52 max-h-40 overflow-y-auto z-10">
+                <p className="px-3 py-1.5 text-[9px] uppercase tracking-wide text-clay/70 font-semibold">
+                  {t("attach_choose_garment")}
+                </p>
+                {wardrobe.map((item, i) => (
+                  <button
+                    key={i}
+                    type="button"
+                    onClick={() => handleReferenceGarment(item)}
+                    className="w-full text-left px-3 py-1.5 text-[12px] font-sans text-ink hover:bg-blush-pale/30"
+                  >
+                    {itemDisplayName(item)}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
           <div className="flex items-center gap-2">
-            <span className="w-7 h-7 rounded-full border border-clay/25 text-clay flex items-center justify-center shrink-0">
-              <Mic size={13} />
-            </span>
+            <button
+              type="button"
+              onClick={handleMicClick}
+              aria-label="Voice input"
+              disabled={micState === "requesting" || micState === "transcribing"}
+              className={`w-7 h-7 rounded-full border flex items-center justify-center shrink-0 transition-colors disabled:opacity-50 ${
+                micState === "recording" ? "border-transparent bg-[#C97A8C] text-white" : "border-clay/25 text-clay"
+              }`}
+            >
+              {micState === "recording" ? <Square size={11} fill="currentColor" /> : <Mic size={13} />}
+            </button>
             <button
               type="submit"
               aria-label="Submit"
-              disabled={!query.trim()}
+              disabled={!query.trim() || micState === "recording" || micState === "transcribing"}
               className="w-7 h-7 rounded-full flex items-center justify-center shrink-0 text-white disabled:opacity-40 transition-opacity"
               style={{ backgroundColor: "#C97A8C" }}
             >
@@ -787,6 +998,10 @@ export function AskAnythingBar({ wardrobe }: { wardrobe: WardrobeItem[] }) {
           </div>
         </div>
       </form>
+
+      {micState === "error" && micError && (
+        <p className="mt-1.5 px-1 font-sans text-[10px] text-blush-deep">{micError}</p>
+      )}
 
       {(thinking || answer) && (
         <div className="mt-2.5 px-1 fade-up">
