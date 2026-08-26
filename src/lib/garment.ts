@@ -16,14 +16,14 @@ export const GARMENT = {
   madeIn: "Italy & Portugal",
   certified: "RWS · GOTS",
   lifespan: "8–10 years",
-  ownedSince: "April 2026",
+  ownedSince: "1 April 2026",
   ownedSinceDate: new Date(2026, 3, 1), // real date, used to compute est. lifespan automatically
   lifespanYearsMin: 8,
   lifespanYearsMax: 10,
   timesWorn: "~18",
   condition: "Excellent",
   estLifespan: "6+ years",
-  verifiedDate: "April 2026",
+  verifiedDate: "5 April 2026",
 };
 
 // Computes "X+ years" remaining automatically from today's date instead of

@@ -220,7 +220,7 @@ export function Welcome() {
           onClick={(e) => { e.stopPropagation(); setShowVerificationInfo(true); }}
         >
           <p className="text-[10px] font-sans font-semibold text-sage uppercase tracking-wide mb-1">
-            {t("verified_passport")}
+            {t("espr_verification_label")}
           </p>
           <p className="flex items-center gap-1.5 font-sans text-sm text-ink font-medium">
             {t("verified_passport")} <Check size={14} className="text-sage" />
@@ -1158,7 +1158,7 @@ export function Personalization() {
     }
     generateAI("curatorsNotes", {
       garmentName: GARMENT.name,
-      ownedSince: "April 2026",
+      ownedSince: "1 April 2026",
       timesWorn: "18",
       condition: "excellent",
       yearsRemaining: getEstimatedYearsRemaining(),

@@ -1425,9 +1425,9 @@ export function VerificationInfoPanel({ open, onClose }: { open: boolean; onClos
             <span className="font-sans text-[8px] font-semibold uppercase tracking-wide text-clay text-right">{t("ledger_col_status")}</span>
           </div>
           {[
-            { date: "5 Apr 2026", event: t("ledger_event_created"), hash: "0x4f2a\u20269c1e", projected: false },
-            { date: "12 Apr 2026", event: t("ledger_event_transferred"), hash: "0x7b31\u20264a02", projected: false },
-            { date: "2 Jun 2026", event: t("ledger_event_moment_logged"), hash: "0xe910\u20267d5f", projected: false },
+            { date: "5 April 2026", event: t("ledger_event_created"), hash: "0x4f2a\u20269c1e", projected: false },
+            { date: "12 April 2026", event: t("ledger_event_transferred"), hash: "0x7b31\u20264a02", projected: false },
+            { date: "2 June 2026", event: t("ledger_event_moment_logged"), hash: "0xe910\u20267d5f", projected: false },
             { date: t("ledger_date_repair"), event: t("ledger_event_repair_projected"), hash: "-", projected: true },
           ].map((row, i) => (
             <div
