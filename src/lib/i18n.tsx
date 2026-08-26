@@ -139,7 +139,7 @@ export const dict = {
   verified_date_value: { en: "5 April 2026", fr: "5 avril 2026", pt: "5 de abril de 2026" },
   story_date_value: { en: "5 April 2026", fr: "5 avril 2026", pt: "5 de abril de 2026" },
   blockchain_word: { en: "blockchain", fr: "blockchain", pt: "blockchain" },
-  photo_unavailable: { en: "Photo unavailable right now", fr: "Photo indisponible pour le moment", pt: "Foto indisponível no momento" },
+  product_hero_alt: { en: "Black wool funnel-neck coat.", fr: "Manteau en laine noire à col cheminée.", pt: "Casaco de lã preta com gola funil." },
 
   // Product lifecycle
   lifecycle_eyebrow: { en: "Product Lifecycle", fr: "Cycle de Vie du Produit", pt: "Ciclo de Vida do Produto" },

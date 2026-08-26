@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Eyebrow, Donut, Card, JourneyMap, Pill, Disclaimer, EmptyState, ExpandableCard, ArchiveTransition, ArchiveTimeline, type ArchiveEntry, TodaysEdit, AskAnythingBar, CareRitualRow, type CareRitual, useMountReveal, VerificationInfoPanel, ShareSheet } from "../components/UI";
+import { Eyebrow, Donut, Card, JourneyMap, Pill, Disclaimer, EmptyState, ExpandableCard, ArchiveTransition, ArchiveTimeline, type ArchiveEntry, TodaysEdit, AskAnythingBar, CareRitualRow, type CareRitual, useMountReveal, VerificationInfoPanel, ShareSheet, ProductHero } from "../components/UI";
 import { ChapterColorProvider, ARCHIVE_ACCENT_COLOR, useChapterColor } from "../lib/chapterColor";
 import { generateAI } from "../lib/aiService";
 import {
@@ -276,7 +276,6 @@ export function Welcome() {
 /* 4: PRODUCT OVERVIEW */
 export function ProductOverview({ onExploreJourney }: { onExploreJourney?: () => void } = {}) {
   const { t } = useLanguage();
-  const [imgError, setImgError] = useState(false);
   const [ctaFading, setCtaFading] = useState(false);
   const [dppSparkle, setDppSparkle] = useState(false);
   useEffect(() => {
@@ -344,27 +343,13 @@ export function ProductOverview({ onExploreJourney }: { onExploreJourney?: () =>
           <Check size={13} strokeWidth={3} className={dppSparkle ? "icon-sparkle-once" : ""} /> {t("dpp_verified")}
         </button>
       </div>
-      <div
-        className="w-full h-64 rounded-card overflow-hidden mb-4 flex items-center justify-center"
-        style={{
-          backgroundImage:
-            "linear-gradient(90deg, #E8E2DD 0%, #F8F7F4 50%, #E8E2DD 100%), linear-gradient(to bottom, rgba(255,255,255,0.025), rgba(0,0,0,0.02))",
-        }}
-      >
-        {imgError ? (
-          <div className="text-center px-6">
-            <Shirt size={40} className="text-clay mx-auto mb-2" strokeWidth={1} />
-            <p className="font-sans text-[10px] text-clay">{t("photo_unavailable")}</p>
-          </div>
-        ) : (
-          <img
-            src={GARMENT.image}
-            alt={GARMENT.name}
-            onError={() => setImgError(true)}
-            className="w-full h-full object-contain object-center"
-          />
-        )}
-      </div>
+      <ProductHero
+        video1Src="/videos/product-hero.mp4"
+        video2Src="/videos/product-hero-2.mp4"
+        image1Src="/images/product-hero-1.png"
+        image2Src="/images/product-hero-2.png"
+        altText={t("product_hero_alt")}
+      />
       <h2 className="font-display italic text-2xl text-ink leading-tight">
         {t("product_name_l1")}
         <br />{t("product_name_l2")}
