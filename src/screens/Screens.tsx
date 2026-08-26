@@ -34,6 +34,7 @@ import {
   Search,
   CalendarDays,
   Camera,
+  Heart,
   MapPinOff,
   Share,
   Bookmark,
@@ -192,18 +193,8 @@ export function Welcome() {
           )}
 
           <div style={{ perspective: "800px" }}>
-            <div className="relative w-24 h-28 rounded-xl overflow-hidden card-flip-lr">
-              <img
-                src="/images/welcome-portrait.png"
-                alt=""
-                className="w-full h-full object-cover"
-              />
-              <div
-                className="absolute inset-0"
-                style={{
-                  background: "linear-gradient(180deg, rgba(201,122,140,0.22) 0%, rgba(201,122,140,0.08) 60%, rgba(201,122,140,0.20) 100%)",
-                }}
-              />
+            <div className="w-24 h-28 rounded-xl bg-blush-pale flex items-center justify-center card-flip-lr">
+              <Heart size={40} className="text-blush-deep" strokeWidth={1} fill="#C97A8C" />
             </div>
           </div>
           <p className="font-sans text-[11px] text-clay tracking-wide flex items-center justify-center flex-wrap gap-x-1.5">
