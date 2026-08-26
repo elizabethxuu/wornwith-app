@@ -197,7 +197,7 @@ export async function generatePassportPdf(): Promise<void> {
   cursor.y += 12;
 
   doc.setFontSize(9);
-  doc.text(`${GARMENT.brandSku}   \u2726   RWS   \u2726   DPP-ID: ${GARMENT.dppId}`, PAGE_W / 2, cursor.y, { align: "center" });
+  doc.text(`${GARMENT.brandSku}   \u2726   RWS   \u2726   ${t("display_code_label") || "Display code"}: ${GARMENT.dppId}`, PAGE_W / 2, cursor.y, { align: "center" });
   cursor.y += 14;
 
   // Verified passport box
@@ -219,14 +219,14 @@ export async function generatePassportPdf(): Promise<void> {
   doc.setFont("helvetica", "normal");
   doc.setFontSize(9);
   setColor(COLOR.clay);
-  doc.text(`${GARMENT.verifiedDate} \u00b7 ID: ${GARMENT.fullDppId}`, boxTextX, boxY);
+  doc.text(`${GARMENT.verifiedDate} \u00b7 ${t("passport_id_label") || "Passport ID"}: ${GARMENT.fullDppId}`, boxTextX, boxY);
   boxY += 5;
   doc.text(t("stored_ledger") || "Stored on secure digital ledger", boxTextX, boxY);
   cursor.y += boxH + 12;
 
   doc.setFontSize(8);
   setColor(COLOR.clay);
-  doc.text(t("eu_regulated") || "EU Regulated \u00b7 ESPR 2028\u20132029", PAGE_W / 2, cursor.y, { align: "center" });
+  doc.text(t("eu_regulated") || "EU Regulated \u00b7 ESPR 2028\u20132030", PAGE_W / 2, cursor.y, { align: "center" });
   cursor.y += 10;
 
   // ---------- PAGE 2, Product Information + Crafted to Last ----------
@@ -398,7 +398,7 @@ export async function generatePassportPdf(): Promise<void> {
   eyebrow(t("section_passport") || "Passport");
   headline(t("closing_evolve_line") || "Crafted to last. Designed to evolve.", 16);
   spacer(4);
-  row("DPP-ID", GARMENT.dppId);
+  row(t("display_code_label") || "Display code", GARMENT.dppId);
   row(t("verified_date_value") ? (t("owned_since") || "Verified") : "Verified", GARMENT.verifiedDate);
   row(t("est_lifespan") || "Estimated lifespan remaining", getEstimatedYearsRemaining());
   spacer(10);

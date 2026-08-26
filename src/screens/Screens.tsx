@@ -205,7 +205,7 @@ export function Welcome() {
               RWS
             </button>
             <Sparkle size={10} className="text-clay shrink-0" fill="currentColor" strokeWidth={0} />
-            <span>DPP-ID: {GARMENT.dppId}</span>
+            <span>{t("display_code_label")}: {GARMENT.dppId}</span>
           </p>
           {showRws && (
             <div className="bg-blush-pale/50 rounded-xl px-4 py-3 -mt-3 fade-up">
@@ -225,8 +225,11 @@ export function Welcome() {
           <p className="flex items-center gap-1.5 font-sans text-sm text-ink font-medium">
             {t("verified_passport")} <Check size={14} className="text-sage" />
           </p>
-          <p className="text-[11px] text-clay mt-1">{t("verified_date_value")} · ID: {GARMENT.fullDppId}</p>
-          <p className="text-[11px] text-clay">{t("stored_ledger")}</p>
+          <p className="text-[11px] text-clay mt-1">{t("verified_date_value")} · {t("passport_id_label")}: {GARMENT.fullDppId}</p>
+          <p className="text-[11px] text-clay flex items-center justify-between">
+            <span>{t("stored_ledger")}</span>
+            <span className="text-clay inline-block">›</span>
+          </p>
           <div className="mt-3 pt-3 border-t border-line flex items-center gap-1.5">
             <span className="text-[10px]">🇪🇺</span>
             <span className="text-[10px] font-sans text-clay">{t("eu_regulated")}</span>
