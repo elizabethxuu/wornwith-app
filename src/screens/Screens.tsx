@@ -344,9 +344,8 @@ export function ProductOverview({ onExploreJourney }: { onExploreJourney?: () =>
         </button>
       </div>
       <ProductHero
-        videoSrc="/videos/product-hero.mp4"
-        image1Src="/images/product-hero-1.png"
-        image2Src="/images/product-hero-2.png"
+        videoSrc="/videos/product-hero-2.mp4"
+        fallbackImageSrc={GARMENT.image}
         altText={t("product_hero_alt")}
       />
       <h2 className="font-display italic text-2xl text-ink leading-tight">

@@ -1324,90 +1324,76 @@ export function VoicePlayer({
 // entirely, shows one static image) and falls back straight to the
 // image slideshow if the video fails to load, errors, or silently never
 // starts (autoplay blocked).
+// Product page hero: a single video, looping continuously, no image
+// slideshow, no sequencing state machine. Falls back to a static product
+// photo (the same one used before any of this hero video work began) if
+// the video fails to load, errors, or silently never starts (autoplay
+// blocked), and respects prefers-reduced-motion by showing that same
+// static photo with no motion at all, rather than leaving a blank space.
 export function ProductHero({
   videoSrc,
-  image1Src,
-  image2Src,
+  fallbackImageSrc,
   altText,
 }: {
   videoSrc: string;
-  image1Src: string;
-  image2Src: string;
+  fallbackImageSrc: string;
   altText: string;
 }) {
-  const [mode, setMode] = useState<"reduced" | "video" | "loop">("video");
-  const [showImage2, setShowImage2] = useState(false);
+  const [videoOk, setVideoOk] = useState(true);
+  const [reducedMotion, setReducedMotion] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
     const reduced =
       typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reduced) setMode("reduced");
+    setReducedMotion(reduced);
   }, []);
 
   useEffect(() => {
-    if (mode !== "video") return;
+    if (reducedMotion || !videoOk) return;
     const video = videoRef.current;
     if (!video) return;
 
-    const fallbackToLoop = () => setMode("loop");
-    video.addEventListener("ended", fallbackToLoop);
-    video.addEventListener("error", fallbackToLoop);
+    const fallbackToStatic = () => setVideoOk(false);
+    video.addEventListener("error", fallbackToStatic);
 
     const playPromise = video.play();
     if (playPromise && typeof playPromise.catch === "function") {
-      playPromise.catch(fallbackToLoop);
+      playPromise.catch(fallbackToStatic);
     }
 
     // Safety net for a silent stall (network hang, autoplay quietly
-    // blocked without rejecting the play() promise), if it hasn't
-    // actually started playing within a few seconds, don't leave a
-    // frozen/blank hero, just move on to the image slideshow.
+    // blocked without rejecting the play() promise).
     const stallTimer = setTimeout(() => {
-      if (video.paused) fallbackToLoop();
+      if (video.paused) fallbackToStatic();
     }, 5000);
 
     return () => {
-      video.removeEventListener("ended", fallbackToLoop);
-      video.removeEventListener("error", fallbackToLoop);
+      video.removeEventListener("error", fallbackToStatic);
       clearTimeout(stallTimer);
     };
-  }, [mode]);
+  }, [reducedMotion, videoOk]);
 
-  useEffect(() => {
-    if (mode !== "loop") return;
-    const HOLD_MS = 4500;
-    const interval = setInterval(() => setShowImage2((v) => !v), HOLD_MS);
-    return () => clearInterval(interval);
-  }, [mode]);
-
-  if (mode === "reduced") {
+  if (reducedMotion || !videoOk) {
     return (
       <div aria-hidden="true" className="w-full h-64 rounded-card overflow-hidden mb-4">
-        <img src={image1Src} alt={altText} className="w-full h-full object-cover" />
+        <img src={fallbackImageSrc} alt={altText} className="w-full h-full object-cover" />
       </div>
     );
   }
 
   return (
     <div aria-hidden="true" className="relative w-full h-64 rounded-card overflow-hidden mb-4">
-      <img src={image1Src} alt="" className="absolute inset-0 w-full h-full object-cover" />
-      <img
-        src={image2Src}
-        alt=""
-        className="absolute inset-0 w-full h-full object-cover transition-opacity ease-in-out"
-        style={{ opacity: mode === "loop" && showImage2 ? 1 : 0, transitionDuration: "1750ms" }}
-      />
       <video
         ref={videoRef}
         src={videoSrc}
-        poster={image1Src}
+        poster={fallbackImageSrc}
         muted
         playsInline
         autoPlay
+        loop
         preload="auto"
-        className="absolute inset-0 w-full h-full object-cover transition-opacity ease-in-out"
-        style={{ opacity: mode === "video" ? 1 : 0, transitionDuration: "1300ms", pointerEvents: "none" }}
+        className="absolute inset-0 w-full h-full object-cover"
       />
     </div>
   );
