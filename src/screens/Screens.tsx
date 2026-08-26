@@ -344,8 +344,7 @@ export function ProductOverview({ onExploreJourney }: { onExploreJourney?: () =>
         </button>
       </div>
       <ProductHero
-        video1Src="/videos/product-hero.mp4"
-        video2Src="/videos/product-hero-2.mp4"
+        videoSrc="/videos/product-hero.mp4"
         image1Src="/images/product-hero-1.png"
         image2Src="/images/product-hero-2.png"
         altText={t("product_hero_alt")}

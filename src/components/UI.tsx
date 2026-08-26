@@ -1312,20 +1312,30 @@ export function VoicePlayer({
 // entirely, shows one static image) and falls back straight to the
 // image loop if either video fails to load, errors, or silently never
 // starts (autoplay blocked).
+// Product page hero: a single video plays once, then the hero settles
+// into a slow ambient slideshow, crossfading between two stills of the
+// coat. Layering (bottom to top): image1 sits as a permanent base,
+// image2's opacity toggles to create the image1<->image2 crossfade, and
+// the video sits on top of both, fading out at the very end (revealing
+// image1 already underneath), that fade-out IS the video-to-image
+// crossfade, no separate "hand off" state needed.
+//
+// Respects prefers-reduced-motion (skips the video and the slideshow
+// entirely, shows one static image) and falls back straight to the
+// image slideshow if the video fails to load, errors, or silently never
+// starts (autoplay blocked).
 export function ProductHero({
-  video1Src,
-  video2Src,
+  videoSrc,
   image1Src,
   image2Src,
   altText,
 }: {
-  video1Src: string;
-  video2Src: string;
+  videoSrc: string;
   image1Src: string;
   image2Src: string;
   altText: string;
 }) {
-  const [mode, setMode] = useState<"reduced" | "video1" | "handoff" | "video2" | "loop">("video1");
+  const [mode, setMode] = useState<"reduced" | "video" | "loop">("video");
   const [showImage2, setShowImage2] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
 
@@ -1335,75 +1345,35 @@ export function ProductHero({
     if (reduced) setMode("reduced");
   }, []);
 
-  // Clip 1, plays, then hands off to the brief dip before clip 2.
   useEffect(() => {
-    if (mode !== "video1") return;
+    if (mode !== "video") return;
     const video = videoRef.current;
     if (!video) return;
 
-    const goToHandoff = () => setMode("handoff");
-    const skipToLoop = () => setMode("loop");
-    video.addEventListener("ended", goToHandoff);
-    video.addEventListener("error", skipToLoop);
+    const fallbackToLoop = () => setMode("loop");
+    video.addEventListener("ended", fallbackToLoop);
+    video.addEventListener("error", fallbackToLoop);
 
     const playPromise = video.play();
     if (playPromise && typeof playPromise.catch === "function") {
-      playPromise.catch(skipToLoop);
+      playPromise.catch(fallbackToLoop);
     }
 
     // Safety net for a silent stall (network hang, autoplay quietly
-    // blocked without rejecting the play() promise).
+    // blocked without rejecting the play() promise), if it hasn't
+    // actually started playing within a few seconds, don't leave a
+    // frozen/blank hero, just move on to the image slideshow.
     const stallTimer = setTimeout(() => {
-      if (video.paused) skipToLoop();
+      if (video.paused) fallbackToLoop();
     }, 5000);
 
     return () => {
-      video.removeEventListener("ended", goToHandoff);
-      video.removeEventListener("error", skipToLoop);
+      video.removeEventListener("ended", fallbackToLoop);
+      video.removeEventListener("error", fallbackToLoop);
       clearTimeout(stallTimer);
     };
   }, [mode]);
 
-  // Handoff, a brief opacity dip (not a hard cut) while the same
-  // <video> element's src is swapped from clip 1 to clip 2.
-  useEffect(() => {
-    if (mode !== "handoff") return;
-    const video = videoRef.current;
-    if (!video) return;
-    const timer = setTimeout(() => {
-      video.src = video2Src;
-      video.load();
-      const playPromise = video.play();
-      if (playPromise && typeof playPromise.catch === "function") {
-        playPromise.catch(() => setMode("loop"));
-      }
-      setMode("video2");
-    }, 400);
-    return () => clearTimeout(timer);
-  }, [mode, video2Src]);
-
-  // Clip 2, plays, then crossfades into the image loop.
-  useEffect(() => {
-    if (mode !== "video2") return;
-    const video = videoRef.current;
-    if (!video) return;
-
-    const goToLoop = () => setMode("loop");
-    video.addEventListener("ended", goToLoop);
-    video.addEventListener("error", goToLoop);
-
-    const stallTimer = setTimeout(() => {
-      if (video.paused) goToLoop();
-    }, 5000);
-
-    return () => {
-      video.removeEventListener("ended", goToLoop);
-      video.removeEventListener("error", goToLoop);
-      clearTimeout(stallTimer);
-    };
-  }, [mode]);
-
-  // Ambient still-image crossfade loop, once both clips have finished.
   useEffect(() => {
     if (mode !== "loop") return;
     const HOLD_MS = 4500;
@@ -1419,9 +1389,6 @@ export function ProductHero({
     );
   }
 
-  const videoOpacity = mode === "loop" || mode === "handoff" ? 0 : 1;
-  const videoTransitionMs = mode === "loop" ? 1300 : 400;
-
   return (
     <div aria-hidden="true" className="relative w-full h-64 rounded-card overflow-hidden mb-4">
       <img src={image1Src} alt="" className="absolute inset-0 w-full h-full object-cover" />
@@ -1433,21 +1400,15 @@ export function ProductHero({
       />
       <video
         ref={videoRef}
-        src={video1Src}
+        src={videoSrc}
         poster={image1Src}
         muted
         playsInline
         autoPlay
         preload="auto"
         className="absolute inset-0 w-full h-full object-cover transition-opacity ease-in-out"
-        style={{ opacity: videoOpacity, transitionDuration: `${videoTransitionMs}ms`, pointerEvents: "none" }}
+        style={{ opacity: mode === "video" ? 1 : 0, transitionDuration: "1300ms", pointerEvents: "none" }}
       />
-      {/* Hidden, starts fetching clip 2 as soon as clip 1 begins, so
-          it's already cached (not buffering) by the time the handoff
-          happens. Never rendered visibly, never played. */}
-      {(mode === "video1" || mode === "handoff") && (
-        <video src={video2Src} preload="auto" muted style={{ display: "none" }} />
-      )}
     </div>
   );
 }
