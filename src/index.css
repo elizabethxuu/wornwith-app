@@ -151,3 +151,48 @@ body {
     height: auto !important;
   }
 }
+
+/* ---- Luxury entrance and transitions ---- */
+@keyframes luxKenBurns {
+  from { transform: scale(1.12); }
+  to { transform: scale(1); }
+}
+.lux-kenburns {
+  animation: luxKenBurns 3.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+  animation-delay: var(--lux-d, 0s);
+  transform-origin: 50% 35%;
+}
+@keyframes luxRise {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.lux-rise {
+  animation: luxRise 1.4s cubic-bezier(0.22, 0.61, 0.36, 1) both;
+  animation-delay: calc(var(--lux-d, 0s) + var(--lux-s, 0s));
+}
+@keyframes luxLogo {
+  0% { opacity: 0; transform: scale(0.9); }
+  32% { opacity: 1; transform: scale(1); }
+  72% { opacity: 1; transform: scale(1.02); }
+  100% { opacity: 0; transform: scale(1.06); }
+}
+@keyframes luxRule {
+  0%, 12% { transform: scaleX(0); }
+  45%, 100% { transform: scaleX(1); }
+}
+@keyframes luxWord {
+  0%, 22% { opacity: 0; transform: translateY(6px); }
+  48%, 72% { opacity: 1; transform: translateY(0); }
+  100% { opacity: 0; transform: translateY(0); }
+}
+@keyframes luxCurtain {
+  0%, 62% { clip-path: inset(0 0 0 0); }
+  100% { clip-path: inset(0 0 100% 0); }
+}
+.lux-curtain { animation: luxCurtain 2.8s cubic-bezier(0.76, 0, 0.24, 1) both; }
+.lux-curtain-logo { animation: luxLogo 2.1s cubic-bezier(0.22, 0.61, 0.36, 1) both; }
+.lux-curtain-rule { animation: luxRule 2.1s cubic-bezier(0.65, 0, 0.35, 1) both; transform-origin: center; }
+.lux-curtain-word { animation: luxWord 2.1s ease both; }
+@media (prefers-reduced-motion: reduce) {
+  .lux-kenburns, .lux-rise { animation: none; }
+}

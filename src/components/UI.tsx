@@ -8,6 +8,7 @@ import type { WardrobeItem } from "../lib/persistence";
 import { loadVoiceNote, saveVoiceNote, deleteVoiceNote, compressImage, type VoiceNote } from "../lib/persistence";
 import { generatePassportPdf } from "../lib/pdfExport";
 import { requestVoice, transcribeVoiceNote } from "../lib/voice";
+import { duck as duckAmbient } from "../lib/ambient";
 import { useChapterColor } from "../lib/chapterColor";
 import { getCurrentSeason } from "../lib/careRecommendation";
 import { getTimeOfDay, selectAtmosphere, spotifySearchUrl, type Atmosphere } from "../lib/interlude";
@@ -1225,6 +1226,12 @@ export function VoicePlayer({
 }) {
   const [state, setState] = useState<"idle" | "loading" | "playing" | "unavailable">("idle");
   const audioRef = useRef<HTMLAudioElement | null>(null);
+
+  // Ambient sound fades down while the story is being read, then returns.
+  useEffect(() => {
+    duckAmbient(state === "playing");
+    return () => duckAmbient(false);
+  }, [state]);
 
   const stop = () => {
     audioRef.current?.pause();

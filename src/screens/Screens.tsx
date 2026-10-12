@@ -1,4 +1,5 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useSyncExternalStore } from "react";
+import * as ambient from "../lib/ambient";
 import { Eyebrow, Donut, Card, JourneyMap, Pill, Disclaimer, EmptyState, ExpandableCard, ArchiveTransition, ArchiveTimeline, type ArchiveEntry, TodaysEdit, AskAnythingBar, CareRitualRow, type CareRitual, useMountReveal, VerificationInfoPanel, ShareSheet, ProductHero } from "../components/UI";
 import { ChapterColorProvider, ARCHIVE_ACCENT_COLOR, useChapterColor } from "../lib/chapterColor";
 import { generateAI } from "../lib/aiService";
@@ -24,6 +25,10 @@ import { useLanguage, type TranslationKey } from "../lib/i18n";
 import {
   Check,
   ChevronLeft,
+  Volume2,
+  VolumeX,
+  Pause,
+  Play,
   ChevronRight,
   Sparkles,
   ShoppingBag,
@@ -286,18 +291,25 @@ export function Welcome({ onEnter }: { onEnter?: () => void } = {}) {
 export function ProductOverview({
   onExploreJourney,
   onGoTo,
-}: { onExploreJourney?: () => void; onGoTo?: (index: number) => void } = {}) {
+  intro = false,
+}: { onExploreJourney?: () => void; onGoTo?: (index: number) => void; intro?: boolean } = {}) {
   const { t } = useLanguage();
   const [ctaFading, setCtaFading] = useState(false);
   const [showVerificationInfo, setShowVerificationInfo] = useState(false);
   const [shareOpen, setShareOpen] = useState(false);
+  const sound = useSyncExternalStore(ambient.subscribe, ambient.getState);
+  // The ambient sound belongs to this page: it fades out when you leave.
+  useEffect(() => () => ambient.stop(), []);
   const detailsRef = useRef<HTMLDivElement>(null);
   const dppNo = GARMENT.fullDppId.replace("#", "");
 
   const goExplore = () => {
     if (ctaFading) return;
     setCtaFading(true);
-    setTimeout(() => onExploreJourney?.(), 180);
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    // The photo drifts closer while the page dissolves to paper, then the
+    // Journey fades in.
+    setTimeout(() => onExploreJourney?.(), reduced ? 120 : 700);
   };
   const showDetails = () => {
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -367,28 +379,61 @@ export function ProductOverview({
           panel with the way in. Everything else sits below it. */}
       <section
         className="relative h-full min-h-[460px] overflow-hidden bg-paper flex flex-col"
+        style={{ "--lux-d": intro ? "1.85s" : "0.05s" } as React.CSSProperties}
         onClick={(e) => e.stopPropagation()}
       >
         <div className="relative flex-1 min-h-0 overflow-hidden bg-[#E9E0D5]">
-        <img
-          src="/images/overview-hero.jpg"
-          alt=""
-          aria-hidden="true"
-          className="absolute inset-0 w-full h-full object-cover object-[50%_28%]"
-        />
+          <div className="absolute inset-x-3 top-3 z-10 flex flex-col items-stretch gap-2">
+          <p
+            className="lux-rise mx-auto max-w-md w-full px-5 py-[clamp(0.6rem,2dvh,1rem)] text-center font-display italic text-[clamp(0.95rem,2.4dvh,1.15rem)] leading-snug text-ink text-balance border border-white/60 backdrop-blur-xl backdrop-saturate-150 shadow-[inset_0_1px_0_rgba(255,255,255,0.8),0_10px_30px_-12px_rgba(43,38,34,0.25)]"
+            style={{ background: "linear-gradient(135deg, rgba(255,255,255,0.62) 0%, rgba(255,255,255,0.28) 55%, rgba(255,255,255,0.46) 100%)", "--lux-s": "0.1s" } as React.CSSProperties}
+          >
+            {t("hero_caption")}
+          </p>
+          <div className="lux-rise flex items-center justify-end gap-2" style={{ "--lux-s": "0.35s" } as React.CSSProperties}>
+            {!sound.muted && (
+              <button
+                onClick={() => ambient.setPaused(!sound.paused)}
+                aria-label={sound.paused ? t("sound_play") : t("sound_pause")}
+                className="w-9 h-9 flex items-center justify-center bg-white/70 backdrop-blur-md border border-white/70 text-ink"
+              >
+                {sound.paused ? <Play size={15} strokeWidth={1.5} /> : <Pause size={15} strokeWidth={1.5} />}
+              </button>
+            )}
+            <button
+              onClick={() => ambient.setMuted(!sound.muted)}
+              aria-label={sound.muted ? t("sound_turn_on") : t("sound_turn_off")}
+              aria-pressed={!sound.muted}
+              className="h-9 px-3 flex items-center gap-2 bg-white/70 backdrop-blur-md border border-white/70 text-ink font-sans text-[9px] uppercase tracking-[0.2em]"
+            >
+              {sound.muted ? <VolumeX size={15} strokeWidth={1.5} /> : <Volume2 size={15} strokeWidth={1.5} />}
+              {sound.muted ? t("sound_off_label") : t("sound_on_label")}
+            </button>
+          </div>
+          </div>
+        <div aria-hidden="true" className="absolute inset-0 lux-kenburns">
+          <img
+            src="/images/overview-hero.jpg"
+            alt=""
+            aria-hidden="true"
+            className="w-full h-full object-cover object-[50%_28%] transition-transform duration-[900ms] ease-[cubic-bezier(0.22,0.61,0.36,1)]"
+            style={{ transform: ctaFading ? "scale(1.08)" : "scale(1)" }}
+          />
+        </div>
 
         <button
           onClick={goExplore}
           aria-label={t("hero_next")}
-          className="absolute right-3 top-1/2 -translate-y-1/2 w-11 h-11 flex items-center justify-center bg-white/60 backdrop-blur-md border border-white/60 text-ink"
+          className="absolute right-3 top-[36%] -translate-y-1/2 w-11 h-11 flex items-center justify-center bg-white/60 backdrop-blur-md border border-white/60 text-ink"
         >
           <ChevronRight size={22} strokeWidth={1.25} />
         </button>
 
         <div
-          className="absolute inset-x-3 bottom-3 mx-auto max-w-md bg-white/85 backdrop-blur-md border border-white/70 px-4 pt-4 pb-3 text-center"
+          className="lux-rise absolute inset-x-3 bottom-3 mx-auto max-w-md bg-white/85 backdrop-blur-md border border-white/70 px-4 pt-[clamp(0.6rem,2dvh,1rem)] pb-[clamp(0.4rem,1.2dvh,0.75rem)] text-center"
+          style={{ "--lux-s": "0.55s" } as React.CSSProperties}
         >
-          <p className="font-display italic text-[clamp(1.25rem,3.4dvh,1.5rem)] leading-tight text-ink text-balance">
+          <p className="font-display italic text-[clamp(1.05rem,3dvh,1.5rem)] leading-tight text-ink text-balance">
             {t("product_name_l1")} {t("product_name_l2")}
           </p>
           <button
@@ -397,10 +442,10 @@ export function ProductOverview({
           >
             {t("dpp_verified")} · <span className="whitespace-nowrap">{dppNo} ›</span>
           </button>
-          <div className="mt-3 border-t border-ink/10 flex flex-col">
+          <div className="mt-[clamp(0.35rem,1.2dvh,0.75rem)] border-t border-ink/10 flex flex-col">
             <button
               onClick={goExplore}
-              className="py-3 font-sans text-[12px] uppercase tracking-[0.2em] text-ink transition-opacity duration-200"
+              className="py-[clamp(0.4rem,1.6dvh,0.75rem)] font-sans text-[12px] uppercase tracking-[0.2em] text-ink transition-opacity duration-200"
               style={{ opacity: ctaFading ? 0.6 : 1 }}
             >
               {t("hero_explore")} →
@@ -415,6 +460,13 @@ export function ProductOverview({
           <p className="mt-2 font-sans text-[9px] leading-snug text-clay/80">{t("demo_disclaimer")}</p>
         </div>
 
+          {/* Dissolve to paper while leaving for the Journey */}
+          <div
+            aria-hidden="true"
+            data-testid="leave-veil"
+            className="absolute inset-0 z-20 bg-paper pointer-events-none transition-opacity duration-[650ms] ease-in"
+            style={{ opacity: ctaFading ? 1 : 0 }}
+          />
         </div>
 
       </section>

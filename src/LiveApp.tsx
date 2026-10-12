@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { ChevronLeft, ChevronRight, WifiOff, SearchX } from "lucide-react";
 import { EmptyState } from "./components/UI";
 import PassportTopBar from "./components/PassportTopBar";
+import OpeningReveal, { introPlayed, prefersReducedMotion } from "./components/OpeningReveal";
 import { GARMENT } from "./lib/garment";
 import { useLanguage } from "./lib/i18n";
 import { ChapterColorProvider, CHAPTER_COLORS, INACTIVE_PROGRESS_COLOR } from "./lib/chapterColor";
@@ -28,13 +29,13 @@ import {
 // Real users arrive here because they already scanned the physical tag with
 // the iPhone Camera app. No fake scan-simulation screen, go straight from
 // "verifying" into the passport.
-function buildLiveScreens(goToScreen: (index: number) => void) {
+function buildLiveScreens(goToScreen: (index: number) => void, intro: boolean) {
   return [
     // Slot 0 used to hold the "Enter the Archive" front screen. It is gone:
     // the app opens straight onto the overview. The slot stays empty so the
     // other screen numbers (and chapter colors) do not shift.
     null,
-    <ProductOverview key="overview" onExploreJourney={() => goToScreen(2)} onGoTo={goToScreen} />,
+    <ProductOverview key="overview" intro={intro} onExploreJourney={() => goToScreen(2)} onGoTo={goToScreen} />,
     <ProductLifecycle key="lifecycle" onViewChapter={() => goToScreen(7)} />,
     <SupplyChain key="supply" />,
     <CareGuide key="care" />,
@@ -88,7 +89,9 @@ export default function LiveApp() {
   // Built inside the component (not as a module-level constant) so
   // screens like ProductOverview can be given a real "jump to a specific
   // screen" callback, not just the generic forward-tap gesture.
-  const liveScreens = buildLiveScreens((i) => setIndex(i));
+  // The entrance only plays once per visit, and not for reduced motion.
+  const [revealing, setRevealing] = useState(() => !introPlayed() && !prefersReducedMotion());
+  const liveScreens = buildLiveScreens((i) => setIndex(i), revealing);
   const [legalPage, setLegalPage] = useState<"none" | "privacy" | "terms" | "accessibility" | "release-notes" | "about-passport">("none");
 
   const runVerification = () => {
@@ -211,6 +214,8 @@ export default function LiveApp() {
         isFront ? "" : "md:max-w-[520px] md:mx-auto md:border-x md:border-line"
       }`}
     >
+      {revealing && <OpeningReveal onDone={() => setRevealing(false)} />}
+
       {/* The brand header stays on every screen: menu, logo, share. */}
       <PassportTopBar onGoTo={(i) => { setLegalPage("none"); setIndex(i); }} />
 
