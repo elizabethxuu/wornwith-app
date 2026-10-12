@@ -58,7 +58,9 @@ export default function DeckPreview() {
       </div>
 
       <PhoneShell key={index}>
-        <ChapterColorProvider color={color}>{screens[index].el}</ChapterColorProvider>
+        <ChapterColorProvider color={color}>
+          {screens[index].name === "Welcome" ? <Welcome onEnter={next} /> : screens[index].el}
+        </ChapterColorProvider>
       </PhoneShell>
 
       <div className="flex items-center gap-4">

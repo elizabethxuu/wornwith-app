@@ -185,38 +185,38 @@ export function Welcome({ onEnter }: { onEnter?: () => void } = {}) {
           </div>
         </div>
 
-        <div className="flex-1 w-full flex flex-col items-center justify-center py-6">
+        <div className="flex-1 w-full flex flex-col items-center justify-center py-[clamp(0.5rem,2.5dvh,1.5rem)]">
           <div style={{ perspective: "800px" }}>
             <img
               src="/images/wornwith-logo.png"
               alt="Worn With Care"
-              className="w-56 card-flip-lr"
+              className="w-[clamp(6.5rem,26dvh,14rem)] [@media(max-height:700px)]:w-32 card-flip-lr"
             />
           </div>
-          <div className="w-11 h-px bg-ink mt-7" />
-          <h1 className="font-display italic text-5xl text-ink mt-6">wornwith.care</h1>
-          <p className="font-sans text-[9.5px] font-semibold uppercase tracking-[0.34em] text-[#D6336C] mt-4 pl-[0.34em]">
+          <div className="w-11 h-px bg-ink mt-[clamp(0.75rem,3.2dvh,1.75rem)]" />
+          <h1 className="font-display italic text-[clamp(2.25rem,6dvh,3rem)] leading-tight text-ink mt-[clamp(0.75rem,2.8dvh,1.5rem)]">wornwith.care</h1>
+          <p className="font-sans text-[9.5px] font-semibold uppercase tracking-[0.34em] text-[#D6336C] mt-[clamp(0.75rem,2.4dvh,1.25rem)] pl-[0.34em]">
             {t("archive_tagline")}
           </p>
 
           {/* Verification: one tap opens the full ESPR sheet */}
           <button
             onClick={(e) => { e.stopPropagation(); setShowVerificationInfo(true); }}
-            className="mt-8 flex flex-col items-center gap-1.5"
+            className="mt-[clamp(1rem,3.5dvh,2rem)] flex flex-col items-center gap-1.5"
           >
             <span className="font-display italic text-xl text-ink/85">{GARMENT.name}</span>
             <span className="font-sans text-[9px] uppercase tracking-[0.22em] text-clay flex items-center gap-1.5">
-              <Check size={10} className="text-sage" /> {t("verified_passport")} · {GARMENT.fullDppId} ›
+              {t("passport_id_label")} · {GARMENT.fullDppId} ›
             </span>
             <span className="font-sans text-[8.5px] uppercase tracking-[0.22em] text-clay/70">
-              {t("eu_regulated")}
+              {t("welcome_espr_note")}
             </span>
           </button>
         </div>
 
         <button
           onClick={(e) => { e.stopPropagation(); onEnter?.(); }}
-          className="w-full bg-ink text-white py-4 font-sans text-[10.5px] uppercase tracking-[0.36em] font-medium"
+          className="w-full max-w-md bg-ink text-white py-4 font-sans text-[10.5px] uppercase tracking-[0.36em] font-medium"
         >
           {t("enter_archive")}
         </button>

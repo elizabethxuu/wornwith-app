@@ -20,6 +20,7 @@ export const dict = {
   // Welcome
   archive_label: { en: "Archive", fr: "Archive", pt: "Arquivo" },
   archive_tagline: { en: "The Digital Archive", fr: "L'Archive Numérique", pt: "O Arquivo Digital" },
+  welcome_espr_note: { en: "Designed for EU ESPR 2028–2030", fr: "Conçu pour l'ESPR de l'UE 2028–2030", pt: "Concebido para o ESPR da UE 2028–2030" },
   enter_archive: { en: "Enter the Archive", fr: "Entrer dans l'archive", pt: "Entrar no arquivo" },
   welcome_to: { en: "Welcome to", fr: "Bienvenue sur", pt: "Bem-vindo ao" },
   what_is_this: { en: "What is this?", fr: "Qu'est-ce que c'est ?", pt: "O que é isto?" },
@@ -618,7 +619,7 @@ export const dict = {
     pt: "As alterações são salvas com segurança e podem levar alguns instantes para atualizar em todo o seu Passaporte Digital do Produto.",
   },
   saved_confirmation: { en: "Saved", fr: "Enregistré", pt: "Salvo" },
-  footer_copyright: { en: "© 2026 Elizabeth Xu", fr: "© 2026 Elizabeth Xu", pt: "© 2026 Elizabeth Xu" },
+  footer_copyright: { en: "© 2026 Worn With Care", fr: "© 2026 Worn With Care", pt: "© 2026 Worn With Care" },
   footer_privacy: { en: "Privacy Policy", fr: "Politique de Confidentialité", pt: "Política de Privacidade" },
   footer_terms: { en: "Terms of Use", fr: "Conditions d'Utilisation", pt: "Termos de Uso" },
   legal_back: { en: "Back", fr: "Retour", pt: "Voltar" },
