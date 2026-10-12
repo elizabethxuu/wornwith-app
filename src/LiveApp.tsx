@@ -30,7 +30,7 @@ import {
 // "verifying" into the passport.
 function buildLiveScreens(goToScreen: (index: number) => void) {
   return [
-    <Welcome key="welcome" />,
+    <Welcome key="welcome" onEnter={() => goToScreen(1)} />,
     <ProductOverview key="overview" onExploreJourney={() => goToScreen(2)} />,
     <ProductLifecycle key="lifecycle" onViewChapter={() => goToScreen(7)} />,
     <SupplyChain key="supply" />,

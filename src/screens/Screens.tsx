@@ -135,10 +135,9 @@ export function CameraScan({ onComplete }: { onComplete?: () => void } = {}) {
 }
 
 /* 3: WELCOME */
-export function Welcome() {
+export function Welcome({ onEnter }: { onEnter?: () => void } = {}) {
   const { t, lang, setLang } = useLanguage();
   const [showInfo, setShowInfo] = useState(false);
-  const [showRws, setShowRws] = useState(false);
   const [showVerificationInfo, setShowVerificationInfo] = useState(false);
   const [viewCount, setViewCount] = useState<number | null>(null);
 
@@ -163,110 +162,85 @@ export function Welcome() {
       });
   }, []);
 
+  const archiveNo = GARMENT.brandSku.split("-").pop();
+
   return (
     <div className="h-full flex flex-col p-3 text-center fade-up">
-      <div className="w-full h-full flex flex-col items-center justify-start gap-7 border border-ink/70 rounded-[32px] px-7 py-10 overflow-y-auto no-scrollbar">
-        <div className="w-full flex flex-col items-center gap-7">
-          <Eyebrow>{t("dpp_eyebrow")}</Eyebrow>
-          <div>
-            <p className="font-sans text-sm text-clay">{t("welcome_to")}</p>
-            <h1 className="font-display italic text-4xl text-ink mt-1">wornwith.care</h1>
+      <div className="w-full h-full flex flex-col items-center border border-ink px-6 pt-6 pb-5 overflow-y-auto no-scrollbar">
+        {/* Archive header: catalogue number left, language right */}
+        <div className="w-full flex items-center justify-between font-sans text-[9.5px] uppercase tracking-[0.28em]">
+          <span className="text-ink">{t("archive_label")} N° {archiveNo}</span>
+          <div className="flex items-center gap-2 text-clay">
+            {(["en", "fr", "pt"] as const).map((l, i) => (
+              <span key={l} className="flex items-center gap-2">
+                {i > 0 && <span aria-hidden>·</span>}
+                <button
+                  onClick={() => setLang(l)}
+                  className={`uppercase tracking-[0.28em] ${lang === l ? "text-ink" : "opacity-60"}`}
+                >
+                  {l}
+                </button>
+              </span>
+            ))}
           </div>
+        </div>
 
-          {!showInfo ? (
-            <button
-              onClick={() => setShowInfo(true)}
-              className="font-sans text-[11px] text-blush-deep underline underline-offset-2 -mt-3"
-            >
-              {t("what_is_this")}
-            </button>
-          ) : (
-            <button
-              onClick={() => setShowInfo(false)}
-              className="bg-blush-pale/50 rounded-xl px-4 py-3 -mt-3 fade-up text-left cursor-pointer"
-            >
-              <p className="font-sans text-[11px] text-ink/80 leading-relaxed">
-                {t("dpp_explainer")}
-              </p>
-            </button>
-          )}
-
+        <div className="flex-1 w-full flex flex-col items-center justify-center py-6">
           <div style={{ perspective: "800px" }}>
-            <div className="w-28 h-32 rounded-xl overflow-hidden card-flip-lr">
-              <img
-                src="/images/welcome-portrait.png"
-                alt=""
-                className="w-full h-full object-cover"
-              />
-            </div>
+            <img
+              src="/images/wornwith-logo.png"
+              alt="Worn With Care"
+              className="w-56 card-flip-lr"
+            />
           </div>
-          <p className="font-sans text-[11px] text-clay tracking-wide flex items-center justify-center flex-wrap gap-x-1.5">
-            <span>{GARMENT.brandSku}</span>
-            <span>·</span>
-            <button onClick={() => setShowRws(!showRws)} className="underline underline-offset-2">
-              RWS
-            </button>
-            <span>·</span>
-            <span>{GARMENT.dppId}</span>
+          <div className="w-11 h-px bg-ink mt-7" />
+          <h1 className="font-display italic text-5xl text-ink mt-6">wornwith.care</h1>
+          <p className="font-sans text-[9.5px] font-semibold uppercase tracking-[0.34em] text-[#D6336C] mt-4 pl-[0.34em]">
+            {t("archive_tagline")}
           </p>
-          {showRws && (
-            <div className="bg-blush-pale/50 rounded-xl px-4 py-3 -mt-3 fade-up">
-              <p className="font-sans text-[11px] text-ink/80 leading-relaxed text-left">
-                {t("rws_explainer")}
-              </p>
-            </div>
-          )}
+
+          {/* Verification: one tap opens the full ESPR sheet */}
+          <button
+            onClick={(e) => { e.stopPropagation(); setShowVerificationInfo(true); }}
+            className="mt-8 flex flex-col items-center gap-1.5"
+          >
+            <span className="font-display italic text-xl text-ink/85">{GARMENT.name}</span>
+            <span className="font-sans text-[9px] uppercase tracking-[0.22em] text-clay flex items-center gap-1.5">
+              <Check size={10} className="text-sage" /> {t("verified_passport")} · {GARMENT.fullDppId} ›
+            </span>
+            <span className="font-sans text-[8.5px] uppercase tracking-[0.22em] text-clay/70">
+              {t("eu_regulated")}
+            </span>
+          </button>
         </div>
-        <Card
-          className="w-full text-left cursor-pointer"
-          onClick={(e) => { e.stopPropagation(); setShowVerificationInfo(true); }}
+
+        <button
+          onClick={(e) => { e.stopPropagation(); onEnter?.(); }}
+          className="w-full bg-ink text-white py-4 font-sans text-[10.5px] uppercase tracking-[0.36em] font-medium"
         >
-          <p className="text-[10px] font-sans font-semibold text-sage uppercase tracking-wide mb-1">
-            {t("espr_verification_label")}
-          </p>
-          <p className="flex items-center gap-1.5 font-sans text-sm text-ink font-medium">
-            {t("verified_passport")} <Check size={14} className="text-sage" />
-          </p>
-          <p className="text-[11px] text-clay mt-1">{t("verified_date_value")} · {t("passport_id_label")}: {GARMENT.fullDppId}</p>
-          <p className="text-[11px] text-clay flex items-center justify-between">
-            <span>{t("stored_ledger")}</span>
-            <span className="text-clay inline-block">›</span>
-          </p>
-          <div className="mt-3 pt-3 border-t border-line flex items-center gap-1.5">
-            <span className="text-[10px]">🇪🇺</span>
-            <span className="text-[10px] font-sans text-clay">{t("eu_regulated")}</span>
-          </div>
-          {viewCount !== null && (
-            <div className="mt-3 pt-3 border-t border-line">
-              <p className="text-[10px] font-sans text-clay">
-                {t("viewed_times")} <span className="text-ink font-medium">{viewCount.toLocaleString()}</span> {t("times_suffix")}
-              </p>
-            </div>
-          )}
-        </Card>
+          {t("enter_archive")}
+        </button>
 
-        {/* Language switcher */}
-        <div className="flex items-center gap-3">
+        {!showInfo ? (
           <button
-            onClick={() => setLang("en")}
-            className={`font-sans text-[11px] flex items-center gap-1 px-2 py-1 rounded-full transition-opacity ${lang === "en" ? "opacity-100 bg-blush-pale/60" : "opacity-50"}`}
+            onClick={() => setShowInfo(true)}
+            className="font-sans text-[9px] uppercase tracking-[0.24em] text-clay mt-4"
           >
-            🇬🇧 EN
+            {t("what_is_this")}
           </button>
+        ) : (
           <button
-            onClick={() => setLang("fr")}
-            className={`font-sans text-[11px] flex items-center gap-1 px-2 py-1 rounded-full transition-opacity ${lang === "fr" ? "opacity-100 bg-blush-pale/60" : "opacity-50"}`}
+            onClick={() => setShowInfo(false)}
+            className="bg-blush-pale/50 px-4 py-3 mt-4 fade-up text-left cursor-pointer"
           >
-            🇫🇷 FR
+            <p className="font-sans text-[11px] text-ink/80 leading-relaxed">{t("dpp_explainer")}</p>
           </button>
-          <button
-            onClick={() => setLang("pt")}
-            className={`font-sans text-[11px] flex items-center gap-1 px-2 py-1 rounded-full transition-opacity ${lang === "pt" ? "opacity-100 bg-blush-pale/60" : "opacity-50"}`}
-          >
-            🇵🇹 PT
-          </button>
-        </div>
-
+        )}
+        {viewCount !== null && (
+          <p className="font-sans text-[9px] text-clay/70 mt-3">
+            {t("viewed_times")} <span className="text-ink font-medium">{viewCount.toLocaleString()}</span> {t("times_suffix")}
+          </p>
+        )}
         <Disclaimer />
       </div>
       <VerificationInfoPanel open={showVerificationInfo} onClose={() => setShowVerificationInfo(false)} />

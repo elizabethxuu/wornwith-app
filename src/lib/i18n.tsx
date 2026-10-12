@@ -18,6 +18,9 @@ export const dict = {
   qr_scan_successful: { en: "QR scan successful", fr: "Scan QR réussi", pt: "Digitalização de QR concluída" },
 
   // Welcome
+  archive_label: { en: "Archive", fr: "Archive", pt: "Arquivo" },
+  archive_tagline: { en: "The Digital Archive", fr: "L'Archive Numérique", pt: "O Arquivo Digital" },
+  enter_archive: { en: "Enter the Archive", fr: "Entrer dans l'archive", pt: "Entrar no arquivo" },
   welcome_to: { en: "Welcome to", fr: "Bienvenue sur", pt: "Bem-vindo ao" },
   what_is_this: { en: "What is this?", fr: "Qu'est-ce que c'est ?", pt: "O que é isto?" },
   dpp_explainer: {
