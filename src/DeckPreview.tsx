@@ -1,10 +1,10 @@
 import { useState } from "react";
 import PhoneShell from "./components/PhoneShell";
+import PassportTopBar from "./components/PassportTopBar";
 import { ChapterColorProvider, CHAPTER_COLORS } from "./lib/chapterColor";
 import {
   SkeletonLoader,
   CameraScan,
-  Welcome,
   ProductOverview,
   ProductLifecycle,
   SupplyChain,
@@ -19,7 +19,6 @@ import {
 const screens = [
   { name: "Verifying", el: <SkeletonLoader /> },
   { name: "Scan", el: <CameraScan /> },
-  { name: "Welcome", el: <Welcome /> },
   { name: "Overview", el: <ProductOverview /> },
   { name: "Lifecycle", el: <ProductLifecycle /> },
   { name: "Supply Chain", el: <SupplyChain /> },
@@ -33,10 +32,10 @@ const screens = [
 
 // The first two screens (verifying / scan simulation) come before the
 // passport itself starts, so they don't have a chapter color, everything
-// from Welcome onward maps into CHAPTER_COLORS.
+// from the Overview onward maps into CHAPTER_COLORS.
 const DEFAULT_ACCENT = "#C97A8C";
 function chapterColorFor(index: number): string {
-  return index >= 2 ? CHAPTER_COLORS[index - 2] : DEFAULT_ACCENT;
+  return index >= 2 ? CHAPTER_COLORS[index - 1] : DEFAULT_ACCENT;
 }
 
 export default function DeckPreview() {
@@ -57,12 +56,13 @@ export default function DeckPreview() {
         </h1>
       </div>
 
-      <PhoneShell key={index}>
+      <PhoneShell
+        key={index}
+        header={index >= 2 ? <PassportTopBar safeArea={false} overlayClassName="top-11" onGoTo={(i) => setIndex(i + 1)} /> : undefined}
+      >
         <ChapterColorProvider color={color}>
-          {screens[index].name === "Welcome" ? (
-            <Welcome onEnter={next} />
-          ) : screens[index].name === "Overview" ? (
-            <ProductOverview onExploreJourney={() => setIndex(4)} onGoTo={(i) => setIndex(i + 2)} />
+          {screens[index].name === "Overview" ? (
+            <ProductOverview onExploreJourney={() => setIndex(3)} onGoTo={(i) => setIndex(i + 1)} />
           ) : (
             screens[index].el
           )}

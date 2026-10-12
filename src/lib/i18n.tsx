@@ -51,6 +51,11 @@ export const dict = {
     fr: "Contenu du passeport",
     pt: "Conteúdo do passaporte",
   },
+  contents_overview: {
+    en: "Overview",
+    fr: "Aperçu",
+    pt: "Visão geral",
+  },
   contents_journey: {
     en: "Journey",
     fr: "Parcours",
@@ -89,7 +94,6 @@ export const dict = {
   hero_explore: { en: "Explore the journey", fr: "Découvrir le parcours", pt: "Explorar a jornada" },
   hero_details: { en: "Passport details", fr: "Détails du passeport", pt: "Detalhes do passaporte" },
   hero_menu: { en: "Menu", fr: "Menu", pt: "Menu" },
-  hero_back: { en: "Back to start", fr: "Retour au début", pt: "Voltar ao início" },
   hero_next: { en: "Next: Journey", fr: "Suivant : Parcours", pt: "Próximo: Jornada" },
   hero_image_note: {
     en: "Imagery is illustrative.",

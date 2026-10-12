@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 
-export default function PhoneShell({ children }: { children: ReactNode }) {
+export default function PhoneShell({ children, header }: { children: ReactNode; header?: ReactNode }) {
   return (
     <div className="relative w-[340px] h-[700px] bg-paper rounded-phone shadow-[0_30px_60px_-15px_rgba(43,38,34,0.25)] border border-line overflow-hidden">
       {/* status bar */}
@@ -9,8 +9,11 @@ export default function PhoneShell({ children }: { children: ReactNode }) {
         <div className="w-24 h-6 bg-ink rounded-full absolute left-1/2 -translate-x-1/2 top-1" />
         <span>􀛨 􀙇 100%</span>
       </div>
-      <div className="w-full h-full pt-11 overflow-y-auto visible-scrollbar">
-        {children}
+      <div className="w-full h-full pt-11 flex flex-col">
+        {header}
+        <div className="flex-1 min-h-0 overflow-y-auto visible-scrollbar">
+          {children}
+        </div>
       </div>
     </div>
   );

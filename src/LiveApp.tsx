@@ -1,13 +1,13 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ChevronLeft, ChevronRight, WifiOff, SearchX } from "lucide-react";
 import { EmptyState } from "./components/UI";
+import PassportTopBar from "./components/PassportTopBar";
 import { GARMENT } from "./lib/garment";
 import { useLanguage } from "./lib/i18n";
 import { ChapterColorProvider, CHAPTER_COLORS, INACTIVE_PROGRESS_COLOR } from "./lib/chapterColor";
 import {
   SkeletonLoader,
   CameraScan,
-  Welcome,
   ProductOverview,
   ProductLifecycle,
   SupplyChain,
@@ -30,7 +30,10 @@ import {
 // "verifying" into the passport.
 function buildLiveScreens(goToScreen: (index: number) => void) {
   return [
-    <Welcome key="welcome" onEnter={() => goToScreen(1)} />,
+    // Slot 0 used to hold the "Enter the Archive" front screen. It is gone:
+    // the app opens straight onto the overview. The slot stays empty so the
+    // other screen numbers (and chapter colors) do not shift.
+    null,
     <ProductOverview key="overview" onExploreJourney={() => goToScreen(2)} onGoTo={goToScreen} />,
     <ProductLifecycle key="lifecycle" onViewChapter={() => goToScreen(7)} />,
     <SupplyChain key="supply" />,
@@ -61,6 +64,9 @@ const sectionKeys = [
   "section_end",
 ] as const;
 
+// The first screen people can reach (slot 0 is intentionally empty).
+const FIRST_SCREEN = 1;
+
 type BootState = "verifying" | "scanning" | "ready" | "offline" | "not-found";
 
 function checkDppId(): boolean {
@@ -77,7 +83,8 @@ function checkDppId(): boolean {
 export default function LiveApp() {
   const { t } = useLanguage();
   const [bootState, setBootState] = useState<BootState>("verifying");
-  const [index, setIndex] = useState(0);
+  const [index, setIndex] = useState(FIRST_SCREEN);
+  const scrollRef = useRef<HTMLDivElement>(null);
   // Built inside the component (not as a module-level constant) so
   // screens like ProductOverview can be given a real "jump to a specific
   // screen" callback, not just the generic forward-tap gesture.
@@ -104,12 +111,18 @@ export default function LiveApp() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // Every screen starts at the top, so coming back to the overview never
+  // lands halfway down the page.
+  useEffect(() => {
+    scrollRef.current?.scrollTo(0, 0);
+  }, [index, legalPage]);
+
   const goPrev = () => {
     if (legalPage !== "none") {
       setLegalPage("none");
       return;
     }
-    setIndex((i) => Math.max(0, i - 1));
+    setIndex((i) => Math.max(FIRST_SCREEN, i - 1));
   };
   const goNext = () => {
     if (legalPage !== "none") {
@@ -185,12 +198,12 @@ export default function LiveApp() {
     );
   }
 
-  const isFirst = index === 0;
+  const isFirst = index <= FIRST_SCREEN;
   const isLast = index === liveScreens.length - 1;
   // The opening screen and the product overview take over the whole page:
   // no progress bar, section label or arrow bar. Both carry their own
   // controls, and all the usual chrome returns from the Journey onward.
-  const isFront = index <= 1 && legalPage === "none";
+  const isFront = index <= FIRST_SCREEN && legalPage === "none";
 
   return (
     <div
@@ -198,6 +211,9 @@ export default function LiveApp() {
         isFront ? "" : "md:max-w-[520px] md:mx-auto md:border-x md:border-line"
       }`}
     >
+      {/* The brand header stays on every screen: menu, logo, share. */}
+      <PassportTopBar onGoTo={(i) => { setLegalPage("none"); setIndex(i); }} />
+
       {/* subtle current-section label, now tinted per chapter */}
       {!isFront && (
       <p
@@ -215,7 +231,7 @@ export default function LiveApp() {
       <div
         className="flex gap-1 px-3 shrink-0 mt-1.5 print:hidden"
       >
-        {liveScreens.map((_, i) => (
+        {liveScreens.map((_, i) => i < FIRST_SCREEN ? null : (
           <div
             key={i}
             className="flex-1 h-[3px] rounded-full overflow-hidden transition-colors duration-500"
@@ -233,7 +249,7 @@ export default function LiveApp() {
       </div>
       )}
 
-      <div className="flex-1 overflow-y-auto visible-scrollbar relative" onClick={handleTap}>
+      <div ref={scrollRef} className="flex-1 overflow-y-auto visible-scrollbar relative" onClick={handleTap}>
         <ChapterColorProvider color={CHAPTER_COLORS[index]}>
           {legalPage === "privacy" ? (
             <PrivacyPolicyScreen onBack={() => setLegalPage("none")} />
@@ -313,7 +329,7 @@ export default function LiveApp() {
           <div className="w-10 h-10" />
         )}
         <p className="font-sans text-[9px] text-clay/70">
-          {index + 1} / {liveScreens.length}
+          {index - FIRST_SCREEN + 1} / {liveScreens.length - FIRST_SCREEN}
         </p>
         {!isLast ? (
           <button

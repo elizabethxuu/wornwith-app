@@ -25,8 +25,6 @@ import {
   Check,
   ChevronLeft,
   ChevronRight,
-  Menu as MenuIcon,
-  X as CloseIcon,
   Sparkles,
   ShoppingBag,
   Shirt,
@@ -293,16 +291,8 @@ export function ProductOverview({
   const [ctaFading, setCtaFading] = useState(false);
   const [showVerificationInfo, setShowVerificationInfo] = useState(false);
   const [shareOpen, setShareOpen] = useState(false);
-  const [menuOpen, setMenuOpen] = useState(false);
   const detailsRef = useRef<HTMLDivElement>(null);
   const dppNo = GARMENT.fullDppId.replace("#", "");
-
-  useEffect(() => {
-    if (!menuOpen) return;
-    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") setMenuOpen(false); };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [menuOpen]);
 
   const goExplore = () => {
     if (ctaFading) return;
@@ -379,29 +369,6 @@ export function ProductOverview({
         className="relative h-full min-h-[460px] overflow-hidden bg-paper flex flex-col"
         onClick={(e) => e.stopPropagation()}
       >
-        <div
-          className="shrink-0 flex items-center justify-between px-3 pb-2 bg-paper/95 border-b border-line"
-          style={{ paddingTop: "max(env(safe-area-inset-top), 0.5rem)" }}
-        >
-          <button
-            onClick={() => setMenuOpen(true)}
-            aria-label={t("hero_menu")}
-            className="w-10 h-10 flex items-center justify-center text-ink"
-          >
-            <MenuIcon size={22} strokeWidth={1.25} />
-          </button>
-          <div className="flex items-center gap-2">
-            <img src="/images/wornwith-logo.png" alt="" aria-hidden="true" className="h-8 w-auto" />
-            <p className="font-display italic text-[clamp(1.4rem,6.4vw,1.9rem)] leading-none text-ink">wornwith.care</p>
-          </div>
-          <button
-            onClick={() => setShareOpen(true)}
-            aria-label={t("contents_share")}
-            className="w-10 h-10 flex items-center justify-center text-ink"
-          >
-            <Share size={20} strokeWidth={1.25} />
-          </button>
-        </div>
         <div className="relative flex-1 min-h-0 overflow-hidden bg-[#E9E0D5]">
         <img
           src="/images/overview-hero.jpg"
@@ -410,13 +377,6 @@ export function ProductOverview({
           className="absolute inset-0 w-full h-full object-cover object-[50%_28%]"
         />
 
-        <button
-          onClick={() => onGoTo?.(0)}
-          aria-label={t("hero_back")}
-          className="absolute left-3 top-1/2 -translate-y-1/2 w-11 h-11 flex items-center justify-center bg-white/60 backdrop-blur-md border border-white/60 text-ink"
-        >
-          <ChevronLeft size={22} strokeWidth={1.25} />
-        </button>
         <button
           onClick={goExplore}
           aria-label={t("hero_next")}
@@ -452,58 +412,16 @@ export function ProductOverview({
               {t("hero_details")} ↓
             </button>
           </div>
+          <p className="mt-2 font-sans text-[9px] leading-snug text-clay/80">{t("demo_disclaimer")}</p>
         </div>
 
         </div>
 
-        {menuOpen && (
-          <div className="absolute inset-0 z-20 bg-paper flex flex-col fade-up">
-            <div
-              className="shrink-0 flex items-center justify-between px-3 pb-2 border-b border-line"
-              style={{ paddingTop: "max(env(safe-area-inset-top), 0.5rem)" }}
-            >
-              <button
-                onClick={() => setMenuOpen(false)}
-                aria-label={t("close_label")}
-                className="w-10 h-10 flex items-center justify-center text-ink"
-              >
-                <CloseIcon size={22} strokeWidth={1.25} />
-              </button>
-              <div className="flex items-center gap-2">
-            <img src="/images/wornwith-logo.png" alt="" aria-hidden="true" className="h-8 w-auto" />
-            <p className="font-display italic text-[clamp(1.4rem,6.4vw,1.9rem)] leading-none text-ink">wornwith.care</p>
-          </div>
-              <div className="w-10 h-10" aria-hidden="true" />
-            </div>
-            <nav className="flex-1 overflow-y-auto px-6 pt-8 max-w-md w-full mx-auto">
-              <p className="font-sans text-[10px] uppercase tracking-[0.2em] text-clay mb-2">{t("contents_title")}</p>
-              <div className="border-t border-line">
-                {contents.map(([label, index], i) => (
-                  <button
-                    key={label}
-                    onClick={() => { setMenuOpen(false); onGoTo?.(index); }}
-                    className="w-full flex items-baseline gap-4 py-3.5 border-b border-line text-left"
-                  >
-                    <span className="font-sans text-[10px] tracking-[0.2em] text-clay w-5">{String(i + 1).padStart(2, "0")}</span>
-                    <span className="font-display italic text-[1.5rem] leading-tight text-ink">{label}</span>
-                  </button>
-                ))}
-                <button
-                  onClick={() => { setMenuOpen(false); setShareOpen(true); }}
-                  className="w-full flex items-baseline gap-4 py-3.5 border-b border-line text-left"
-                >
-                  <span className="font-sans text-[10px] tracking-[0.2em] text-clay w-5">+</span>
-                  <span className="font-sans text-[11px] uppercase tracking-[0.2em] text-ink">{t("contents_share")}</span>
-                </button>
-              </div>
-            </nav>
-          </div>
-        )}
       </section>
 
       <div ref={detailsRef} className="relative bg-paper px-5 py-6 max-w-[520px] mx-auto">
       <Eyebrow>{t("section_product")}</Eyebrow>
-      <div className="mt-1 mb-4" />
+      <div className="mt-2" />
       <ProductHero
         videoSrc="/videos/product-hero-2.mp4"
         fallbackImageSrc={GARMENT.image}
@@ -627,7 +545,9 @@ export function ProductOverview({
         </div>
       </div>
 
-      <p className="font-sans text-[10px] text-clay/80 leading-relaxed mt-6">{t("overview_data_note")}</p>
+      <p className="font-sans text-[12px] text-clay leading-relaxed mt-8">{t("dpp_explainer")}</p>
+      <p className="font-sans text-[9px] uppercase tracking-[0.2em] text-clay mt-3">{t("welcome_by")}</p>
+      <p className="font-sans text-[10px] text-clay/80 leading-relaxed mt-4">{t("overview_data_note")}</p>
       <Disclaimer />
       <VerificationInfoPanel open={showVerificationInfo} onClose={() => setShowVerificationInfo(false)} />
       <p className="font-sans text-[10px] text-clay/80 leading-relaxed mt-2">{t("hero_image_note")}</p>
