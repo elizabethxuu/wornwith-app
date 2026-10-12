@@ -1376,14 +1376,14 @@ export function ProductHero({
 
   if (reducedMotion || !videoOk) {
     return (
-      <div aria-hidden="true" className="w-full h-64 rounded-card overflow-hidden mb-4">
+      <div aria-hidden="true" className="w-full h-64 overflow-hidden mb-4">
         <img src={fallbackImageSrc} alt={altText} className="w-full h-full object-cover" />
       </div>
     );
   }
 
   return (
-    <div aria-hidden="true" className="relative w-full h-64 rounded-card overflow-hidden mb-4">
+    <div aria-hidden="true" className="relative w-full h-64 overflow-hidden mb-4">
       <video
         ref={videoRef}
         src={videoSrc}

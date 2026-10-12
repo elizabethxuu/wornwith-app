@@ -200,7 +200,7 @@ export async function generatePassportPdf(): Promise<void> {
   doc.text(`${GARMENT.brandSku}   \u2726   RWS   \u2726   ${t("display_code_label") || "Display code"}: ${GARMENT.dppId}`, PAGE_W / 2, cursor.y, { align: "center" });
   cursor.y += 14;
 
-  // Verified passport box
+  // Demo passport box (sample data, not independently verified)
   const boxH = 32;
   setDrawColor(COLOR.line);
   doc.roundedRect(MARGIN, cursor.y, CONTENT_W, boxH, 3, 3, "S");
@@ -209,19 +209,19 @@ export async function generatePassportPdf(): Promise<void> {
   doc.setFont("helvetica", "bold");
   doc.setFontSize(9);
   setColor(COLOR.sage);
-  doc.text((t("verified_passport") || "Verified Passport").toUpperCase(), boxTextX, boxY, { charSpace: 0.3 });
+  doc.text((t("verified_passport") || "Demo Passport").toUpperCase(), boxTextX, boxY, { charSpace: 0.3 });
   boxY += 7;
   doc.setFont("helvetica", "bold");
   doc.setFontSize(12);
   setColor(COLOR.ink);
-  doc.text(t("verified_passport") || "Verified Passport", boxTextX, boxY);
+  doc.text(t("verified_passport") || "Demo Passport", boxTextX, boxY);
   boxY += 6;
   doc.setFont("helvetica", "normal");
   doc.setFontSize(9);
   setColor(COLOR.clay);
   doc.text(`${GARMENT.verifiedDate} \u00b7 ${t("passport_id_label") || "Passport ID"}: ${GARMENT.fullDppId}`, boxTextX, boxY);
   boxY += 5;
-  doc.text(t("stored_ledger") || "Stored on secure digital ledger", boxTextX, boxY);
+  doc.text(t("stored_ledger") || "Sample data. Not independently verified.", boxTextX, boxY);
   cursor.y += boxH + 12;
 
   doc.setFontSize(8);
@@ -246,7 +246,7 @@ export async function generatePassportPdf(): Promise<void> {
   spacer(6);
   row(t("material") || "Material", t("material_value") || GARMENT.material);
   row(t("made_in") || "Made in", t("made_in_value") || GARMENT.madeIn);
-  row(t("certified") || "Certified", GARMENT.certified);
+  row(t("certified") || "Certifications (example)", GARMENT.certified);
   row(t("lifespan") || "Lifespan", t("lifespan_value") || GARMENT.lifespan);
   row(t("repairability") || "Repairability", "8.5 / 10");
   spacer(8);
@@ -271,7 +271,7 @@ export async function generatePassportPdf(): Promise<void> {
     spacer(3);
   }
   spacer(4);
-  row(t("wool_farming_cert_label") || "Certification", t("wool_farming_cert_value") || "");
+  row(t("wool_farming_cert_label") || "Certification (example)", t("wool_farming_cert_value") || "");
   row(t("manufacturing_mill_label") || "Mill", t("manufacturing_mill_value") || "");
   row(t("manufacturing_since_label") || "Since", t("manufacturing_since_value") || "");
 
@@ -388,8 +388,8 @@ export async function generatePassportPdf(): Promise<void> {
   body(t("verification_panel_body") || "");
   spacer(6);
   sectionTitle(t("data_sources_title") || "Data Sources");
-  row(t("data_source_brand_label") || "Brand Verification", t("data_source_verified_value") || "Verified");
-  row(t("data_source_manufacturing_label") || "Manufacturing Records", t("data_source_verified_value") || "Verified");
+  row(t("data_source_brand_label") || "Brand-Provided Data", t("data_source_verified_value") || "Illustrative");
+  row(t("data_source_manufacturing_label") || "Manufacturer-Provided Data", t("data_source_verified_value") || "Illustrative");
   row(t("data_source_owner_label") || "Owner Contributions", t("data_source_active_value") || "Active");
   row(t("data_source_updated_label") || "Last Updated", t("about_passport_last_updated_value") || "");
 
@@ -399,7 +399,7 @@ export async function generatePassportPdf(): Promise<void> {
   headline(t("closing_evolve_line") || "Crafted to last. Designed to evolve.", 16);
   spacer(4);
   row(t("display_code_label") || "Display code", GARMENT.dppId);
-  row(t("verified_date_value") ? (t("owned_since") || "Verified") : "Verified", GARMENT.verifiedDate);
+  row(t("verified_date_value") ? (t("owned_since") || "Owned since") : "Owned since", GARMENT.verifiedDate);
   row(t("est_lifespan") || "Estimated lifespan remaining", getEstimatedYearsRemaining());
   spacer(10);
   doc.setFont("helvetica", "normal");

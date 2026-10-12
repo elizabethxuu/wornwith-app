@@ -59,7 +59,13 @@ export default function DeckPreview() {
 
       <PhoneShell key={index}>
         <ChapterColorProvider color={color}>
-          {screens[index].name === "Welcome" ? <Welcome onEnter={next} /> : screens[index].el}
+          {screens[index].name === "Welcome" ? (
+            <Welcome onEnter={next} />
+          ) : screens[index].name === "Overview" ? (
+            <ProductOverview onExploreJourney={() => setIndex(4)} onGoTo={(i) => setIndex(i + 2)} />
+          ) : (
+            screens[index].el
+          )}
         </ChapterColorProvider>
       </PhoneShell>
 

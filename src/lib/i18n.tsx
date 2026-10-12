@@ -20,8 +20,82 @@ export const dict = {
   // Welcome
   archive_label: { en: "Archive", fr: "Archive", pt: "Arquivo" },
   archive_tagline: { en: "The Digital Archive", fr: "L'Archive Numérique", pt: "O Arquivo Digital" },
-  welcome_espr_note: { en: "Designed for EU ESPR 2028–2030", fr: "Conçu pour l'ESPR de l'UE 2028–2030", pt: "Concebido para o ESPR da UE 2028–2030" },
   enter_archive: { en: "Enter the Archive", fr: "Entrer dans l'archive", pt: "Entrar no arquivo" },
+  welcome_by: {
+    en: "By Elizabeth Xu",
+    fr: "Par Elizabeth Xu",
+    pt: "Por Elizabeth Xu",
+  },
+  welcome_tagline: {
+    en: "A living record of this garment's materials, care, and journey.",
+    fr: "Un registre vivant des matériaux, de l'entretien et du parcours de ce vêtement.",
+    pt: "Um registro vivo dos materiais, do cuidado e da jornada desta peça.",
+  },
+  stat_illustrative: {
+    en: "Illustrative",
+    fr: "Illustratif",
+    pt: "Ilustrativo",
+  },
+  impact_illustrative_note: {
+    en: "Illustrative estimates for this demo. These figures were not measured or independently verified.",
+    fr: "Estimations illustratives pour cette démo. Ces chiffres n'ont pas été mesurés ni vérifiés de manière indépendante.",
+    pt: "Estimativas ilustrativas para esta demonstração. Estes números não foram medidos nem verificados de forma independente.",
+  },
+  overview_data_note: {
+    en: "Product details are brand-provided example data. Garment details are owner-contributed. All values are illustrative.",
+    fr: "Les détails du produit sont des données d'exemple fournies par la marque. Les détails du vêtement sont fournis par le propriétaire. Toutes les valeurs sont illustratives.",
+    pt: "Os detalhes do produto são dados de exemplo fornecidos pela marca. Os detalhes da peça são fornecidos pelo proprietário. Todos os valores são ilustrativos.",
+  },
+  contents_title: {
+    en: "Passport contents",
+    fr: "Contenu du passeport",
+    pt: "Conteúdo do passaporte",
+  },
+  contents_journey: {
+    en: "Journey",
+    fr: "Parcours",
+    pt: "Jornada",
+  },
+  contents_materials: {
+    en: "Materials and Supply Chain",
+    fr: "Matériaux et chaîne d'approvisionnement",
+    pt: "Materiais e cadeia de suprimentos",
+  },
+  contents_care: {
+    en: "Care",
+    fr: "Entretien",
+    pt: "Cuidado",
+  },
+  contents_environment: {
+    en: "Environmental Performance",
+    fr: "Performance environnementale",
+    pt: "Desempenho ambiental",
+  },
+  contents_ownership: {
+    en: "Ownership",
+    fr: "Propriété",
+    pt: "Propriedade",
+  },
+  contents_story: {
+    en: "Story",
+    fr: "Histoire",
+    pt: "História",
+  },
+  contents_share: {
+    en: "Share this passport",
+    fr: "Partager ce passeport",
+    pt: "Compartilhar este passaporte",
+  },
+  hero_explore: { en: "Explore the journey", fr: "Découvrir le parcours", pt: "Explorar a jornada" },
+  hero_details: { en: "Passport details", fr: "Détails du passeport", pt: "Detalhes do passaporte" },
+  hero_menu: { en: "Menu", fr: "Menu", pt: "Menu" },
+  hero_back: { en: "Back to start", fr: "Retour au début", pt: "Voltar ao início" },
+  hero_next: { en: "Next: Journey", fr: "Suivant : Parcours", pt: "Próximo: Jornada" },
+  hero_image_note: {
+    en: "Imagery is illustrative.",
+    fr: "Les images sont illustratives.",
+    pt: "As imagens são ilustrativas.",
+  },
   welcome_to: { en: "Welcome to", fr: "Bienvenue sur", pt: "Bem-vindo ao" },
   what_is_this: { en: "What is this?", fr: "Qu'est-ce que c'est ?", pt: "O que é isto?" },
   dpp_explainer: {
@@ -29,16 +103,24 @@ export const dict = {
     fr: "Un Passeport Numérique Produit est un enregistrement que chaque vêtement vendu dans l'UE devra porter d'ici 2028–2030, où il a été fabriqué, de quoi il est fait, et comment en prendre soin. Voici la vision d'une créatrice de ce moment.",
     pt: "Um Passaporte Digital do Produto é um registro que toda peça de roupa vendida na UE deverá ter até 2028–2030, onde foi feita, do que é feita e como cuidar dela. Esta é a visão de uma designer sobre como esse momento poderia ser.",
   },
-  verified_passport: { en: "Verified Passport", fr: "Passeport Vérifié", pt: "Passaporte Verificado" },
+  verified_passport: {
+    en: "Demo Passport",
+    fr: "Passeport de démo",
+    pt: "Passaporte de demonstração",
+  },
   espr_verification_label: { en: "ESPR Verification", fr: "Vérification ESPR", pt: "Verificação ESPR" },
-  stored_ledger: { en: "Stored on secure digital ledger", fr: "Stocké sur un registre numérique sécurisé", pt: "Armazenado em registro digital seguro" },
+  stored_ledger: {
+    en: "Sample data. Not independently verified.",
+    fr: "Données d'exemple. Non vérifiées de manière indépendante.",
+    pt: "Dados de exemplo. Não verificados de forma independente.",
+  },
   passport_id_label: { en: "Passport ID", fr: "ID du Passeport", pt: "ID do Passaporte" },
   display_code_label: { en: "Display code", fr: "Code d'affichage", pt: "Código de exibição" },
   eu_regulated: { en: "EU Regulated · ESPR 2028–2030", fr: "Réglementé par l'UE · ESPR 2028–2030", pt: "Regulado pela UE · ESPR 2028–2030" },
   demo_disclaimer: {
-    en: "All data shown is illustrative for demo purposes only.",
-    fr: "Toutes les données affichées sont illustratives, à des fins de démonstration uniquement.",
-    pt: "Todos os dados exibidos são ilustrativos, apenas para fins de demonstração.",
+    en: "All data is illustrative and used for demo purposes only.",
+    fr: "Toutes les données sont illustratives et utilisées à des fins de démonstration uniquement.",
+    pt: "Todos os dados são ilustrativos e usados apenas para fins de demonstração.",
   },
   tap_pin_hint: {
     en: "Tap a stop to learn more · pinch to zoom",
@@ -75,9 +157,17 @@ export const dict = {
   times_suffix: { en: "times", fr: "fois", pt: "vezes" },
 
   // Product overview
-  dpp_verified: { en: "DPP Verified", fr: "DPP Vérifié", pt: "DPP Verificado" },
+  dpp_verified: {
+    en: "Demo Passport",
+    fr: "Passeport de démo",
+    pt: "Passaporte de demonstração",
+  },
   wool_jacket: { en: "Wool Jacket", fr: "Veste en Laine", pt: "Casaco de Lã" },
-  tagline_coat: { en: "Sustainable materials, timeless style", fr: "Matériaux durables, style intemporel", pt: "Materiais sustentáveis, estilo atemporal" },
+  tagline_coat: {
+    en: "Considered materials, timeless style",
+    fr: "Matériaux choisis avec soin, style intemporel",
+    pt: "Materiais cuidadosamente escolhidos, estilo atemporal",
+  },
 
   product_editorial_label: { en: "Crafted to Last", fr: "Conçu pour Durer", pt: "Feito para Durar" },
   product_editorial_headline: {
@@ -103,7 +193,11 @@ export const dict = {
   product_editorial_cta: { en: "Explore its journey", fr: "Découvrir son parcours", pt: "Explorar sua jornada" },
   material: { en: "Material", fr: "Matériau", pt: "Material" },
   made_in: { en: "Made in", fr: "Fabriqué en", pt: "Fabricado em" },
-  certified: { en: "Certified", fr: "Certifié", pt: "Certificado" },
+  certified: {
+    en: "Certifications (example)",
+    fr: "Certifications (exemple)",
+    pt: "Certificações (exemplo)",
+  },
   lifespan: { en: "Lifespan", fr: "Durée de vie", pt: "Vida útil" },
   repairability: { en: "Repairability", fr: "Réparabilité", pt: "Reparabilidade" },
   material_value: { en: "70% Recycled Wool", fr: "70% de laine recyclée", pt: "70% de lã reciclada" },
@@ -142,7 +236,6 @@ export const dict = {
   lifespan_value: { en: "8–10 years", fr: "8 à 10 ans", pt: "8–10 anos" },
   verified_date_value: { en: "5 April 2026", fr: "5 avril 2026", pt: "5 de abril de 2026" },
   story_date_value: { en: "5 April 2026", fr: "5 avril 2026", pt: "5 de abril de 2026" },
-  blockchain_word: { en: "blockchain", fr: "blockchain", pt: "blockchain" },
   product_hero_alt: { en: "Black wool funnel-neck coat.", fr: "Manteau en laine noire à col cheminée.", pt: "Casaco de lã preta com gola funil." },
 
   // Product lifecycle
@@ -168,22 +261,46 @@ export const dict = {
   retail: { en: "Retail", fr: "Vente au Détail", pt: "Varejo" },
   countries: { en: "Countries", fr: "Pays", pt: "Países" },
   traveled: { en: "traveled", fr: "parcourus", pt: "percorridos" },
-  verified: { en: "Verified", fr: "Vérifié", pt: "Verificado" },
-  ethical_audit: { en: "Ethical Audit", fr: "Audit Éthique", pt: "Auditoria Ética" },
+  verified: {
+    en: "Example",
+    fr: "Exemple",
+    pt: "Exemplo",
+  },
+  ethical_audit: {
+    en: "Ethical Audit (example)",
+    fr: "Audit éthique (exemple)",
+    pt: "Auditoria ética (exemplo)",
+  },
   fair_wages: { en: "Fair wages", fr: "Salaires équitables", pt: "Salários justos" },
   health_safety: { en: "Health & safety", fr: "Santé et sécurité", pt: "Saúde e segurança" },
   no_forced_labour: { en: "No forced labour", fr: "Pas de travail forcé", pt: "Sem trabalho forçado" },
   passed: { en: "Passed", fr: "Réussi", pt: "Aprovado" },
   grade_a: { en: "Grade A", fr: "Note A", pt: "Nota A" },
-  audited_by: { en: "Audited by Bureau Veritas · Cert #BV-2025-09871", fr: "Audité par Bureau Veritas · Cert n°BV-2025-09871", pt: "Auditado pela Bureau Veritas · Cert #BV-2025-09871" },
-  chemical_compliance: { en: "Chemical Compliance", fr: "Conformité Chimique", pt: "Conformidade Química" },
-  reach_compliant: { en: "REACH Compliant · No restricted substances detected", fr: "Conforme REACH · Aucune substance restreinte détectée", pt: "Conforme REACH · Nenhuma substância restrita detectada" },
+  audited_by: {
+    en: "Placeholder values. No audit has taken place.",
+    fr: "Valeurs fictives. Aucun audit n'a eu lieu.",
+    pt: "Valores fictícios. Nenhuma auditoria foi realizada.",
+  },
+  chemical_compliance: {
+    en: "Chemical Compliance (example)",
+    fr: "Conformité chimique (exemple)",
+    pt: "Conformidade química (exemplo)",
+  },
+  reach_compliant: {
+    en: "Example only. No testing has been done.",
+    fr: "Exemple uniquement. Aucun test n'a été réalisé.",
+    pt: "Apenas exemplo. Nenhum teste foi realizado.",
+  },
   economic_operator: { en: "Economic Operator", fr: "Opérateur Économique", pt: "Operador Econômico" },
-  economic_operator_value: { en: "COS AB · Stockholm, Sweden", fr: "COS AB · Stockholm, Suède", pt: "COS AB · Estocolmo, Suécia" },
+  economic_operator_value: {
+    en: "Brand entity (placeholder)",
+    fr: "Entité de la marque (fictive)",
+    pt: "Entidade da marca (fictícia)",
+  },
   economic_operator_note: {
-    en: "The legal entity responsible for this product's compliance under EU regulation.",
-    fr: "L'entité juridique responsable de la conformité de ce produit selon la réglementation de l'UE.",
-    pt: "A entidade legal responsável pela conformidade deste produto segundo a regulamentação da UE.",
+    en: "In a real passport, the legal entity responsible for this product's compliance under EU regulation. Not provided in this prototype.",
+    fr: "Dans un vrai passeport, l'entité juridique responsable de la conformité de ce produit selon la réglementation de l'UE. Non fournie dans ce prototype.",
+    pt: "Em um passaporte real, a entidade legal responsável pela conformidade deste produto segundo a regulamentação da UE. Não fornecida neste protótipo.",
   },
 
   // Care guide
@@ -278,7 +395,11 @@ export const dict = {
   section_end: { en: "End", fr: "Fin", pt: "Fim" },
 
   wool_farming_card_title: { en: "About this wool farm", fr: "À propos de cette ferme", pt: "Sobre esta fazenda de lã" },
-  wool_farming_cert_label: { en: "Certification", fr: "Certification", pt: "Certificação" },
+  wool_farming_cert_label: {
+    en: "Certification (example)",
+    fr: "Certification (exemple)",
+    pt: "Certificação (exemplo)",
+  },
   wool_farming_cert_value: { en: "Responsible Wool Standard", fr: "Norme de Laine Responsable", pt: "Padrão de Lã Responsável" },
   wool_farming_region_label: { en: "Region", fr: "Région", pt: "Região" },
   wool_farming_region_value: { en: "Canterbury Plains, New Zealand", fr: "Canterbury Plains, Nouvelle-Zélande", pt: "Canterbury Plains, Nova Zelândia" },
@@ -313,7 +434,11 @@ export const dict = {
   chapter_card_title: { en: "About this chapter", fr: "À propos de ce chapitre", pt: "Sobre este capítulo" },
   chapter_status_label: { en: "Status", fr: "Statut", pt: "Status" },
   chapter_status_value: { en: "In active use", fr: "En usage actif", pt: "Em uso ativo" },
-  chapter_verified_label: { en: "Verified", fr: "Vérifié", pt: "Verificado" },
+  chapter_verified_label: {
+    en: "Logged",
+    fr: "Enregistré",
+    pt: "Registrado",
+  },
   chapter_owner_label: { en: "Chapter", fr: "Chapitre", pt: "Capítulo" },
   chapter_owner_value: { en: "Ownership begins", fr: "Le début de la possession", pt: "O início da posse" },
 
@@ -624,17 +749,21 @@ export const dict = {
   footer_terms: { en: "Terms of Use", fr: "Conditions d'Utilisation", pt: "Termos de Uso" },
   legal_back: { en: "Back", fr: "Retour", pt: "Voltar" },
   close_label: { en: "Close", fr: "Fermer", pt: "Fechar" },
-  verification_panel_title: { en: "About this verification", fr: "À propos de cette vérification", pt: "Sobre esta verificação" },
+  verification_panel_title: {
+    en: "About this passport's data",
+    fr: "À propos des données de ce passeport",
+    pt: "Sobre os dados deste passaporte",
+  },
   verification_panel_body: {
-    en: "This passport's history is recorded on an immutable ledger, so entries can't be altered after the fact. In this demo, verification is illustrative. A production version would anchor to a live blockchain record.",
-    fr: "L'historique de ce passeport est enregistré sur un registre immuable, de sorte que les entrées ne peuvent pas être modifiées après coup. Dans cette démo, la vérification est illustrative. Une version en production s'ancrerait à un registre blockchain en direct.",
-    pt: "O histórico deste passaporte é registrado em um registro imutável, de modo que as entradas não podem ser alteradas depois de feitas. Nesta demonstração, a verificação é ilustrativa. Uma versão de produção seria ancorada a um registro de blockchain real.",
+    en: "This is a prototype. The entries below are illustrative sample data and have not been independently verified. A production passport could keep its history in a tamper-evident record, but this demo does not.",
+    fr: "Ceci est un prototype. Les entrées ci-dessous sont des données d'exemple illustratives et n'ont pas été vérifiées de manière indépendante. Un passeport en production pourrait conserver son historique dans un registre infalsifiable, mais cette démo ne le fait pas.",
+    pt: "Este é um protótipo. As entradas abaixo são dados de exemplo ilustrativos e não foram verificadas de forma independente. Um passaporte em produção poderia manter seu histórico em um registro à prova de adulteração, mas esta demonstração não faz isso.",
   },
   ledger_illustrative_label: { en: "illustrative", fr: "illustratif", pt: "ilustrativo" },
   ledger_caption: {
-    en: "Each entry is timestamped and hashed. Once recorded, it can't be altered.",
-    fr: "Chaque entrée est horodatée et hachée. Une fois enregistrée, elle ne peut pas être modifiée.",
-    pt: "Cada entrada é registrada com data e hash. Uma vez registrada, não pode ser alterada.",
+    en: "Sample entries showing how a timestamped record could look. This is not a live ledger.",
+    fr: "Entrées d'exemple montrant à quoi pourrait ressembler un registre horodaté. Ce n'est pas un registre réel.",
+    pt: "Entradas de exemplo mostrando como um registro com data poderia ser. Este não é um registro real.",
   },
   ledger_col_date: { en: "Date", fr: "Date", pt: "Data" },
   ledger_col_event: { en: "Event", fr: "Événement", pt: "Evento" },
@@ -645,7 +774,11 @@ export const dict = {
   ledger_event_moment_logged: { en: "Moment logged", fr: "Moment enregistré", pt: "Momento registrado" },
   ledger_event_repair_projected: { en: "Repair (projected)", fr: "Réparation (projetée)", pt: "Reparo (projetado)" },
   ledger_date_repair: { en: "Est. 2027", fr: "Est. 2027", pt: "Est. 2027" },
-  ledger_status_verified: { en: "Verified", fr: "Vérifié", pt: "Verificado" },
+  ledger_status_verified: {
+    en: "Sample",
+    fr: "Exemple",
+    pt: "Exemplo",
+  },
   ledger_status_projected: { en: "Projected", fr: "Projeté", pt: "Projetado" },
 
   privacy_eyebrow: { en: "Privacy", fr: "Confidentialité", pt: "Privacidade" },
@@ -721,9 +854,9 @@ export const dict = {
   about_passport_eyebrow: { en: "About this Passport", fr: "À propos de ce Passeport", pt: "Sobre este Passaporte" },
   about_passport_title: { en: "A living record of craftsmanship.", fr: "Un registre vivant du savoir-faire.", pt: "Um registro vivo do artesanato." },
   about_passport_p1: {
-    en: "This Digital Product Passport brings together verified product information, ownership history, care guidance, repair records and lifecycle information to help extend the life of every garment.",
-    fr: "Ce passeport numérique réunit des informations produit vérifiées, l'historique de propriété, des conseils d'entretien, des registres de réparation et des informations sur le cycle de vie, afin de prolonger la vie de chaque vêtement.",
-    pt: "Este Passaporte Digital do Produto reúne informações verificadas do produto, histórico de propriedade, orientações de cuidado, registros de reparo e informações de ciclo de vida para ajudar a prolongar a vida de cada peça.",
+    en: "This Digital Product Passport brings together product information, ownership history, care guidance, repair records and lifecycle information to help extend the life of every garment.",
+    fr: "Ce passeport numérique réunit des informations produit, l'historique de propriété, des conseils d'entretien, des registres de réparation et des informations sur le cycle de vie, afin de prolonger la vie de chaque vêtement.",
+    pt: "Este Passaporte Digital do Produto reúne informações do produto, histórico de propriedade, orientações de cuidado, registros de reparo e informações de ciclo de vida para ajudar a prolongar a vida de cada peça.",
   },
   about_passport_p2: {
     en: "Information may be provided by the brand, manufacturing partners and the garment owner, evolving as new information becomes available throughout the product's lifetime.",
@@ -731,34 +864,69 @@ export const dict = {
     pt: "As informações podem ser fornecidas pela marca, parceiros de fabricação e pelo proprietário da peça, evoluindo à medida que novas informações se tornam disponíveis ao longo da vida do produto.",
   },
   about_passport_p3: {
-    en: "Designed to support emerging Digital Product Passport standards and future interoperability across participating brands and services.",
-    fr: "Conçu pour soutenir les normes émergentes de passeport numérique et la future interopérabilité entre les marques et services participants.",
-    pt: "Feito para apoiar os padrões emergentes de Passaporte Digital do Produto e a futura interoperabilidade entre marcas e serviços participantes.",
+    en: "Designed with emerging Digital Product Passport standards in mind. This prototype does not claim compliance with any standard or interoperability with other services.",
+    fr: "Conçu en tenant compte des normes émergentes de passeport numérique. Ce prototype ne revendique aucune conformité à une norme ni interopérabilité avec d'autres services.",
+    pt: "Feito com os padrões emergentes de Passaporte Digital do Produto em mente. Este protótipo não alega conformidade com nenhum padrão nem interoperabilidade com outros serviços.",
+  },
+  about_passport_p4: {
+    en: "Worn With Care is an independent prototype by Elizabeth Xu. The COS Black Wool Funnel-Neck Coat is used only as an example garment. COS is not affiliated with this project and has not endorsed it, and all product, supply chain and sustainability values shown are illustrative.",
+    fr: "Worn With Care est un prototype indépendant créé par Elizabeth Xu. Le manteau en laine noire à col cheminée COS n'est utilisé que comme vêtement d'exemple. COS n'est pas affilié à ce projet et ne l'a pas approuvé, et toutes les valeurs de produit, de chaîne d'approvisionnement et de durabilité affichées sont illustratives.",
+    pt: "Worn With Care é um protótipo independente de Elizabeth Xu. O casaco de lã preta com gola funil COS é usado apenas como peça de exemplo. A COS não é afiliada a este projeto nem o endossou, e todos os valores de produto, cadeia de suprimentos e sustentabilidade exibidos são ilustrativos.",
   },
 
   data_sources_title: { en: "Data Sources", fr: "Sources de Données", pt: "Fontes de Dados" },
-  data_source_brand_label: { en: "Brand Verification", fr: "Vérification de la Marque", pt: "Verificação da Marca" },
-  data_source_manufacturing_label: { en: "Manufacturing Records", fr: "Registres de Fabrication", pt: "Registros de Fabricação" },
+  data_source_brand_label: {
+    en: "Brand-Provided Data",
+    fr: "Données fournies par la marque",
+    pt: "Dados fornecidos pela marca",
+  },
+  data_source_manufacturing_label: {
+    en: "Manufacturer-Provided Data",
+    fr: "Données fournies par le fabricant",
+    pt: "Dados fornecidos pelo fabricante",
+  },
   data_source_owner_label: { en: "Owner Contributions", fr: "Contributions du Propriétaire", pt: "Contribuições do Proprietário" },
   data_source_updated_label: { en: "Last Updated", fr: "Dernière Mise à Jour", pt: "Última Atualização" },
   about_passport_last_updated_value: { en: "August 2026", fr: "août 2026", pt: "agosto de 2026" },
-  data_source_verified_value: { en: "Verified", fr: "Vérifié", pt: "Verificado" },
+  data_source_verified_value: {
+    en: "Illustrative",
+    fr: "Illustratif",
+    pt: "Ilustrativo",
+  },
   data_source_active_value: { en: "Active", fr: "Actif", pt: "Ativo" },
 
   data_confidence_title: { en: "Data Confidence", fr: "Fiabilité des Données", pt: "Confiabilidade dos Dados" },
-  confidence_verified_title: { en: "Verified", fr: "Vérifié", pt: "Verificado" },
-  confidence_verified_desc: { en: "Brand and manufacturing records.", fr: "Registres de la marque et de fabrication.", pt: "Registros da marca e de fabricação." },
+  confidence_verified_title: {
+    en: "Brand and manufacturer provided",
+    fr: "Fourni par la marque et le fabricant",
+    pt: "Fornecido pela marca e pelo fabricante",
+  },
+  confidence_verified_desc: {
+    en: "Product, material and supply chain details supplied by the brand or manufacturer. Illustrative in this demo.",
+    fr: "Détails du produit, des matériaux et de la chaîne d'approvisionnement fournis par la marque ou le fabricant. Illustratifs dans cette démo.",
+    pt: "Detalhes do produto, dos materiais e da cadeia de suprimentos fornecidos pela marca ou pelo fabricante. Ilustrativos nesta demonstração.",
+  },
   confidence_estimated_title: { en: "Estimated", fr: "Estimé", pt: "Estimado" },
   confidence_estimated_desc: {
-    en: "Calculated sustainability metrics based on available product data.",
-    fr: "Indicateurs de durabilité calculés à partir des données produit disponibles.",
-    pt: "Métricas de sustentabilidade calculadas com base nos dados disponíveis do produto.",
+    en: "Calculated sustainability metrics based on available product data. Estimates are not measurements.",
+    fr: "Indicateurs de durabilité calculés à partir des données produit disponibles. Les estimations ne sont pas des mesures.",
+    pt: "Métricas de sustentabilidade calculadas com base nos dados disponíveis do produto. Estimativas não são medições.",
   },
   confidence_owner_title: { en: "Owner Contributed", fr: "Contribué par le Propriétaire", pt: "Contribuído pelo Proprietário" },
   confidence_owner_desc: {
     en: "Ownership history, wear, care and repair records.",
     fr: "Historique de propriété, usure, entretien et registres de réparation.",
     pt: "Histórico de propriedade, uso, cuidado e registros de reparo.",
+  },
+  confidence_illustrative_title: {
+    en: "Illustrative demo values",
+    fr: "Valeurs de démonstration illustratives",
+    pt: "Valores de demonstração ilustrativos",
+  },
+  confidence_illustrative_desc: {
+    en: "Placeholder values created for this prototype. They do not describe a real garment or a real audit.",
+    fr: "Valeurs fictives créées pour ce prototype. Elles ne décrivent ni un vrai vêtement ni un vrai audit.",
+    pt: "Valores fictícios criados para este protótipo. Eles não descrevem uma peça real nem uma auditoria real.",
   },
 
   passport_sharing_title: { en: "Passport Sharing", fr: "Partage du Passeport", pt: "Compartilhamento do Passaporte" },
@@ -767,7 +935,11 @@ export const dict = {
   sharing_qr_title: { en: "QR Code", fr: "Code QR", pt: "Código QR" },
   sharing_qr_desc: { en: "Instantly share this garment.", fr: "Partagez cette pièce instantanément.", pt: "Compartilhe esta peça instantaneamente." },
   sharing_link_title: { en: "Digital Passport Link", fr: "Lien du Passeport Numérique", pt: "Link do Passaporte Digital" },
-  sharing_link_desc: { en: "Always reflects the latest verified record.", fr: "Reflète toujours le dernier registre vérifié.", pt: "Sempre reflete o registro verificado mais recente." },
+  sharing_link_desc: {
+    en: "Always reflects the latest version of this passport.",
+    fr: "Reflète toujours la dernière version de ce passeport.",
+    pt: "Sempre reflete a versão mais recente deste passaporte.",
+  },
   about_passport_closing: { en: "Crafted to last. Designed to evolve.", fr: "Conçu pour durer. Pensé pour évoluer.", pt: "Feito para durar. Pensado para evoluir." },
 
   share_sheet_title: { en: "Share Passport", fr: "Partager le Passeport", pt: "Compartilhar Passaporte" },
@@ -779,12 +951,16 @@ export const dict = {
   pdf_error_label: { en: "Couldn't generate the PDF, try again", fr: "Impossible de générer le PDF, réessayer", pt: "Não foi possível gerar o PDF, tentar novamente" },
   share_sheet_qr_desc: { en: "Open this passport on another device.", fr: "Ouvrez ce passeport sur un autre appareil.", pt: "Abra este passaporte em outro dispositivo." },
   share_sheet_qr_action: { en: "Generate QR Code", fr: "Générer le Code QR", pt: "Gerar Código QR" },
-  share_sheet_link_desc: { en: "Always points to the latest verified version.", fr: "Pointe toujours vers la dernière version vérifiée.", pt: "Sempre aponta para a versão verificada mais recente." },
+  share_sheet_link_desc: {
+    en: "Always points to the latest version.",
+    fr: "Pointe toujours vers la dernière version.",
+    pt: "Sempre aponta para a versão mais recente.",
+  },
   share_sheet_link_action: { en: "Copy Link", fr: "Copier le Lien", pt: "Copiar Link" },
   share_sheet_footer_note: {
-    en: "Shared passports always reference the latest verified information.",
-    fr: "Les passeports partagés font toujours référence aux informations vérifiées les plus récentes.",
-    pt: "Passaportes compartilhados sempre fazem referência às informações verificadas mais recentes.",
+    en: "Shared passports always reference the latest version of this passport.",
+    fr: "Les passeports partagés font toujours référence à la dernière version de ce passeport.",
+    pt: "Passaportes compartilhados sempre fazem referência à versão mais recente deste passaporte.",
   },
   cancel_label: { en: "Cancel", fr: "Annuler", pt: "Cancelar" },
   link_copied_confirmation: { en: "Link copied", fr: "Lien copié", pt: "Link copiado" },

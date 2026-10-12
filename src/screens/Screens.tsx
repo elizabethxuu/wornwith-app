@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Eyebrow, Donut, Card, JourneyMap, Pill, Disclaimer, EmptyState, ExpandableCard, ArchiveTransition, ArchiveTimeline, type ArchiveEntry, TodaysEdit, AskAnythingBar, CareRitualRow, type CareRitual, useMountReveal, VerificationInfoPanel, ShareSheet, ProductHero } from "../components/UI";
 import { ChapterColorProvider, ARCHIVE_ACCENT_COLOR, useChapterColor } from "../lib/chapterColor";
 import { generateAI } from "../lib/aiService";
@@ -24,6 +24,9 @@ import { useLanguage, type TranslationKey } from "../lib/i18n";
 import {
   Check,
   ChevronLeft,
+  ChevronRight,
+  Menu as MenuIcon,
+  X as CloseIcon,
   Sparkles,
   ShoppingBag,
   Shirt,
@@ -163,13 +166,32 @@ export function Welcome({ onEnter }: { onEnter?: () => void } = {}) {
   }, []);
 
   const archiveNo = GARMENT.brandSku.split("-").pop();
+  const dppNo = GARMENT.fullDppId.replace("#", "");
+
+  // Brief exit transition: the front fades out, then the passport rises in
+  // (each screen already has its own fade-up entrance). Skipped entirely for
+  // reduced-motion users.
+  const [leaving, setLeaving] = useState(false);
+  const handleEnter = () => {
+    if (leaving) return;
+    const reduced =
+      typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduced) {
+      onEnter?.();
+      return;
+    }
+    setLeaving(true);
+    setTimeout(() => onEnter?.(), 280);
+  };
 
   return (
     <div
       className="h-full flex flex-col px-3 pb-3 text-center fade-up"
       style={{ paddingTop: "max(env(safe-area-inset-top), 0.75rem)" }}
     >
-      <div className="w-full h-full flex flex-col items-center border border-ink px-6 pt-6 pb-5 overflow-y-auto no-scrollbar">
+      <div
+        className={`w-full h-full flex flex-col items-center border border-ink px-6 pt-6 pb-5 overflow-y-auto no-scrollbar transition-opacity duration-300 ease-out ${leaving ? "opacity-0" : "opacity-100"}`}
+      >
         {/* Archive header: catalogue number left, language right */}
         <div className="w-full flex items-center justify-between font-sans text-[9.5px] uppercase tracking-[0.28em]">
           <span className="text-ink">{t("archive_label")} N° {archiveNo}</span>
@@ -198,27 +220,37 @@ export function Welcome({ onEnter }: { onEnter?: () => void } = {}) {
           </div>
           <div className="w-11 h-px bg-ink mt-[clamp(0.75rem,3.2dvh,1.75rem)]" />
           <h1 className="font-display italic text-[clamp(2.25rem,6dvh,3rem)] leading-tight text-ink mt-[clamp(0.75rem,2.8dvh,1.5rem)]">wornwith.care</h1>
-          <p className="font-sans text-[9.5px] font-semibold uppercase tracking-[0.34em] text-[#D6336C] mt-[clamp(0.75rem,2.4dvh,1.25rem)] pl-[0.34em]">
+          <p className="font-sans text-[9px] uppercase tracking-[0.34em] text-clay mt-[clamp(0.5rem,1.6dvh,0.875rem)] pl-[0.34em]">
+            {t("welcome_by")}
+          </p>
+          <p className="font-sans text-[9.5px] font-semibold uppercase tracking-[0.34em] text-[#D6336C] mt-[clamp(0.625rem,2dvh,1.125rem)] pl-[0.34em]">
             {t("archive_tagline")}
           </p>
 
-          {/* Verification: one tap opens the full ESPR sheet */}
+          {/* The garment and its passport number. One tap opens the data note. */}
           <button
             onClick={(e) => { e.stopPropagation(); setShowVerificationInfo(true); }}
-            className="mt-[clamp(1rem,3.5dvh,2rem)] flex flex-col items-center gap-1.5"
+            className="mt-[clamp(1rem,3.2dvh,1.75rem)] flex flex-col border border-line text-center max-w-full"
           >
-            <span className="font-display italic text-xl text-ink/85">{GARMENT.name}</span>
-            <span className="font-sans text-[9px] uppercase tracking-[0.22em] text-clay flex items-center gap-1.5">
-              {t("passport_id_label")} · {GARMENT.fullDppId} ›
+            <span className="flex items-center justify-center gap-3 px-4 py-2">
+              <img
+                src={GARMENT.image}
+                alt=""
+                className="w-10 h-12 object-cover shrink-0 bg-[#F6F4F1] [@media(max-height:700px)]:hidden"
+              />
+              <span className="font-display italic text-lg leading-tight text-ink text-left">{GARMENT.name}</span>
             </span>
-            <span className="font-sans text-[8.5px] uppercase tracking-[0.22em] text-clay/70">
-              {t("welcome_espr_note")}
+            <span className="border-t border-line px-3 py-1.5 font-sans text-[9px] uppercase tracking-[0.16em] text-clay leading-snug">
+              {t("dpp_eyebrow")} · <span className="whitespace-nowrap">{dppNo} ›</span>
             </span>
           </button>
+          <p className="font-sans text-[11px] text-clay leading-relaxed max-w-[17rem] text-balance mt-[clamp(0.5rem,1.8dvh,1rem)]">
+            {t("welcome_tagline")}
+          </p>
         </div>
 
         <button
-          onClick={(e) => { e.stopPropagation(); onEnter?.(); }}
+          onClick={(e) => { e.stopPropagation(); handleEnter(); }}
           className="w-full max-w-md bg-ink text-white py-4 font-sans text-[10.5px] uppercase tracking-[0.36em] font-medium"
         >
           {t("enter_archive")}
@@ -253,18 +285,46 @@ export function Welcome({ onEnter }: { onEnter?: () => void } = {}) {
 
 
 /* 4: PRODUCT OVERVIEW */
-export function ProductOverview({ onExploreJourney }: { onExploreJourney?: () => void } = {}) {
+export function ProductOverview({
+  onExploreJourney,
+  onGoTo,
+}: { onExploreJourney?: () => void; onGoTo?: (index: number) => void } = {}) {
   const { t } = useLanguage();
   const [ctaFading, setCtaFading] = useState(false);
-  const [dppSparkle, setDppSparkle] = useState(false);
-  useEffect(() => {
-    const reducedMotion =
-      typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reducedMotion) return;
-    const timer = setTimeout(() => setDppSparkle(true), 500);
-    return () => clearTimeout(timer);
-  }, []);
   const [showVerificationInfo, setShowVerificationInfo] = useState(false);
+  const [shareOpen, setShareOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const detailsRef = useRef<HTMLDivElement>(null);
+  const dppNo = GARMENT.fullDppId.replace("#", "");
+
+  useEffect(() => {
+    if (!menuOpen) return;
+    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") setMenuOpen(false); };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [menuOpen]);
+
+  const goExplore = () => {
+    if (ctaFading) return;
+    setCtaFading(true);
+    setTimeout(() => onExploreJourney?.(), 180);
+  };
+  const showDetails = () => {
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    detailsRef.current?.scrollIntoView({ behavior: reduced ? "auto" : "smooth", block: "start" });
+  };
+
+  // Paths into every section of the passport. Indexes match the order the
+  // screens are built in (front 0, overview 1, journey 2, supply chain 3,
+  // care 4, environment 5, story 7, ownership 8).
+  const contents: [string, number][] = [
+    [t("contents_journey"), 2],
+    [t("contents_materials"), 3],
+    [t("contents_care"), 4],
+    [t("contents_environment"), 5],
+    [t("contents_ownership"), 8],
+    [t("contents_story"), 7],
+  ];
 
   // A one-time, bespoke-timed entrance for the Crafted to Last panel,
   // each element has its own specific delay/duration/easing per spec, so
@@ -311,17 +371,139 @@ export function ProductOverview({ onExploreJourney }: { onExploreJourney?: () =>
     [t("repairability"), "8.5 / 10"],
   ];
   return (
-    <div className="h-full px-5 py-4 fade-up">
-      <Eyebrow>{t("section_product")}</Eyebrow>
-      <div className="flex items-center gap-1.5 text-clay text-xs font-sans mt-1 mb-4">
-        <ChevronLeft size={14} /> <span>{GARMENT.brand} {t("wool_jacket")}</span>
-        <button
-          onClick={(e) => { e.stopPropagation(); setShowVerificationInfo(true); }}
-          className="ml-auto flex items-center gap-1 text-sage text-[10px] font-semibold"
+    <ChapterColorProvider color="#2B2622">
+    <div className="h-full fade-up">
+      {/* Full-bleed opening panel: image, quiet controls, one frosted
+          panel with the way in. Everything else sits below it. */}
+      <section
+        className="relative h-full min-h-[460px] overflow-hidden bg-paper flex flex-col"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div
+          className="shrink-0 flex items-center justify-between px-3 pb-2 bg-paper/95 border-b border-line"
+          style={{ paddingTop: "max(env(safe-area-inset-top), 0.5rem)" }}
         >
-          <Check size={13} strokeWidth={3} className={dppSparkle ? "icon-sparkle-once" : ""} /> {t("dpp_verified")}
+          <button
+            onClick={() => setMenuOpen(true)}
+            aria-label={t("hero_menu")}
+            className="w-10 h-10 flex items-center justify-center text-ink"
+          >
+            <MenuIcon size={22} strokeWidth={1.25} />
+          </button>
+          <div className="flex items-center gap-2">
+            <img src="/images/wornwith-logo.png" alt="" aria-hidden="true" className="h-8 w-auto" />
+            <p className="font-display italic text-[clamp(1.4rem,6.4vw,1.9rem)] leading-none text-ink">wornwith.care</p>
+          </div>
+          <button
+            onClick={() => setShareOpen(true)}
+            aria-label={t("contents_share")}
+            className="w-10 h-10 flex items-center justify-center text-ink"
+          >
+            <Share size={20} strokeWidth={1.25} />
+          </button>
+        </div>
+        <div className="relative flex-1 min-h-0 overflow-hidden bg-[#E9E0D5]">
+        <img
+          src="/images/overview-hero.jpg"
+          alt=""
+          aria-hidden="true"
+          className="absolute inset-0 w-full h-full object-cover object-[50%_28%]"
+        />
+
+        <button
+          onClick={() => onGoTo?.(0)}
+          aria-label={t("hero_back")}
+          className="absolute left-3 top-1/2 -translate-y-1/2 w-11 h-11 flex items-center justify-center bg-white/60 backdrop-blur-md border border-white/60 text-ink"
+        >
+          <ChevronLeft size={22} strokeWidth={1.25} />
         </button>
-      </div>
+        <button
+          onClick={goExplore}
+          aria-label={t("hero_next")}
+          className="absolute right-3 top-1/2 -translate-y-1/2 w-11 h-11 flex items-center justify-center bg-white/60 backdrop-blur-md border border-white/60 text-ink"
+        >
+          <ChevronRight size={22} strokeWidth={1.25} />
+        </button>
+
+        <div
+          className="absolute inset-x-3 bottom-3 mx-auto max-w-md bg-white/85 backdrop-blur-md border border-white/70 px-4 pt-4 pb-3 text-center"
+        >
+          <p className="font-display italic text-[clamp(1.25rem,3.4dvh,1.5rem)] leading-tight text-ink text-balance">
+            {t("product_name_l1")} {t("product_name_l2")}
+          </p>
+          <button
+            onClick={() => setShowVerificationInfo(true)}
+            className="mt-1.5 font-sans text-[9px] font-medium uppercase tracking-[0.2em] text-clay"
+          >
+            {t("dpp_verified")} · <span className="whitespace-nowrap">{dppNo} ›</span>
+          </button>
+          <div className="mt-3 border-t border-ink/10 flex flex-col">
+            <button
+              onClick={goExplore}
+              className="py-3 font-sans text-[12px] uppercase tracking-[0.2em] text-ink transition-opacity duration-200"
+              style={{ opacity: ctaFading ? 0.6 : 1 }}
+            >
+              {t("hero_explore")} →
+            </button>
+            <button
+              onClick={showDetails}
+              className="pb-1 font-sans text-[10px] uppercase tracking-[0.2em] text-clay"
+            >
+              {t("hero_details")} ↓
+            </button>
+          </div>
+        </div>
+
+        </div>
+
+        {menuOpen && (
+          <div className="absolute inset-0 z-20 bg-paper flex flex-col fade-up">
+            <div
+              className="shrink-0 flex items-center justify-between px-3 pb-2 border-b border-line"
+              style={{ paddingTop: "max(env(safe-area-inset-top), 0.5rem)" }}
+            >
+              <button
+                onClick={() => setMenuOpen(false)}
+                aria-label={t("close_label")}
+                className="w-10 h-10 flex items-center justify-center text-ink"
+              >
+                <CloseIcon size={22} strokeWidth={1.25} />
+              </button>
+              <div className="flex items-center gap-2">
+            <img src="/images/wornwith-logo.png" alt="" aria-hidden="true" className="h-8 w-auto" />
+            <p className="font-display italic text-[clamp(1.4rem,6.4vw,1.9rem)] leading-none text-ink">wornwith.care</p>
+          </div>
+              <div className="w-10 h-10" aria-hidden="true" />
+            </div>
+            <nav className="flex-1 overflow-y-auto px-6 pt-8 max-w-md w-full mx-auto">
+              <p className="font-sans text-[10px] uppercase tracking-[0.2em] text-clay mb-2">{t("contents_title")}</p>
+              <div className="border-t border-line">
+                {contents.map(([label, index], i) => (
+                  <button
+                    key={label}
+                    onClick={() => { setMenuOpen(false); onGoTo?.(index); }}
+                    className="w-full flex items-baseline gap-4 py-3.5 border-b border-line text-left"
+                  >
+                    <span className="font-sans text-[10px] tracking-[0.2em] text-clay w-5">{String(i + 1).padStart(2, "0")}</span>
+                    <span className="font-display italic text-[1.5rem] leading-tight text-ink">{label}</span>
+                  </button>
+                ))}
+                <button
+                  onClick={() => { setMenuOpen(false); setShareOpen(true); }}
+                  className="w-full flex items-baseline gap-4 py-3.5 border-b border-line text-left"
+                >
+                  <span className="font-sans text-[10px] tracking-[0.2em] text-clay w-5">+</span>
+                  <span className="font-sans text-[11px] uppercase tracking-[0.2em] text-ink">{t("contents_share")}</span>
+                </button>
+              </div>
+            </nav>
+          </div>
+        )}
+      </section>
+
+      <div ref={detailsRef} className="relative bg-paper px-5 py-6 max-w-[520px] mx-auto">
+      <Eyebrow>{t("section_product")}</Eyebrow>
+      <div className="mt-1 mb-4" />
       <ProductHero
         videoSrc="/videos/product-hero-2.mp4"
         fallbackImageSrc={GARMENT.image}
@@ -349,7 +531,7 @@ export function ProductOverview({ onExploreJourney }: { onExploreJourney?: () =>
           sentence, and finally the CTA fade in in sequence. Same
           two-column layout as before; only the appearance is new. */}
       <div
-        className="relative flex items-center gap-4 px-4 py-2.5 mb-4 rounded-lg overflow-hidden"
+        className="relative flex items-center gap-4 px-4 py-2.5 mb-4 overflow-hidden border border-[#F0DDE1]"
         style={{ backgroundColor: "#FCF5F6", ...craftedReveal("translateY(18px)", 350, 600, ".22,.61,.36,1") }}
       >
         {craftedWashActive && (
@@ -417,11 +599,42 @@ export function ProductOverview({ onExploreJourney }: { onExploreJourney?: () =>
         <div className="mt-2 space-y-1.5 font-sans text-[12px]">
           <div className="flex justify-between"><span className="text-clay">{t("owned_since")}</span><span className="text-ink">{t("owned_since_date")}</span></div>
           <div className="flex justify-between"><span className="text-clay">{t("times_worn")}</span><span className="text-ink">{loadOwnershipRecord().wearCount || GARMENT.timesWorn}</span></div>
-          <div className="flex justify-between"><span className="text-clay">{t("condition")}</span><span className="text-sage font-medium">{loadOwnershipRecord().condition || t("excellent")}</span></div>
+          <div className="flex justify-between"><span className="text-clay">{t("condition")}</span><span className="text-ink font-medium">{loadOwnershipRecord().condition || t("excellent")}</span></div>
         </div>
       </div>
+
+      {/* Paths into every section of the passport, plus sharing */}
+      <div className="mt-6">
+        <Eyebrow>{t("contents_title")}</Eyebrow>
+        <div className="mt-2 divide-y divide-line border-y border-line">
+          {contents.map(([label, index]) => (
+            <button
+              key={label}
+              onClick={(e) => { e.stopPropagation(); onGoTo?.(index); }}
+              className="w-full flex items-center justify-between py-3 font-sans text-[11px] uppercase tracking-[0.2em] text-ink text-left"
+            >
+              <span>{label}</span>
+              <span className="text-clay">→</span>
+            </button>
+          ))}
+          <button
+            onClick={(e) => { e.stopPropagation(); setShareOpen(true); }}
+            className="w-full flex items-center justify-between py-3 font-sans text-[11px] uppercase tracking-[0.2em] text-ink text-left"
+          >
+            <span>{t("contents_share")}</span>
+            <span className="text-clay">→</span>
+          </button>
+        </div>
+      </div>
+
+      <p className="font-sans text-[10px] text-clay/80 leading-relaxed mt-6">{t("overview_data_note")}</p>
+      <Disclaimer />
       <VerificationInfoPanel open={showVerificationInfo} onClose={() => setShowVerificationInfo(false)} />
+      <p className="font-sans text-[10px] text-clay/80 leading-relaxed mt-2">{t("hero_image_note")}</p>
+      </div>
+      <ShareSheet open={shareOpen} onClose={() => setShareOpen(false)} />
     </div>
+    </ChapterColorProvider>
   );
 }
 
@@ -585,7 +798,7 @@ export function SupplyChain() {
         ))}
       </div>
       <div className="grid grid-cols-3 gap-2 mb-5">
-        {[["4", t("countries")], ["18,400km", t("traveled")], ["100%", t("verified")]].map(([v, l]) => (
+        {[["4", t("countries")], ["18,400km", t("traveled")], ["Demo", t("stat_illustrative")]].map(([v, l]) => (
           <div key={l} className="bg-blush-pale/60 rounded-lg py-2 text-center">
             <p className="font-display italic text-base text-blush-deep">{v}</p>
             <p className="text-[8px] font-sans text-clay uppercase tracking-wide">{l}</p>
@@ -714,7 +927,8 @@ export function SustainabilityMetrics() {
     <div className="h-full px-5 py-6 fade-up">
       <Eyebrow>{t("sustainability")}</Eyebrow>
       <h2 className="font-display italic text-2xl text-ink mt-1">{t("impact_metrics")}</h2>
-      <p className="text-[11px] text-clay font-sans mt-1 mb-4">{t("impact_supporting_line")}</p>
+      <p className="text-[11px] text-clay font-sans mt-1">{t("impact_supporting_line")}</p>
+      <p className="text-[10px] text-clay/80 font-sans mt-2 mb-4 leading-relaxed">{t("impact_illustrative_note")}</p>
       <div className="flex justify-around mb-5">
         <Donut percent={30} label="CO₂" sublabel={t("vs_avg")} color="#C97A8C" />
         <Donut percent={80} label="H₂O" sublabel={t("recycled_water")} color="#8FA688" />
@@ -961,10 +1175,10 @@ export function StoryBehindIt() {
             onClick={(e) => { e.stopPropagation(); setShowVerificationInfo(true); }}
             className="w-full flex items-center justify-between mb-3"
           >
-            <span className="flex items-center gap-1 text-[11px] font-sans text-sage font-medium">
-              <Check size={12} /> {t("verified_passport")}
+            <span className="flex items-center gap-1 text-[11px] font-sans text-clay font-medium">
+              {t("verified_passport")}
             </span>
-            <span className="text-[10px] font-sans text-clay">{t("story_date_value")} · {t("blockchain_word")}</span>
+            <span className="text-[10px] font-sans text-clay">{t("story_date_value")}</span>
           </button>
           <div className="flex items-center gap-1.5 mb-2">
             <Sparkles
@@ -2208,14 +2422,15 @@ export function AboutPassportScreen({ onBack }: { onBack: () => void }) {
       <p className="font-sans text-[12px] text-clay leading-relaxed mt-3">{t("about_passport_p1")}</p>
       <p className="font-sans text-[12px] text-clay leading-relaxed mt-3">{t("about_passport_p2")}</p>
       <p className="font-sans text-[12px] text-clay leading-relaxed mt-3">{t("about_passport_p3")}</p>
+      <p className="font-sans text-[12px] text-ink leading-relaxed mt-3">{t("about_passport_p4")}</p>
 
       <div className="mt-6">
         <p className="text-[10px] font-sans font-semibold text-clay uppercase tracking-wide mb-1">
           {t("data_sources_title")}
         </p>
         <div className="divide-y divide-line border-y border-line">
-          {specRow(t("data_source_brand_label"), `✓ ${t("data_source_verified_value")}`)}
-          {specRow(t("data_source_manufacturing_label"), `✓ ${t("data_source_verified_value")}`)}
+          {specRow(t("data_source_brand_label"), t("data_source_verified_value"))}
+          {specRow(t("data_source_manufacturing_label"), t("data_source_verified_value"))}
           {specRow(t("data_source_owner_label"), `✓ ${t("data_source_active_value")}`)}
           {specRow(t("data_source_updated_label"), t("about_passport_last_updated_value"))}
         </div>
@@ -2229,6 +2444,7 @@ export function AboutPassportScreen({ onBack }: { onBack: () => void }) {
           {descriptiveRow("confidence_verified_title", "confidence_verified_desc")}
           {descriptiveRow("confidence_estimated_title", "confidence_estimated_desc")}
           {descriptiveRow("confidence_owner_title", "confidence_owner_desc")}
+          {descriptiveRow("confidence_illustrative_title", "confidence_illustrative_desc")}
         </div>
       </div>
 

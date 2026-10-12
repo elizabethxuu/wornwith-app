@@ -31,7 +31,7 @@ import {
 function buildLiveScreens(goToScreen: (index: number) => void) {
   return [
     <Welcome key="welcome" onEnter={() => goToScreen(1)} />,
-    <ProductOverview key="overview" onExploreJourney={() => goToScreen(2)} />,
+    <ProductOverview key="overview" onExploreJourney={() => goToScreen(2)} onGoTo={goToScreen} />,
     <ProductLifecycle key="lifecycle" onViewChapter={() => goToScreen(7)} />,
     <SupplyChain key="supply" />,
     <CareGuide key="care" />,
@@ -187,13 +187,17 @@ export default function LiveApp() {
 
   const isFirst = index === 0;
   const isLast = index === liveScreens.length - 1;
-  // The opening screen takes over the whole page: no progress bar, section
-  // label or arrow bar. The Enter button (or a tap) moves on, and all the
-  // usual chrome returns from the next screen.
-  const isFront = isFirst && legalPage === "none";
+  // The opening screen and the product overview take over the whole page:
+  // no progress bar, section label or arrow bar. Both carry their own
+  // controls, and all the usual chrome returns from the Journey onward.
+  const isFront = index <= 1 && legalPage === "none";
 
   return (
-    <div className="app-shell h-[100dvh] w-full bg-paper flex flex-col overflow-hidden relative">
+    <div
+      className={`app-shell h-[100dvh] w-full bg-paper flex flex-col overflow-hidden relative ${
+        isFront ? "" : "md:max-w-[520px] md:mx-auto md:border-x md:border-line"
+      }`}
+    >
       {/* subtle current-section label, now tinted per chapter */}
       {!isFront && (
       <p
