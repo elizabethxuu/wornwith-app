@@ -1,20 +1,19 @@
-// Vercel serverless function — runs server-side, so no API key ever
-// reaches the browser.
-//
-// Tries GEMINI_API_KEY first (Google AI Studio has a genuinely free tier,
-// no credit card required — aistudio.google.com). Falls back to
-// ANTHROPIC_API_KEY if that's what you've got configured instead. You only
-// need to set ONE of these, not both.
+// Vercel serverless function for the AI Reflection feature.
+// API credentials stay on the server and must be configured in Vercel.
 
 const PROMPT_FOR = (text) =>
-  `Someone just wrote this about when they imagine wearing a coat they own: "${text.slice(0, 300)}"\n\nWrite exactly one short, warm sentence (under 18 words) reflecting back this specific moment — like a thoughtful friend noticing something true about it, not a marketer. No quotation marks, no preamble, no emoji.`;
+  `Someone wrote this about imagining wearing a coat they own: "${text.slice(0, 300)}"
+
+Write exactly one short, warm sentence under 18 words. Reflect this specific moment like a thoughtful friend, not a marketer. No quotation marks, preamble, or emoji.`;
+
+const REQUEST_TIMEOUT_MS = 10000;
 
 async function tryGemini(text) {
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) return null;
 
   const response = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
+    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent?key=${apiKey}`,
     {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -22,16 +21,16 @@ async function tryGemini(text) {
         contents: [{ parts: [{ text: PROMPT_FOR(text) }] }],
         generationConfig: { maxOutputTokens: 60 },
       }),
+      signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
     }
   );
 
   if (!response.ok) {
-    const detail = await response.text();
-    throw new Error(`Gemini error: ${detail}`);
+    throw new Error(`Gemini returned HTTP ${response.status}`);
   }
 
   const data = await response.json();
-  return data?.candidates?.[0]?.content?.parts?.[0]?.text?.trim() || "";
+  return data?.candidates?.[0]?.content?.parts?.[0]?.text?.trim() || null;
 }
 
 async function tryAnthropic(text) {
@@ -50,15 +49,15 @@ async function tryAnthropic(text) {
       max_tokens: 60,
       messages: [{ role: "user", content: PROMPT_FOR(text) }],
     }),
+    signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
   });
 
   if (!response.ok) {
-    const detail = await response.text();
-    throw new Error(`Anthropic error: ${detail}`);
+    throw new Error(`Anthropic returned HTTP ${response.status}`);
   }
 
   const data = await response.json();
-  return data?.content?.[0]?.text?.trim() || "";
+  return data?.content?.[0]?.text?.trim() || null;
 }
 
 export default async function handler(req, res) {
@@ -68,20 +67,40 @@ export default async function handler(req, res) {
   }
 
   const { text } = req.body || {};
-  if (!text || typeof text !== "string" || !text.trim()) {
+  if (typeof text !== "string" || !text.trim()) {
     res.status(400).json({ error: "Missing text" });
     return;
   }
 
-  if (!process.env.GEMINI_API_KEY && !process.env.ANTHROPIC_API_KEY) {
-    res.status(500).json({ error: "AI summary isn't configured yet" });
+  const input = text.trim();
+  if (input.length > 2000) {
+    res.status(413).json({ error: "Text is too long" });
     return;
   }
 
-  try {
-    const summary = (await tryGemini(text)) ?? (await tryAnthropic(text));
-    res.status(200).json({ summary: summary || "" });
-  } catch (err) {
-    res.status(502).json({ error: "Generation failed", detail: String(err) });
+  if (!process.env.GEMINI_API_KEY && !process.env.ANTHROPIC_API_KEY) {
+    res.status(503).json({ error: "AI summary isn't configured yet" });
+    return;
   }
+
+  const providers = [
+    ["Gemini", () => tryGemini(input)],
+    ["Anthropic", () => tryAnthropic(input)],
+  ];
+
+  for (const [provider, generate] of providers) {
+    try {
+      const summary = await generate();
+      if (typeof summary === "string" && summary.trim()) {
+        res.status(200).json({ summary: summary.trim() });
+        return;
+      }
+    } catch (error) {
+      // Keep provider details out of the public response. Server logs retain
+      // only the provider name and a short error message for troubleshooting.
+      console.error(`AI Reflection provider failed: ${provider}`, error?.message || "Unknown error");
+    }
+  }
+
+  res.status(502).json({ error: "AI Reflection could not generate a response. Please try again." });
 }
