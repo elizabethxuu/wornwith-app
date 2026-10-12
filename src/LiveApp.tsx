@@ -187,20 +187,27 @@ export default function LiveApp() {
 
   const isFirst = index === 0;
   const isLast = index === liveScreens.length - 1;
+  // The opening screen takes over the whole page: no progress bar, section
+  // label or arrow bar. The Enter button (or a tap) moves on, and all the
+  // usual chrome returns from the next screen.
+  const isFront = isFirst && legalPage === "none";
 
   return (
     <div className="app-shell h-[100dvh] w-full bg-paper flex flex-col overflow-hidden relative">
       {/* subtle current-section label, now tinted per chapter */}
+      {!isFront && (
       <p
         className="font-sans text-[9px] font-semibold uppercase tracking-[0.15em] text-center shrink-0 transition-colors duration-500 print:hidden"
         style={{ paddingTop: "max(env(safe-area-inset-top), 10px)", color: CHAPTER_COLORS[index] }}
       >
         {t(sectionKeys[index])}
       </p>
+      )}
 
       {/* story-style progress bar, each segment carries its own chapter's
           color, so the bar reads as a single quiet marker of where you are,
           not a multi-colored progress fill */}
+      {!isFront && (
       <div
         className="flex gap-1 px-3 shrink-0 mt-1.5 print:hidden"
       >
@@ -220,6 +227,7 @@ export default function LiveApp() {
           </div>
         ))}
       </div>
+      )}
 
       <div className="flex-1 overflow-y-auto visible-scrollbar relative" onClick={handleTap}>
         <ChapterColorProvider color={CHAPTER_COLORS[index]}>
@@ -243,7 +251,10 @@ export default function LiveApp() {
       {/* Minimal legal footer, shown above nav on every screen, rendered
           once here rather than duplicated per-screen. Real buttons, not
           external links, both open the dedicated in-app screens. */}
-      <div className="flex flex-wrap items-center justify-center gap-x-3.5 gap-y-1 px-4 pt-2 shrink-0 print:hidden">
+      <div
+        className="flex flex-wrap items-center justify-center gap-x-3.5 gap-y-1 px-4 pt-2 shrink-0 print:hidden"
+        style={isFront ? { paddingBottom: "max(env(safe-area-inset-bottom), 12px)" } : undefined}
+      >
         <p className="font-sans text-[9px] text-clay/60">{t("footer_copyright")}</p>
         <button
           onClick={() => setLegalPage("privacy")}
@@ -281,6 +292,7 @@ export default function LiveApp() {
           still work too, but this makes it obvious at a glance that you can
           move forward/back. Fixed outside the scrollable content so it can
           never overlap whatever text happens to be on a given screen. */}
+      {!isFront && (
       <div
         className="flex items-center justify-between px-4 shrink-0 border-t border-line print:hidden"
         style={{ paddingTop: "10px", paddingBottom: "max(env(safe-area-inset-bottom), 10px)" }}
@@ -311,6 +323,7 @@ export default function LiveApp() {
           <div className="w-10 h-10" />
         )}
       </div>
+      )}
     </div>
   );
 }

@@ -165,7 +165,10 @@ export function Welcome({ onEnter }: { onEnter?: () => void } = {}) {
   const archiveNo = GARMENT.brandSku.split("-").pop();
 
   return (
-    <div className="h-full flex flex-col p-3 text-center fade-up">
+    <div
+      className="h-full flex flex-col px-3 pb-3 text-center fade-up"
+      style={{ paddingTop: "max(env(safe-area-inset-top), 0.75rem)" }}
+    >
       <div className="w-full h-full flex flex-col items-center border border-ink px-6 pt-6 pb-5 overflow-y-auto no-scrollbar">
         {/* Archive header: catalogue number left, language right */}
         <div className="w-full flex items-center justify-between font-sans text-[9.5px] uppercase tracking-[0.28em]">
