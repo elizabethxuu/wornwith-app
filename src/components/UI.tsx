@@ -1943,7 +1943,9 @@ export function ShareSheet({ open, onClose }: { open: boolean; onClose: () => vo
 
   if (!open) return null;
 
-  const shareUrl = typeof window !== "undefined" ? window.location.href : "https://wornwith.care";
+  const shareUrl = typeof window !== "undefined"
+    ? `${window.location.origin}/${window.location.pathname.split("/").filter(Boolean)[0] && ["en", "fr", "pt"].includes(window.location.pathname.split("/").filter(Boolean)[0]) ? window.location.pathname.split("/").filter(Boolean)[0] : "en"}?mode=live`
+    : "https://wornwith.care/en?mode=live";
 
   const handleCopyLink = async () => {
     try {

@@ -41,14 +41,23 @@ export function generateAI(feature: AIFeature, context: Record<string, unknown>)
         body: JSON.stringify({ feature, context }),
         signal: controller.signal,
       });
-      const data = await res.json();
+      const data = await res.json().catch(() => null);
+      if (!res.ok || !data || typeof data !== "object") {
+        return {
+          success: false,
+          content: null,
+          error: "Reflection is temporarily unavailable. Please try again.",
+          metadata: null,
+          durationMs: TIMEOUT_MS,
+        };
+      }
       return data as AIResponse;
     } catch (err) {
       const timedOut = err instanceof DOMException && err.name === "AbortError";
       return {
         success: false,
         content: null,
-        error: timedOut ? "Request timed out" : "Network error",
+        error: timedOut ? "Request timed out" : "Reflection is temporarily unavailable. Please try again.",
         metadata: null,
         durationMs: TIMEOUT_MS,
       };
