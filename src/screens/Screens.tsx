@@ -50,14 +50,20 @@ import {
 export function SkeletonLoader() {
   const { t } = useLanguage();
   return (
-    <div className="h-full flex flex-col items-center justify-center px-8 gap-6">
-      <Eyebrow>{t("dpp_eyebrow")}</Eyebrow>
-      <div className="w-full space-y-3">
-        <div className="h-3 w-2/3 mx-auto rounded-full shimmer" />
-        <div className="h-3 w-1/2 mx-auto rounded-full shimmer" />
-      </div>
-      <p className="font-sans text-xs text-clay tracking-wide">{t("verifying")}</p>
-      <p className="absolute bottom-10 font-display italic text-sm text-clay/80">wornwith.care</p>
+    <div
+      data-testid="verifying-logo"
+      className="relative h-full w-full flex flex-col items-center justify-center bg-paper px-8"
+    >
+      <img
+        src="/images/wornwith-logo.png"
+        alt=""
+        aria-hidden="true"
+        className="lux-verify-logo w-[clamp(7rem,30vw,11rem)] h-auto"
+      />
+      <div className="lux-verify-rule mt-6 h-px w-20 bg-ink/70" aria-hidden="true" />
+      <p className="lux-verify-word mt-5 font-sans text-[10px] uppercase tracking-[0.42em] text-clay" aria-hidden="true">wornwith.care</p>
+      {/* Screen readers still hear what is happening. */}
+      <p className="sr-only" role="status">{t("verifying")}</p>
     </div>
   );
 }
@@ -379,7 +385,7 @@ export function ProductOverview({
           panel with the way in. Everything else sits below it. */}
       <section
         className="relative h-full min-h-[460px] overflow-hidden bg-paper flex flex-col"
-        style={{ "--lux-d": intro ? "1.85s" : "0.05s" } as React.CSSProperties}
+        style={{ "--lux-d": intro ? "0.6s" : "0.05s" } as React.CSSProperties}
         onClick={(e) => e.stopPropagation()}
       >
         <div className="relative flex-1 min-h-0 overflow-hidden bg-[#E9E0D5]">
@@ -390,26 +396,6 @@ export function ProductOverview({
           >
             {t("hero_caption")}
           </p>
-          <div className="lux-rise flex items-center justify-end gap-2" style={{ "--lux-s": "0.35s" } as React.CSSProperties}>
-            {!sound.muted && (
-              <button
-                onClick={() => ambient.setPaused(!sound.paused)}
-                aria-label={sound.paused ? t("sound_play") : t("sound_pause")}
-                className="w-9 h-9 flex items-center justify-center bg-white/70 backdrop-blur-md border border-white/70 text-ink"
-              >
-                {sound.paused ? <Play size={15} strokeWidth={1.5} /> : <Pause size={15} strokeWidth={1.5} />}
-              </button>
-            )}
-            <button
-              onClick={() => ambient.setMuted(!sound.muted)}
-              aria-label={sound.muted ? t("sound_turn_on") : t("sound_turn_off")}
-              aria-pressed={!sound.muted}
-              className="h-9 px-3 flex items-center gap-2 bg-white/70 backdrop-blur-md border border-white/70 text-ink font-sans text-[9px] uppercase tracking-[0.2em]"
-            >
-              {sound.muted ? <VolumeX size={15} strokeWidth={1.5} /> : <Volume2 size={15} strokeWidth={1.5} />}
-              {sound.muted ? t("sound_off_label") : t("sound_on_label")}
-            </button>
-          </div>
           </div>
         <div aria-hidden="true" className="absolute inset-0 lux-kenburns">
           <img
@@ -419,6 +405,29 @@ export function ProductOverview({
             className="w-full h-full object-cover object-[50%_28%] transition-transform duration-[900ms] ease-[cubic-bezier(0.22,0.61,0.36,1)]"
             style={{ transform: ctaFading ? "scale(1.08)" : "scale(1)" }}
           />
+        </div>
+
+        {/* Sound: a quiet icon on the left edge, the mirror of the arrow on the right,
+            same size and glass, so the photo stays clear. */}
+        <div className="lux-rise absolute left-3 top-[36%] -translate-y-1/2 flex flex-col gap-2" style={{ "--lux-s": "0.35s" } as React.CSSProperties}>
+          <button
+            onClick={() => ambient.setMuted(!sound.muted)}
+            aria-label={sound.muted ? t("sound_turn_on") : t("sound_turn_off")}
+            aria-pressed={!sound.muted}
+            className="w-11 h-11 flex items-center justify-center bg-white/60 backdrop-blur-md border border-white/60 text-ink"
+          >
+            {sound.muted ? <VolumeX size={20} strokeWidth={1.25} /> : <Volume2 size={20} strokeWidth={1.25} />}
+            <span className="sr-only">{sound.muted ? t("sound_off_label") : t("sound_on_label")}</span>
+          </button>
+          {!sound.muted && (
+            <button
+              onClick={() => ambient.setPaused(!sound.paused)}
+              aria-label={sound.paused ? t("sound_play") : t("sound_pause")}
+              className="w-11 h-11 flex items-center justify-center bg-white/60 backdrop-blur-md border border-white/60 text-ink"
+            >
+              {sound.paused ? <Play size={18} strokeWidth={1.25} /> : <Pause size={18} strokeWidth={1.25} />}
+            </button>
+          )}
         </div>
 
         <button
@@ -777,7 +786,7 @@ export function SupplyChain() {
           </div>
         ))}
       </div>
-      <ExpandableCard title={t("ethical_audit")} defaultOpen footerText={t("audited_by")}>
+      <ExpandableCard title={t("ethical_audit")} defaultOpen footerText={`${t("audited_by")}. ${t("audit_disclosure")}`}>
         <div className="grid grid-cols-[1fr,auto] gap-y-1.5 gap-x-4 font-sans text-[12px] items-center">
           <span className="text-clay">{t("fair_wages")}</span>
           <span className="text-sage flex items-center gap-1 justify-self-start">✦ {t("passed")}</span>
@@ -788,7 +797,7 @@ export function SupplyChain() {
         </div>
       </ExpandableCard>
 
-      <ExpandableCard title={t("chemical_compliance")} defaultOpen footerText={t("economic_operator_note")}>
+      <ExpandableCard title={t("chemical_compliance")} defaultOpen footerText={`${t("economic_operator_note")} ${t("audit_disclosure")}`}>
         <div className="grid grid-cols-[1fr,auto] gap-y-2 gap-x-4 font-sans text-[12px] items-start">
           <span className="text-clay">{t("chemical_compliance")}</span>
           <span className="text-sage text-right text-[11px]">✦ {t("reach_compliant")}</span>

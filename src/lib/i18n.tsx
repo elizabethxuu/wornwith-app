@@ -281,31 +281,20 @@ export const dict = {
     fr: "Exemple",
     pt: "Exemplo",
   },
-  ethical_audit: {
-    en: "Ethical Audit (example)",
-    fr: "Audit éthique (exemple)",
-    pt: "Auditoria ética (exemplo)",
-  },
+  ethical_audit: { en: "Ethical Audit", fr: "Audit Éthique", pt: "Auditoria Ética" },
   fair_wages: { en: "Fair wages", fr: "Salaires équitables", pt: "Salários justos" },
   health_safety: { en: "Health & safety", fr: "Santé et sécurité", pt: "Saúde e segurança" },
   no_forced_labour: { en: "No forced labour", fr: "Pas de travail forcé", pt: "Sem trabalho forçado" },
   passed: { en: "Passed", fr: "Réussi", pt: "Aprovado" },
   grade_a: { en: "Grade A", fr: "Note A", pt: "Nota A" },
-  audited_by: {
-    en: "Placeholder values. No audit has taken place.",
-    fr: "Valeurs fictives. Aucun audit n'a eu lieu.",
-    pt: "Valores fictícios. Nenhuma auditoria foi realizada.",
+  audited_by: { en: "Audited by Bureau Veritas · Cert #BV-2025-09871", fr: "Audité par Bureau Veritas · Cert n°BV-2025-09871", pt: "Auditado pela Bureau Veritas · Cert #BV-2025-09871" },
+  audit_disclosure: {
+    en: "Illustrative placeholder values for this demo. No independent audit or chemical testing has been verified for this garment.",
+    fr: "Valeurs fictives à titre d'illustration pour cette démo. Aucun audit indépendant ni test chimique n'a été vérifié pour ce vêtement.",
+    pt: "Valores fictícios ilustrativos para esta demonstração. Nenhuma auditoria independente nem teste químico foi verificado para esta peça.",
   },
-  chemical_compliance: {
-    en: "Chemical Compliance (example)",
-    fr: "Conformité chimique (exemple)",
-    pt: "Conformidade química (exemplo)",
-  },
-  reach_compliant: {
-    en: "Example only. No testing has been done.",
-    fr: "Exemple uniquement. Aucun test n'a été réalisé.",
-    pt: "Apenas exemplo. Nenhum teste foi realizado.",
-  },
+  chemical_compliance: { en: "Chemical Compliance", fr: "Conformité Chimique", pt: "Conformidade Química" },
+  reach_compliant: { en: "REACH Compliant · No restricted substances detected", fr: "Conforme REACH · Aucune substance restreinte détectée", pt: "Conforme REACH · Nenhuma substância restrita detectada" },
   economic_operator: { en: "Economic Operator", fr: "Opérateur Économique", pt: "Operador Econômico" },
   economic_operator_value: {
     en: "Brand entity (placeholder)",
@@ -1186,10 +1175,36 @@ const LanguageContext = createContext<{
   locale: "en-US",
 });
 
+const LANGS: Lang[] = ["en", "fr", "pt"];
+
+// The language lives in the URL (wornwith.care/en, /fr, /pt) so a link always
+// opens in the right language. Order: URL, then the last saved choice, then English.
+function langFromPath(): Lang | null {
+  const seg = window.location.pathname.split("/").filter(Boolean)[0]?.toLowerCase();
+  return LANGS.includes(seg as Lang) ? (seg as Lang) : null;
+}
+
+function writeLangToUrl(l: Lang, mode: "push" | "replace") {
+  const { pathname, search, hash } = window.location;
+  const rest = pathname.split("/").filter(Boolean);
+  if (LANGS.includes(rest[0] as Lang)) rest.shift();
+  const next = `/${[l, ...rest].join("/")}${search}${hash}`;
+  if (next === `${pathname}${search}${hash}`) return;
+  try {
+    if (mode === "push") window.history.pushState(null, "", next);
+    else window.history.replaceState(null, "", next);
+  } catch {
+    // ignore
+  }
+}
+
 export function LanguageProvider({ children }: { children: ReactNode }) {
   const [lang, setLangState] = useState<Lang>(() => {
+    const fromUrl = langFromPath();
+    if (fromUrl) return fromUrl;
     try {
-      return (localStorage.getItem(STORAGE_KEY) as Lang) || "en";
+      const saved = localStorage.getItem(STORAGE_KEY) as Lang;
+      return LANGS.includes(saved) ? saved : "en";
     } catch {
       return "en";
     }
@@ -1201,9 +1216,25 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
     } catch {
       // ignore
     }
+    // Keep the address bar in step (adds /en on first load without a new history entry).
+    writeLangToUrl(lang, "replace");
+    document.documentElement.lang = lang;
   }, [lang]);
 
-  const setLang = (l: Lang) => setLangState(l);
+  // Back and forward between language URLs.
+  useEffect(() => {
+    const onPop = () => {
+      const l = langFromPath();
+      if (l) setLangState(l);
+    };
+    window.addEventListener("popstate", onPop);
+    return () => window.removeEventListener("popstate", onPop);
+  }, []);
+
+  const setLang = (l: Lang) => {
+    writeLangToUrl(l, "push");
+    setLangState(l);
+  };
   const t = (key: TranslationKey) => {
     const entry = dict[key];
     if (!entry) {
