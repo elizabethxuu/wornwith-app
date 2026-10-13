@@ -11,14 +11,8 @@ const MAX_RETRIES = 2;
 
 export { GEMINI_MODEL };
 
-// NOTE: while actively debugging the 502s, this logs unconditionally
-// (not gated to non-production), Vercel's function logs are the only
-// way to see this on the live deployment, and the deployment itself runs
-// with VERCEL_ENV=production, so a dev-only gate would have hidden
-// exactly the logs needed right now. Re-add a production gate once this
-// is confirmed working.
 function log(...args) {
-  console.log("[ai:debug]", ...args);
+  if (process.env.NODE_ENV !== "production") console.info("[ai:debug]", ...args);
 }
 
 async function callGeminiOnce(fullPrompt, maxTokens, apiKey) {
@@ -41,14 +35,7 @@ async function callGeminiOnce(fullPrompt, maxTokens, apiKey) {
       }
     );
 
-    // 1. Full Gemini HTTP status, always logged.
-    log("Gemini HTTP status:", response.status, response.statusText);
-
-    // Read the raw body as text FIRST, before attempting JSON.parse, this
-    // way, if parsing fails, we still have the actual bytes Gemini sent
-    // back instead of losing them.
     const rawText = await response.text();
-    log("Gemini raw response body:", rawText.slice(0, 2000));
 
     if (!response.ok) {
       // Try to pull a structured error message out of Gemini's error
@@ -58,8 +45,7 @@ async function callGeminiOnce(fullPrompt, maxTokens, apiKey) {
         const parsed = JSON.parse(rawText);
         upstreamMessage = parsed?.error?.message || rawText;
       } catch (parseErr) {
-        // 3. JSON parsing error, logged explicitly rather than swallowed.
-        log("JSON parse error while parsing Gemini error body:", parseErr.message);
+        // Upstream error body is intentionally not exposed to visitors.
       }
       const err = new Error(upstreamMessage);
       err.status = response.status;
@@ -72,9 +58,7 @@ async function callGeminiOnce(fullPrompt, maxTokens, apiKey) {
     try {
       data = JSON.parse(rawText);
     } catch (parseErr) {
-      // 3. JSON parsing error on a 200 response, this is a real,
-      // surfaced failure, not silently treated as empty success.
-      log("JSON parse error on 200 response:", parseErr.message);
+      // Invalid provider JSON is treated as a failed generation.
       const err = new Error(`Response parsing failed: ${parseErr.message}`);
       err.detail = rawText;
       err.retryable = true;
@@ -113,9 +97,6 @@ async function callGeminiOnce(fullPrompt, maxTokens, apiKey) {
 
     return text;
   } catch (err) {
-    // 4. Any thrown exception, logged with its full detail before it
-    // propagates up, nothing gets swallowed silently here.
-    log("Exception in callGeminiOnce:", err.message, err.detail ? `| detail: ${err.detail.slice(0, 500)}` : "");
     throw err;
   } finally {
     clearTimeout(timeout);
@@ -131,15 +112,15 @@ export async function generateWithGemini(fullPrompt, maxTokens) {
     throw err;
   }
 
-  log("API key present, length:", apiKey.length, "| prefix:", apiKey.slice(0, 4));
+  
 
   let lastError;
   for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
     try {
-      log(`generation attempt ${attempt + 1}`);
+      
       const start = Date.now();
       const text = await callGeminiOnce(fullPrompt, maxTokens, apiKey);
-      log(`generation completed in ${Date.now() - start}ms`);
+      
       return text;
     } catch (err) {
       lastError = err;
@@ -147,7 +128,7 @@ export async function generateWithGemini(fullPrompt, maxTokens) {
         lastError = new Error("Gemini request timed out");
         lastError.retryable = true;
       }
-      log(`attempt ${attempt + 1} failed:`, lastError.message);
+      if (process.env.NODE_ENV !== "production") console.warn("[ai:debug] generation attempt failed", { attempt: attempt + 1, status: lastError.status });
       if (!lastError.retryable || attempt === MAX_RETRIES) break;
       await new Promise((r) => setTimeout(r, 400 * (attempt + 1)));
     }
