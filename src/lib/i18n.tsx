@@ -1188,8 +1188,15 @@ const LanguageContext = createContext<{
 
 export function LanguageProvider({ children }: { children: ReactNode }) {
   const [lang, setLangState] = useState<Lang>(() => {
+    const supported: Lang[] = ["en", "fr", "pt"];
+    const pathLang = window.location.pathname.split("/").filter(Boolean)[0] as Lang | undefined;
+    const queryLang = new URLSearchParams(window.location.search).get("lang") as Lang | null;
+    const urlLang = queryLang && supported.includes(queryLang) ? queryLang
+      : pathLang && supported.includes(pathLang) ? pathLang : null;
+    if (urlLang) return urlLang;
     try {
-      return (localStorage.getItem(STORAGE_KEY) as Lang) || "en";
+      const saved = localStorage.getItem(STORAGE_KEY) as Lang | null;
+      return saved && supported.includes(saved) ? saved : "en";
     } catch {
       return "en";
     }
