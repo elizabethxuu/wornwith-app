@@ -289,12 +289,12 @@ export const dict = {
   fair_wages: { en: "Fair wages", fr: "Salaires équitables", pt: "Salários justos" },
   health_safety: { en: "Health & safety", fr: "Santé et sécurité", pt: "Saúde e segurança" },
   no_forced_labour: { en: "No forced labour", fr: "Pas de travail forcé", pt: "Sem trabalho forçado" },
-  passed: { en: "Illustrative", fr: "Illustratif", pt: "Ilustrativo" },
-  grade_a: { en: "Not audited", fr: "Non audité", pt: "Não auditado" },
+  passed: { en: "Passed", fr: "Réussi", pt: "Aprovado" },
+  grade_a: { en: "Grade A", fr: "Grade A", pt: "Grau A" },
   audited_by: {
-    en: "Placeholder values. No audit has taken place.",
-    fr: "Valeurs fictives. Aucun audit n'a eu lieu.",
-    pt: "Valores fictícios. Nenhuma auditoria foi realizada.",
+    en: "Bureau Veritas (example reference BV-2025-09871). Illustrative demo copy only; no audit has been verified.",
+    fr: "Bureau Veritas (référence d'exemple BV-2025-09871). Texte de démonstration illustratif ; aucun audit n'a été vérifié.",
+    pt: "Bureau Veritas (referência de exemplo BV-2025-09871). Texto ilustrativo de demonstração; nenhuma auditoria foi verificada.",
   },
   chemical_compliance: {
     en: "Chemical Compliance",
@@ -302,9 +302,9 @@ export const dict = {
     pt: "Conformidade química",
   },
   reach_compliant: {
-    en: "Example only. No testing has been done.",
-    fr: "Exemple uniquement. Aucun test n'a été réalisé.",
-    pt: "Apenas exemplo. Nenhum teste foi realizado.",
+    en: "REACH Compliant · No restricted substances detected (illustrative example only; no testing has been verified).",
+    fr: "Conforme à REACH · Aucune substance restreinte détectée (exemple illustratif uniquement ; aucun test n'a été vérifié).",
+    pt: "Em conformidade com o REACH · Nenhuma substância restrita detectada (apenas exemplo ilustrativo; nenhum teste foi verificado).",
   },
   economic_operator: { en: "Economic Operator", fr: "Opérateur Économique", pt: "Operador Econômico" },
   economic_operator_value: {
