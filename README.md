@@ -113,7 +113,7 @@ npm run dev
 npm run dev      # development server
 npm run build    # type checks and production build
 npm run lint     # Oxlint
-npm test         # API tests (Node's built-in test runner)
+npm test         # API, language URL and saved-data tests (Node's built-in test runner)
 npm run preview  # preview the built frontend
 ```
 
