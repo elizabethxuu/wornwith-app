@@ -1,6 +1,8 @@
 import { createContext, useContext, useState, useEffect, type ReactNode } from "react";
 
-export type Lang = "en" | "fr" | "pt";
+import { isLang, langFromPathname, localizedUrl, type Lang } from "./langUrl";
+
+export type { Lang };
 
 const STORAGE_KEY = "wornwith:lang";
 
@@ -1257,20 +1259,16 @@ const LanguageContext = createContext<{
   locale: "en-US",
 });
 
-const LANGS: Lang[] = ["en", "fr", "pt"];
-
 // The language lives in the URL (wornwith.care/en, /fr, /pt) so a link always
 // opens in the right language. Order: URL, then the last saved choice, then English.
+// The pure parts live in ./langUrl so they can be tested on their own.
 function langFromPath(): Lang | null {
-  const seg = window.location.pathname.split("/").filter(Boolean)[0]?.toLowerCase();
-  return LANGS.includes(seg as Lang) ? (seg as Lang) : null;
+  return langFromPathname(window.location.pathname);
 }
 
 function writeLangToUrl(l: Lang, mode: "push" | "replace") {
   const { pathname, search, hash } = window.location;
-  const rest = pathname.split("/").filter(Boolean);
-  if (LANGS.includes(rest[0] as Lang)) rest.shift();
-  const next = `/${[l, ...rest].join("/")}${search}${hash}`;
+  const next = localizedUrl(l, { pathname, search, hash });
   if (next === `${pathname}${search}${hash}`) return;
   try {
     if (mode === "push") window.history.pushState(null, "", next);
@@ -1286,7 +1284,7 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
     if (fromUrl) return fromUrl;
     try {
       const saved = localStorage.getItem(STORAGE_KEY) as Lang;
-      return LANGS.includes(saved) ? saved : "en";
+      return isLang(saved) ? saved : "en";
     } catch {
       return "en";
     }
