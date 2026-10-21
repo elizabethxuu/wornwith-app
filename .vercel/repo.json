@@ -1,0 +1,11 @@
+{
+  "remoteName": "origin",
+  "projects": [
+    {
+      "id": "prj_Hc9M58mVeAyHgJ5443FByDwCXzAb",
+      "name": "wornwith-app",
+      "directory": ".",
+      "orgId": "team_Mshtj9UY04b0LH7CsFPhd8AC"
+    }
+  ]
+}
