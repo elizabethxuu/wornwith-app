@@ -27,12 +27,8 @@ import {
 } from "../lib/todaysEdit";
 
 export function Eyebrow({ children }: { children: React.ReactNode }) {
-  const color = useChapterColor();
   return (
-    <p
-      className="text-[10px] tracking-[0.18em] uppercase font-sans font-semibold transition-colors duration-500"
-      style={{ color }}
-    >
+    <p className="text-[10px] tracking-[0.26em] uppercase font-sans font-medium text-[#8E3D52]">
       {children}
     </p>
   );
@@ -1668,7 +1664,7 @@ export function ListeningRoom({
 }
 
 export type CareRitual = {
-  icon: string;
+  icon: React.ReactNode;
   title: string;
   lines: string[];
 };
@@ -1688,7 +1684,7 @@ export function CareRitualRow({ ritual, entranceDelayMs }: { ritual: CareRitual;
         onClick={() => setOpen(!open)}
         className="w-full flex items-center gap-3 py-3 text-left"
       >
-        <span className="text-base shrink-0">{ritual.icon}</span>
+        <span className="shrink-0 w-5 flex justify-center text-[#8E3D52]">{ritual.icon}</span>
         <span className="font-sans text-[13px] text-ink flex-1">{ritual.title}</span>
         <span
           className="text-clay/60 transition-transform inline-block shrink-0 text-sm"

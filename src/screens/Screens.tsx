@@ -22,42 +22,26 @@ import {
 import { GARMENT, getEstimatedYearsRemaining } from "../lib/garment";
 import { getCareRecommendation } from "../lib/careRecommendation";
 import { useLanguage, type TranslationKey } from "../lib/i18n";
-import {
-  Check,
-  ChevronLeft,
-  Volume2,
-  VolumeX,
-  Pause,
-  Play,
-  ChevronRight,
-  Sparkles,
-  ShoppingBag,
-  Shirt,
-  Recycle,
-  Wrench,
-  Repeat,
-  ArrowRight,
-  Search,
-  CalendarDays,
-  Camera,
-  MapPinOff,
-  Share,
-  Bookmark,
-  Pencil,
-} from "lucide-react";
+import { Check, ChevronLeft, Volume2, VolumeX, Pause, Play, ChevronRight, Sparkles, ShoppingBag, Shirt, Recycle, Wrench, Repeat, ArrowRight, Search, CalendarDays, Camera, MapPinOff, Share, Bookmark, Pencil, Sprout, Spool, Scissors, Factory, Ship, Store, Droplets, Brush, Heart, Package, Flame } from "lucide-react";
 
 /* 1: SKELETON LOADER */
 export function SkeletonLoader() {
   const { t } = useLanguage();
   return (
-    <div className="h-full flex flex-col items-center justify-center px-8 gap-6">
-      <Eyebrow>{t("dpp_eyebrow")}</Eyebrow>
-      <div className="w-full space-y-3">
-        <div className="h-3 w-2/3 mx-auto rounded-full shimmer" />
-        <div className="h-3 w-1/2 mx-auto rounded-full shimmer" />
-      </div>
-      <p className="font-sans text-xs text-clay tracking-wide">{t("verifying")}</p>
-      <p className="absolute bottom-10 font-display italic text-sm text-clay/80">wornwith.care</p>
+    <div
+      data-testid="verifying-logo"
+      className="relative h-full w-full flex flex-col items-center justify-center bg-paper px-8"
+    >
+      <img
+        src="/images/wornwith-logo.png"
+        alt=""
+        aria-hidden="true"
+        className="lux-verify-logo w-[clamp(7rem,30vw,11rem)] h-auto"
+      />
+      <div className="lux-verify-rule mt-6 h-px w-20 bg-ink/70" aria-hidden="true" />
+      <p className="lux-verify-word mt-5 font-sans text-[10px] uppercase tracking-[0.42em] text-clay" aria-hidden="true">wornwith.care</p>
+      {/* Screen readers still hear what is happening. */}
+      <p className="sr-only" role="status">{t("verifying")}</p>
     </div>
   );
 }
@@ -379,7 +363,7 @@ export function ProductOverview({
           panel with the way in. Everything else sits below it. */}
       <section
         className="relative h-full min-h-[460px] overflow-hidden bg-paper flex flex-col"
-        style={{ "--lux-d": intro ? "1.85s" : "0.05s" } as React.CSSProperties}
+        style={{ "--lux-d": intro ? "0.6s" : "0.05s" } as React.CSSProperties}
         onClick={(e) => e.stopPropagation()}
       >
         <div className="relative flex-1 min-h-0 overflow-hidden bg-[#E9E0D5]">
@@ -390,26 +374,6 @@ export function ProductOverview({
           >
             {t("hero_caption")}
           </p>
-          <div className="lux-rise flex items-center justify-end gap-2" style={{ "--lux-s": "0.35s" } as React.CSSProperties}>
-            {!sound.muted && (
-              <button
-                onClick={() => ambient.setPaused(!sound.paused)}
-                aria-label={sound.paused ? t("sound_play") : t("sound_pause")}
-                className="w-9 h-9 flex items-center justify-center bg-white/70 backdrop-blur-md border border-white/70 text-ink"
-              >
-                {sound.paused ? <Play size={15} strokeWidth={1.5} /> : <Pause size={15} strokeWidth={1.5} />}
-              </button>
-            )}
-            <button
-              onClick={() => ambient.setMuted(!sound.muted)}
-              aria-label={sound.muted ? t("sound_turn_on") : t("sound_turn_off")}
-              aria-pressed={!sound.muted}
-              className="h-9 px-3 flex items-center gap-2 bg-white/70 backdrop-blur-md border border-white/70 text-ink font-sans text-[9px] uppercase tracking-[0.2em]"
-            >
-              {sound.muted ? <VolumeX size={15} strokeWidth={1.5} /> : <Volume2 size={15} strokeWidth={1.5} />}
-              {sound.muted ? t("sound_off_label") : t("sound_on_label")}
-            </button>
-          </div>
           </div>
         <div aria-hidden="true" className="absolute inset-0 lux-kenburns">
           <img
@@ -419,6 +383,29 @@ export function ProductOverview({
             className="w-full h-full object-cover object-[50%_28%] transition-transform duration-[900ms] ease-[cubic-bezier(0.22,0.61,0.36,1)]"
             style={{ transform: ctaFading ? "scale(1.08)" : "scale(1)" }}
           />
+        </div>
+
+        {/* Sound: a quiet icon on the left edge, the mirror of the arrow on the right,
+            same size and glass, so the photo stays clear. */}
+        <div className="lux-rise absolute left-3 top-[36%] -translate-y-1/2 flex flex-col gap-2" style={{ "--lux-s": "0.35s" } as React.CSSProperties}>
+          <button
+            onClick={() => ambient.setMuted(!sound.muted)}
+            aria-label={sound.muted ? t("sound_turn_on") : t("sound_turn_off")}
+            aria-pressed={!sound.muted}
+            className="w-11 h-11 flex items-center justify-center bg-white/60 backdrop-blur-md border border-white/60 text-ink"
+          >
+            {sound.muted ? <VolumeX size={20} strokeWidth={1.25} /> : <Volume2 size={20} strokeWidth={1.25} />}
+            <span className="sr-only">{sound.muted ? t("sound_off_label") : t("sound_on_label")}</span>
+          </button>
+          {!sound.muted && (
+            <button
+              onClick={() => ambient.setPaused(!sound.paused)}
+              aria-label={sound.paused ? t("sound_play") : t("sound_pause")}
+              className="w-11 h-11 flex items-center justify-center bg-white/60 backdrop-blur-md border border-white/60 text-ink"
+            >
+              {sound.paused ? <Play size={18} strokeWidth={1.25} /> : <Pause size={18} strokeWidth={1.25} />}
+            </button>
+          )}
         </div>
 
         <button
@@ -614,10 +601,10 @@ export function ProductOverview({
 export function ProductLifecycle({ onViewChapter }: { onViewChapter?: () => void } = {}) {
   const { t } = useLanguage();
   const stops = [
-    { icon: "🐑", title: t("wool_farming"), place: t("place_full_nz_short"), flag: "🇳🇿" },
-    { icon: "🧵", title: t("spinning_weaving"), place: t("place_full_italy"), flag: "🇮🇹" },
-    { icon: "✂️", title: t("cutting_construction"), place: t("place_full_portugal"), flag: "🇵🇹" },
-    { icon: "🧣", title: t("with_you_now"), place: t("place_full_paris"), flag: "🇫🇷" },
+    { icon: <Sprout size={18} strokeWidth={1.25} />, title: t("wool_farming"), place: t("place_full_nz_short") },
+    { icon: <Spool size={18} strokeWidth={1.25} />, title: t("spinning_weaving"), place: t("place_full_italy") },
+    { icon: <Scissors size={18} strokeWidth={1.25} />, title: t("cutting_construction"), place: t("place_full_portugal") },
+    { icon: <Shirt size={18} strokeWidth={1.25} />, title: t("with_you_now"), place: t("place_full_paris") },
   ];
   // The timeline's last stop ("With you now") is where the garment
   // currently is, so that's the sensible default selection, but every
@@ -677,20 +664,20 @@ export function ProductLifecycle({ onViewChapter }: { onViewChapter?: () => void
     <div className="h-full px-5 py-6 fade-up">
       <Eyebrow>{t("lifecycle_eyebrow")}</Eyebrow>
       <h2 className="font-display italic text-2xl text-ink mt-1">{t("where_from")}</h2>
-      <p className="font-sans text-[11px] text-clay mt-1 mb-2">{t("km_traveled")}</p>
+      <p className="font-sans text-[12px] text-clay mt-1 mb-3">{t("km_traveled")}</p>
       <div className="flex gap-1.5 mb-5 flex-wrap">
         {[
-          { flag: "🇳🇿", key: "place_nz" as const },
-          { flag: "🇮🇹", key: "place_italy" as const },
-          { flag: "🇵🇹", key: "place_portugal" as const },
-          { flag: "🇫🇷", key: "place_france" as const },
+          { key: "place_nz" as const },
+          { key: "place_italy" as const },
+          { key: "place_portugal" as const },
+          { key: "place_france" as const },
         ].map((bubble, i) => (
           <span
             key={bubble.key}
             style={{ animationDelay: `${i * 120}ms` }}
-            className="pop-in text-[10px] font-sans bg-blush-pale text-blush-deep px-2 py-1 rounded-full"
+            className="pop-in text-[10px] uppercase tracking-[0.16em] font-sans text-clay border border-line px-2.5 py-1 rounded-full"
           >
-            {bubble.flag} {t(bubble.key)}
+            {t(bubble.key)}
           </span>
         ))}
       </div>
@@ -704,11 +691,11 @@ export function ProductLifecycle({ onViewChapter }: { onViewChapter?: () => void
               style={{ animationDelay: `${480 + i * 150}ms` }}
               className="pop-in relative flex items-center gap-3 w-full text-left"
             >
-              <div className={`absolute -left-6 w-4 h-4 rounded-full border-2 ${selected === i ? "bg-blush border-blush" : "bg-paper border-line"}`} />
-              <span className="text-xl">{s.icon}</span>
+              <div className={`absolute -left-6 w-4 h-4 rounded-full border ${selected === i ? "bg-[#8E3D52] border-[#8E3D52]" : "bg-paper border-clay/40"}`} />
+              <span className={`w-6 flex justify-center ${selected === i ? "text-[#8E3D52]" : "text-clay"}`}>{s.icon}</span>
               <div>
-                <p className={`font-sans text-[13px] font-medium ${selected === i ? "text-blush-deep" : "text-ink"}`}>{s.title}</p>
-                <p className="text-[11px] text-clay font-sans">{s.flag} {s.place}</p>
+                <p className={`font-sans text-[14px] font-medium ${selected === i ? "text-[#8E3D52]" : "text-ink"}`}>{s.title}</p>
+                <p className="text-[12px] text-clay font-sans">{s.place}</p>
               </div>
             </button>
           ))}
@@ -731,16 +718,16 @@ export function ProductLifecycle({ onViewChapter }: { onViewChapter?: () => void
 export function SupplyChain() {
   const { t } = useLanguage();
   const chain = [
-    { icon: "🐑", label: t("wool_farm"), place: "NZ", code: "NZ-F4821", bg: "#DCE6EC" },
-    { icon: "🏭", label: t("milling"), place: "Italy", code: "IT-F9043", bg: "#DDE3D5" },
-    { icon: "🚢", label: t("ship"), place: "Portugal", code: "PT-F2217", bg: "#ECE5DA" },
-    { icon: "🏬", label: t("retail"), place: "Paris", code: "FR-F6631", bg: "#D8E1E8" },
+    { icon: <Sprout size={18} strokeWidth={1.25} />, label: t("wool_farm"), place: "NZ", code: "NZ-F4821" },
+    { icon: <Factory size={18} strokeWidth={1.25} />, label: t("milling"), place: "Italy", code: "IT-F9043" },
+    { icon: <Ship size={18} strokeWidth={1.25} />, label: t("ship"), place: "Portugal", code: "PT-F2217" },
+    { icon: <Store size={18} strokeWidth={1.25} />, label: t("retail"), place: "Paris", code: "FR-F6631" },
   ];
   return (
     <div className="h-full px-5 py-6 fade-up">
       <Eyebrow>{t("supply_chain")}</Eyebrow>
       <h2 className="font-display italic text-2xl text-ink mt-1">{t("who_made_it")}</h2>
-      <p className="text-[11px] text-clay font-sans mt-1 mb-2">{t("supply_chain_supporting_line")}</p>
+      <p className="text-[12px] text-clay font-sans mt-1 mb-3">{t("supply_chain_supporting_line")}</p>
       <div className="flex items-center justify-between mt-2 mb-4">
         {chain.map((c, i) => (
           <div key={c.label} className="flex items-center">
@@ -748,22 +735,19 @@ export function SupplyChain() {
               style={{ animationDelay: `${i * 150}ms` }}
               className="pop-in text-center w-14"
             >
-              <div
-                className="w-11 h-11 mx-auto rounded-full flex items-center justify-center text-lg"
-                style={{ backgroundColor: c.bg }}
-              >
+              <div className="w-11 h-11 mx-auto rounded-full flex items-center justify-center border border-[#8E3D52]/30 text-[#8E3D52] bg-[#FBF9F6]">
                 {c.icon}
               </div>
-              <p className="text-[9px] font-sans font-semibold text-ink mt-1">{c.label}</p>
-              <p className="text-[8px] font-sans text-clay">{c.place}</p>
-              <p className="text-[7px] font-sans text-clay/80">{c.code}</p>
+              <p className="text-[10px] font-sans font-semibold text-ink mt-1.5">{c.label}</p>
+              <p className="text-[10px] font-sans text-clay">{c.place}</p>
+              <p className="text-[9px] font-sans text-clay/80 tracking-wide">{c.code}</p>
             </div>
             {i < chain.length - 1 && (
               <ArrowRight
                 size={13}
                 strokeWidth={1.5}
                 style={{ animationDelay: `${i * 150 + 75}ms` }}
-                className="pop-in text-blush shrink-0 -mt-4"
+                className="pop-in text-clay/50 shrink-0 -mt-8"
               />
             )}
           </div>
@@ -771,27 +755,27 @@ export function SupplyChain() {
       </div>
       <div className="grid grid-cols-3 gap-2 mb-5">
         {[["4", t("countries")], ["18,400km", t("traveled")], ["Demo", t("stat_illustrative")]].map(([v, l]) => (
-          <div key={l} className="bg-blush-pale/60 rounded-lg py-2 text-center">
-            <p className="font-display italic text-base text-blush-deep">{v}</p>
-            <p className="text-[8px] font-sans text-clay uppercase tracking-wide">{l}</p>
+          <div key={l} className="border-y border-line py-3 text-center">
+            <p className="font-display italic text-[22px] leading-none text-ink">{v}</p>
+            <p className="text-[9px] font-sans text-clay uppercase tracking-[0.18em] mt-1.5">{l}</p>
           </div>
         ))}
       </div>
-      <ExpandableCard title={t("ethical_audit")} defaultOpen footerText={t("audited_by")}>
+      <ExpandableCard title={t("ethical_audit")} defaultOpen footerText={`${t("audited_by")}. ${t("audit_disclosure")}`}>
         <div className="grid grid-cols-[1fr,auto] gap-y-1.5 gap-x-4 font-sans text-[12px] items-center">
           <span className="text-clay">{t("fair_wages")}</span>
-          <span className="text-sage flex items-center gap-1 justify-self-start">✦ {t("passed")}</span>
+          <span className="text-ink flex items-center gap-1.5 justify-self-start"><span className="text-[#8E3D52]">✦</span> {t("passed")}</span>
           <span className="text-clay">{t("health_safety")}</span>
-          <span className="text-sage flex items-center gap-1 justify-self-start">✦ {t("grade_a")}</span>
+          <span className="text-ink flex items-center gap-1.5 justify-self-start"><span className="text-[#8E3D52]">✦</span> {t("grade_a")}</span>
           <span className="text-clay">{t("no_forced_labour")}</span>
-          <span className="text-sage flex items-center gap-1 justify-self-start">✦ {t("verified")}</span>
+          <span className="text-ink flex items-center gap-1.5 justify-self-start"><span className="text-[#8E3D52]">✦</span> {t("verified")}</span>
         </div>
       </ExpandableCard>
 
-      <ExpandableCard title={t("chemical_compliance")} defaultOpen footerText={t("economic_operator_note")}>
+      <ExpandableCard title={t("chemical_compliance")} defaultOpen footerText={`${t("economic_operator_note")} ${t("audit_disclosure")}`}>
         <div className="grid grid-cols-[1fr,auto] gap-y-2 gap-x-4 font-sans text-[12px] items-start">
           <span className="text-clay">{t("chemical_compliance")}</span>
-          <span className="text-sage text-right text-[11px]">✦ {t("reach_compliant")}</span>
+          <span className="text-ink text-right text-[11px]"><span className="text-[#8E3D52]">✦</span> {t("reach_compliant")}</span>
           <span className="text-clay">{t("economic_operator")}</span>
           <span className="text-ink text-right text-[11px] font-medium">{t("economic_operator_value")}</span>
         </div>
@@ -815,18 +799,18 @@ export function CareGuide() {
   const { t } = useLanguage();
   const { wearCount: careWearCount } = getCareRecommendation();
   const wears = [
-    [t("wears_5"), t("impact_high"), "text-blush-deep"],
-    [t("wears_30"), t("impact_opt"), "text-blush"],
-    [t("wears_100"), t("impact_low"), "text-sage"],
+    [t("wears_5"), t("impact_high"), "text-clay"],
+    [t("wears_30"), t("impact_opt"), "text-ink"],
+    [t("wears_100"), t("impact_low"), "text-[#8E3D52]"],
   ];
 
   const rituals: CareRitual[] = [
-    { icon: "💧", title: t("ritual_hand_washing_title"), lines: [t("ritual_hand_washing_line1"), t("ritual_hand_washing_line2")] },
-    { icon: "♨️", title: t("ritual_steaming_title"), lines: [t("ritual_steaming_line1")] },
-    { icon: "🪮", title: t("ritual_brushing_title"), lines: [t("ritual_brushing_line1")] },
-    { icon: "🤍", title: t("ritual_folding_title"), lines: [t("ritual_folding_line1")] },
-    { icon: "📦", title: t("ritual_storage_title"), lines: [t("ritual_storage_line1")] },
-    { icon: "🪡", title: t("ritual_repair_title"), lines: [t("ritual_repair_line1")] },
+    { icon: <Droplets size={18} strokeWidth={1.25} />, title: t("ritual_hand_washing_title"), lines: [t("ritual_hand_washing_line1"), t("ritual_hand_washing_line2")] },
+    { icon: <Flame size={18} strokeWidth={1.25} />, title: t("ritual_steaming_title"), lines: [t("ritual_steaming_line1")] },
+    { icon: <Brush size={18} strokeWidth={1.25} />, title: t("ritual_brushing_title"), lines: [t("ritual_brushing_line1")] },
+    { icon: <Heart size={18} strokeWidth={1.25} />, title: t("ritual_folding_title"), lines: [t("ritual_folding_line1")] },
+    { icon: <Package size={18} strokeWidth={1.25} />, title: t("ritual_storage_title"), lines: [t("ritual_storage_line1")] },
+    { icon: <Scissors size={18} strokeWidth={1.25} />, title: t("ritual_repair_title"), lines: [t("ritual_repair_line1")] },
   ];
 
   // Same real computation used elsewhere (next maintenance countdown from
@@ -840,7 +824,7 @@ export function CareGuide() {
       <h2 className="font-display italic text-2xl text-ink leading-tight mt-1">
         {t("designed_years")}
       </h2>
-      <p className="text-[11px] text-clay font-sans mt-1 mb-5">{t("care_supporting_line")}</p>
+      <p className="text-[12px] text-clay font-sans mt-1 mb-5">{t("care_supporting_line")}</p>
 
       <div className="border-t border-line pt-5 mb-5 fade-up" style={{ animationDelay: "100ms" }}>
         <Eyebrow>{t("impact_per_wear")}</Eyebrow>
@@ -902,19 +886,19 @@ export function SustainabilityMetrics() {
       <p className="text-[11px] text-clay font-sans mt-1">{t("impact_supporting_line")}</p>
       <p className="text-[10px] text-clay/80 font-sans mt-2 mb-4 leading-relaxed">{t("impact_illustrative_note")}</p>
       <div className="flex justify-around mb-5">
-        <Donut percent={30} label="CO₂" sublabel={t("vs_avg")} color="#C97A8C" />
-        <Donut percent={80} label="H₂O" sublabel={t("recycled_water")} color="#8FA688" />
+        <Donut percent={30} label="CO₂" sublabel={t("vs_avg")} color="#8E3D52" />
+        <Donut percent={80} label="H₂O" sublabel={t("recycled_water")} color="#2B2622" />
       </div>
       <div className="space-y-3 mb-4">
-        <Pill label={t("recyclability")} percent={92} color="#C97A8C" />
-        <Pill label={t("renewable_energy")} percent={78} color="#8FA688" />
-        <Pill label={t("ethical_sourcing")} percent={100} color="#C9A46A" />
+        <Pill label={t("recyclability")} percent={92} color="#8E3D52" />
+        <Pill label={t("renewable_energy")} percent={78} color="#B7727F" />
+        <Pill label={t("ethical_sourcing")} percent={100} color="#2B2622" />
       </div>
       <div className="grid grid-cols-3 gap-2">
         {[["7.9kg", t("co2_saved")], ["2,400L", t("water_saved")], ["Top 10%", t("top_10")]].map(([v, l]) => (
-          <div key={l} className="bg-blush-pale/60 rounded-lg py-2.5 text-center">
-            <p className="font-display italic text-sm text-blush-deep">{v}</p>
-            <p className="text-[8px] font-sans text-clay uppercase tracking-wide mt-0.5">{l}</p>
+          <div key={l} className="border-y border-line py-3 text-center">
+            <p className="font-display italic text-[20px] leading-none text-ink">{v}</p>
+            <p className="text-[9px] font-sans text-clay uppercase tracking-[0.18em] mt-1.5">{l}</p>
           </div>
         ))}
       </div>
@@ -933,7 +917,7 @@ export function SustainabilityMetrics() {
             [t("env_metric_service_value"), t("env_metric_service")],
           ].map(([value, label]) => (
             <li key={label} className="flex items-baseline gap-2 font-sans text-[12px] text-ink/85">
-              <span className="text-[11px] shrink-0">🌐</span>
+              <span className="shrink-0 w-1 h-1 rounded-full bg-[#8E3D52] translate-y-[-3px]" />
               <span>
                 <span className="font-semibold text-ink">{value}</span> {label}
               </span>

@@ -2,10 +2,11 @@ import { useEffect, useRef, useState } from "react";
 import { ChevronLeft, ChevronRight, WifiOff, SearchX } from "lucide-react";
 import { EmptyState } from "./components/UI";
 import PassportTopBar from "./components/PassportTopBar";
+import ChapterShell from "./components/ChapterShell";
 import OpeningReveal, { introPlayed, prefersReducedMotion } from "./components/OpeningReveal";
 import { GARMENT } from "./lib/garment";
 import { useLanguage } from "./lib/i18n";
-import { ChapterColorProvider, CHAPTER_COLORS, INACTIVE_PROGRESS_COLOR } from "./lib/chapterColor";
+import { ChapterColorProvider, CHAPTER_COLORS } from "./lib/chapterColor";
 import {
   SkeletonLoader,
   CameraScan,
@@ -47,23 +48,6 @@ function buildLiveScreens(goToScreen: (index: number) => void, intro: boolean) {
     <ClosingScreen key="closing" onReturnToWardrobe={() => goToScreen(9)} />,
   ];
 }
-
-// One label per screen above, used as the subtle section indicator next to
-// the progress bar. Kept as translation keys so it follows the language
-// toggle like everything else.
-const sectionKeys = [
-  "section_passport",
-  "section_product",
-  "section_journey",
-  "section_journey",
-  "section_care",
-  "section_impact",
-  "section_next_chapter",
-  "section_story",
-  "section_ownership",
-  "section_wardrobe",
-  "section_end",
-] as const;
 
 // The first screen people can reach (slot 0 is intentionally empty).
 const FIRST_SCREEN = 1;
@@ -219,41 +203,6 @@ export default function LiveApp() {
       {/* The brand header stays on every screen: menu, logo, share. */}
       <PassportTopBar onGoTo={(i) => { setLegalPage("none"); setIndex(i); }} />
 
-      {/* subtle current-section label, now tinted per chapter */}
-      {!isFront && (
-      <p
-        className="font-sans text-[9px] font-semibold uppercase tracking-[0.15em] text-center shrink-0 transition-colors duration-500 print:hidden"
-        style={{ paddingTop: "max(env(safe-area-inset-top), 10px)", color: CHAPTER_COLORS[index] }}
-      >
-        {t(sectionKeys[index])}
-      </p>
-      )}
-
-      {/* story-style progress bar, each segment carries its own chapter's
-          color, so the bar reads as a single quiet marker of where you are,
-          not a multi-colored progress fill */}
-      {!isFront && (
-      <div
-        className="flex gap-1 px-3 shrink-0 mt-1.5 print:hidden"
-      >
-        {liveScreens.map((_, i) => i < FIRST_SCREEN ? null : (
-          <div
-            key={i}
-            className="flex-1 h-[3px] rounded-full overflow-hidden transition-colors duration-500"
-            style={{ backgroundColor: INACTIVE_PROGRESS_COLOR }}
-          >
-            <div
-              className="h-full transition-all duration-500 ease-in-out"
-              style={{
-                width: i === index ? "100%" : "0%",
-                backgroundColor: CHAPTER_COLORS[i],
-              }}
-            />
-          </div>
-        ))}
-      </div>
-      )}
-
       <div ref={scrollRef} className="flex-1 overflow-y-auto visible-scrollbar relative" onClick={handleTap}>
         <ChapterColorProvider color={CHAPTER_COLORS[index]}>
           {legalPage === "privacy" ? (
@@ -267,7 +216,7 @@ export default function LiveApp() {
           ) : legalPage === "about-passport" ? (
             <AboutPassportScreen onBack={() => setLegalPage("none")} />
           ) : (
-            liveScreens[index]
+            <ChapterShell index={index} total={liveScreens.length}>{liveScreens[index]}</ChapterShell>
           )}
         </ChapterColorProvider>
       </div>

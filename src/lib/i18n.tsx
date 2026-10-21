@@ -281,31 +281,20 @@ export const dict = {
     fr: "Exemple",
     pt: "Exemplo",
   },
-  ethical_audit: {
-    en: "Ethical Audit",
-    fr: "Audit éthique",
-    pt: "Auditoria ética",
-  },
+  ethical_audit: { en: "Ethical Audit", fr: "Audit Éthique", pt: "Auditoria Ética" },
   fair_wages: { en: "Fair wages", fr: "Salaires équitables", pt: "Salários justos" },
   health_safety: { en: "Health & safety", fr: "Santé et sécurité", pt: "Saúde e segurança" },
   no_forced_labour: { en: "No forced labour", fr: "Pas de travail forcé", pt: "Sem trabalho forçado" },
   passed: { en: "Passed", fr: "Réussi", pt: "Aprovado" },
-  grade_a: { en: "Grade A", fr: "Grade A", pt: "Grau A" },
-  audited_by: {
-    en: "Bureau Veritas (example reference BV-2025-09871). Illustrative demo copy only; no audit has been verified.",
-    fr: "Bureau Veritas (référence d'exemple BV-2025-09871). Texte de démonstration illustratif ; aucun audit n'a été vérifié.",
-    pt: "Bureau Veritas (referência de exemplo BV-2025-09871). Texto ilustrativo de demonstração; nenhuma auditoria foi verificada.",
+  grade_a: { en: "Grade A", fr: "Note A", pt: "Nota A" },
+  audited_by: { en: "Audited by Bureau Veritas · Cert #BV-2025-09871", fr: "Audité par Bureau Veritas · Cert n°BV-2025-09871", pt: "Auditado pela Bureau Veritas · Cert #BV-2025-09871" },
+  audit_disclosure: {
+    en: "Illustrative placeholder values for this demo. No independent audit or chemical testing has been verified for this garment.",
+    fr: "Valeurs fictives à titre d'illustration pour cette démo. Aucun audit indépendant ni test chimique n'a été vérifié pour ce vêtement.",
+    pt: "Valores fictícios ilustrativos para esta demonstração. Nenhuma auditoria independente nem teste químico foi verificado para esta peça.",
   },
-  chemical_compliance: {
-    en: "Chemical Compliance",
-    fr: "Conformité chimique",
-    pt: "Conformidade química",
-  },
-  reach_compliant: {
-    en: "REACH Compliant · No restricted substances detected (illustrative example only; no testing has been verified).",
-    fr: "Conforme à REACH · Aucune substance restreinte détectée (exemple illustratif uniquement ; aucun test n'a été vérifié).",
-    pt: "Em conformidade com o REACH · Nenhuma substância restrita detectada (apenas exemplo ilustrativo; nenhum teste foi verificado).",
-  },
+  chemical_compliance: { en: "Chemical Compliance", fr: "Conformité Chimique", pt: "Conformidade Química" },
+  reach_compliant: { en: "REACH Compliant · No restricted substances detected", fr: "Conforme REACH · Aucune substance restreinte détectée", pt: "Conforme REACH · Nenhuma substância restrita detectada" },
   economic_operator: { en: "Economic Operator", fr: "Opérateur Économique", pt: "Operador Econômico" },
   economic_operator_value: {
     en: "Brand entity (placeholder)",
@@ -407,6 +396,8 @@ export const dict = {
   section_next_chapter: { en: "Next Chapter", fr: "Prochain Chapitre", pt: "Próximo Capítulo" },
   section_story: { en: "Story", fr: "Histoire", pt: "História" },
   section_wardrobe: { en: "Wardrobe", fr: "Garde-robe", pt: "Guarda-roupa" },
+  chapter_materials: { en: "Materials", fr: "Matériaux", pt: "Materiais" },
+  chapter_environment: { en: "Environment", fr: "Environnement", pt: "Ambiente" },
   section_end: { en: "End", fr: "Fin", pt: "Fim" },
 
   wool_farming_card_title: { en: "About this wool farm", fr: "À propos de cette ferme", pt: "Sobre esta fazenda de lã" },
@@ -1186,10 +1177,36 @@ const LanguageContext = createContext<{
   locale: "en-US",
 });
 
+const LANGS: Lang[] = ["en", "fr", "pt"];
+
+// The language lives in the URL (wornwith.care/en, /fr, /pt) so a link always
+// opens in the right language. Order: URL, then the last saved choice, then English.
+function langFromPath(): Lang | null {
+  const seg = window.location.pathname.split("/").filter(Boolean)[0]?.toLowerCase();
+  return LANGS.includes(seg as Lang) ? (seg as Lang) : null;
+}
+
+function writeLangToUrl(l: Lang, mode: "push" | "replace") {
+  const { pathname, search, hash } = window.location;
+  const rest = pathname.split("/").filter(Boolean);
+  if (LANGS.includes(rest[0] as Lang)) rest.shift();
+  const next = `/${[l, ...rest].join("/")}${search}${hash}`;
+  if (next === `${pathname}${search}${hash}`) return;
+  try {
+    if (mode === "push") window.history.pushState(null, "", next);
+    else window.history.replaceState(null, "", next);
+  } catch {
+    // ignore
+  }
+}
+
 export function LanguageProvider({ children }: { children: ReactNode }) {
   const [lang, setLangState] = useState<Lang>(() => {
+    const fromUrl = langFromPath();
+    if (fromUrl) return fromUrl;
     try {
-      return (localStorage.getItem(STORAGE_KEY) as Lang) || "en";
+      const saved = localStorage.getItem(STORAGE_KEY) as Lang;
+      return LANGS.includes(saved) ? saved : "en";
     } catch {
       return "en";
     }
@@ -1201,9 +1218,25 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
     } catch {
       // ignore
     }
+    // Keep the address bar in step (adds /en on first load without a new history entry).
+    writeLangToUrl(lang, "replace");
+    document.documentElement.lang = lang;
   }, [lang]);
 
-  const setLang = (l: Lang) => setLangState(l);
+  // Back and forward between language URLs.
+  useEffect(() => {
+    const onPop = () => {
+      const l = langFromPath();
+      if (l) setLangState(l);
+    };
+    window.addEventListener("popstate", onPop);
+    return () => window.removeEventListener("popstate", onPop);
+  }, []);
+
+  const setLang = (l: Lang) => {
+    writeLangToUrl(l, "push");
+    setLangState(l);
+  };
   const t = (key: TranslationKey) => {
     const entry = dict[key];
     if (!entry) {
