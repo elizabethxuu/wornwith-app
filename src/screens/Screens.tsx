@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useSyncExternalStore } from "react";
 import * as ambient from "../lib/ambient";
-import { Eyebrow, Donut, Card, JourneyMap, Pill, Disclaimer, EmptyState, ExpandableCard, ArchiveTransition, ArchiveTimeline, type ArchiveEntry, TodaysEdit, AskAnythingBar, CareRitualRow, type CareRitual, useMountReveal, VerificationInfoPanel, ShareSheet, ProductHero } from "../components/UI";
+import { Eyebrow, Donut, Card, JourneyMap, Pill, Disclaimer, EmptyState, ExpandableCard, ArchiveTransition, ArchiveTimeline, type ArchiveEntry, TodaysEdit, AskAnythingBar, CareRitualRow, type CareRitual, useMountReveal, VerificationInfoPanel, ShareSheet, ProductHero, StatusChip } from "../components/UI";
 import { ChapterColorProvider, ARCHIVE_ACCENT_COLOR, useChapterColor } from "../lib/chapterColor";
 import { generateAI } from "../lib/aiService";
 import {
@@ -259,7 +259,7 @@ export function Welcome({ onEnter }: { onEnter?: () => void } = {}) {
           </button>
         )}
         {viewCount !== null && (
-          <p className="font-sans text-[9px] text-clay/70 mt-3">
+          <p className="font-sans text-[9px] text-clay mt-3">
             {t("viewed_times")} <span className="text-ink font-medium">{viewCount.toLocaleString()}</span> {t("times_suffix")}
           </p>
         )}
@@ -395,7 +395,6 @@ export function ProductOverview({
             className="w-11 h-11 flex items-center justify-center bg-white/60 backdrop-blur-md border border-white/60 text-ink"
           >
             {sound.muted ? <VolumeX size={20} strokeWidth={1.25} /> : <Volume2 size={20} strokeWidth={1.25} />}
-            <span className="sr-only">{sound.muted ? t("sound_off_label") : t("sound_on_label")}</span>
           </button>
           {!sound.muted && (
             <button
@@ -439,12 +438,12 @@ export function ProductOverview({
             </button>
             <button
               onClick={showDetails}
-              className="pb-1 font-sans text-[10px] uppercase tracking-[0.2em] text-clay"
+              className="py-2 min-h-[24px] font-sans text-[10px] uppercase tracking-[0.2em] text-clay"
             >
               {t("hero_details")} ↓
             </button>
           </div>
-          <p className="mt-2 font-sans text-[9px] leading-snug text-clay/80">{t("demo_disclaimer")}</p>
+          <p className="mt-2 font-sans text-[9px] leading-snug text-clay">{t("demo_disclaimer")}</p>
         </div>
 
           {/* Dissolve to paper while leaving for the Journey */}
@@ -586,10 +585,10 @@ export function ProductOverview({
 
       <p className="font-sans text-[12px] text-clay leading-relaxed mt-8">{t("dpp_explainer")}</p>
       <p className="font-sans text-[9px] uppercase tracking-[0.2em] text-clay mt-3">{t("welcome_by")}</p>
-      <p className="font-sans text-[10px] text-clay/80 leading-relaxed mt-4">{t("overview_data_note")}</p>
+      <p className="font-sans text-[10px] text-clay leading-relaxed mt-4">{t("overview_data_note")}</p>
       <Disclaimer />
       <VerificationInfoPanel open={showVerificationInfo} onClose={() => setShowVerificationInfo(false)} />
-      <p className="font-sans text-[10px] text-clay/80 leading-relaxed mt-2">{t("hero_image_note")}</p>
+      <p className="font-sans text-[10px] text-clay leading-relaxed mt-2">{t("hero_image_note")}</p>
       </div>
       <ShareSheet open={shareOpen} onClose={() => setShareOpen(false)} />
     </div>
@@ -740,7 +739,7 @@ export function SupplyChain() {
               </div>
               <p className="text-[10px] font-sans font-semibold text-ink mt-1.5">{c.label}</p>
               <p className="text-[10px] font-sans text-clay">{c.place}</p>
-              <p className="text-[9px] font-sans text-clay/80 tracking-wide">{c.code}</p>
+              <p className="text-[9px] font-sans text-clay tracking-wide">{c.code}</p>
             </div>
             {i < chain.length - 1 && (
               <ArrowRight
@@ -761,23 +760,23 @@ export function SupplyChain() {
           </div>
         ))}
       </div>
-      <ExpandableCard title={t("ethical_audit")} defaultOpen footerText={`${t("audited_by")}. ${t("audit_disclosure")}`}>
-        <div className="grid grid-cols-[1fr,auto] gap-y-1.5 gap-x-4 font-sans text-[12px] items-center">
+      <ExpandableCard title={t("ethical_audit")} defaultOpen footerText={`${t("audit_source_note")} ${t("audit_disclosure")}`}>
+        <div className="grid grid-cols-[1fr,auto] gap-y-2 gap-x-4 font-sans text-[12px] items-center">
           <span className="text-clay">{t("fair_wages")}</span>
-          <span className="text-ink flex items-center gap-1.5 justify-self-start"><span className="text-[#8E3D52]">✦</span> {t("passed")}</span>
+          <span className="text-ink flex items-center gap-2 justify-self-start">{t("passed")} <StatusChip status="pending" /></span>
           <span className="text-clay">{t("health_safety")}</span>
-          <span className="text-ink flex items-center gap-1.5 justify-self-start"><span className="text-[#8E3D52]">✦</span> {t("grade_a")}</span>
+          <span className="text-ink flex items-center gap-2 justify-self-start">{t("grade_a")} <StatusChip status="pending" /></span>
           <span className="text-clay">{t("no_forced_labour")}</span>
-          <span className="text-ink flex items-center gap-1.5 justify-self-start"><span className="text-[#8E3D52]">✦</span> {t("verified")}</span>
+          <span className="text-ink flex items-center gap-2 justify-self-start">{t("passed")} <StatusChip status="pending" /></span>
         </div>
       </ExpandableCard>
 
-      <ExpandableCard title={t("chemical_compliance")} defaultOpen footerText={`${t("economic_operator_note")} ${t("audit_disclosure")}`}>
+      <ExpandableCard title={t("chemical_compliance")} defaultOpen footerText={`${t("chemical_source_note")} ${t("economic_operator_note")}`}>
         <div className="grid grid-cols-[1fr,auto] gap-y-2 gap-x-4 font-sans text-[12px] items-start">
-          <span className="text-clay">{t("chemical_compliance")}</span>
-          <span className="text-ink text-right text-[11px]"><span className="text-[#8E3D52]">✦</span> {t("reach_compliant")}</span>
+          <span className="text-clay">{t("reach_info")}</span>
+          <span className="text-ink flex flex-col items-end gap-1 text-right text-[11px]">{t("reach_info_value")} <StatusChip status="unavailable" /></span>
           <span className="text-clay">{t("economic_operator")}</span>
-          <span className="text-ink text-right text-[11px] font-medium">{t("economic_operator_value")}</span>
+          <span className="text-ink flex flex-col items-end gap-1 text-right text-[11px]">{t("economic_operator_value")} <StatusChip status="unavailable" /></span>
         </div>
       </ExpandableCard>
 
@@ -884,7 +883,7 @@ export function SustainabilityMetrics() {
       <Eyebrow>{t("sustainability")}</Eyebrow>
       <h2 className="font-display italic text-2xl text-ink mt-1">{t("impact_metrics")}</h2>
       <p className="text-[11px] text-clay font-sans mt-1">{t("impact_supporting_line")}</p>
-      <p className="text-[10px] text-clay/80 font-sans mt-2 mb-4 leading-relaxed">{t("impact_illustrative_note")}</p>
+      <p className="text-[10px] text-clay font-sans mt-2 mb-4 leading-relaxed">{t("impact_illustrative_note")}</p>
       <div className="flex justify-around mb-5">
         <Donut percent={30} label="CO₂" sublabel={t("vs_avg")} color="#8E3D52" />
         <Donut percent={80} label="H₂O" sublabel={t("recycled_water")} color="#2B2622" />
@@ -1072,7 +1071,7 @@ export function WhatsNext() {
           )
         )}
       </div>
-      <p className="font-sans text-[10px] text-clay/80 mt-4 text-center">
+      <p className="font-sans text-[10px] text-clay mt-4 text-center">
         {t("location_note")}
       </p>
 
@@ -1144,8 +1143,8 @@ export function StoryBehindIt() {
               onAnimationEnd={() => setSparklePlayed(true)}
             />
             <p
-              className="text-[10px] font-sans font-semibold uppercase tracking-wide"
-              style={{ color: storyColor, ...storyReveal("translateY(6px)", 2110, 300) }}
+              className="text-[10px] font-sans font-semibold text-clay uppercase tracking-wide"
+              style={{ ...storyReveal("translateY(6px)", 2110, 300) }}
             >
               {t("story_behind_it")}
             </p>
@@ -1206,7 +1205,6 @@ export function Personalization() {
     () => (loadMoments().length > 0 ? "archive" : "compose")
   );
   const [curatorsNotes, setCuratorsNotes] = useState<string | null>(null);
-  const [lastAIError, setLastAIError] = useState<string | null>(null);
   const [ownershipRecord, setOwnershipRecord] = useState<OwnershipRecord>(() => loadOwnershipRecord());
   const [ownershipSaved, setOwnershipSaved] = useState(false);
   // Which single field (if any) is currently expanded into an editable
@@ -1255,13 +1253,13 @@ export function Personalization() {
           />
         ) : (
           <div className="flex items-center border-b border-line py-1">
-            <p className={`font-sans text-[12px] ${displayValue ? "text-ink" : "text-clay/60 italic"}`}>
+            <p className={`font-sans text-[12px] ${displayValue ? "text-ink" : "text-clay italic"}`}>
               {displayValue || t("field_not_added")}
             </p>
             <button
               onClick={() => setEditingField(field)}
               aria-label={t(labelKey)}
-              className="text-clay/60 shrink-0 ml-1.5"
+              className="text-clay shrink-0 ml-1.5"
             >
               <Pencil size={12} strokeWidth={1.5} />
             </button>
@@ -1318,12 +1316,6 @@ export function Personalization() {
       setMoments(updateMomentSummary(savedAt, result.content));
     } else {
       setFailed((f) => ({ ...f, [savedAt]: true }));
-      setLastAIError(result.error || "Unknown error");
-      // Temporary, for live debugging, surfaces the real upstream error
-      // instead of only the generic retry UI, so it doesn't require
-      // opening the network tab or Vercel logs to see.
-      // eslint-disable-next-line no-console
-      console.error("[AI Reflection] generation failed:", result.error);
     }
     setGenerating((g) => ({ ...g, [savedAt]: false }));
   };
@@ -1372,33 +1364,31 @@ export function Personalization() {
         {/* AI Reflection, featured, at the top */}
         {latestMoment && (
           <div className="mb-8">
-            <p className="font-sans text-[10px] uppercase tracking-[0.14em] font-semibold text-blush-deep mb-2">
+            <p className="font-sans text-[10px] uppercase tracking-[0.14em] font-semibold text-[#9E4F63] mb-2">
               ◆ {t("ai_reflection_title")}
             </p>
             {latestMoment.summary ? (
+              <>
               <p className="font-display italic text-[17px] text-ink leading-relaxed">
                 "{latestMoment.summary}"
               </p>
+              <p className="font-sans text-[10px] text-clay mt-2">{t("ai_reflection_label")}</p>
+              </>
             ) : generating[latestMoment.savedAt] ? (
-              <p className="font-sans text-[11px] text-clay/70 italic">{t("generating_reflection")}</p>
+              <p className="font-sans text-[11px] text-clay italic">{t("generating_reflection")}</p>
             ) : failed[latestMoment.savedAt] ? (
               <div>
                 <button
                   onClick={() => generateReflection(latestMoment.savedAt, latestMoment.text)}
-                  className="font-sans text-[11px] text-blush-deep underline underline-offset-2"
+                  className="font-sans text-[11px] text-[#9E4F63] underline underline-offset-2"
                 >
                   {t("reflection_failed")}
                 </button>
-                {lastAIError && (
-                  <p className="font-sans text-[9px] text-clay/70 mt-1 break-words">
-                    Debug: {lastAIError}
-                  </p>
-                )}
               </div>
             ) : (
               <button
                 onClick={() => generateReflection(latestMoment.savedAt, latestMoment.text)}
-                className="font-sans text-[11px] text-clay/80 underline underline-offset-2"
+                className="font-sans text-[11px] text-clay underline underline-offset-2"
               >
                 {t("generate_reflection")}
               </button>
@@ -1416,7 +1406,7 @@ export function Personalization() {
             <p className="font-sans text-[11px] text-clay mt-1 mb-3 leading-relaxed">
               {t("from_the_archives_subtitle")}
             </p>
-            <p className="font-sans text-[10px] text-clay/80 italic mb-5 leading-relaxed">
+            <p className="font-sans text-[10px] text-clay italic mb-5 leading-relaxed">
               {t("archive_framing_line")}
             </p>
             <ArchiveTimeline entries={archiveEntries} showProjectedTag />
@@ -1429,7 +1419,7 @@ export function Personalization() {
             editorial copy if generation fails or hasn't loaded yet, this
             section should never be blank or stuck loading. */}
         <div className="mb-8 py-2 fade-up" style={{ animationDelay: "650ms" }}>
-          <p className="font-sans text-[10px] uppercase tracking-[0.14em] font-semibold text-blush-deep mb-3">
+          <p className="font-sans text-[10px] uppercase tracking-[0.14em] font-semibold text-[#9E4F63] mb-3">
             {t("curators_notes_title")}
           </p>
           <p className="font-display italic text-[15px] text-ink leading-loose">
@@ -1481,21 +1471,21 @@ export function Personalization() {
             </div>
           </ExpandableCard>
 
-          <p className="font-sans text-[9px] text-clay/70 leading-relaxed mt-3 italic">
+          <p className="font-sans text-[9px] text-clay leading-relaxed mt-3 italic">
             {t("ownership_narrative_hint")}
           </p>
 
           {ownershipSaved && (
             <p className="font-sans text-[10px] text-sage fade-up mt-2">{t("saved_confirmation")}</p>
           )}
-          <p className="font-sans text-[9px] text-clay/70 leading-relaxed mt-3">
+          <p className="font-sans text-[9px] text-clay leading-relaxed mt-3">
             {t("save_disclaimer")}
           </p>
         </div>
 
         <button
           onClick={() => setView("compose")}
-          className="font-sans text-[11px] text-blush-deep underline underline-offset-2"
+          className="font-sans text-[11px] text-[#9E4F63] underline underline-offset-2"
         >
           {t("save_another_moment")}
         </button>
@@ -1527,7 +1517,7 @@ export function Personalization() {
       >
         {t("save_moment")}
       </button>
-      <p className="font-sans text-[9px] text-clay/70 text-center leading-relaxed mt-2 px-2">
+      <p className="font-sans text-[9px] text-clay text-center leading-relaxed mt-2 px-2">
         {t("save_disclaimer")}
       </p>
 
@@ -1698,7 +1688,7 @@ export function MyWardrobe() {
             {photoUploading ? (
               <div className="w-full aspect-square rounded-card bg-blush-pale/50 flex flex-col items-center justify-center gap-2">
                 <div className="w-6 h-6 border-2 border-blush-deep/40 border-t-blush-deep rounded-full animate-spin" />
-                <p className="font-sans text-[11px] text-clay/80">{t("uploading_label")}</p>
+                <p className="font-sans text-[11px] text-clay">{t("uploading_label")}</p>
               </div>
             ) : it.photo ? (
               <img
@@ -1708,8 +1698,8 @@ export function MyWardrobe() {
               />
             ) : (
               <div className="w-full aspect-square rounded-card bg-blush-pale/50 flex flex-col items-center justify-center gap-2">
-                <Camera size={32} className="text-blush-deep/40" />
-                <p className="font-sans text-[11px] text-clay/80">{t("upload_photo_label")}</p>
+                <Camera size={32} className="text-[#9E4F63]/40" />
+                <p className="font-sans text-[11px] text-clay">{t("upload_photo_label")}</p>
               </div>
             )}
           </label>
@@ -1749,8 +1739,8 @@ export function MyWardrobe() {
             onClick={() => toggleResold(idx)}
             className={`text-[10px] rounded-full px-2 py-1 border transition-colors ${
               it.resold
-                ? "text-blush-deep border-blush-deep bg-blush-pale/60"
-                : "text-clay/70 border-line"
+                ? "text-[#9E4F63] border-blush-deep bg-blush-pale/60"
+                : "text-clay border-line"
             }`}
           >
             {it.resold ? t("resold_badge") : t("mark_resold")}
@@ -1778,7 +1768,7 @@ export function MyWardrobe() {
 
         {/* Editable Description */}
         <div className="mt-4">
-          <p className="text-[10px] font-sans font-semibold text-blush-deep uppercase tracking-wide mb-1">
+          <p className="text-[10px] font-sans font-semibold text-[#9E4F63] uppercase tracking-wide mb-1">
             {t("description_field_label")}
           </p>
           <textarea
@@ -1835,13 +1825,13 @@ export function MyWardrobe() {
           </div>
         </div>
 
-        <p className="font-sans text-[9px] text-clay/70 leading-relaxed mt-4">
+        <p className="font-sans text-[9px] text-clay leading-relaxed mt-4">
           {t("save_disclaimer")}
         </p>
 
         <button
           onClick={() => { deleteItem(idx); setSelectedIndex(null); }}
-          className="w-full mt-6 font-sans text-[12px] text-blush-deep border border-line rounded-full py-2.5"
+          className="w-full mt-6 font-sans text-[12px] text-[#9E4F63] border border-line rounded-full py-2.5"
         >
           {t("remove_from_wardrobe")}
         </button>
@@ -1861,7 +1851,7 @@ export function MyWardrobe() {
       <div className="grid grid-cols-3 gap-2 mb-3">
         {[[String(items.length), t("items_label")], [String(brandCount), t("brands")], [String(resoldCount), t("resold")]].map(([v, l]) => (
           <div key={l} className="bg-blush-pale/60 rounded-lg py-2.5 text-center">
-            <p className="font-display italic text-lg text-blush-deep">{v}</p>
+            <p className="font-display italic text-lg text-[#9E4F63]">{v}</p>
             <p className="text-[9px] font-sans text-clay uppercase tracking-wide">{l}</p>
           </div>
         ))}
@@ -1869,7 +1859,7 @@ export function MyWardrobe() {
 
       <div className="flex gap-2 mb-4">
         <div className="flex-1 relative">
-          <Search size={13} className="absolute left-3 top-1/2 -translate-y-1/2 text-clay/70" />
+          <Search size={13} className="absolute left-3 top-1/2 -translate-y-1/2 text-clay" />
           <input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
@@ -1878,7 +1868,7 @@ export function MyWardrobe() {
           />
         </div>
         <label className="relative flex items-center justify-center w-9 h-9 border border-line rounded-full shrink-0 cursor-pointer">
-          <CalendarDays size={14} className={dateFilter ? "text-blush-deep" : "text-clay/80"} />
+          <CalendarDays size={14} className={dateFilter ? "text-[#9E4F63]" : "text-clay"} />
           <input
             type="date"
             value={dateFilter}
@@ -1896,7 +1886,7 @@ export function MyWardrobe() {
           </p>
           <button
             onClick={() => { setSearch(""); setDateFilter(""); }}
-            className="font-sans text-[10px] text-blush-deep underline underline-offset-2"
+            className="font-sans text-[10px] text-[#9E4F63] underline underline-offset-2"
           >
             {t("clear_filters")}
           </button>
@@ -1923,7 +1913,7 @@ export function MyWardrobe() {
                 />
               ) : (
                 <div className="w-12 h-12 rounded-lg bg-blush-pale/50 flex items-center justify-center shrink-0">
-                  <Camera size={16} className="text-blush-deep/50" />
+                  <Camera size={16} className="text-[#9E4F63]/50" />
                 </div>
               )}
               <div className="flex-1 min-w-0">
@@ -1938,8 +1928,8 @@ export function MyWardrobe() {
                     onClick={(e) => { e.stopPropagation(); toggleResold(i); }}
                     className={`text-[9px] rounded-full px-1.5 py-0.5 border transition-colors ${
                       it.resold
-                        ? "text-blush-deep border-blush-deep bg-blush-pale/60"
-                        : "text-clay/60 border-line"
+                        ? "text-[#9E4F63] border-blush-deep bg-blush-pale/60"
+                        : "text-clay border-line"
                     }`}
                   >
                     {it.resold ? t("resold_badge") : t("mark_resold")}
@@ -1952,7 +1942,7 @@ export function MyWardrobe() {
               <button
                 onClick={(e) => { e.stopPropagation(); deleteItem(i); }}
                 aria-label={`Remove ${it.name}`}
-                className="text-clay/70 hover:text-blush-deep font-sans text-[11px] shrink-0 pt-0.5"
+                className="text-clay hover:text-[#9E4F63] font-sans text-[11px] shrink-0 pt-0.5"
               >
                 ✕
               </button>
@@ -1968,7 +1958,7 @@ export function MyWardrobe() {
               {photo ? (
                 <img src={photo} alt="Selected" className="w-full h-full object-cover" />
               ) : (
-                <Camera size={18} className="text-blush-deep/60" />
+                <Camera size={18} className="text-[#9E4F63]/60" />
               )}
               <input
                 type="file"
@@ -2008,14 +1998,14 @@ export function MyWardrobe() {
               {t("cancel")}
             </button>
           </div>
-          <p className="font-sans text-[9px] text-clay/70 leading-relaxed">
+          <p className="font-sans text-[9px] text-clay leading-relaxed">
             {t("save_disclaimer")}
           </p>
         </div>
       ) : (
         <button
           onClick={() => setLogging(true)}
-          className="w-full mt-4 font-sans text-[12px] text-blush-deep border border-dashed border-blush rounded-full py-2.5"
+          className="w-full mt-4 font-sans text-[12px] text-[#9E4F63] border border-dashed border-blush rounded-full py-2.5"
         >
           {t("log_a_memory")}
         </button>
@@ -2270,6 +2260,43 @@ export function ReleaseNotesScreen({ onBack }: { onBack: () => void }) {
 
       <Eyebrow>{t("release_notes_eyebrow")}</Eyebrow>
       <h2 className="font-display italic text-2xl text-ink leading-tight mt-1">
+        {t("rn12_title")}
+      </h2>
+      <p className="font-sans text-[12px] text-clay mt-1" style={{ letterSpacing: "0.02em" }}>
+        {t("rn12_date")}
+      </p>
+      <p className="font-sans text-[11px] mt-0.5" style={{ color: "#8A8A8A" }}>
+        {t("rn12_version")}
+      </p>
+      <p className="font-sans text-[12px] text-clay leading-relaxed mt-3">
+        {t("rn12_subtitle")}
+      </p>
+
+      {group("rn12_claims_title", ["rn12_claims_1", "rn12_claims_2"])}
+      {group("rn12_reliability_title", ["rn12_reliability_1", "rn12_reliability_2", "rn12_reliability_3"])}
+      {group("rn12_sharing_title", ["rn12_sharing_1"])}
+      {group("rn12_access_title", ["rn12_access_1", "rn12_access_2"])}
+
+      <div className="border-t border-line mt-8" />
+      <h2 className="font-display italic text-2xl text-ink leading-tight mt-6">
+        {t("rn11_title")}
+      </h2>
+      <p className="font-sans text-[12px] text-clay mt-1" style={{ letterSpacing: "0.02em" }}>
+        {t("rn11_date")}
+      </p>
+      <p className="font-sans text-[11px] mt-0.5" style={{ color: "#8A8A8A" }}>
+        {t("rn11_version")}
+      </p>
+      <p className="font-sans text-[12px] text-clay leading-relaxed mt-3">
+        {t("rn11_subtitle")}
+      </p>
+
+      {group("rn11_language_title", ["rn11_language_1", "rn11_language_2", "rn11_language_3"])}
+      {group("rn11_brand_title", ["rn11_brand_1", "rn11_brand_2"])}
+      {group("rn11_passport_title", ["rn11_passport_1", "rn11_passport_2", "rn11_passport_3"])}
+
+      <div className="border-t border-line mt-8" />
+      <h2 className="font-display italic text-2xl text-ink leading-tight mt-6">
         {t("release_notes_title")}
       </h2>
       <p className="font-sans text-[12px] text-clay mt-1" style={{ letterSpacing: "0.02em" }}>

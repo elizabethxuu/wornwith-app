@@ -1,24 +1,33 @@
-// Both gemini-2.0-flash and gemini-2.5-flash-lite failed for the same
-// underlying reason: hardcoded, pinned model versions go stale as Google
-// cuts off new-user access to older models. The actual fix is to stop
-// pinning a specific version, "gemini-flash-latest" is Google's rolling
-// alias that always points to their current recommended Flash model and
-// updates automatically on their end, so this class of failure shouldn't
-// recur. Still overridable via GEMINI_MODEL if needed.
+// Gemini text generation for the AI features. Server-side only: the API key
+// never reaches the browser, and provider error bodies are never returned to
+// visitors (see api/ai.js).
+//
+// "gemini-flash-latest" is Google's rolling alias, so a pinned model that Google
+// retires cannot silently break generation. Override with GEMINI_MODEL if needed.
 const GEMINI_MODEL = process.env.GEMINI_MODEL || "gemini-flash-latest";
 const TIMEOUT_MS = 12000;
 const MAX_RETRIES = 2;
 
+// Current Flash models can spend part of maxOutputTokens on internal reasoning.
+// With the very small budgets these short features use (50 to 160 tokens), the
+// reasoning alone can use the whole budget and leave no visible text, which
+// shows up as an "empty response". This headroom keeps the visible answer short
+// (the prompts ask for one or two sentences) while leaving room to think.
+const REASONING_HEADROOM_TOKENS = 1024;
+
 export { GEMINI_MODEL };
 
-// NOTE: while actively debugging the 502s, this logs unconditionally
-// (not gated to non-production), Vercel's function logs are the only
-// way to see this on the live deployment, and the deployment itself runs
-// with VERCEL_ENV=production, so a dev-only gate would have hidden
-// exactly the logs needed right now. Re-add a production gate once this
-// is confirmed working.
-function log(...args) {
-  console.log("[ai:debug]", ...args);
+// Diagnostics never include the API key, key fragments, prompts, user text,
+// or provider response bodies. Status codes and short reasons only.
+function debug(message, fields) {
+  if (process.env.NODE_ENV !== "production") console.info(`[ai] ${message}`, fields ?? "");
+}
+
+function providerError(message, { status, retryable }) {
+  const err = new Error(message);
+  err.status = status;
+  err.retryable = retryable;
+  return err;
 }
 
 async function callGeminiOnce(fullPrompt, maxTokens, apiKey) {
@@ -26,97 +35,56 @@ async function callGeminiOnce(fullPrompt, maxTokens, apiKey) {
   const timeout = setTimeout(() => controller.abort(), TIMEOUT_MS);
 
   try {
-    const requestBody = {
-      contents: [{ parts: [{ text: fullPrompt }] }],
-      generationConfig: { maxOutputTokens: maxTokens, temperature: 0.7 },
-    };
-
     const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${apiKey}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent`,
       {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(requestBody),
+        // The key travels in a header, not in the URL, so it cannot end up in logs or error text.
+        headers: { "Content-Type": "application/json", "x-goog-api-key": apiKey },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: fullPrompt }] }],
+          generationConfig: { maxOutputTokens: maxTokens + REASONING_HEADROOM_TOKENS, temperature: 0.7 },
+        }),
         signal: controller.signal,
       }
     );
 
-    // 1. Full Gemini HTTP status, always logged.
-    log("Gemini HTTP status:", response.status, response.statusText);
-
-    // Read the raw body as text FIRST, before attempting JSON.parse, this
-    // way, if parsing fails, we still have the actual bytes Gemini sent
-    // back instead of losing them.
-    const rawText = await response.text();
-    log("Gemini raw response body:", rawText.slice(0, 2000));
-
     if (!response.ok) {
-      // Try to pull a structured error message out of Gemini's error
-      // body if it's JSON; fall back to the raw text either way.
-      let upstreamMessage = rawText;
-      try {
-        const parsed = JSON.parse(rawText);
-        upstreamMessage = parsed?.error?.message || rawText;
-      } catch (parseErr) {
-        // 3. JSON parsing error, logged explicitly rather than swallowed.
-        log("JSON parse error while parsing Gemini error body:", parseErr.message);
-      }
-      const err = new Error(upstreamMessage);
-      err.status = response.status;
-      err.detail = rawText;
-      err.retryable = response.status === 429 || response.status >= 500;
-      throw err;
+      throw providerError(`Gemini returned HTTP ${response.status}`, {
+        status: response.status,
+        retryable: response.status === 429 || response.status >= 500,
+      });
     }
 
     let data;
     try {
-      data = JSON.parse(rawText);
-    } catch (parseErr) {
-      // 3. JSON parsing error on a 200 response, this is a real,
-      // surfaced failure, not silently treated as empty success.
-      log("JSON parse error on 200 response:", parseErr.message);
-      const err = new Error(`Response parsing failed: ${parseErr.message}`);
-      err.detail = rawText;
-      err.retryable = true;
-      throw err;
+      data = await response.json();
+    } catch {
+      throw providerError("Gemini returned unreadable JSON", { retryable: true });
     }
 
     if (data.promptFeedback?.blockReason) {
-      const err = new Error(`Safety blocked: ${data.promptFeedback.blockReason}`);
-      err.detail = JSON.stringify(data.promptFeedback);
-      err.retryable = false;
-      throw err;
+      throw providerError(`Gemini blocked the prompt (${data.promptFeedback.blockReason})`, { retryable: false });
     }
 
     const candidate = data.candidates?.[0];
-    if (!candidate) {
-      const err = new Error("No candidates in Gemini response");
-      err.detail = rawText;
-      err.retryable = true;
-      throw err;
-    }
+    if (!candidate) throw providerError("Gemini returned no candidates", { retryable: true });
 
     if (candidate.finishReason === "SAFETY" || candidate.finishReason === "RECITATION") {
-      const err = new Error(`Generation stopped: ${candidate.finishReason}`);
-      err.detail = JSON.stringify(candidate);
-      err.retryable = false;
-      throw err;
+      throw providerError(`Gemini stopped (${candidate.finishReason})`, { retryable: false });
     }
 
-    const text = candidate.content?.parts?.[0]?.text?.trim();
+    // Join all visible text parts and skip reasoning ("thought") parts.
+    const text = (candidate.content?.parts ?? [])
+      .filter((part) => typeof part.text === "string" && !part.thought)
+      .map((part) => part.text)
+      .join("")
+      .trim();
+
     if (!text) {
-      const err = new Error("Gemini returned an empty response");
-      err.detail = rawText;
-      err.retryable = true;
-      throw err;
+      throw providerError(`Gemini returned no text (${candidate.finishReason || "no finish reason"})`, { retryable: true });
     }
-
     return text;
-  } catch (err) {
-    // 4. Any thrown exception, logged with its full detail before it
-    // propagates up, nothing gets swallowed silently here.
-    log("Exception in callGeminiOnce:", err.message, err.detail ? `| detail: ${err.detail.slice(0, 500)}` : "");
-    throw err;
   } finally {
     clearTimeout(timeout);
   }
@@ -124,32 +92,17 @@ async function callGeminiOnce(fullPrompt, maxTokens, apiKey) {
 
 export async function generateWithGemini(fullPrompt, maxTokens) {
   const apiKey = process.env.GEMINI_API_KEY;
-  if (!apiKey) {
-    const err = new Error("GEMINI_API_KEY not configured in this environment");
-    err.retryable = false;
-    err.status = 501;
-    throw err;
-  }
-
-  log("API key present, length:", apiKey.length, "| prefix:", apiKey.slice(0, 4));
+  if (!apiKey) throw providerError("Gemini is not configured", { status: 501, retryable: false });
 
   let lastError;
   for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
     try {
-      log(`generation attempt ${attempt + 1}`);
-      const start = Date.now();
-      const text = await callGeminiOnce(fullPrompt, maxTokens, apiKey);
-      log(`generation completed in ${Date.now() - start}ms`);
-      return text;
+      return await callGeminiOnce(fullPrompt, maxTokens, apiKey);
     } catch (err) {
-      lastError = err;
-      if (err.name === "AbortError") {
-        lastError = new Error("Gemini request timed out");
-        lastError.retryable = true;
-      }
-      log(`attempt ${attempt + 1} failed:`, lastError.message);
+      lastError = err.name === "AbortError" ? providerError("Gemini request timed out", { retryable: true }) : err;
+      debug("Gemini attempt failed", { attempt: attempt + 1, status: lastError.status, reason: lastError.message });
       if (!lastError.retryable || attempt === MAX_RETRIES) break;
-      await new Promise((r) => setTimeout(r, 400 * (attempt + 1)));
+      await new Promise((resolve) => setTimeout(resolve, 400 * (attempt + 1)));
     }
   }
   throw lastError;

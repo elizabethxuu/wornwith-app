@@ -41,14 +41,13 @@ export default async function handler(req, res) {
     });
 
     if (!response.ok) {
-      const detail = await response.text();
-      res.status(502).json({ error: "Transcription failed", detail });
+      res.status(502).json({ error: "Transcription failed" });
       return;
     }
 
     const data = await response.json();
     res.status(200).json({ text: data.text || "" });
-  } catch (err) {
+  } catch {
     res.status(500).json({ error: "Transcription failed" });
   }
 }

@@ -1,9 +1,9 @@
 import { useRef } from "react";
 import { QRCodeCanvas } from "qrcode.react";
-import { SITE_URL } from "../lib/config";
+import { SITE_URL, passportUrl } from "../lib/config";
 import { GARMENT } from "../lib/garment";
 
-const QR_VALUE = `${SITE_URL}/?dpp=${GARMENT.dppId}`;
+const QR_VALUE = passportUrl("en", GARMENT.dppId, SITE_URL);
 
 export default function PrintableTag() {
   const canvasWrapRef = useRef<HTMLDivElement>(null);
@@ -21,7 +21,7 @@ export default function PrintableTag() {
   return (
     <div className="min-h-screen w-full flex flex-col items-center justify-center gap-8 py-10 px-4 bg-[#F0ECE6]">
       <div className="text-center max-w-sm">
-        <p className="text-[10px] tracking-[0.2em] uppercase text-blush-deep font-sans font-semibold">
+        <p className="text-[10px] tracking-[0.2em] uppercase text-[#9E4F63] font-sans font-semibold">
           Printable Tag
         </p>
         <h1 className="font-display italic text-2xl text-ink mt-1">
@@ -46,8 +46,8 @@ export default function PrintableTag() {
             bgColor="#FFFFFF"
           />
         </div>
-        <p className="font-display italic text-sm text-blush-deep">Scan me ›</p>
-        <p className="font-sans text-[9px] text-clay/85 tracking-wide">
+        <p className="font-display italic text-sm text-[#9E4F63]">Scan me ›</p>
+        <p className="font-sans text-[9px] text-clay tracking-wide">
           DPP-ID: 4f2a
         </p>
       </div>

@@ -62,7 +62,7 @@ export default function PassportTopBar({
         >
           <MenuIcon size={22} strokeWidth={1.25} />
         </button>
-        <button onClick={() => onGoTo(1)} aria-label={t("contents_overview")} className="flex items-center">
+        <button onClick={() => onGoTo(1)} aria-label={`wornwith.care, ${t("contents_overview")}`} className="flex items-center">
           {brand}
         </button>
         <button

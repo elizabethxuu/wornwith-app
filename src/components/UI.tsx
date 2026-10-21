@@ -10,6 +10,8 @@ import { generatePassportPdf } from "../lib/pdfExport";
 import { requestVoice, transcribeVoiceNote } from "../lib/voice";
 import { duck as duckAmbient } from "../lib/ambient";
 import { useChapterColor } from "../lib/chapterColor";
+import { passportUrl } from "../lib/config";
+import { GARMENT } from "../lib/garment";
 import { getCurrentSeason } from "../lib/careRecommendation";
 import { getTimeOfDay, selectAtmosphere, spotifySearchUrl, type Atmosphere } from "../lib/interlude";
 import {
@@ -82,7 +84,7 @@ export function Donut({
         </div>
       </div>
       <p className="text-[10px] font-sans font-semibold text-clay uppercase tracking-wide">{label}</p>
-      <p className="text-[10px] font-sans text-clay/85">{sublabel}</p>
+      <p className="text-[10px] font-sans text-clay">{sublabel}</p>
     </div>
   );
 }
@@ -375,7 +377,7 @@ export function JourneyMap() {
         </div>
       </div>
 
-      <p className="font-sans text-[9px] text-clay/70 text-center mt-2">
+      <p className="font-sans text-[9px] text-clay text-center mt-2">
         {t("tap_pin_hint")}
       </p>
     </div>
@@ -415,7 +417,7 @@ export function Pill({
 export function Disclaimer() {
   const { t } = useLanguage();
   return (
-    <p className="font-sans text-[8px] text-clay/60 text-center leading-relaxed mt-4 pt-3 border-t border-line/60">
+    <p className="font-sans text-[8px] text-clay text-center leading-relaxed mt-4 pt-3 border-t border-line/60">
       {t("demo_disclaimer")}
     </p>
   );
@@ -444,7 +446,7 @@ export function EmptyState({
     <div className="h-full flex flex-col items-center justify-center text-center px-8 fade-up">
       <Eyebrow>{eyebrow}</Eyebrow>
       <div className="w-20 h-20 rounded-full bg-blush-pale flex items-center justify-center my-4">
-        <Icon size={28} className="text-blush-deep" strokeWidth={1.5} />
+        <Icon size={28} className="text-[#9E4F63]" strokeWidth={1.5} />
       </div>
       <h2 className="font-display italic text-2xl text-ink mb-2 leading-tight">{title}</h2>
       <p className="font-sans text-[12px] text-clay leading-relaxed max-w-[240px]">{subtitle}</p>
@@ -466,6 +468,21 @@ export function EmptyState({
         </button>
       )}
     </div>
+  );
+}
+
+export type ClaimStatus = "verified" | "manufacturer" | "owner" | "estimated" | "pending" | "unavailable";
+
+// Small, quiet label saying where a claim comes from. "verified" must only be
+// used when supporting documentation has actually been checked.
+export function StatusChip({ status }: { status: ClaimStatus }) {
+  const { t } = useLanguage();
+  const label = t(`status_${status}` as TranslationKey);
+  const tone = status === "verified" ? "border-[#8E3D52] text-[#8E3D52]" : "border-line text-clay";
+  return (
+    <span className={`inline-block border px-1.5 py-[1px] text-[9px] uppercase tracking-[0.14em] font-sans whitespace-nowrap ${tone}`}>
+      {label}
+    </span>
   );
 }
 
@@ -526,14 +543,14 @@ export function ExpandableCard({
             </div>
           )}
           {footerText && (
-            <p className="text-[9px] text-clay/85 font-sans mt-2 pt-2 border-t border-line leading-relaxed">
+            <p className="text-[9px] text-clay font-sans mt-2 pt-2 border-t border-line leading-relaxed">
               {footerText}
             </p>
           )}
           {onLearnMoreClick ? (
             <button
               onClick={(e) => { e.stopPropagation(); onLearnMoreClick(); }}
-              className="inline-block mt-3 font-sans text-[11px] text-blush-deep underline underline-offset-2"
+              className="inline-block mt-3 font-sans text-[11px] text-[#9E4F63] underline underline-offset-2"
             >
               {learnMoreLabel}
             </button>
@@ -543,7 +560,7 @@ export function ExpandableCard({
                 href={learnMoreHref}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-block mt-3 font-sans text-[11px] text-blush-deep underline underline-offset-2"
+                className="inline-block mt-3 font-sans text-[11px] text-[#9E4F63] underline underline-offset-2"
               >
                 {learnMoreLabel}
               </a>
@@ -645,7 +662,7 @@ export function ArchiveTimeline({
               <p className={`font-display italic text-base mt-0.5 ${isFuture ? "text-clay" : "text-ink"}`}>
                 {e.title}
               </p>
-              <p className={`font-sans text-[11px] mt-0.5 leading-relaxed ${isFuture ? "text-clay/80" : "text-clay"}`}>
+              <p className={`font-sans text-[11px] mt-0.5 leading-relaxed ${isFuture ? "text-clay" : "text-clay"}`}>
                 {e.description}
               </p>
             </div>
@@ -924,7 +941,7 @@ export function AskAnythingBar({ wardrobe }: { wardrobe: WardrobeItem[] }) {
               : t("ask_anything_placeholder")
           }
           disabled={micState === "recording" || micState === "transcribing"}
-          className="w-full bg-transparent font-sans text-[13px] text-ink placeholder:text-clay/60 focus:outline-none disabled:placeholder:text-blush-deep"
+          className="w-full bg-transparent font-sans text-[13px] text-ink placeholder:text-clay focus:outline-none disabled:placeholder:text-[#9E4F63]"
         />
         <div className="flex items-center justify-between mt-2">
           <div className="relative">
@@ -955,7 +972,7 @@ export function AskAnythingBar({ wardrobe }: { wardrobe: WardrobeItem[] }) {
             )}
             {showGarmentPicker && (
               <div className="absolute bottom-9 left-0 bg-paper border border-line rounded-xl shadow-sm py-1 w-52 max-h-40 overflow-y-auto z-10">
-                <p className="px-3 py-1.5 text-[9px] uppercase tracking-wide text-clay/70 font-semibold">
+                <p className="px-3 py-1.5 text-[9px] uppercase tracking-wide text-clay font-semibold">
                   {t("attach_choose_garment")}
                 </p>
                 {wardrobe.map((item, i) => (
@@ -997,13 +1014,13 @@ export function AskAnythingBar({ wardrobe }: { wardrobe: WardrobeItem[] }) {
       </form>
 
       {micState === "error" && micError && (
-        <p className="mt-1.5 px-1 font-sans text-[10px] text-blush-deep">{micError}</p>
+        <p className="mt-1.5 px-1 font-sans text-[10px] text-[#9E4F63]">{micError}</p>
       )}
 
       {(thinking || answer) && (
         <div className="mt-2.5 px-1 fade-up">
           {thinking ? (
-            <p className="font-sans text-[11px] text-clay/70 italic">…</p>
+            <p className="font-sans text-[11px] text-clay italic">…</p>
           ) : (
             <p className="font-display italic text-[14px] text-ink leading-relaxed">{answer}</p>
           )}
@@ -1130,9 +1147,9 @@ export function TodaysEdit({ wardrobe }: { wardrobe: WardrobeItem[] }) {
             <span>{t("evening_label")} {weather.eveningTempF}°</span>
           </div>
         ) : weatherStatus === "loading" ? (
-          <p className="font-sans text-[11px] text-clay/70 italic">…</p>
+          <p className="font-sans text-[11px] text-clay italic">…</p>
         ) : (
-          <p className="font-sans text-[10px] text-clay/70">{t("weather_unavailable")}</p>
+          <p className="font-sans text-[10px] text-clay">{t("weather_unavailable")}</p>
         )}
         {weather && (
           <p className="font-sans text-[11px] text-clay mt-1">
@@ -1143,7 +1160,7 @@ export function TodaysEdit({ wardrobe }: { wardrobe: WardrobeItem[] }) {
 
       {/* Why this piece */}
       <div className="mt-5">
-        <p className="font-sans text-[10px] uppercase tracking-[0.14em] font-semibold text-blush-deep mb-2">
+        <p className="font-sans text-[10px] uppercase tracking-[0.14em] font-semibold text-[#9E4F63] mb-2">
           {t("why_this_piece_title")}
         </p>
         <ul className="space-y-1">
@@ -1166,7 +1183,7 @@ export function TodaysEdit({ wardrobe }: { wardrobe: WardrobeItem[] }) {
 
       {/* Morning Brief, reusable voice player, premium-ready */}
       <div className="mt-5">
-        <p className="font-sans text-[10px] uppercase tracking-[0.14em] font-semibold text-blush-deep mb-2">
+        <p className="font-sans text-[10px] uppercase tracking-[0.14em] font-semibold text-[#9E4F63] mb-2">
           {t("morning_brief_title")}
         </p>
         <VoiceNoteRecorder />
@@ -1175,7 +1192,7 @@ export function TodaysEdit({ wardrobe }: { wardrobe: WardrobeItem[] }) {
       {/* Also Consider */}
       {alternatives.length > 0 && (
         <div className="mt-5">
-          <p className="font-sans text-[10px] uppercase tracking-[0.14em] font-semibold text-blush-deep mb-2">
+          <p className="font-sans text-[10px] uppercase tracking-[0.14em] font-semibold text-[#9E4F63] mb-2">
             {t("alternatives_title")}
           </p>
           <ul className="space-y-1">
@@ -1191,7 +1208,7 @@ export function TodaysEdit({ wardrobe }: { wardrobe: WardrobeItem[] }) {
 
       {/* Garment Readiness */}
       <div className="mt-5">
-        <p className="font-sans text-[10px] uppercase tracking-[0.14em] font-semibold text-blush-deep mb-2">
+        <p className="font-sans text-[10px] uppercase tracking-[0.14em] font-semibold text-[#9E4F63] mb-2">
           {t("readiness_title")}
         </p>
         <p className="font-sans text-[11px] text-sage mb-0.5">{t("reason_condition")}</p>
@@ -1259,7 +1276,7 @@ export function VoicePlayer({
   const color = useChapterColor();
 
   if (state === "unavailable") {
-    return <p className="font-sans text-[10px] text-clay/70">{unavailableLabel}</p>;
+    return <p className="font-sans text-[10px] text-clay">{unavailableLabel}</p>;
   }
 
   return (
@@ -1489,10 +1506,10 @@ export function VoiceNoteRecorder() {
   };
 
   if (state === "unavailable") {
-    return <p className="font-sans text-[10px] text-clay/70">{t("mic_unavailable")}</p>;
+    return <p className="font-sans text-[10px] text-clay">{t("mic_unavailable")}</p>;
   }
   if (state === "denied") {
-    return <p className="font-sans text-[10px] text-clay/70">{t("mic_permission_denied")}</p>;
+    return <p className="font-sans text-[10px] text-clay">{t("mic_permission_denied")}</p>;
   }
 
   // Recorded, playback + re-record/delete, plus transcript once/if it
@@ -1511,16 +1528,16 @@ export function VoiceNoteRecorder() {
           <button onClick={startRecording} className="font-sans text-[10px] text-clay underline underline-offset-2">
             {t("re_record_label")}
           </button>
-          <button onClick={handleDelete} aria-label={t("delete_note_label")} className="text-clay/60">
+          <button onClick={handleDelete} aria-label={t("delete_note_label")} className="text-clay">
             <Trash2 size={13} />
           </button>
         </div>
         {transcribing && (
-          <p className="font-sans text-[9px] text-clay/60 mt-2 italic">…</p>
+          <p className="font-sans text-[9px] text-clay mt-2 italic">…</p>
         )}
         {note.transcript && (
           <div className="mt-2">
-            <p className="font-sans text-[9px] uppercase tracking-wide text-clay/70 mb-0.5">
+            <p className="font-sans text-[9px] uppercase tracking-wide text-clay mb-0.5">
               {t("voice_note_transcript_label")}
             </p>
             <p className="font-sans text-[11px] text-ink/80 leading-relaxed italic">{note.transcript}</p>
@@ -1687,7 +1704,7 @@ export function CareRitualRow({ ritual, entranceDelayMs }: { ritual: CareRitual;
         <span className="shrink-0 w-5 flex justify-center text-[#8E3D52]">{ritual.icon}</span>
         <span className="font-sans text-[13px] text-ink flex-1">{ritual.title}</span>
         <span
-          className="text-clay/60 transition-transform inline-block shrink-0 text-sm"
+          className="text-clay transition-transform inline-block shrink-0 text-sm"
           style={{ transform: open ? "rotate(90deg)" : "rotate(0deg)" }}
         >
           ›
@@ -1848,77 +1865,84 @@ export function VerificationInfoPanel({ open, onClose }: { open: boolean; onClos
 
   if (!open) return null;
 
-  // Rendered via portal directly to document.body, not inline in the
-  // screen's own tree. Every screen's root div uses the fade-up
-  // animation class, which, via animation-fill-mode: both, leaves a
-  // permanent transform: translateY(0) on that element even after the
-  // animation finishes. Any active transform on an ancestor creates a
-  // new containing block for position: fixed descendants, so without
-  // this portal the panel was only ever "fixed" relative to that
-  // screen's div, not the true viewport, which is exactly why it could
-  // appear to cut off partway down the screen instead of covering it.
   return createPortal(
     <div className="fixed inset-0 h-[100dvh] w-full z-50" onClick={(e) => e.stopPropagation()}>
-      <div
-        className="absolute inset-0 h-[100dvh] bg-ink/40 transition-opacity duration-300"
+      <button
+        type="button"
+        aria-label={t("close_label")}
+        className="absolute inset-0 h-[100dvh] w-full bg-ink/45 transition-opacity duration-300"
         onClick={onClose}
       />
-      <div
-        className="absolute bottom-0 inset-x-0 max-h-[85dvh] overflow-y-auto bg-paper rounded-t-[28px] border-t border-line px-6 pt-5 fade-up"
-        style={{ paddingBottom: "max(env(safe-area-inset-bottom), 32px)" }}
+      <section
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="passport-verification-title"
+        className="absolute bottom-0 inset-x-0 max-h-[88dvh] overflow-y-auto bg-paper rounded-t-[28px] border-t border-line px-6 pt-5 fade-up"
+        style={{ paddingBottom: "max(env(safe-area-inset-bottom), 28px)" }}
       >
-        <div className="flex items-center justify-between mb-3">
-          <p className="font-display italic text-xl text-ink">{t("verification_panel_title")}</p>
+        <div className="w-9 h-1 rounded-full bg-line mx-auto mb-5" />
+        <div className="flex items-start justify-between gap-4">
+          <div>
+            <p className="font-sans text-[9px] uppercase tracking-[0.22em] text-clay mb-2">
+              {t("verification_eyebrow")}
+            </p>
+            <h2 id="passport-verification-title" className="font-display italic text-2xl text-ink leading-tight">
+              {t("verification_panel_title")}
+            </h2>
+          </div>
           <button
             onClick={onClose}
             aria-label={t("close_label")}
-            className="w-7 h-7 rounded-full flex items-center justify-center text-clay border border-line shrink-0"
+            className="w-8 h-8 rounded-full flex items-center justify-center text-clay border border-line shrink-0"
           >
             ×
           </button>
         </div>
-        <p className="font-sans text-[13px] text-clay leading-relaxed">
-          {t("verification_panel_body")}
-        </p>
 
-        {/* Ledger table, same verified-vs-projected visual logic as the
-            "From the Archives" timeline: accent/solid for verified rows,
-            muted/de-emphasized for the one projected row. */}
-        <div className="mt-6 pt-5 border-t border-line">
-          <div className="flex items-start justify-between gap-3 mb-3">
-            <p className="font-sans text-[10px] text-clay/80 leading-relaxed">
-              {t("ledger_caption")}
-            </p>
-            <span className="font-sans text-[9px] text-clay/60 italic shrink-0 mt-0.5">
-              {t("ledger_illustrative_label")}
-            </span>
-          </div>
-          <div className="grid grid-cols-[1.1fr_1.3fr_1fr_0.9fr] gap-x-1.5 pb-1.5 border-b border-line">
-            <span className="font-sans text-[8px] font-semibold uppercase tracking-wide text-clay">{t("ledger_col_date")}</span>
-            <span className="font-sans text-[8px] font-semibold uppercase tracking-wide text-clay">{t("ledger_col_event")}</span>
-            <span className="font-sans text-[8px] font-semibold uppercase tracking-wide text-clay">{t("ledger_col_hash")}</span>
-            <span className="font-sans text-[8px] font-semibold uppercase tracking-wide text-clay text-right">{t("ledger_col_status")}</span>
-          </div>
-          {[
-            { date: "5 April 2026", event: t("ledger_event_created"), hash: "0x4f2a\u20269c1e", projected: false },
-            { date: "12 April 2026", event: t("ledger_event_transferred"), hash: "0x7b31\u20264a02", projected: false },
-            { date: "2 June 2026", event: t("ledger_event_moment_logged"), hash: "0xe910\u20267d5f", projected: false },
-            { date: t("ledger_date_repair"), event: t("ledger_event_repair_projected"), hash: "-", projected: true },
-          ].map((row, i) => (
-            <div
-              key={i}
-              className={`grid grid-cols-[1.1fr_1.3fr_1fr_0.9fr] gap-x-1.5 py-2 border-b border-line/60 last:border-0 ${row.projected ? "opacity-55" : ""}`}
-            >
-              <span className="font-sans text-[9.5px] text-ink">{row.date}</span>
-              <span className="font-sans text-[9.5px] text-ink">{row.event}</span>
-              <span className="font-mono text-[9px] text-clay/70">{row.hash}</span>
-              <span className={`font-sans text-[9.5px] font-medium text-right ${row.projected ? "text-clay" : "text-sage"}`}>
-                {row.projected ? t("ledger_status_projected") : t("ledger_status_verified")}
-              </span>
-            </div>
-          ))}
+        <div className="mt-4 border border-[#DCC9C4] bg-[#F8F1EE] px-4 py-3.5">
+          <p className="font-sans text-[10px] uppercase tracking-[0.16em] font-semibold text-ink">
+            {t("verification_demo_label")}
+          </p>
+          <p className="font-sans text-[12px] text-ink/80 leading-relaxed mt-1.5">
+            {t("verification_panel_body")}
+          </p>
         </div>
-      </div>
+
+        <div className="mt-5">
+          <p className="font-sans text-[9px] uppercase tracking-[0.2em] text-clay mb-1">
+            {t("verification_record_title")}
+          </p>
+          <div className="divide-y divide-line border-y border-line">
+            {[
+              { label: t("verification_product_label"), value: t("verification_product_value") },
+              { label: t("verification_owner_label"), value: t("verification_owner_value") },
+              { label: t("verification_impact_label"), value: t("verification_impact_value") },
+            ].map((row) => (
+              <div key={row.label} className="py-3 flex items-start justify-between gap-4">
+                <span className="font-sans text-[11px] text-clay">{row.label}</span>
+                <span className="font-sans text-[11px] text-ink text-right max-w-[62%] leading-relaxed">{row.value}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="mt-5 flex items-start gap-3">
+          <div className="w-8 h-8 shrink-0 border border-line flex items-center justify-center font-mono text-[10px] text-clay">
+            i
+          </div>
+          <div>
+            <p className="font-sans text-[12px] text-ink font-medium">{t("verification_limit_title")}</p>
+            <p className="font-sans text-[11px] text-clay leading-relaxed mt-1">{t("verification_limit_body")}</p>
+          </div>
+        </div>
+
+        <button
+          onClick={onClose}
+          className="w-full mt-6 bg-ink text-cream font-sans text-[11px] uppercase tracking-[0.2em] py-3.5"
+        >
+          {t("verification_close_action")}
+        </button>
+      </section>
     </div>,
     document.body
   );
@@ -1932,14 +1956,14 @@ export function VerificationInfoPanel({ open, onClose }: { open: boolean; onClos
 // VerificationInfoPanel, for the same reason (escaping the fade-up
 // transform containing-block issue).
 export function ShareSheet({ open, onClose }: { open: boolean; onClose: () => void }) {
-  const { t } = useLanguage();
+  const { t, lang } = useLanguage();
   const [showQr, setShowQr] = useState(false);
   const [linkCopied, setLinkCopied] = useState(false);
   const [pdfState, setPdfState] = useState<"idle" | "preparing" | "ready" | "error">("idle");
 
   if (!open) return null;
 
-  const shareUrl = typeof window !== "undefined" ? window.location.href : "https://wornwith.care";
+  const shareUrl = passportUrl(lang, GARMENT.dppId, typeof window !== "undefined" ? window.location.origin : undefined);
 
   const handleCopyLink = async () => {
     try {
@@ -2025,7 +2049,7 @@ export function ShareSheet({ open, onClose }: { open: boolean; onClose: () => vo
                 <div className="bg-white p-3 rounded-xl border border-line">
                   <QRCodeSVG value={shareUrl} size={140} fgColor="#2B2622" />
                 </div>
-                <p className="font-sans text-[10px] text-clay/70 mt-2 text-center">{t("scan_qr_hint")}</p>
+                <p className="font-sans text-[10px] text-clay mt-2 text-center">{t("scan_qr_hint")}</p>
               </div>
             )}
           </div>
@@ -2043,7 +2067,7 @@ export function ShareSheet({ open, onClose }: { open: boolean; onClose: () => vo
           </div>
         </div>
 
-        <p className="font-sans text-[10px] text-clay/70 leading-relaxed mt-4 text-center">
+        <p className="font-sans text-[10px] text-clay leading-relaxed mt-4 text-center">
           {t("share_sheet_footer_note")}
         </p>
 
