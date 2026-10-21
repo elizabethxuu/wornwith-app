@@ -229,34 +229,34 @@ export default function LiveApp() {
         className="flex flex-wrap items-center justify-center gap-x-3.5 gap-y-1 px-4 pt-2 shrink-0 print:hidden"
         style={isFront ? { paddingBottom: "max(env(safe-area-inset-bottom), 12px)" } : undefined}
       >
-        <p className="font-sans text-[9px] text-clay/60">{t("footer_copyright")}</p>
+        <p className="font-sans text-[10px] text-clay">{t("footer_copyright")}</p>
         <button
           onClick={() => setLegalPage("privacy")}
-          className="font-sans text-[9px] text-clay/60 hover:underline underline-offset-2"
+          className="font-sans text-[10px] text-clay hover:underline underline-offset-2 min-h-[24px] px-1"
         >
           {t("footer_privacy")}
         </button>
         <button
           onClick={() => setLegalPage("terms")}
-          className="font-sans text-[9px] text-clay/60 hover:underline underline-offset-2"
+          className="font-sans text-[10px] text-clay hover:underline underline-offset-2 min-h-[24px] px-1"
         >
           {t("footer_terms")}
         </button>
         <button
           onClick={() => setLegalPage("accessibility")}
-          className="font-sans text-[9px] text-clay/60 hover:underline underline-offset-2"
+          className="font-sans text-[10px] text-clay hover:underline underline-offset-2 min-h-[24px] px-1"
         >
           {t("footer_accessibility")}
         </button>
         <button
           onClick={() => setLegalPage("release-notes")}
-          className="font-sans text-[9px] text-clay/60 hover:underline underline-offset-2"
+          className="font-sans text-[10px] text-clay hover:underline underline-offset-2 min-h-[24px] px-1"
         >
           {t("footer_release_notes")}
         </button>
         <button
           onClick={() => setLegalPage("about-passport")}
-          className="font-sans text-[9px] text-clay/60 hover:underline underline-offset-2"
+          className="font-sans text-[10px] text-clay hover:underline underline-offset-2 min-h-[24px] px-1"
         >
           {t("footer_about_passport")}
         </button>
@@ -282,7 +282,7 @@ export default function LiveApp() {
         ) : (
           <div className="w-10 h-10" />
         )}
-        <p className="font-sans text-[9px] text-clay/70">
+        <p className="font-sans text-[9px] text-clay">
           {index - FIRST_SCREEN + 1} / {liveScreens.length - FIRST_SCREEN}
         </p>
         {!isLast ? (

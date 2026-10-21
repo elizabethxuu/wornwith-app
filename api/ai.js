@@ -1,65 +1,72 @@
 import { EDITORIAL_SYSTEM_PROMPT } from "./_lib/editorialVoice.js";
 import { FEATURES } from "./_lib/prompts.js";
 import { generateWithGemini, GEMINI_MODEL } from "./_lib/geminiClient.js";
+import { generateWithAnthropic, anthropicConfigured } from "./_lib/anthropicClient.js";
 
-// Same debugging note as geminiClient.js, unconditional logging for now,
-// while tracking down the 502s. Re-gate to non-production once resolved.
-function log(...args) {
-  console.log("[ai:debug]", ...args);
-}
+const MAX_CONTEXT_CHARS = 4000;
 
-function respond(res, status, body, start) {
-  const payload = {
+// Visitors only ever see these short messages. Provider details (status codes,
+// response bodies, key information) stay out of the response and out of logs.
+const SAFE_ERRORS = {
+  unavailable: "Reflection is temporarily unavailable. Please try again.",
+  busy: "Reflection is busy right now. Please try again in a moment.",
+  badRequest: "That request could not be processed.",
+};
+
+function respond(res, status, body, start, model) {
+  res.status(status).json({
     success: body.success,
     content: body.content ?? null,
     error: body.error ?? null,
-    metadata: body.feature ? { feature: body.feature, model: GEMINI_MODEL } : null,
+    metadata: body.success && body.feature ? { feature: body.feature, model } : null,
     durationMs: Date.now() - start,
-  };
-  // 5. The exact response sent back to the frontend, logged before it goes out.
-  log("responding with status", status, "body:", JSON.stringify(payload));
-  res.status(status).json(payload);
+  });
 }
 
 export default async function handler(req, res) {
   const start = Date.now();
 
   if (req.method !== "POST") {
+    res.setHeader("Allow", "POST");
     respond(res, 405, { success: false, error: "Method not allowed" }, start);
     return;
   }
 
   const { feature, context } = req.body || {};
-  const featureConfig = FEATURES[feature];
-
+  const featureConfig = Object.prototype.hasOwnProperty.call(FEATURES, feature) ? FEATURES[feature] : null;
   if (!featureConfig) {
-    respond(res, 400, { success: false, error: `Unknown feature: ${feature}`, feature }, start);
+    respond(res, 400, { success: false, error: SAFE_ERRORS.badRequest }, start);
     return;
   }
 
-  log("request received", { feature, context });
-
-  const fullPrompt = `${EDITORIAL_SYSTEM_PROMPT}\n\n---\n\n${featureConfig.build(context || {})}`;
-
-  try {
-    const content = await generateWithGemini(fullPrompt, featureConfig.maxTokens);
-    respond(res, 200, { success: true, content, feature }, start);
-  } catch (err) {
-    // 4. Never swallowed, the real message and, where we have it, the
-    // real upstream detail both go back in the response body, not just
-    // a generic "couldn't generate" string.
-    log("generateWithGemini threw:", err.message, "| status:", err.status, "| detail:", err.detail);
-
-    // Use the real upstream status when we have one (400 = invalid
-    // request/model, 401/403 = invalid key, 404 = model not found, 429 =
-    // quota) instead of collapsing everything to 502. Only genuinely
-    // unexpected failures (network errors, timeouts, parse failures with
-    // no status attached) fall back to 502.
-    const status = err.status || 502;
-    const errorMessage = err.detail
-      ? `${err.message} | raw: ${String(err.detail).slice(0, 300)}`
-      : err.message || "Generation failed";
-
-    respond(res, status, { success: false, error: errorMessage, feature }, start);
+  // Bound the size of what is sent on to a provider.
+  const safeContext = context && typeof context === "object" ? context : {};
+  if (JSON.stringify(safeContext).length > MAX_CONTEXT_CHARS) {
+    respond(res, 413, { success: false, error: SAFE_ERRORS.badRequest, feature }, start);
+    return;
   }
+
+  const fullPrompt = `${EDITORIAL_SYSTEM_PROMPT}\n\n---\n\n${featureConfig.build(safeContext)}`;
+
+  // Gemini first. If it fails and an Anthropic key is configured, fall back to it.
+  const providers = [["gemini", GEMINI_MODEL, () => generateWithGemini(fullPrompt, featureConfig.maxTokens)]];
+  if (anthropicConfigured()) {
+    providers.push(["anthropic", process.env.ANTHROPIC_MODEL || "claude-haiku-4-5-20251001", () => generateWithAnthropic(fullPrompt, featureConfig.maxTokens)]);
+  }
+
+  let lastStatus;
+  for (const [name, model, run] of providers) {
+    try {
+      const content = await run();
+      respond(res, 200, { success: true, content, feature }, start, model);
+      return;
+    } catch (err) {
+      lastStatus = err.status;
+      // Safe diagnostic: provider name, feature and status code only.
+      console.warn(`[ai] ${name} failed for "${feature}"`, { status: err.status ?? "none" });
+    }
+  }
+
+  const busy = lastStatus === 429;
+  respond(res, busy ? 429 : 502, { success: false, error: busy ? SAFE_ERRORS.busy : SAFE_ERRORS.unavailable, feature }, start);
 }

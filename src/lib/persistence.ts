@@ -52,7 +52,9 @@ export function loadOwnershipRecord(): OwnershipRecord {
   try {
     const raw = localStorage.getItem(key("ownership-record"));
     if (!raw) return {};
-    return JSON.parse(raw);
+    const parsed = JSON.parse(raw);
+    // Stored data can be edited or corrupted: only accept a plain object.
+    return parsed && typeof parsed === "object" && !Array.isArray(parsed) ? parsed : {};
   } catch {
     return {};
   }
@@ -79,7 +81,9 @@ export type VoiceNote = {
 export function loadVoiceNote(): VoiceNote | null {
   try {
     const raw = localStorage.getItem(key("morning-brief-voice-note"));
-    return raw ? JSON.parse(raw) : null;
+    if (!raw) return null;
+    const parsed = JSON.parse(raw);
+    return parsed && typeof parsed === "object" && typeof parsed.audioDataUrl === "string" ? parsed : null;
   } catch {
     return null;
   }
@@ -145,7 +149,9 @@ export function loadWardrobe(): WardrobeItem[] {
     const raw = localStorage.getItem(key("wardrobe"));
     if (!raw) return defaultWardrobe;
     const parsed = JSON.parse(raw);
-    if (Array.isArray(parsed)) return parsed;
+    if (Array.isArray(parsed)) {
+      return parsed.filter((i) => i && typeof i === "object" && typeof i.name === "string");
+    }
     return defaultWardrobe;
   } catch {
     return defaultWardrobe;
@@ -168,7 +174,9 @@ export function loadMoments(): SavedMoment[] {
     const raw = localStorage.getItem(key("moments"));
     if (!raw) return [];
     const parsed = JSON.parse(raw);
-    return Array.isArray(parsed) ? parsed : [];
+    return Array.isArray(parsed)
+      ? parsed.filter((m) => m && typeof m === "object" && typeof m.text === "string" && typeof m.savedAt === "string")
+      : [];
   } catch {
     return [];
   }

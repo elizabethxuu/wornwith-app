@@ -45,15 +45,14 @@ export default async function handler(req, res) {
     });
 
     if (!response.ok) {
-      const detail = await response.text();
-      res.status(502).json({ error: "Voice synthesis failed", detail });
+      res.status(502).json({ error: "Voice synthesis failed" });
       return;
     }
 
     const audioBuffer = await response.arrayBuffer();
     res.setHeader("Content-Type", "audio/mpeg");
     res.status(200).send(Buffer.from(audioBuffer));
-  } catch (err) {
+  } catch {
     res.status(500).json({ error: "Voice synthesis failed" });
   }
 }

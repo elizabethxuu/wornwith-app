@@ -48,7 +48,7 @@ export default function DeckPreview() {
   return (
     <div className="min-h-screen w-full flex flex-col items-center justify-center gap-6 py-10 px-4 bg-[#F0ECE6]">
       <div className="text-center">
-        <p className="text-[10px] tracking-[0.2em] uppercase text-blush-deep font-sans font-semibold">
+        <p className="text-[10px] tracking-[0.2em] uppercase text-[#9E4F63] font-sans font-semibold">
           wornwith.care
         </p>
         <h1 className="font-display italic text-2xl text-ink mt-1 transition-colors duration-500" style={{ color }}>

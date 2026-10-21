@@ -6,7 +6,7 @@
 | --- | --- |
 | **Author** | Elizabeth Xu |
 | **Status** | Web App / Portfolio Project |
-| **Last Updated** | July 2026 |
+| **Last Updated** | October 2026 |
 | **Stakeholders** | N/A (independent project) |
 
 ---
@@ -19,15 +19,15 @@ Design a mobile-first DPP prototype that makes fashion product transparency acce
 
 ## 1. Executive Summary
 
-The EU's Ecodesign for Sustainable Products Regulation (ESPR) will require Digital Product Passports (DPPs) for fashion products by 2028–2029, with full rollout continuing through 2030. Brands will have to disclose material origin, supply chain data, care guidance, and end-of-life pathways, not just at checkout, but for the life of the product.
+The EU's Ecodesign for Sustainable Products Regulation (ESPR) entered into force in July 2024 and sets up Digital Product Passports (DPPs) across many product groups. The detailed requirements for each group, including textiles, come later through delegated acts that are not final, so timelines for fashion should be checked against the European Commission's ESPR working plan. Brands are expected to have to disclose material origin, supply chain data, care guidance, and end-of-life pathways, not just at checkout, but for the life of the product.
 
-The regulation defines *what* to disclose. It says nothing about how it should *feel*. Left unaddressed, the default outcome is predictable: a static PDF, a buried compliance page, a mandatory customer touchpoint treated as a cost center instead of a lever. As of this writing, no brand or platform has shipped a reference implementation that treats the DPP as a product surface; the entire category is still waiting for someone to define the standard.
+The regulation defines *what* to disclose. It says nothing about how it should *feel*. Left unaddressed, the default outcome is predictable: a static PDF, a buried compliance page, a mandatory customer touchpoint treated as a cost center instead of a lever. In my research I did not find a brand or platform that treats the DPP as a product surface; the category still looks open for someone to define the standard.
 
 **wornwith.care is that definition. A DPP built end-to-end as an actual product experience, not a compliance artifact but one that satisfies the regulation while giving brands a real, durable channel to the customer for the life of the garment.**
 
 ### 1.1 Background: What Is a Digital Product Passport?
 
-A DPP is a mandatory electronic record built to drive the circular economy forward. It ensures products meet sustainability and transparency requirements and gives consumers real visibility into where their clothes came from and the history behind them. Done right, it cuts down on greenwashing by making the data verifiable and traceable, often backed by blockchain or similarly immutable record-keeping.
+A DPP is a mandatory electronic record built to drive the circular economy forward. It ensures products meet sustainability and transparency requirements and gives consumers real visibility into where their clothes came from and the history behind them. Done right, it can cut down on greenwashing by making it clear where each piece of data comes from and whether anyone has checked it. Some implementations may add tamper-evident record-keeping, but this prototype does not.
 
 A DPP isn't a marketing surface. It's a trust mechanism first. Everything in this document is built to earn that standard, not just satisfy the letter of the regulation.
 
@@ -35,9 +35,9 @@ A DPP isn't a marketing surface. It's a trust mechanism first. Everything in thi
 
 ## 2. Problem Statement
 
-- Brands face a hard 2028–2029 compliance deadline, with full rollout continuing through 2030, and zero established UX pattern to work from. This is greenfield.
+- Brands will face passport requirements for textiles once the delegated act is final, and there is no established UX pattern to work from. This looks like greenfield.
 - The default path (PDFs, static disclosure pages) creates friction without upside and leaves real engagement and first-party data on the table.
-- No reference implementation exists that treats the DPP as a product, not a legal checkbox. The company that defines this pattern first sets the standard everyone else gets measured against.
+- I did not find a reference implementation that treats the DPP as a product, not a legal checkbox. The company that defines this pattern first could set the standard everyone else gets measured against.
 
 ---
 
@@ -48,7 +48,7 @@ A DPP isn't a marketing surface. It's a trust mechanism first. Everything in thi
 | O1 | Design a complete DPP experience covering the full regulatory disclosure scope: origin, supply chain, care, impact, end-of-life |
 | O2 | Prove that compliance-driven UX can also drive real engagement: read-through, return visits, first-party data capture |
 | O3 | Establish a mechanism for post-purchase, first-party data capture (ownership logging) that gives brands ongoing value past the transaction |
-| O4 | Ship a credible reference implementation ahead of market and regulatory demand: be the thing people point to when this becomes a category |
+| O4 | Ship a credible reference implementation ahead of market and regulatory demand, as a candidate for what people point to when this becomes a category |
 
 ### Out of Scope
 
@@ -131,6 +131,40 @@ No production deployment yet: here's what I'd track from day one of a live pilot
 
 ## 9. Release History
 
+### Edition 1.2
+
+October 2026
+
+*A steadier passport: every claim shows where it comes from, reflections fail gracefully, and small text is easier to read.*
+
+**Claims**
+
+- Audit and chemical claims show a status such as Pending verification, with the evidence needed
+- A cited reference is shown as cited, not as verified
+
+**Reliability**
+
+- AI reflections retry safely and show a clear message if they fail
+- Reflections are labelled as an interpretation, not a verified fact
+- Damaged or edited saved data is ignored instead of breaking the app
+
+**Sharing and accessibility**
+
+- Share links and the printed tag QR use one clean address in the reader's language
+- Higher contrast for small text, larger tap targets, clearer names for screen readers
+
+### Edition 1.1
+
+October 2026
+
+*Sharper sharing, a passport that opens in your language, and clearer labels on what is illustrative.*
+
+- Language in the web address: wornwith.care/en, /fr and /pt
+- New icon set and share image
+- Multi-page PDF generated from the live passport
+- "Ask anything" on the Wardrobe page
+- Restored Journey audit labels with a note that values are illustrative
+
 ### Edition 1.0
 
 July 2026
@@ -186,7 +220,7 @@ Designed in Figma, with Claude used for UX planning and design iteration. Implem
 
 This is how I approach problems with no playbook.
 
-There was no established pattern for what a Digital Product Passport should feel like. There was no precedent to copy, no company that had already solved it. So I built the reference implementation myself: strategy, UX, content, and a working deployed product, solo, start to finish, in weeks.
+I could not find an established pattern for what a Digital Product Passport should feel like, and no precedent I could copy. So I built the reference implementation myself: strategy, UX, content, and a working deployed product, solo, start to finish, in weeks.
 
 That's the actual capability on display here, and it's transferable well beyond fashion-tech:
 
