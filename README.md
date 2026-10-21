@@ -1,39 +1,89 @@
 # Worn With Care
 
-Worn With Care is a fashion-tech prototype exploring digital product passports for garments. It brings product information, care guidance, lifecycle storytelling, and sharing into one considered digital experience.
+**A digital product passport for fashion, designed as a product people want to open, not a compliance page they have to.**
 
-**Live experience:** https://wornwith.care  
-**Repository:** https://github.com/elizabethxuu/wornwith-app
+Scan a garment's tag and you get its story: where it was made, how to care for it, what it costs the planet, and what to do when you are finished with it. Every claim is meant to show where it comes from, so the passport never promises more than it can prove.
 
-> **Prototype notice:** The app may contain illustrative garment details and sustainability metrics for demonstration purposes. Do not treat illustrative data as independently verified product claims.
+**Live:** https://wornwith.care &nbsp;|&nbsp; **Languages:** [English](https://wornwith.care/en) · [Français](https://wornwith.care/fr) · [Português](https://wornwith.care/pt) &nbsp;|&nbsp; **Case study:** [docs/product-case-study.md](docs/product-case-study.md)
 
-## What it explores
+<p>
+  <img src="docs/screenshots/01-overview.png" width="23%" alt="Passport overview for a wool coat">
+  <img src="docs/screenshots/02-journey.png" width="23%" alt="Garment journey from farm to retail">
+  <img src="docs/screenshots/03-materials.png" width="23%" alt="Supply chain and audit details">
+  <img src="docs/screenshots/04-environment.png" width="23%" alt="Environmental impact metrics">
+</p>
 
-The application is built around a garment passport and includes interfaces for product information, garment journey and lifecycle, care, environmental information, ownership, storytelling, and passport sharing. The repository also contains server-side API handlers for supported AI features.
+> **Prototype notice.** This is an independent portfolio project built around one demonstration garment. The garment details and sustainability figures are illustrative and have not been independently verified. Worn With Care is not an audit or certification body, is not an official EU verification system, and is not affiliated with any brand shown. It does not claim ESPR compliance.
 
-Feature availability depends on configuration and deployed environment variables. See the code and deployment settings before assuming an API-backed feature is active in every environment.
+## The problem
 
-## Technology
+The EU's Ecodesign for Sustainable Products Regulation (ESPR) introduces digital product passports across many product groups, and the rules for textiles are still being defined. The regulation sets out what information must exist. It does not say what the experience should feel like, and the easy default is a PDF behind a link in the footer.
 
-- React and React DOM
-- TypeScript
-- Vite
-- Tailwind CSS
-- Vercel serverless API handlers
-- jsPDF for PDF generation
-- QR code libraries for passport sharing
-- Lucide icons
-- Vercel Analytics
+I wanted to find out whether a passport can be both honest and genuinely good to use, and whether it can give a brand a lasting relationship with the person who owns the garment.
 
-The exact dependency versions are maintained in `package.json` and `package-lock.json`.
+## Who it is for
 
-## Run locally
+- **The considered shopper.** Buys fewer, better things. Wants to know where a garment came from and how to make it last. Today gets either nothing or a disclosure page that reads like a warranty card.
+- **The brand.** Needs to publish product information anyway, and could turn that obligation into an ongoing channel after the sale.
 
-### Requirements
+It is deliberately not for the price-driven, low-consideration shopper.
 
-Install a current Node.js LTS release and npm.
+## What it does
 
-### Setup
+| Area | What you can do |
+| --- | --- |
+| **Overview** | See the garment, its identity and composition |
+| **Journey** | Follow the garment from wool farm to mill, ship and retail, with locations and audit information |
+| **Care** | Get care guidance that responds to how often the garment is worn |
+| **Environment** | See impact estimates compared with a category average |
+| **Ownership** | Log purchase details, condition and personal "moments" with the garment |
+| **Next chapter** | Route the garment to resale, donation, repair or recycling |
+| **Wardrobe** | Keep several pieces together with contextual suggestions |
+| **Sharing** | Share by link, QR code or a PDF export, and print a physical tag |
+| **Languages** | English, French and Portuguese, with the language in the URL (`/en`, `/fr`, `/pt`) |
+
+## Product decisions
+
+- **Distinguish where information comes from.** Brand or manufacturer information, owner records, estimates and demonstration data are different things and should look different. The prototype labels demonstration values as illustrative rather than dressing them up as verified.
+- **Do not overclaim.** No claims of independent verification, regulatory compliance, blockchain anchoring or brand endorsement without evidence. A QR code opens a page; by itself it does not prove a garment is authentic.
+- **Make the garment the focal point.** Quiet editorial design (ivory, near-black, muted rose, serif headings) so the information feels considered, not like a dashboard.
+- **Make links dependable.** Language lives in the URL, so a shared link opens in the right language and survives a refresh. The live passport is the default on both phone and desktop, and the presentation deck is an explicit option (`?mode=deck`).
+- **Scope on purpose.** One garment, one journey. Authoring tools, multi-brand data and commerce are out of scope for this build.
+
+## What is real and what is not
+
+| Built and working | Illustrative or not yet built |
+| --- | --- |
+| Full passport experience across ten screens | All garment data and impact figures are sample data |
+| EN / FR / PT with language URLs | No independent audit, lab testing or verification has taken place |
+| QR, link sharing, PDF export, printable tag | Data is stored in the visitor's browser only, with no accounts and no cloud sync |
+| Ownership logging saved in the browser | The brand-side incentive model is a hypothesis, not yet tested with a real brand |
+| AI-assisted reflections on saved moments (when the API keys are configured) | Textile passport requirements under ESPR are not final |
+
+## What I would measure in a pilot
+
+There is no live pilot yet. These are the metrics I would track from day one:
+
+- **Scan-to-read-through:** share of sessions that get past the overview.
+- **Moment-logging rate:** share of owners who complete the ownership prompt, as a signal of real buy-in.
+- **Return visits:** owners reopening the passport after purchase.
+- **First-party data yield:** structured data per garment (moments, repairs, resale intent).
+
+## Risks and next steps
+
+1. **Data provenance.** Environmental figures need a defensible sourcing method and a clear liability model before real use.
+2. **Scalable data model.** The prototype assumes one SKU. A real catalogue needs many mills, certificates and versioned supply chains.
+3. **Claim status labels.** Show Verified, Manufacturer-declared, Owner-provided, Estimated and Pending verification on each claim, with the evidence needed to verify it.
+4. **Brand validation.** Test the resale and repair routing idea against a real brand's numbers.
+5. **Regulation.** Track the textile requirements as they are finalised.
+
+## How it was built
+
+Designed and built solo, end to end: product definition, UX, content, translation, front end and deployment. Planned in Figma, built with AI-assisted tools (Claude and Cursor), and deployed on Vercel.
+
+**Stack:** React, TypeScript, Vite, Tailwind CSS, Vercel serverless functions, jsPDF, QR code generation, Lucide icons.
+
+## Run it locally
 
 ```bash
 git clone https://github.com/elizabethxuu/wornwith-app.git
@@ -42,47 +92,19 @@ npm install
 npm run dev
 ```
 
-Vite prints the local development URL in your terminal.
-
-### Available commands
-
 ```bash
-npm run dev      # Start the Vite development server
-npm run build    # Run TypeScript project checks and create a production build
-npm run lint     # Run Oxlint
-npm run preview  # Preview the built frontend locally
+npm run dev      # development server
+npm run build    # type checks and production build
+npm run lint     # Oxlint
+npm run preview  # preview the built frontend
 ```
 
-The preview command expects a production build to exist first. Vite's frontend preview does not by itself reproduce the Vercel serverless API runtime.
-
-## Environment variables
-
-Some server-side features require provider credentials configured in the deployment environment. Never commit real credentials or put server-only secrets in client-exposed variables such as `VITE_*`.
-
-For local work, create a private `.env.local` file only when needed. Keep it out of version control. The frontend development server alone does not automatically run the functions in `api/`; use the project's Vercel-compatible local development workflow when testing serverless endpoints.
-
-Check the implementation of each API handler to confirm its current environment variable names and behavior. Configure production variables in Vercel's project settings, not in committed source files.
+The AI features run as Vercel serverless functions in `api/` and need provider keys set in the deployment environment (see `.env.example`). Never commit real keys. The plain Vite dev server does not run those functions.
 
 ## Deployment
 
-The project is structured as a Vite frontend with an `api/` directory for Vercel serverless functions. The production domain is https://wornwith.care.
+Vite front end with an `api/` folder for Vercel functions, served at https://wornwith.care. Review changes on a branch, run `npm run lint` and `npm run build`, check a Vercel preview, then promote.
 
-For a deployment:
-1. Review the changes on a separate branch.
-2. Run `npm run lint` and `npm run build`.
-3. Test relevant application flows and API endpoints in a local or preview environment.
-4. Review the Vercel preview deployment before promoting changes to production.
+## About
 
-A successful frontend build does not prove that external AI services, serverless endpoints, or all interactive flows work in production.
-
-## Data integrity and trust
-
-The prototype should clearly distinguish brand or manufacturer information, owner-contributed records, estimates, and illustrative demo data. Avoid claims of independent verification, regulatory compliance, blockchain anchoring, or brand endorsement unless supported by evidence.
-
-## Contributing and maintenance
-
-Make small, reviewable changes and preserve existing functionality. Do not commit API keys, access tokens, personal data, or generated build output. Use pull requests or a separate branch when testing changes that could affect the live application.
-
-## Brand
-
-Worn With Care by Elizabeth Xu.
+Worn With Care is by [Elizabeth Xu](https://github.com/elizabethxuu).
