@@ -83,6 +83,15 @@ Designed and built solo, end to end: product definition, UX, content, translatio
 
 **Stack:** React, TypeScript, Vite, Tailwind CSS, Vercel serverless functions, jsPDF, QR code generation, Lucide icons.
 
+## Project structure
+
+- `src/`: the React app (screens, components, translations and helpers)
+- `api/`: Vercel serverless functions for AI reflections, voice narration and transcription
+- `public/`: images, video and icons
+- `docs/`: the product case study and screenshots
+- `vercel.json`: routing for the /en, /fr and /pt language paths
+- `.env.example`: template for environment variables (no real keys)
+  
 ## Run it locally
 
 ```bash
