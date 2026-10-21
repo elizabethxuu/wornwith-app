@@ -126,3 +126,7 @@ Vite front end with an `api/` folder for Vercel functions, served at https://wor
 ## About
 
 Worn With Care is by [Elizabeth Xu](https://github.com/elizabethxuu).
+
+## License
+
+Code is released under the [MIT License](LICENSE). The Worn With Care name, logo and garment imagery are © 2026 Elizabeth Xu, all rights reserved.
