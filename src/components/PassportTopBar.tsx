@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Menu as MenuIcon, X as CloseIcon, Share } from "lucide-react";
 import { useLanguage, type TranslationKey } from "../lib/i18n";
 import { ShareSheet } from "./UI";
+import HeaderTools from "./HeaderTools";
 
 // Screen numbers match the live app: 1 overview, 2 journey, 3 materials,
 // 4 care, 5 environment, 7 story, 8 ownership.
@@ -25,10 +26,12 @@ export default function PassportTopBar({
   onGoTo,
   safeArea = true,
   overlayClassName = "top-0",
+  showTools = false,
 }: {
   onGoTo: (screen: number) => void;
   safeArea?: boolean;
   overlayClassName?: string;
+  showTools?: boolean;
 }) {
   const { t, lang, setLang } = useLanguage();
   const [menuOpen, setMenuOpen] = useState(false);
@@ -52,7 +55,7 @@ export default function PassportTopBar({
   return (
     <>
       <div
-        className="shrink-0 flex items-center justify-between px-3 pb-2 bg-paper border-b border-line print:hidden"
+        className={`shrink-0 flex items-center justify-between px-3 pb-2 bg-paper print:hidden ${showTools ? "" : "border-b border-line"}`}
         style={barStyle}
       >
         <button
@@ -73,6 +76,7 @@ export default function PassportTopBar({
           <Share size={20} strokeWidth={1.25} />
         </button>
       </div>
+      {showTools && <HeaderTools onGoTo={onGoTo} />}
 
       {menuOpen && (
         <div className={`absolute inset-x-0 bottom-0 ${overlayClassName} z-30 bg-paper flex flex-col fade-up`}>
