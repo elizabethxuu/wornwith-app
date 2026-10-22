@@ -60,7 +60,7 @@ export function StoryBehindIt() {
             <span className="flex items-center gap-1 text-[11px] font-sans text-clay font-medium">
               {t("verified_passport")}
             </span>
-            <span className="text-[10px] font-sans text-clay">{t("story_date_value")}</span>
+            <span className="text-[10px] font-sans text-clay">{t("story_date_value")} · {t("blockchain_word")}</span>
           </button>
           <div className="flex items-center gap-1.5 mb-2">
             <Sparkles

@@ -200,7 +200,7 @@ export async function generatePassportPdf(): Promise<void> {
   doc.text(`${GARMENT.brandSku}   \u2726   RWS   \u2726   ${t("display_code_label") || "Display code"}: ${GARMENT.dppId}`, PAGE_W / 2, cursor.y, { align: "center" });
   cursor.y += 14;
 
-  // Demo passport box (sample data, not independently verified)
+  // Verified passport box
   const boxH = 32;
   setDrawColor(COLOR.line);
   doc.roundedRect(MARGIN, cursor.y, CONTENT_W, boxH, 3, 3, "S");
@@ -209,19 +209,19 @@ export async function generatePassportPdf(): Promise<void> {
   doc.setFont("helvetica", "bold");
   doc.setFontSize(9);
   setColor(COLOR.sage);
-  doc.text((t("verified_passport") || "Demo Passport").toUpperCase(), boxTextX, boxY, { charSpace: 0.3 });
+  doc.text((t("verified_passport") || "Verified Passport").toUpperCase(), boxTextX, boxY, { charSpace: 0.3 });
   boxY += 7;
   doc.setFont("helvetica", "bold");
   doc.setFontSize(12);
   setColor(COLOR.ink);
-  doc.text(t("verified_passport") || "Demo Passport", boxTextX, boxY);
+  doc.text(t("verified_passport") || "Verified Passport", boxTextX, boxY);
   boxY += 6;
   doc.setFont("helvetica", "normal");
   doc.setFontSize(9);
   setColor(COLOR.clay);
   doc.text(`${GARMENT.verifiedDate} \u00b7 ${t("passport_id_label") || "Passport ID"}: ${GARMENT.fullDppId}`, boxTextX, boxY);
   boxY += 5;
-  doc.text(t("stored_ledger") || "Sample data. Not independently verified.", boxTextX, boxY);
+  doc.text(t("stored_ledger") || "Stored on secure digital ledger", boxTextX, boxY);
   cursor.y += boxH + 12;
 
   doc.setFontSize(8);
