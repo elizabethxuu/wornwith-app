@@ -36,37 +36,16 @@ export function PrivacyPolicyScreen({ onBack }: { onBack: () => void }) {
       </p>
 
       <div className="border-t border-line mt-6" />
-      {section("privacy_section1_title", [
-        "privacy_item_garment_details",
-        "privacy_item_photos",
-        "privacy_item_care_notes",
-        "privacy_item_ownership_history",
-        "privacy_item_wear_history",
-        "privacy_item_personal_notes",
-      ])}
+      {section("privacy_s1_title", ["privacy_s1_a", "privacy_s1_b", "privacy_s1_c"])}
 
       <div className="border-t border-line mt-6" />
-      {section("privacy_section2_title", [
-        "privacy_use_personalize",
-        "privacy_use_ownership",
-        "privacy_use_longevity",
-        "privacy_use_standards",
-      ])}
+      {section("privacy_s2_title", ["privacy_s2_a", "privacy_s2_b", "privacy_s2_c", "privacy_s2_d"])}
 
       <div className="border-t border-line mt-6" />
-      {section("privacy_section3_title", [
-        "privacy_never_sold",
-        "privacy_ownership_remains",
-        "privacy_photos_private",
-        "privacy_export_delete",
-      ])}
+      {section("privacy_s3_title", ["privacy_s3_a", "privacy_s3_b", "privacy_s3_c"])}
 
       <div className="border-t border-line mt-6" />
-      {section("privacy_section4_title", [
-        "privacy_encrypted_storage",
-        "privacy_secure_auth",
-        "privacy_protected_backups",
-      ])}
+      {section("privacy_s4_title", ["privacy_s4_a", "privacy_s4_b"])}
 
       <div className="border-t border-line mt-8 pt-6 pb-2">
         <p className="font-display italic text-[14px] text-clay text-center">
