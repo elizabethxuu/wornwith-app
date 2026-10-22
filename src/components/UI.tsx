@@ -7,7 +7,7 @@ import type { WardrobeItem } from "../lib/persistence";
 import { loadVoiceNote, saveVoiceNote, deleteVoiceNote, compressImage, type VoiceNote } from "../lib/persistence";
 import { requestVoice, transcribeVoiceNote } from "../lib/voice";
 import { duck as duckAmbient } from "../lib/ambient";
-import { useChapterColor } from "../lib/chapterColor";
+import { useChapterColor, readableOn } from "../lib/chapterColor";
 import { passportUrl } from "../lib/config";
 import { GARMENT } from "../lib/garment";
 import { getCurrentSeason } from "../lib/careRecommendation";
@@ -27,8 +27,9 @@ import {
 } from "../lib/todaysEdit";
 
 export function Eyebrow({ children }: { children: React.ReactNode }) {
+  const color = readableOn(useChapterColor());
   return (
-    <p className="text-[10px] tracking-[0.26em] uppercase font-sans font-medium text-[#8E3D52]">
+    <p className="text-[10px] tracking-[0.26em] uppercase font-sans font-medium transition-colors duration-500" style={{ color }}>
       {children}
     </p>
   );

@@ -29,6 +29,8 @@ export const ARCHIVE_ACCENT_COLOR = "#6D556A"; // Deep Plum
 
 const DEFAULT_ACCENT = "#C97A8C";
 
+export { readableOn, contrastRatio } from "./contrast";
+
 const ChapterColorContext = createContext<string>(DEFAULT_ACCENT);
 
 export function ChapterColorProvider({
