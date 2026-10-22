@@ -1,5 +1,6 @@
 import type { ReactNode, CSSProperties } from "react";
 import { useLanguage, type TranslationKey } from "../lib/i18n";
+import { useChapterColor } from "../lib/chapterColor";
 
 // Editorial header for each inner chapter: a full-width crop of the campaign
 // photograph (a different detail per chapter), the chapter number and name,
@@ -22,6 +23,7 @@ export const hasChapterHero = (index: number) => index in CHAPTERS;
 
 export default function ChapterShell({ index, total = 10, children }: { index: number; total?: number; children: ReactNode }) {
   const { t } = useLanguage();
+  const accent = useChapterColor();
   const c = CHAPTERS[index];
   if (!c) return <>{children}</>;
   const n = String(index).padStart(2, "0");
@@ -41,7 +43,15 @@ export default function ChapterShell({ index, total = 10, children }: { index: n
         <div className="absolute inset-x-0 top-[max(env(safe-area-inset-top),0.75rem)] flex justify-center pt-[1.35rem] px-16" aria-hidden="true">
           <div className="flex gap-1 w-full max-w-[220px]">
             {Array.from({ length: total - 1 }).map((_, i) => (
-              <div key={i} className="flex-1 h-px" style={{ backgroundColor: i + 1 <= index ? "rgba(255,255,255,0.95)" : "rgba(255,255,255,0.35)" }} />
+              <div
+                key={i}
+                className={`flex-1 transition-colors duration-500 ${i + 1 === index ? "h-[3px] -my-px rounded-full" : "h-px"}`}
+                style={
+                  i + 1 === index
+                    ? { backgroundColor: accent, boxShadow: "0 0 0 1px rgba(255,255,255,0.95)" }
+                    : { backgroundColor: i + 1 < index ? "rgba(255,255,255,0.95)" : "rgba(255,255,255,0.35)" }
+                }
+              />
             ))}
           </div>
         </div>
