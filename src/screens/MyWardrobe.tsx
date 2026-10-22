@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Eyebrow, Disclaimer, EmptyState, TodaysEdit, AskAnythingBar } from "../components/UI";
+import { Eyebrow, EmptyState, TodaysEdit, AskAnythingBar } from "../components/UI";
 import { loadWardrobe, saveWardrobe, type WardrobeItem, logWardrobeEvent, compressImage } from "../lib/persistence";
 import { useLanguage } from "../lib/i18n";
 import { ChevronLeft, Shirt, Search, CalendarDays, Camera } from "lucide-react";
@@ -312,7 +312,6 @@ export function MyWardrobe() {
         >
           {t("remove_from_wardrobe")}
         </button>
-        <Disclaimer />
       </div>
     );
   }
@@ -491,7 +490,6 @@ export function MyWardrobe() {
         With care,
         <br />Elizabeth Xu
       </p>
-      <Disclaimer />
     </div>
   );
 }

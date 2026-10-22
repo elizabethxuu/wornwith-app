@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Disclaimer, VerificationInfoPanel } from "../components/UI";
+import { VerificationInfoPanel } from "../components/UI";
 import { GARMENT } from "../lib/garment";
 import { useLanguage } from "../lib/i18n";
 
@@ -143,7 +143,6 @@ export function Welcome({ onEnter }: { onEnter?: () => void } = {}) {
             {t("viewed_times")} <span className="text-ink font-medium">{viewCount.toLocaleString()}</span> {t("times_suffix")}
           </p>
         )}
-        <Disclaimer />
       </div>
       <VerificationInfoPanel open={showVerificationInfo} onClose={() => setShowVerificationInfo(false)} />
     </div>

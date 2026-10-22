@@ -134,15 +134,6 @@ export function Pill({
   );
 }
 
-export function Disclaimer() {
-  const { t } = useLanguage();
-  return (
-    <p className="font-sans text-[8px] text-clay text-center leading-relaxed mt-4 pt-3 border-t border-line/60">
-      {t("demo_disclaimer")}
-    </p>
-  );
-}
-
 export function EmptyState({
   icon: Icon,
   eyebrow,
@@ -1601,67 +1592,57 @@ export function VerificationInfoPanel({ open, onClose }: { open: boolean; onClos
         style={{ paddingBottom: "max(env(safe-area-inset-bottom), 28px)" }}
       >
         <div className="w-9 h-1 rounded-full bg-line mx-auto mb-5" />
-        <div className="flex items-start justify-between gap-4">
-          <div>
-            <p className="font-sans text-[9px] uppercase tracking-[0.22em] text-clay mb-2">
-              {t("verification_eyebrow")}
-            </p>
-            <h2 id="passport-verification-title" className="font-display italic text-2xl text-ink leading-tight">
-              {t("verification_panel_title")}
-            </h2>
-          </div>
+        <div className="flex items-center justify-between mb-3">
+          <h2 id="passport-verification-title" className="font-display italic text-xl text-ink">{t("verification_panel_title")}</h2>
           <button
             onClick={onClose}
             aria-label={t("close_label")}
-            className="w-8 h-8 rounded-full flex items-center justify-center text-clay border border-line shrink-0"
+            className="w-7 h-7 rounded-full flex items-center justify-center text-clay border border-line shrink-0"
           >
             ×
           </button>
         </div>
+        <p className="font-sans text-[13px] text-clay leading-relaxed">
+          {t("verification_panel_body")}
+        </p>
 
-        <div className="mt-4 border border-[#DCC9C4] bg-[#F8F1EE] px-4 py-3.5">
-          <p className="font-sans text-[10px] uppercase tracking-[0.16em] font-semibold text-ink">
-            {t("verification_demo_label")}
-          </p>
-          <p className="font-sans text-[12px] text-ink/80 leading-relaxed mt-1.5">
-            {t("verification_panel_body")}
-          </p>
-        </div>
-
-        <div className="mt-5">
-          <p className="font-sans text-[9px] uppercase tracking-[0.2em] text-clay mb-1">
-            {t("verification_record_title")}
-          </p>
-          <div className="divide-y divide-line border-y border-line">
-            {[
-              { label: t("verification_product_label"), value: t("verification_product_value") },
-              { label: t("verification_owner_label"), value: t("verification_owner_value") },
-              { label: t("verification_impact_label"), value: t("verification_impact_value") },
-            ].map((row) => (
-              <div key={row.label} className="py-3 flex items-start justify-between gap-4">
-                <span className="font-sans text-[11px] text-clay">{row.label}</span>
-                <span className="font-sans text-[11px] text-ink text-right max-w-[62%] leading-relaxed">{row.value}</span>
-              </div>
-            ))}
+        {/* Ledger table, same verified-vs-projected visual logic as the
+            "From the Archives" timeline: accent/solid for verified rows,
+            muted/de-emphasized for the one projected row. */}
+        <div className="mt-6 pt-5 border-t border-line">
+          <div className="flex items-start justify-between gap-3 mb-3">
+            <p className="font-sans text-[10px] text-clay/80 leading-relaxed">
+              {t("ledger_caption")}
+            </p>
+            <span className="font-sans text-[9px] text-clay/60 italic shrink-0 mt-0.5">
+              {t("ledger_illustrative_label")}
+            </span>
           </div>
-        </div>
-
-        <div className="mt-5 flex items-start gap-3">
-          <div className="w-8 h-8 shrink-0 border border-line flex items-center justify-center font-mono text-[10px] text-clay">
-            i
+          <div className="grid grid-cols-[1.1fr_1.3fr_1fr_0.9fr] gap-x-1.5 pb-1.5 border-b border-line">
+            <span className="font-sans text-[8px] font-semibold uppercase tracking-wide text-clay">{t("ledger_col_date")}</span>
+            <span className="font-sans text-[8px] font-semibold uppercase tracking-wide text-clay">{t("ledger_col_event")}</span>
+            <span className="font-sans text-[8px] font-semibold uppercase tracking-wide text-clay">{t("ledger_col_hash")}</span>
+            <span className="font-sans text-[8px] font-semibold uppercase tracking-wide text-clay text-right">{t("ledger_col_status")}</span>
           </div>
-          <div>
-            <p className="font-sans text-[12px] text-ink font-medium">{t("verification_limit_title")}</p>
-            <p className="font-sans text-[11px] text-clay leading-relaxed mt-1">{t("verification_limit_body")}</p>
-          </div>
+          {[
+            { date: "5 Apr 2026", event: t("ledger_event_created"), hash: "0x4f2a\u20269c1e", projected: false },
+            { date: "12 Apr 2026", event: t("ledger_event_transferred"), hash: "0x7b31\u20264a02", projected: false },
+            { date: "2 Jun 2026", event: t("ledger_event_moment_logged"), hash: "0xe910\u20267d5f", projected: false },
+            { date: t("ledger_date_repair"), event: t("ledger_event_repair_projected"), hash: "-", projected: true },
+          ].map((row, i) => (
+            <div
+              key={i}
+              className={`grid grid-cols-[1.1fr_1.3fr_1fr_0.9fr] gap-x-1.5 py-2 border-b border-line/60 last:border-0 ${row.projected ? "opacity-55" : ""}`}
+            >
+              <span className="font-sans text-[9.5px] text-ink">{row.date}</span>
+              <span className="font-sans text-[9.5px] text-ink">{row.event}</span>
+              <span className="font-mono text-[9px] text-clay/70">{row.hash}</span>
+              <span className={`font-sans text-[9.5px] font-medium text-right ${row.projected ? "text-clay" : "text-sage"}`}>
+                {row.projected ? t("ledger_status_projected") : t("ledger_status_verified")}
+              </span>
+            </div>
+          ))}
         </div>
-
-        <button
-          onClick={onClose}
-          className="w-full mt-6 bg-ink text-cream font-sans text-[11px] uppercase tracking-[0.2em] py-3.5"
-        >
-          {t("verification_close_action")}
-        </button>
       </section>
     </div>,
     document.body

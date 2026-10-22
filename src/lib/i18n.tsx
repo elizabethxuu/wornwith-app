@@ -43,11 +43,6 @@ export const dict = {
     fr: "Estimations illustratives pour cette démo. Ces chiffres n'ont pas été mesurés ni vérifiés de manière indépendante.",
     pt: "Estimativas ilustrativas para esta demonstração. Estes números não foram medidos nem verificados de forma independente.",
   },
-  overview_data_note: {
-    en: "Product details are brand-provided example data. Garment details are owner-contributed. All values are illustrative.",
-    fr: "Les détails du produit sont des données d'exemple fournies par la marque. Les détails du vêtement sont fournis par le propriétaire. Toutes les valeurs sont illustratives.",
-    pt: "Os detalhes do produto são dados de exemplo fornecidos pela marca. Os detalhes da peça são fornecidos pelo proprietário. Todos os valores são ilustrativos.",
-  },
   contents_title: {
     en: "Passport contents",
     fr: "Contenu du passeport",
@@ -108,11 +103,6 @@ export const dict = {
   hero_details: { en: "Passport details", fr: "Détails du passeport", pt: "Detalhes do passaporte" },
   hero_menu: { en: "Menu", fr: "Menu", pt: "Menu" },
   hero_next: { en: "Next: Journey", fr: "Suivant : Parcours", pt: "Próximo: Jornada" },
-  hero_image_note: {
-    en: "Imagery is illustrative.",
-    fr: "Les images sont illustratives.",
-    pt: "As imagens são ilustrativas.",
-  },
   welcome_to: { en: "Welcome to", fr: "Bienvenue sur", pt: "Bem-vindo ao" },
   what_is_this: { en: "What is this?", fr: "Qu'est-ce que c'est ?", pt: "O que é isto?" },
   dpp_explainer: {
@@ -120,25 +110,12 @@ export const dict = {
     fr: "Un Passeport Numérique Produit est un enregistrement que chaque vêtement vendu dans l'UE devra porter d'ici 2028–2030, où il a été fabriqué, de quoi il est fait, et comment en prendre soin. Voici la vision d'une créatrice de ce moment.",
     pt: "Um Passaporte Digital do Produto é um registro que toda peça de roupa vendida na UE deverá ter até 2028–2030, onde foi feita, do que é feita e como cuidar dela. Esta é a visão de uma designer sobre como esse momento poderia ser.",
   },
-  verified_passport: {
-    en: "Demo Passport",
-    fr: "Passeport de démo",
-    pt: "Passaporte de demonstração",
-  },
+  verified_passport: { en: "Verified Passport", fr: "Passeport Vérifié", pt: "Passaporte Verificado" },
   espr_verification_label: { en: "ESPR Verification", fr: "Vérification ESPR", pt: "Verificação ESPR" },
-  stored_ledger: {
-    en: "Sample data. Not independently verified.",
-    fr: "Données d'exemple. Non vérifiées de manière indépendante.",
-    pt: "Dados de exemplo. Não verificados de forma independente.",
-  },
+  stored_ledger: { en: "Stored on secure digital ledger", fr: "Stocké sur un registre numérique sécurisé", pt: "Armazenado em registro digital seguro" },
   passport_id_label: { en: "Passport ID", fr: "ID du Passeport", pt: "ID do Passaporte" },
   display_code_label: { en: "Display code", fr: "Code d'affichage", pt: "Código de exibição" },
   eu_regulated: { en: "EU Regulated · ESPR 2028–2030", fr: "Réglementé par l'UE · ESPR 2028–2030", pt: "Regulado pela UE · ESPR 2028–2030" },
-  demo_disclaimer: {
-    en: "All data is illustrative and used for demo purposes only.",
-    fr: "Toutes les données sont illustratives et utilisées à des fins de démonstration uniquement.",
-    pt: "Todos os dados são ilustrativos e usados apenas para fins de demonstração.",
-  },
   tap_pin_hint: {
     en: "Tap a stop to learn more · pinch to zoom",
     fr: "Touchez une étape pour en savoir plus · pincez pour zoomer",
@@ -174,11 +151,7 @@ export const dict = {
   times_suffix: { en: "times", fr: "fois", pt: "vezes" },
 
   // Product overview
-  dpp_verified: {
-    en: "Demo Passport",
-    fr: "Passeport de démo",
-    pt: "Passaporte de demonstração",
-  },
+  dpp_verified: { en: "DPP Verified", fr: "DPP Vérifié", pt: "DPP Verificado" },
   wool_jacket: { en: "Wool Jacket", fr: "Veste en Laine", pt: "Casaco de Lã" },
   tagline_coat: {
     en: "Considered materials, timeless style",
@@ -253,6 +226,7 @@ export const dict = {
   lifespan_value: { en: "8–10 years", fr: "8 à 10 ans", pt: "8–10 anos" },
   verified_date_value: { en: "5 April 2026", fr: "5 avril 2026", pt: "5 de abril de 2026" },
   story_date_value: { en: "5 April 2026", fr: "5 avril 2026", pt: "5 de abril de 2026" },
+  blockchain_word: { en: "blockchain", fr: "blockchain", pt: "blockchain" },
   product_hero_alt: { en: "Black wool funnel-neck coat.", fr: "Manteau en laine noire à col cheminée.", pt: "Casaco de lã preta com gola funil." },
 
   // Product lifecycle
@@ -780,37 +754,17 @@ export const dict = {
   footer_terms: { en: "Terms of Use", fr: "Conditions d'Utilisation", pt: "Termos de Uso" },
   legal_back: { en: "Back", fr: "Retour", pt: "Voltar" },
   close_label: { en: "Close", fr: "Fermer", pt: "Fechar" },
-  verification_eyebrow: { en: "Passport record", fr: "Dossier du passeport", pt: "Registro do passaporte" },
-  verification_panel_title: {
-    en: "What this record tells you",
-    fr: "Ce que ce dossier vous indique",
-    pt: "O que este registro informa",
-  },
-  verification_demo_label: { en: "Prototype record", fr: "Dossier de prototype", pt: "Registro de protótipo" },
+  verification_panel_title: { en: "About this verification", fr: "À propos de cette vérification", pt: "Sobre esta verificação" },
   verification_panel_body: {
-    en: "This demonstration brings product details and garment history into one place. The sample information shown here is illustrative and has not been independently verified.",
-    fr: "Cette démonstration rassemble les détails du produit et l'historique du vêtement. Les informations présentées sont illustratives et n'ont pas été vérifiées de manière indépendante.",
-    pt: "Esta demonstração reúne detalhes do produto e o histórico da peça. As informações apresentadas são ilustrativas e não foram verificadas de forma independente.",
+    en: "This passport's history is recorded on an immutable ledger, so entries can't be altered after the fact. In this demo, verification is illustrative. A production version would anchor to a live blockchain record.",
+    fr: "L'historique de ce passeport est enregistré sur un registre immuable, de sorte que les entrées ne peuvent pas être modifiées après coup. Dans cette démo, la vérification est illustrative. Une version en production s'ancrerait à un registre blockchain en direct.",
+    pt: "O histórico deste passaporte é registrado em um registro imutável, de modo que as entradas não podem ser alteradas depois de feitas. Nesta demonstração, a verificação é ilustrativa. Uma versão de produção seria ancorada a um registro de blockchain real.",
   },
-  verification_record_title: { en: "How to read this passport", fr: "Comment lire ce passeport", pt: "Como ler este passaporte" },
-  verification_product_label: { en: "Product details", fr: "Détails du produit", pt: "Detalhes do produto" },
-  verification_product_value: { en: "Sample brand and material information. Check the garment label or official brand source for confirmation.", fr: "Informations d'exemple sur la marque et les matières. Consultez l'étiquette du vêtement ou une source officielle de la marque pour confirmation.", pt: "Informações de exemplo sobre marca e materiais. Consulte a etiqueta da peça ou uma fonte oficial da marca para confirmar." },
-  verification_owner_label: { en: "Garment history", fr: "Historique du vêtement", pt: "Histórico da peça" },
-  verification_owner_value: { en: "Entries may be added by the owner and should be treated as owner-provided unless supporting evidence is attached.", fr: "Les entrées peuvent être ajoutées par le propriétaire et doivent être considérées comme déclarées par celui-ci, sauf preuve à l'appui.", pt: "Os registros podem ser adicionados pelo proprietário e devem ser considerados informações fornecidas por ele, salvo se houver evidências anexadas." },
-  verification_impact_label: { en: "Impact figures", fr: "Indicateurs d'impact", pt: "Indicadores de impacto" },
-  verification_impact_value: { en: "Any environmental estimates are illustrative, not independently measured or certified.", fr: "Les estimations environnementales sont illustratives, et non mesurées ou certifiées de manière indépendante.", pt: "As estimativas ambientais são ilustrativas, não foram medidas nem certificadas de forma independente." },
-  verification_limit_title: { en: "What is not verified", fr: "Ce qui n'est pas vérifié", pt: "O que não está verificado" },
-  verification_limit_body: {
-    en: "This prototype is not connected to an independent verification service or tamper-evident ledger. A QR code opens the passport page; it does not, by itself, authenticate the garment or prove the accuracy of its data.",
-    fr: "Ce prototype n'est relié ni à un service de vérification indépendant ni à un registre infalsifiable. Le code QR ouvre la page du passeport ; à lui seul, il n'authentifie pas le vêtement et ne prouve pas l'exactitude des données.",
-    pt: "Este protótipo não está ligado a um serviço independente de verificação nem a um registro inviolável. O código QR abre a página do passaporte; por si só, não autentica a peça nem comprova a exatidão dos dados.",
-  },
-  verification_close_action: { en: "Return to passport", fr: "Retour au passeport", pt: "Voltar ao passaporte" },
   ledger_illustrative_label: { en: "illustrative", fr: "illustratif", pt: "ilustrativo" },
   ledger_caption: {
-    en: "Sample entries showing how a timestamped record could look. This is not a live ledger.",
-    fr: "Entrées d'exemple montrant à quoi pourrait ressembler un registre horodaté. Ce n'est pas un registre réel.",
-    pt: "Entradas de exemplo mostrando como um registro com data poderia ser. Este não é um registro real.",
+    en: "Each entry is timestamped and hashed. Once recorded, it can't be altered.",
+    fr: "Chaque entrée est horodatée et hachée. Une fois enregistrée, elle ne peut pas être modifiée.",
+    pt: "Cada entrada é registrada com data e hash. Uma vez registrada, não pode ser alterada.",
   },
   ledger_col_date: { en: "Date", fr: "Date", pt: "Data" },
   ledger_col_event: { en: "Event", fr: "Événement", pt: "Evento" },
@@ -821,11 +775,7 @@ export const dict = {
   ledger_event_moment_logged: { en: "Moment logged", fr: "Moment enregistré", pt: "Momento registrado" },
   ledger_event_repair_projected: { en: "Repair (projected)", fr: "Réparation (projetée)", pt: "Reparo (projetado)" },
   ledger_date_repair: { en: "Est. 2027", fr: "Est. 2027", pt: "Est. 2027" },
-  ledger_status_verified: {
-    en: "Sample",
-    fr: "Exemple",
-    pt: "Exemplo",
-  },
+  ledger_status_verified: { en: "Verified", fr: "Vérifié", pt: "Verificado" },
   ledger_status_projected: { en: "Projected", fr: "Projeté", pt: "Projetado" },
 
   privacy_eyebrow: { en: "Privacy", fr: "Confidentialité", pt: "Privacidade" },

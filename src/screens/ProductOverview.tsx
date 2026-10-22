@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useSyncExternalStore } from "react";
 import * as ambient from "../lib/ambient";
-import { Eyebrow, Disclaimer, VerificationInfoPanel, ShareSheet, ProductHero } from "../components/UI";
+import { Eyebrow, VerificationInfoPanel, ShareSheet, ProductHero } from "../components/UI";
 import { ChapterColorProvider } from "../lib/chapterColor";
 import { loadOwnershipRecord } from "../lib/persistence";
 import { GARMENT } from "../lib/garment";
@@ -181,7 +181,6 @@ export function ProductOverview({
               {t("hero_details")} ↓
             </button>
           </div>
-          <p className="mt-2 font-sans text-[9px] leading-snug text-clay">{t("demo_disclaimer")}</p>
         </div>
 
           {/* Dissolve to paper while leaving for the Journey */}
@@ -323,10 +322,7 @@ export function ProductOverview({
 
       <p className="font-sans text-[12px] text-clay leading-relaxed mt-8">{t("dpp_explainer")}</p>
       <p className="font-sans text-[9px] uppercase tracking-[0.2em] text-clay mt-3">{t("welcome_by")}</p>
-      <p className="font-sans text-[10px] text-clay leading-relaxed mt-4">{t("overview_data_note")}</p>
-      <Disclaimer />
       <VerificationInfoPanel open={showVerificationInfo} onClose={() => setShowVerificationInfo(false)} />
-      <p className="font-sans text-[10px] text-clay leading-relaxed mt-2">{t("hero_image_note")}</p>
       </div>
       <ShareSheet open={shareOpen} onClose={() => setShareOpen(false)} />
     </div>
