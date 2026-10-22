@@ -5,7 +5,7 @@ import { ChapterColorProvider } from "../lib/chapterColor";
 import { loadOwnershipRecord } from "../lib/persistence";
 import { GARMENT } from "../lib/garment";
 import { useLanguage } from "../lib/i18n";
-import { Volume2, VolumeX, Pause, Play, ChevronRight } from "lucide-react";
+import { Volume2, VolumeX, Pause, Play, ChevronRight, Check } from "lucide-react";
 
 
 
@@ -91,6 +91,7 @@ export function ProductOverview({
     [t("material"), t("material_value")],
     [t("made_in"), t("made_in_value")],
     [t("certified"), GARMENT.certified],
+    [t("espr_verification_label"), "check"],
     [t("lifespan"), t("lifespan_value")],
     [t("repairability"), "8.5 / 10"],
   ];
@@ -107,7 +108,7 @@ export function ProductOverview({
         <div className="relative flex-1 min-h-0 overflow-hidden bg-[#E9E0D5]">
           <div className="absolute inset-x-3 top-3 z-10 flex flex-col items-stretch gap-2">
           <p
-            className="lux-rise mx-auto max-w-md w-full px-5 py-[clamp(0.6rem,2dvh,1rem)] text-center font-display italic text-[clamp(0.95rem,2.4dvh,1.15rem)] leading-snug text-ink text-balance border border-white/60 backdrop-blur-xl backdrop-saturate-150 shadow-[inset_0_1px_0_rgba(255,255,255,0.8),0_10px_30px_-12px_rgba(43,38,34,0.25)]"
+            className="light-island lux-rise mx-auto max-w-md w-full px-5 py-[clamp(0.6rem,2dvh,1rem)] text-center font-display italic text-[clamp(0.95rem,2.4dvh,1.15rem)] leading-snug text-ink text-balance border border-white/60 backdrop-blur-xl backdrop-saturate-150 shadow-[inset_0_1px_0_rgba(255,255,255,0.8),0_10px_30px_-12px_rgba(43,38,34,0.25)]"
             style={{ background: "linear-gradient(135deg, rgba(255,255,255,0.62) 0%, rgba(255,255,255,0.28) 55%, rgba(255,255,255,0.46) 100%)", "--lux-s": "0.1s" } as React.CSSProperties}
           >
             {t("hero_caption")}
@@ -130,7 +131,7 @@ export function ProductOverview({
             onClick={() => ambient.setMuted(!sound.muted)}
             aria-label={sound.muted ? t("sound_turn_on") : t("sound_turn_off")}
             aria-pressed={!sound.muted}
-            className="w-11 h-11 flex items-center justify-center bg-white/60 backdrop-blur-md border border-white/60 text-ink"
+            className="light-island w-11 h-11 flex items-center justify-center bg-white/60 backdrop-blur-md border border-white/60 text-ink"
           >
             {sound.muted ? <VolumeX size={20} strokeWidth={1.25} /> : <Volume2 size={20} strokeWidth={1.25} />}
           </button>
@@ -138,7 +139,7 @@ export function ProductOverview({
             <button
               onClick={() => ambient.setPaused(!sound.paused)}
               aria-label={sound.paused ? t("sound_play") : t("sound_pause")}
-              className="w-11 h-11 flex items-center justify-center bg-white/60 backdrop-blur-md border border-white/60 text-ink"
+              className="light-island w-11 h-11 flex items-center justify-center bg-white/60 backdrop-blur-md border border-white/60 text-ink"
             >
               {sound.paused ? <Play size={18} strokeWidth={1.25} /> : <Pause size={18} strokeWidth={1.25} />}
             </button>
@@ -148,13 +149,13 @@ export function ProductOverview({
         <button
           onClick={goExplore}
           aria-label={t("hero_next")}
-          className="absolute right-3 top-[36%] -translate-y-1/2 w-11 h-11 flex items-center justify-center bg-white/60 backdrop-blur-md border border-white/60 text-ink"
+          className="light-island absolute right-3 top-[36%] -translate-y-1/2 w-11 h-11 flex items-center justify-center bg-white/60 backdrop-blur-md border border-white/60 text-ink"
         >
           <ChevronRight size={22} strokeWidth={1.25} />
         </button>
 
         <div
-          className="lux-rise absolute inset-x-3 bottom-3 mx-auto max-w-md bg-white/85 backdrop-blur-md border border-white/70 px-4 pt-[clamp(0.6rem,2dvh,1rem)] pb-[clamp(0.4rem,1.2dvh,0.75rem)] text-center"
+          className="light-island lux-rise absolute inset-x-3 bottom-3 mx-auto max-w-md bg-white/85 backdrop-blur-md border border-white/70 px-4 pt-[clamp(0.6rem,2dvh,1rem)] pb-[clamp(0.4rem,1.2dvh,0.75rem)] text-center"
           style={{ "--lux-s": "0.55s" } as React.CSSProperties}
         >
           <p className="font-display italic text-[clamp(1.05rem,3dvh,1.5rem)] leading-tight text-ink text-balance">
@@ -225,7 +226,7 @@ export function ProductOverview({
           two-column layout as before; only the appearance is new. */}
       <div
         className="relative flex items-center gap-4 px-4 py-2.5 mb-4 overflow-hidden border border-[#F0DDE1]"
-        style={{ backgroundColor: "#FCF5F6", ...craftedReveal("translateY(18px)", 350, 600, ".22,.61,.36,1") }}
+        style={{ backgroundColor: "rgb(var(--c-card2))", ...craftedReveal("translateY(18px)", 350, 600, ".22,.61,.36,1") }}
       >
         {craftedWashActive && (
           <div
@@ -283,7 +284,13 @@ export function ProductOverview({
         {rows.map(([k, v]) => (
           <div key={k} className="flex justify-between py-2 font-sans text-[12px]">
             <span className="text-clay">{k}</span>
-            <span className="text-ink font-medium">{v}</span>
+            {v === "check" ? (
+              <span className="text-[#5E7B5E] font-medium flex items-center gap-1" role="img" aria-label={t("espr_verification_label")}>
+                <Check size={14} strokeWidth={2.5} aria-hidden="true" />
+              </span>
+            ) : (
+              <span className="text-ink font-medium">{v}</span>
+            )}
           </div>
         ))}
       </div>

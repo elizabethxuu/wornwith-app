@@ -4,15 +4,17 @@ export default {
   theme: {
     extend: {
       colors: {
-        cream: "#FBF9F6",
-        paper: "#FFFFFF",
-        ink: "#2B2622",
-        clay: "#6E635A",
+        // Light values live in src/index.css as :root variables; the dark
+        // theme overrides them under [data-theme="dark"].
+        cream: "rgb(var(--c-cream) / <alpha-value>)",
+        paper: "rgb(var(--c-paper) / <alpha-value>)",
+        ink: "rgb(var(--c-ink) / <alpha-value>)",
+        clay: "rgb(var(--c-clay) / <alpha-value>)",
         blush: "#E7A6B4",
         "blush-deep": "#C97A8C",
-        "blush-pale": "#F7E4E8",
+        "blush-pale": "rgb(var(--c-blush-pale) / <alpha-value>)",
         sage: "#8FA688",
-        line: "#EDE7E1",
+        line: "rgb(var(--c-line) / <alpha-value>)",
       },
       fontFamily: {
         display: ["'Cormorant Garamond'", "serif"],

@@ -63,7 +63,7 @@ export function Donut({
     <div className="flex flex-col items-center gap-1">
       <div className="relative w-[84px] h-[84px]">
         <svg width="84" height="84" viewBox="0 0 84 84">
-          <circle cx="42" cy="42" r={r} fill="none" stroke="#F1E9EA" strokeWidth="8" />
+          <circle cx="42" cy="42" r={r} fill="none" strokeWidth="8" style={{ stroke: "rgb(var(--c-track))" }} />
           <circle
             cx="42"
             cy="42"
@@ -639,7 +639,7 @@ export function AskAnythingBar({ wardrobe }: { wardrobe: WardrobeItem[] }) {
       <form
         onSubmit={handleSubmit}
         className="rounded-2xl px-3.5 pt-3 pb-2.5"
-        style={{ backgroundColor: "#FBF3F0" }}
+        style={{ backgroundColor: "rgb(var(--c-card))" }}
       >
         <input
           type="text"
@@ -1232,7 +1232,7 @@ export function VoiceNoteRecorder() {
         <div className="flex items-center gap-2 flex-wrap">
           <button
             onClick={togglePlayback}
-            className="flex items-center gap-2 border border-[#1A1A1A] rounded-full px-4 py-2 font-sans text-[11px] text-[#1A1A1A]"
+            className="flex items-center gap-2 border border-ink rounded-full px-4 py-2 font-sans text-[11px] text-ink"
           >
             {isPlaying ? <Square size={12} fill="#1A1A1A" /> : <AudioLines size={14} />}
             {isPlaying ? t("stop_label") : t("play_note_label")}

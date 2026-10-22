@@ -2,6 +2,67 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --c-cream: 251 249 246;
+  --c-paper: 255 255 255;
+  --c-ink: 43 38 34;
+  --c-clay: 110 99 90;
+  --c-line: 237 231 225;
+  --c-blush-pale: 247 228 232;
+  --c-page: 240 236 230;
+  --c-card: 248 241 238;
+  --c-rose: 142 61 82;
+  --c-card: 251 243 240;
+  --c-card2: 252 245 246;
+  --c-track: 241 233 234;
+  --c-map1: 253 251 247;
+  --c-map2: 250 247 241;
+}
+:root[data-theme="dark"] {
+  --c-cream: 20 17 15;
+  --c-paper: 28 25 23;
+  --c-ink: 242 235 228;
+  --c-clay: 176 166 157;
+  --c-line: 56 51 47;
+  --c-blush-pale: 58 42 47;
+  --c-page: 14 12 11;
+  --c-card: 40 34 33;
+  --c-card2: 40 34 36;
+  --c-track: 56 51 47;
+  --c-map1: 36 32 29;
+  --c-map2: 31 28 26;
+  --c-rose: 231 166 180;
+}
+
+/* Parts that sit on photographs (glass panels on the opening image) keep the
+   light palette in both themes. */
+.light-island {
+  --c-ink: 43 38 34;
+  --c-clay: 110 99 90;
+  --c-paper: 255 255 255;
+  --c-line: 237 231 225;
+  --c-cream: 251 249 246;
+  --c-rose: 142 61 82;
+}
+
+/* Hard-coded rose text is too dark on the dark surface; use the light rose. */
+:root[data-theme="dark"] .text-\[\#9E4F63\],
+:root[data-theme="dark"] .text-\[\#8E3D52\],
+:root[data-theme="dark"] [style*="color: rgb(142, 61, 82)"] {
+  color: rgb(var(--c-rose)) !important;
+}
+:root[data-theme="dark"] .light-island .text-\[\#9E4F63\],
+:root[data-theme="dark"] .light-island .text-\[\#8E3D52\],
+:root[data-theme="dark"] .light-island [style*="color: rgb(142, 61, 82)"] {
+  color: #8E3D52 !important;
+}
+:root[data-theme="dark"] .border-\[\#F0DDE1\] { border-color: rgb(var(--c-line)); }
+:root[data-theme="dark"] .visible-scrollbar::-webkit-scrollbar-track { background: #26211F; }
+:root[data-theme="dark"] .visible-scrollbar::-webkit-scrollbar-thumb { background-color: #B0A69D; }
+:root[data-theme="dark"] .visible-scrollbar {
+  scrollbar-color: #B0A69D #26211F;
+}
+
 * { box-sizing: border-box; }
 
 html, body, #root {
@@ -10,7 +71,7 @@ html, body, #root {
 
 body {
   margin: 0;
-  background: #F0ECE6;
+  background: rgb(var(--c-page));
   -webkit-font-smoothing: antialiased;
 }
 
@@ -121,6 +182,11 @@ body {
   background-image: linear-gradient(120deg, #FDF8FA 0%, #F6E7EC 35%, #F2D6DE 65%, #F7E9EF 100%);
   background-size: 250% 250%;
   animation: storyCardDrift 20s linear infinite;
+}
+
+:root[data-theme="dark"] .story-card-gradient {
+  background-color: #2A2024;
+  background-image: linear-gradient(120deg, #2A2024 0%, #35262C 35%, #3C2A31 65%, #30242A 100%);
 }
 
 /* A single, understated sparkle, small scale pulse + opacity flicker,

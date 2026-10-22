@@ -246,7 +246,7 @@ export async function generatePassportPdf(): Promise<void> {
   spacer(6);
   row(t("material") || "Material", t("material_value") || GARMENT.material);
   row(t("made_in") || "Made in", t("made_in_value") || GARMENT.madeIn);
-  row(t("certified") || "Certifications (example)", GARMENT.certified);
+  row(t("certified") || "Certifications", GARMENT.certified);
   row(t("lifespan") || "Lifespan", t("lifespan_value") || GARMENT.lifespan);
   row(t("repairability") || "Repairability", "8.5 / 10");
   spacer(8);

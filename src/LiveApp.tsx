@@ -201,7 +201,7 @@ export default function LiveApp() {
       {revealing && <OpeningReveal onDone={() => setRevealing(false)} />}
 
       {/* The brand header stays on every screen: menu, logo, share. */}
-      <PassportTopBar onGoTo={(i) => { setLegalPage("none"); setIndex(i); }} />
+      <PassportTopBar showTools onGoTo={(i) => { setLegalPage("none"); setIndex(i); }} />
 
       <div ref={scrollRef} className="flex-1 overflow-y-auto visible-scrollbar relative" onClick={handleTap}>
         <ChapterColorProvider color={CHAPTER_COLORS[index]}>
@@ -277,7 +277,7 @@ export default function LiveApp() {
             aria-label="Previous"
             className="w-10 h-10 rounded-full bg-ink shadow-sm flex items-center justify-center"
           >
-            <ChevronLeft size={20} className="text-white" />
+            <ChevronLeft size={20} className="text-paper" />
           </button>
         ) : (
           <div className="w-10 h-10" />
@@ -291,7 +291,7 @@ export default function LiveApp() {
             aria-label="Next"
             className="w-10 h-10 rounded-full bg-ink shadow-sm flex items-center justify-center"
           >
-            <ChevronRight size={20} className="text-white" />
+            <ChevronRight size={20} className="text-paper" />
           </button>
         ) : (
           <div className="w-10 h-10" />

@@ -98,7 +98,7 @@ export default function JourneyMap() {
           backgroundImage:
             "radial-gradient(ellipse 60% 55% at 50% 32%, rgba(235,201,210,0.32) 0%, transparent 72%), " +
             "radial-gradient(ellipse 50% 45% at 86% 82%, rgba(47,199,216,0.20) 0%, transparent 72%), " +
-            "linear-gradient(180deg, #FDFBF7 0%, #FAF7F1 100%)",
+            "linear-gradient(180deg, rgb(var(--c-map1)) 0%, rgb(var(--c-map2)) 100%)",
           boxShadow: "0 1px 3px rgba(0,0,0,0.02)",
           opacity: mapVisible ? 1 : 0,
           transform: mapVisible ? "translateY(0) scale(1)" : "translateY(10px) scale(0.985)",
@@ -252,13 +252,13 @@ export default function JourneyMap() {
           <div className="min-w-0">
             <p
               className="font-sans text-[9px] uppercase tracking-[0.14em] font-semibold"
-              style={{ color: "#2F2A28" }}
+              style={{ color: "rgb(var(--c-ink))" }}
             >
               {t(stop.placeKey)}
             </p>
             <p
               className="font-display italic text-[15px] leading-snug mt-1.5"
-              style={{ color: "#3B3532" }}
+              style={{ color: "rgb(var(--c-ink))" }}
             >
               {t(stop.blurbKey)}
             </p>
@@ -266,7 +266,7 @@ export default function JourneyMap() {
           {stop.active && (
             <p
               className="font-display italic text-[12px] text-right mt-3"
-              style={{ color: "#3B3532" }}
+              style={{ color: "rgb(var(--c-ink))" }}
             >
               {t("every_place_note")}
             </p>
