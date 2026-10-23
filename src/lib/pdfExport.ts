@@ -386,7 +386,7 @@ export async function generatePassportPdf(): Promise<void> {
   body(t("about_passport_p3") || "");
   spacer(6);
   sectionTitle(t("verification_panel_title") || "About this verification");
-  body(t("verification_panel_body") || "");
+  body(t(ATTESTATION.attestationUid ? "verification_panel_body" : "verification_panel_body_pending") || "");
   spacer(6);
   sectionTitle(t("data_sources_title") || "Data Sources");
   row(t("data_source_brand_label") || "Brand-Provided Data", t("data_source_verified_value") || "Illustrative");

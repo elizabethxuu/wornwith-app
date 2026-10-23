@@ -1660,7 +1660,7 @@ export function VerificationInfoPanel({ open, onClose }: { open: boolean; onClos
           </span>
         </div>
 
-        <p className="font-sans text-[13px] text-clay leading-relaxed mt-4">{t("verification_panel_body")}</p>
+        <p className="font-sans text-[13px] text-clay leading-relaxed mt-4">{t(ATTESTATION.attestationUid ? "verification_panel_body" : "verification_panel_body_pending")}</p>
         <span className="inline-block mt-2 font-sans text-[9px] font-semibold uppercase tracking-[0.18em] text-clay border border-line rounded-full px-2.5 py-1">
           {t("vr_demo_tag")}
         </span>

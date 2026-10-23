@@ -771,6 +771,11 @@ export const dict = {
   legal_back: { en: "Back", fr: "Retour", pt: "Voltar" },
   close_label: { en: "Close", fr: "Fermer", pt: "Fechar" },
   verification_panel_title: { en: "Verify this passport", fr: "Vérifier ce passeport", pt: "Verificar este passaporte" },
+  verification_panel_body_pending: {
+    en: "This passport's record is ready to be signed and published on Base, a public blockchain. Once it is, anyone can check that it hasn't changed since. The garment details and figures are demonstration data.",
+    fr: "Le dossier de ce passeport est prêt à être signé et publié sur Base, une blockchain publique. Une fois publié, chacun pourra vérifier qu'il n'a pas changé depuis. Les détails du vêtement et les chiffres sont des données de démonstration.",
+    pt: "O registro deste passaporte está pronto para ser assinado e publicado na Base, uma blockchain pública. Depois disso, qualquer pessoa poderá verificar que ele não mudou. Os detalhes da peça e os números são dados de demonstração.",
+  },
   verification_panel_body: {
     en: "This passport's record is signed by its publisher and published on Base, a public blockchain. Anyone can check that it hasn't changed since it was signed. The garment details and figures are demonstration data.",
     fr: "Le dossier de ce passeport est signé par son éditeur et publié sur Base, une blockchain publique. Chacun peut vérifier qu'il n'a pas changé depuis sa signature. Les détails du vêtement et les chiffres sont des données de démonstration.",
