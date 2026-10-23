@@ -101,11 +101,7 @@ export function ProductLifecycle({ onViewChapter, onOpenMapStop }: { onViewChapt
         ))}
       </div>
       <div className="relative pl-6">
-        {/* The thread runs through each country's color, very faint. */}
-        <div
-          className="absolute left-[9px] top-2 bottom-2 w-px line-draw opacity-50"
-          style={{ ...at(820), backgroundImage: `linear-gradient(to bottom, ${STOP_ACCENTS.join(", ")})` }}
-        />
+        <div className="absolute left-[9px] top-2 bottom-2 w-px bg-line line-draw" style={at(820)} />
         <div className="space-y-8">
           {stops.map((s, i) => (
             <button
@@ -114,22 +110,20 @@ export function ProductLifecycle({ onViewChapter, onOpenMapStop }: { onViewChapt
               style={at(900 + i * 220)}
               className="reveal-soft relative flex items-center gap-4 w-full text-left"
             >
-              {/* Each stop wears its country's pin color from the map: a
-                  fine ring on the dot (filled when selected) and a softly
-                  tinted halo behind the icon. */}
+              {/* Color stays a whisper: a fine ring in the country's pin
+                  color, and full color only on the stop that's selected. */}
               <div
                 className="absolute -left-6 w-4 h-4 rounded-full transition-all duration-500"
                 style={{
                   backgroundColor: selected === i ? STOP_ACCENTS[i] : "rgb(var(--c-paper))",
-                  boxShadow: `inset 0 0 0 1.5px ${STOP_ACCENTS[i]}, 0 0 0 ${selected === i ? 4 : 3}px color-mix(in srgb, ${STOP_ACCENTS[i]} ${selected === i ? 22 : 12}%, transparent)`,
+                  boxShadow: `inset 0 0 0 1.25px color-mix(in srgb, ${STOP_ACCENTS[i]} ${selected === i ? 100 : 55}%, transparent)`,
                 }}
               />
               <span
-                className="w-9 h-9 shrink-0 rounded-full flex items-center justify-center transition-all duration-500"
+                className={`w-9 h-9 shrink-0 rounded-full flex items-center justify-center transition-all duration-500 ${selected === i ? "" : "text-clay"}`}
                 style={{
-                  color: STOP_ACCENTS[i],
-                  backgroundColor: `color-mix(in srgb, ${STOP_ACCENTS[i]} ${selected === i ? 16 : 9}%, transparent)`,
-                  boxShadow: `inset 0 0 0 1px color-mix(in srgb, ${STOP_ACCENTS[i]} ${selected === i ? 70 : 40}%, transparent)`,
+                  color: selected === i ? STOP_ACCENTS[i] : undefined,
+                  boxShadow: `inset 0 0 0 1px color-mix(in srgb, ${STOP_ACCENTS[i]} ${selected === i ? 60 : 28}%, transparent)`,
                 }}
               >
                 {s.icon}
