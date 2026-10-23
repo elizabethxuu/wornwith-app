@@ -110,20 +110,21 @@ export function ProductLifecycle({ onViewChapter, onOpenMapStop }: { onViewChapt
               style={at(900 + i * 220)}
               className="reveal-soft relative flex items-center gap-4 w-full text-left"
             >
-              {/* Color stays a whisper: a fine ring in the country's pin
-                  color, and full color only on the stop that's selected. */}
+              {/* Each stop carries a measured hint of its country's pin
+                  color; the selected stop takes it fully. */}
               <div
                 className="absolute -left-6 w-4 h-4 rounded-full transition-all duration-500"
                 style={{
                   backgroundColor: selected === i ? STOP_ACCENTS[i] : "rgb(var(--c-paper))",
-                  boxShadow: `inset 0 0 0 1.25px color-mix(in srgb, ${STOP_ACCENTS[i]} ${selected === i ? 100 : 55}%, transparent)`,
+                  boxShadow: `inset 0 0 0 1.5px color-mix(in srgb, ${STOP_ACCENTS[i]} ${selected === i ? 100 : 80}%, transparent)${selected === i ? `, 0 0 0 3px color-mix(in srgb, ${STOP_ACCENTS[i]} 16%, transparent)` : ""}`,
                 }}
               />
               <span
-                className={`w-9 h-9 shrink-0 rounded-full flex items-center justify-center transition-all duration-500 ${selected === i ? "" : "text-clay"}`}
+                className="w-9 h-9 shrink-0 rounded-full flex items-center justify-center transition-all duration-500"
                 style={{
-                  color: selected === i ? STOP_ACCENTS[i] : undefined,
-                  boxShadow: `inset 0 0 0 1px color-mix(in srgb, ${STOP_ACCENTS[i]} ${selected === i ? 60 : 28}%, transparent)`,
+                  color: selected === i ? STOP_ACCENTS[i] : `color-mix(in srgb, ${STOP_ACCENTS[i]} 65%, rgb(var(--c-clay)))`,
+                  backgroundColor: `color-mix(in srgb, ${STOP_ACCENTS[i]} ${selected === i ? 12 : 5}%, transparent)`,
+                  boxShadow: `inset 0 0 0 1px color-mix(in srgb, ${STOP_ACCENTS[i]} ${selected === i ? 65 : 42}%, transparent)`,
                 }}
               >
                 {s.icon}
