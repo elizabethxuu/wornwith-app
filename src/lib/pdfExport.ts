@@ -21,6 +21,7 @@ import { GARMENT, getEstimatedYearsRemaining } from "./garment";
 import { loadOwnershipRecord } from "./persistence";
 import { loadWardrobe } from "./persistence";
 import { dict, type Lang } from "./i18n";
+import { ATTESTATION } from "./passportRecord";
 
 const PAGE_W = 210; // A4 mm
 const PAGE_H = 297;
@@ -219,7 +220,7 @@ export async function generatePassportPdf(): Promise<void> {
   doc.setFont("helvetica", "normal");
   doc.setFontSize(9);
   setColor(COLOR.clay);
-  doc.text(`${GARMENT.verifiedDate} \u00b7 ${t("passport_id_label") || "Passport ID"}: ${GARMENT.fullDppId}`, boxTextX, boxY);
+  doc.text(`${ATTESTATION.publishedOn ?? (t("record_not_published_short") || "Not yet published")} \u00b7 ${t("passport_id_label") || "Passport ID"}: ${GARMENT.fullDppId}`, boxTextX, boxY);
   boxY += 5;
   doc.text(t("stored_ledger") || "Stored on secure digital ledger", boxTextX, boxY);
   cursor.y += boxH + 12;

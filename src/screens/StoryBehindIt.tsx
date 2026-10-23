@@ -8,6 +8,7 @@ import { useLanguage } from "../lib/i18n";
 // The map library is large and only this screen needs it, so it loads on demand.
 const JourneyMap = lazy(() => import("../components/JourneyMap"));
 import { Sparkles, Share, Bookmark } from "lucide-react";
+import { ATTESTATION } from "../lib/passportRecord";
 
 
 /* 10: THE STORY BEHIND IT */
@@ -60,7 +61,7 @@ export function StoryBehindIt() {
             <span className="flex items-center gap-1 text-[11px] font-sans text-clay font-medium">
               {t("verified_passport")}
             </span>
-            <span className="text-[10px] font-sans text-clay">{t("story_date_value")} · {t("blockchain_word")}</span>
+            <span className="text-[10px] font-sans text-clay">{ATTESTATION.attestationUid ? t("record_on_base") : t("record_not_published_short")}</span>
           </button>
           <div className="flex items-center gap-1.5 mb-2">
             <Sparkles
