@@ -23,7 +23,7 @@ const LANGS = ["en", "fr", "pt"] as const;
 
 const iconBtn = "w-10 h-9 flex items-center justify-center text-ink rounded-full";
 
-function SearchSheet({ open, onClose, onGoTo }: { open: boolean; onClose: () => void; onGoTo: (screen: number) => void }) {
+export function SearchSheet({ open, onClose, onGoTo }: { open: boolean; onClose: () => void; onGoTo: (screen: number) => void }) {
   const { t } = useLanguage();
   const [query, setQuery] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
@@ -108,7 +108,6 @@ function SearchSheet({ open, onClose, onGoTo }: { open: boolean; onClose: () => 
 
 export default function HeaderTools({ onGoTo }: { onGoTo: (screen: number) => void }) {
   const { t, lang, setLang } = useLanguage();
-  const [searchOpen, setSearchOpen] = useState(false);
   const [langOpen, setLangOpen] = useState(false);
   const [theme, setTheme] = useState<Theme>(() => readStoredTheme());
   const langRef = useRef<HTMLDivElement>(null);
@@ -133,9 +132,6 @@ export default function HeaderTools({ onGoTo }: { onGoTo: (screen: number) => vo
   return (
     <>
       <div className="shrink-0 flex items-center justify-end gap-0.5 px-3 pb-1 bg-paper border-b border-line print:hidden">
-        <button onClick={() => setSearchOpen(true)} aria-label={t("tool_search")} className={iconBtn}>
-          <Search size={18} strokeWidth={1.25} />
-        </button>
         <button onClick={() => onGoTo(WARDROBE_SCREEN)} aria-label={t("tool_voice")} className={iconBtn}>
           <AudioLines size={19} strokeWidth={1.25} />
         </button>
@@ -168,7 +164,6 @@ export default function HeaderTools({ onGoTo }: { onGoTo: (screen: number) => vo
           )}
         </div>
       </div>
-      <SearchSheet open={searchOpen} onClose={() => setSearchOpen(false)} onGoTo={onGoTo} />
     </>
   );
 }

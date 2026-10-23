@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import { Menu as MenuIcon, X as CloseIcon, Share, ChevronDown } from "lucide-react";
+import { Menu as MenuIcon, X as CloseIcon, Share, ChevronDown, Search } from "lucide-react";
 import { useLanguage, type TranslationKey } from "../lib/i18n";
 import { ShareSheet } from "./UI";
-import HeaderTools from "./HeaderTools";
+import HeaderTools, { SearchSheet } from "./HeaderTools";
 import { readFlag, saveFlag, TOOLS_OPEN_KEY, LEGAL_LINKS, type LegalPage } from "../lib/uiPrefs";
 
 // Screen numbers match the live app: 1 overview, 2 journey, 3 materials,
@@ -39,6 +39,7 @@ export default function PassportTopBar({
   const { t, lang, setLang } = useLanguage();
   const [menuOpen, setMenuOpen] = useState(false);
   const [shareOpen, setShareOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
   // The search / voice / theme / language row is folded away by default so
   // the screens get the room; the chevron beside Share opens it.
   const [toolsOpen, setToolsOpen] = useState(() => readFlag(TOOLS_OPEN_KEY, false));
@@ -62,7 +63,7 @@ export default function PassportTopBar({
   return (
     <>
       <div
-        className={`shrink-0 flex items-center justify-between px-3 pb-2 bg-paper print:hidden ${showTools && toolsOpen ? "" : "border-b border-line"}`}
+        className={`shrink-0 grid grid-cols-[1fr_auto_1fr] items-center gap-2 px-3 pb-2 bg-paper print:hidden ${showTools && toolsOpen ? "" : "border-b border-line"}`}
         style={barStyle}
       >
         <div className="flex items-center">
@@ -73,12 +74,23 @@ export default function PassportTopBar({
           >
             <MenuIcon size={22} strokeWidth={1.25} />
           </button>
-          {showTools && <div className="w-9 h-10" aria-hidden="true" />}
+          {showTools && (
+            <button
+              onClick={() => setSearchOpen(true)}
+              aria-label={t("tool_search")}
+              className="h-10 ml-1 flex items-center gap-2 text-ink min-w-0"
+            >
+              <Search size={18} strokeWidth={1.25} className="shrink-0" />
+              <span className="hidden min-[480px]:block font-sans text-[13px] leading-none pb-1 border-b border-ink w-[clamp(3.5rem,14vw,10rem)] text-left">
+                {t("tool_search")}
+              </span>
+            </button>
+          )}
         </div>
         <button onClick={() => onGoTo(1)} aria-label={`wornwith.care, ${t("contents_overview")}`} className="flex items-center">
           {brand}
         </button>
-        <div className="flex items-center">
+        <div className="flex items-center justify-end">
           {showTools && (
             <button
               onClick={toggleTools}
@@ -175,6 +187,7 @@ export default function PassportTopBar({
           </nav>
         </div>
       )}
+      {showTools && <SearchSheet open={searchOpen} onClose={() => setSearchOpen(false)} onGoTo={onGoTo} />}
       <ShareSheet open={shareOpen} onClose={() => setShareOpen(false)} />
     </>
   );
