@@ -1,0 +1,13 @@
+{
+  "name": "Worn With Care",
+  "short_name": "Worn With Care",
+  "description": "A Digital Product Passport experience: where it came from, how to care for it, where it goes next.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FBF9F6",
+  "theme_color": "#FBF9F6",
+  "icons": [
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}
