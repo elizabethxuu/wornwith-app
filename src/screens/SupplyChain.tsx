@@ -57,7 +57,7 @@ export function SupplyChain() {
         ))}
       </div>
       <div className="grid grid-cols-3 gap-2 mb-5">
-        {[[String(JOURNEY.countries), t("countries")], [`${JOURNEY.distanceKm.toLocaleString("en-US")}km`, t("traveled")], ["Demo", t("stat_illustrative")]].map(([v, l]) => (
+        {[[String(JOURNEY.countries), t("countries")], [`${JOURNEY.distanceKm.toLocaleString("en-US")} km`, t("traveled")], ["Demo", t("stat_illustrative")]].map(([v, l]) => (
           <div key={l} className="border-y border-line py-3 text-center">
             <p className="font-display italic text-[22px] leading-none text-ink">{v}</p>
             <p className="text-[9px] font-sans text-clay uppercase tracking-[0.18em] mt-1.5">{l}</p>

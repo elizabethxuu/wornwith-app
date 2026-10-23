@@ -26,7 +26,10 @@ export const SUPPLY_CHAIN = [
   { stage: "retail", place: "Paris", code: "FR-F6631" },
 ] as const;
 
-export const JOURNEY = { countries: 4, distanceKm: 18400 } as const;
+// Straight-line distance of each leg (Canterbury → Biella → Porto → Paris),
+// rounded to the nearest 100 km. The total is their sum, so the timeline and
+// the headline figure always agree.
+export const JOURNEY = { countries: 4, legsKm: [18800, 1400, 1200], distanceKm: 21400 } as const;
 
 // Claim statuses use the same vocabulary as the screens: signing a claim proves
 // it hasn't been changed, not that it has been checked.
