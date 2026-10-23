@@ -125,35 +125,40 @@ export function ProductOverview({
           />
         </div>
 
-        {/* Sound: a quiet icon on the left edge, the mirror of the arrow on the right,
-            same size and glass, so the photo stays clear. */}
-        <div className="lux-rise absolute left-3 top-[36%] -translate-y-1/2 flex flex-col gap-2" style={{ "--lux-s": "0.35s" } as React.CSSProperties}>
-          <button
-            onClick={() => ambient.setMuted(!sound.muted)}
-            aria-label={sound.muted ? t("sound_turn_on") : t("sound_turn_off")}
-            aria-pressed={!sound.muted}
-            className="light-island w-11 h-11 flex items-center justify-center bg-white/60 backdrop-blur-md border border-white/60 text-ink"
-          >
-            {sound.muted ? <VolumeX size={20} strokeWidth={1.25} /> : <Volume2 size={20} strokeWidth={1.25} />}
-          </button>
-          {!sound.muted && (
-            <button
-              onClick={() => ambient.setPaused(!sound.paused)}
-              aria-label={sound.paused ? t("sound_play") : t("sound_pause")}
-              className="light-island w-11 h-11 flex items-center justify-center bg-white/60 backdrop-blur-md border border-white/60 text-ink"
-            >
-              {sound.paused ? <Play size={18} strokeWidth={1.25} /> : <Pause size={18} strokeWidth={1.25} />}
-            </button>
-          )}
-        </div>
-
-        <button
-          onClick={goExplore}
-          aria-label={t("hero_next")}
-          className="light-island absolute right-3 top-[36%] -translate-y-1/2 w-11 h-11 flex items-center justify-center bg-white/60 backdrop-blur-md border border-white/60 text-ink"
+        {/* Sound on the left, next on the right: one row, same size and glass,
+            so the two always line up and the photo stays clear. The row is
+            positioned without a transform because lux-rise animates transform. */}
+        <div
+          className="lux-rise absolute inset-x-3 top-[calc(36%-1.125rem)] z-10 flex items-start justify-between pointer-events-none"
+          style={{ "--lux-s": "0.35s" } as React.CSSProperties}
         >
-          <ChevronRight size={22} strokeWidth={1.25} />
-        </button>
+          <div className="flex flex-col gap-2 pointer-events-auto">
+            <button
+              onClick={() => ambient.setMuted(!sound.muted)}
+              aria-label={sound.muted ? t("sound_turn_on") : t("sound_turn_off")}
+              aria-pressed={!sound.muted}
+              className="light-island w-9 h-9 flex items-center justify-center bg-white/60 backdrop-blur-md border border-white/60 text-ink"
+            >
+              {sound.muted ? <VolumeX size={16} strokeWidth={1.25} /> : <Volume2 size={16} strokeWidth={1.25} />}
+            </button>
+            {!sound.muted && (
+              <button
+                onClick={() => ambient.setPaused(!sound.paused)}
+                aria-label={sound.paused ? t("sound_play") : t("sound_pause")}
+                className="light-island w-9 h-9 flex items-center justify-center bg-white/60 backdrop-blur-md border border-white/60 text-ink"
+              >
+                {sound.paused ? <Play size={14} strokeWidth={1.25} /> : <Pause size={14} strokeWidth={1.25} />}
+              </button>
+            )}
+          </div>
+          <button
+            onClick={goExplore}
+            aria-label={t("hero_next")}
+            className="light-island pointer-events-auto w-9 h-9 flex items-center justify-center bg-white/60 backdrop-blur-md border border-white/60 text-ink"
+          >
+            <ChevronRight size={18} strokeWidth={1.25} />
+          </button>
+        </div>
 
         <div
           className="light-island lux-rise absolute inset-x-3 bottom-3 mx-auto max-w-md bg-white/85 backdrop-blur-md border border-white/70 px-4 pt-[clamp(0.6rem,2dvh,1rem)] pb-[clamp(0.4rem,1.2dvh,0.75rem)] text-center"

@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
-import { ChevronLeft, ChevronRight, WifiOff, SearchX } from "lucide-react";
+import { ChevronLeft, ChevronRight, WifiOff, SearchX, X as CloseIcon } from "lucide-react";
+import { readFlag, saveFlag, FOOTER_HIDDEN_KEY, LEGAL_LINKS } from "./lib/uiPrefs";
 import { EmptyState } from "./components/UI";
 import PassportTopBar from "./components/PassportTopBar";
 import ChapterShell from "./components/ChapterShell";
@@ -77,6 +78,9 @@ export default function LiveApp() {
   const [revealing, setRevealing] = useState(() => !introPlayed() && !prefersReducedMotion());
   const liveScreens = buildLiveScreens((i) => setIndex(i), revealing);
   const [legalPage, setLegalPage] = useState<"none" | "privacy" | "terms" | "accessibility" | "release-notes" | "about-passport">("none");
+  // Visitors can close the legal footer; the same links stay in the menu.
+  const [footerHidden, setFooterHidden] = useState(() => readFlag(FOOTER_HIDDEN_KEY, false));
+  const hideFooter = () => { saveFlag(FOOTER_HIDDEN_KEY, true); setFooterHidden(true); };
 
   const runVerification = () => {
     setBootState("verifying");
@@ -201,7 +205,7 @@ export default function LiveApp() {
       {revealing && <OpeningReveal onDone={() => setRevealing(false)} />}
 
       {/* The brand header stays on every screen: menu, logo, share. */}
-      <PassportTopBar showTools onGoTo={(i) => { setLegalPage("none"); setIndex(i); }} />
+      <PassportTopBar showTools onGoTo={(i) => { setLegalPage("none"); setIndex(i); }} onOpenLegal={setLegalPage} />
 
       <div ref={scrollRef} className="flex-1 overflow-y-auto visible-scrollbar relative" onClick={handleTap}>
         <ChapterColorProvider color={CHAPTER_COLORS[index]}>
@@ -222,45 +226,34 @@ export default function LiveApp() {
       </div>
 
 
-      {/* Minimal legal footer, shown above nav on every screen, rendered
-          once here rather than duplicated per-screen. Real buttons, not
-          external links, both open the dedicated in-app screens. */}
+      {/* Minimal legal footer, rendered once here rather than per-screen.
+          It can be closed so it never covers a screen; the same links stay
+          in the menu, so nothing becomes unreachable. */}
+      {!footerHidden && (
       <div
-        className="flex flex-wrap items-center justify-center gap-x-3.5 gap-y-1 px-4 pt-2 shrink-0 print:hidden"
+        className="relative flex flex-wrap items-center justify-center gap-x-3.5 gap-y-1 pl-4 pr-10 pt-2 shrink-0 print:hidden"
         style={isFront ? { paddingBottom: "max(env(safe-area-inset-bottom), 12px)" } : undefined}
       >
         <p className="font-sans text-[10px] text-clay">{t("footer_copyright")}</p>
+        {LEGAL_LINKS.map(([key, page]) => (
+          <button
+            key={page}
+            onClick={() => setLegalPage(page)}
+            className="font-sans text-[10px] text-clay hover:underline underline-offset-2 min-h-[24px] px-1"
+          >
+            {t(key)}
+          </button>
+        ))}
         <button
-          onClick={() => setLegalPage("privacy")}
-          className="font-sans text-[10px] text-clay hover:underline underline-offset-2 min-h-[24px] px-1"
+          onClick={hideFooter}
+          aria-label={t("footer_hide")}
+          title={t("footer_hide")}
+          className="absolute right-2 top-1.5 w-7 h-7 flex items-center justify-center text-clay rounded-full hover:bg-line/50"
         >
-          {t("footer_privacy")}
-        </button>
-        <button
-          onClick={() => setLegalPage("terms")}
-          className="font-sans text-[10px] text-clay hover:underline underline-offset-2 min-h-[24px] px-1"
-        >
-          {t("footer_terms")}
-        </button>
-        <button
-          onClick={() => setLegalPage("accessibility")}
-          className="font-sans text-[10px] text-clay hover:underline underline-offset-2 min-h-[24px] px-1"
-        >
-          {t("footer_accessibility")}
-        </button>
-        <button
-          onClick={() => setLegalPage("release-notes")}
-          className="font-sans text-[10px] text-clay hover:underline underline-offset-2 min-h-[24px] px-1"
-        >
-          {t("footer_release_notes")}
-        </button>
-        <button
-          onClick={() => setLegalPage("about-passport")}
-          className="font-sans text-[10px] text-clay hover:underline underline-offset-2 min-h-[24px] px-1"
-        >
-          {t("footer_about_passport")}
+          <CloseIcon size={14} strokeWidth={1.5} />
         </button>
       </div>
+      )}
 
       {/* Visible, unambiguous nav bar, the tap-zones in the content area
           still work too, but this makes it obvious at a glance that you can
