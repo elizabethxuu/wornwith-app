@@ -250,7 +250,9 @@ export const dict = {
   // Product lifecycle
   lifecycle_eyebrow: { en: "Product Lifecycle", fr: "Cycle de Vie du Produit", pt: "Ciclo de Vida do Produto" },
   where_from: { en: "Where did it come from?", fr: "D'où vient-il ?", pt: "De onde ele veio?" },
-  km_traveled: { en: "18,400km from farm to your hands", fr: "18 400 km de la ferme à vos mains", pt: "18.400km da fazenda até suas mãos" },
+  km_traveled: { en: "21,400 km from farm to your hands", fr: "21 400 km de la ferme à vos mains", pt: "21.400 km da fazenda até suas mãos" },
+  more_details: { en: "More details", fr: "Plus de détails", pt: "Mais detalhes" },
+  by_sea: { en: "by sea", fr: "par mer", pt: "por mar" },
   wool_farming: { en: "Wool Farming", fr: "Élevage de Laine", pt: "Criação de Lã" },
   spinning_weaving: { en: "Spinning & Weaving", fr: "Filature et Tissage", pt: "Fiação e Tecelagem" },
   cutting_construction: { en: "Cutting & Construction", fr: "Coupe et Confection", pt: "Corte e Confecção" },

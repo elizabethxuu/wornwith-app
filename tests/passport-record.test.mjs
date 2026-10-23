@@ -82,6 +82,7 @@ test("copy that repeats record facts agrees with the record", async () => {
   const m = await loadTs("lib/passportRecord");
   const copy = readFileSync(new URL("../src/lib/i18n.tsx", import.meta.url), "utf8");
   assert.ok(copy.includes(m.ETHICAL_AUDIT.citedReference.id), "audit note cites a different reference");
-  assert.ok(copy.includes(`${m.JOURNEY.distanceKm.toLocaleString("en-US")}km from farm`), "journey copy shows a different distance");
+  assert.ok(copy.includes(`${m.JOURNEY.distanceKm.toLocaleString("en-US")} km from farm`), "journey copy shows a different distance");
+  assert.equal(m.JOURNEY.legsKm.reduce((a, b) => a + b, 0), m.JOURNEY.distanceKm, "journey legs don't add up to the total");
   assert.ok(copy.includes(`vs ${m.IMPACT.co2CategoryAverageKg}kg avg`), "CO2 copy shows a different category average");
 });
