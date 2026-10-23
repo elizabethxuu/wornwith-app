@@ -1,11 +1,12 @@
 import { useState } from "react";
 import { Eyebrow, ExpandableCard } from "../components/UI";
 import { useLanguage } from "../lib/i18n";
+import { STOP_ACCENTS } from "../lib/mapFocus";
 import { Shirt, Sprout, Spool, Scissors } from "lucide-react";
 
 
 /* 5: PRODUCT LIFECYCLE */
-export function ProductLifecycle({ onViewChapter }: { onViewChapter?: () => void } = {}) {
+export function ProductLifecycle({ onViewChapter, onOpenMapStop }: { onViewChapter?: () => void; onOpenMapStop?: (stop: number) => void } = {}) {
   const { t } = useLanguage();
   const stops = [
     { icon: <Sprout size={18} strokeWidth={1.25} />, title: t("wool_farming"), place: t("place_full_nz_short") },
@@ -80,20 +81,23 @@ export function ProductLifecycle({ onViewChapter }: { onViewChapter?: () => void
       <p className="reveal-soft font-sans text-[12px] text-clay mt-2 mb-7" style={at(240)}>{t("km_traveled")}</p>
       <div className="flex gap-2 mb-12 flex-wrap">
         {[
-          // Each country keeps its own soft tint and a highlighted ring,
-          // drawn from the passport's palette; the label stays dark brown.
-          { key: "place_nz" as const, rgb: "143 166 136" },       // sage, Canterbury pasture
-          { key: "place_italy" as const, rgb: "185 138 74" },     // warm bronze, Biella wool
-          { key: "place_portugal" as const, rgb: "85 107 138" },  // azulejo blue, Porto
-          { key: "place_france" as const, rgb: "201 122 140" },   // blush, Paris
+          // White chips ringed in each country's pin color from the map;
+          // tapping one opens the map on that pin.
+          { key: "place_nz" as const },
+          { key: "place_italy" as const },
+          { key: "place_portugal" as const },
+          { key: "place_france" as const },
         ].map((bubble, i) => (
-          <span
+          <button
             key={bubble.key}
-            style={{ ...at(380 + i * 110), ["--chip" as string]: bubble.rgb }}
+            type="button"
+            onClick={(e) => { e.stopPropagation(); onOpenMapStop?.(i); }}
+            aria-label={`${t(bubble.key)}, ${t("show_on_map")}`}
+            style={{ ...at(380 + i * 110), ["--pin" as string]: STOP_ACCENTS[i] }}
             className="reveal-soft country-chip text-[10px] uppercase tracking-[0.18em] font-sans font-semibold px-3 py-1.5 rounded-full"
           >
             {t(bubble.key)}
-          </span>
+          </button>
         ))}
       </div>
       <div className="relative pl-6">

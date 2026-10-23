@@ -1,6 +1,7 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { ComposableMap, Geographies, Geography, Marker, Line, ZoomableGroup } from "react-simple-maps";
 import { useLanguage } from "../lib/i18n";
+import { STOP_ACCENTS, takePendingMapStop, onMapStopRequest } from "../lib/mapFocus";
 
 const worldMapUrl = "/data/world-110m.json";
 // Per-country watercolor wash, France (Paris) is the one deliberate
@@ -12,7 +13,6 @@ const COUNTRY_WASH: Record<string, { fill: string; opacity: number }> = {
   Portugal: { fill: "#D9D5CF", opacity: 0.4 },
   France: { fill: "#EBC9D2", opacity: 0.4 },
 };
-const STOP_ACCENTS = ["#2FC7D8", "#D19A63", "#8A7F76", "#A94C63"]; // NZ, Italy, Portugal, Paris
 // dx/dy fan each label out in its own direction so the three closely-spaced
 // European stops (Portugal, Italy, Paris) don't stack on top of each other.
 // leader: true draws a short connecting line from the pin to the label.
@@ -63,7 +63,19 @@ export default function JourneyMap() {
   const { t } = useLanguage();
   // Defaults to the last stop (where the garment is now) since that's the
   // most relevant detail to show before anyone's tapped anything.
-  const [selected, setSelected] = useState(journeyStops.length - 1);
+  // A country chip on the Journey screen can open the map on its own pin.
+  const [selected, setSelected] = useState(() => takePendingMapStop() ?? journeyStops.length - 1);
+  const mapRef = useRef<HTMLDivElement>(null);
+  const [focusPulse, setFocusPulse] = useState(0);
+  useEffect(() => {
+    const focus = () => {
+      setFocusPulse((n) => n + 1);
+      mapRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+    };
+    if (selected !== journeyStops.length - 1) focus();
+    return onMapStopRequest((i) => { setSelected(i); focus(); });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   const [drawn, setDrawn] = useState(false);
   const [mapVisible, setMapVisible] = useState(false);
   const [arrivalPulsePlayed, setArrivalPulsePlayed] = useState(false);
@@ -91,7 +103,7 @@ export default function JourneyMap() {
   const stop = journeyStops[selected];
 
   return (
-    <div className="w-full mb-4" onClick={(e) => e.stopPropagation()}>
+    <div ref={mapRef} className="w-full mb-4" onClick={(e) => e.stopPropagation()}>
       <div
         className="w-full border border-line/60 rounded-card overflow-hidden"
         style={{
@@ -186,6 +198,12 @@ export default function JourneyMap() {
                     strokeWidth={1.3}
                     style={{ pointerEvents: "none" }}
                   />
+                  {selected === i && focusPulse > 0 && (
+                    <circle key={focusPulse} r={7} fill={stopColor} fillOpacity={0.3} style={{ pointerEvents: "none" }}>
+                      <animate attributeName="r" values="7;15;7" dur="1.2s" begin="0.4s" repeatCount="2" fill="freeze" />
+                      <animate attributeName="fill-opacity" values="0.32;0;0" dur="1.2s" begin="0.4s" repeatCount="2" fill="freeze" />
+                    </circle>
+                  )}
                   {selected === i && (
                     <circle
                       r={9}

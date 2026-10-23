@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { requestMapStop } from "./lib/mapFocus";
 import { ChevronLeft, ChevronRight, WifiOff, SearchX, ChevronDown, ChevronUp } from "lucide-react";
 import { readFlag, saveFlag, FOOTER_HIDDEN_KEY, LEGAL_LINKS } from "./lib/uiPrefs";
 import { EmptyState } from "./components/UI";
@@ -38,7 +39,7 @@ function buildLiveScreens(goToScreen: (index: number) => void, intro: boolean) {
     // other screen numbers (and chapter colors) do not shift.
     null,
     <ProductOverview key="overview" intro={intro} onExploreJourney={() => goToScreen(2)} onGoTo={goToScreen} />,
-    <ProductLifecycle key="lifecycle" onViewChapter={() => goToScreen(7)} />,
+    <ProductLifecycle key="lifecycle" onViewChapter={() => goToScreen(7)} onOpenMapStop={(i) => { requestMapStop(i); goToScreen(7); }} />,
     <SupplyChain key="supply" />,
     <CareGuide key="care" />,
     <SustainabilityMetrics key="sustainability" />,
