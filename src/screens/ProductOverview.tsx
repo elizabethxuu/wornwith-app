@@ -209,10 +209,25 @@ export function ProductOverview({
         fallbackImageSrc={GARMENT.image}
         altText={t("product_hero_alt")}
       />
-      <h2 className="font-display italic text-2xl text-ink leading-tight">
-        {t("product_name_l1")}
-        <br />{t("product_name_l2")}
-      </h2>
+      <div className="flex items-start justify-between gap-4">
+        <h2 className="font-display italic text-2xl text-ink leading-tight">
+          {t("product_name_l1")}
+          <br />{t("product_name_l2")}
+        </h2>
+        {/* The ESPR signal, filling the space beside the name: a black
+            pill that opens the signed record. */}
+        <button
+          onClick={(e) => { e.stopPropagation(); setShowVerificationInfo(true); }}
+          aria-label={t("espr_verification_label")}
+          className="shrink-0 mt-1 flex flex-col items-center gap-1.5"
+        >
+          <span className="flex items-center gap-1.5 bg-ink text-cream rounded-full pl-2.5 pr-3.5 py-2 font-sans text-[10px] font-medium uppercase tracking-[0.18em] transition-opacity duration-200 hover:opacity-85">
+            <Check size={12} strokeWidth={2.5} aria-hidden="true" />
+            ESPR
+          </span>
+          <span className="font-sans text-[9px] uppercase tracking-[0.18em] text-clay">{t("espr_badge_caption")}</span>
+        </button>
+      </div>
       <p className="font-sans text-[11px] text-clay mt-1 mb-4">
         {t("tagline_coat")}
       </p>

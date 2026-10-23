@@ -127,6 +127,7 @@ export const dict = {
     pt: "Um Passaporte Digital do Produto é um registro que toda peça de roupa vendida na UE deverá ter até 2028–2030, onde foi feita, do que é feita e como cuidar dela. Esta é a visão de uma designer sobre como esse momento poderia ser.",
   },
   verified_passport: { en: "Signed Passport Record", fr: "Dossier du passeport signé", pt: "Registro do passaporte assinado" },
+  espr_badge_caption: { en: "View record", fr: "Voir le dossier", pt: "Ver registro" },
   espr_verification_label: { en: "ESPR Verification", fr: "Vérification ESPR", pt: "Verificação ESPR" },
   stored_ledger: { en: "Stored on secure digital ledger", fr: "Stocké sur un registre numérique sécurisé", pt: "Armazenado em registro digital seguro" },
   passport_id_label: { en: "Passport ID", fr: "ID du Passeport", pt: "ID do Passaporte" },
