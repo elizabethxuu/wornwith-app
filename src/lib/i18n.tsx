@@ -810,6 +810,10 @@ export const dict = {
   dpp_record_pending: { en: "Passport record", fr: "Dossier du passeport", pt: "Registro do passaporte" },
   passport_record_pending: { en: "Passport Record", fr: "Dossier du passeport", pt: "Registro do passaporte" },
   vr_view_data_pending: { en: "See the record data", fr: "Voir les données du dossier", pt: "Ver os dados do registro" },
+  sr_title: { en: "Part of this passport’s signed record", fr: "Fait partie du dossier signé de ce passeport", pt: "Faz parte do registro assinado deste passaporte" },
+  sr_title_pending: { en: "Part of this passport’s record", fr: "Fait partie du dossier de ce passeport", pt: "Faz parte do registro deste passaporte" },
+  sr_sub_materials: { en: "The stages, audits and figures on this page are in the record. Audits stay pending verification.", fr: "Les étapes, audits et chiffres de cette page figurent dans le dossier. Les audits restent en attente de vérification.", pt: "As etapas, auditorias e números desta página estão no registro. As auditorias continuam aguardando verificação." },
+  sr_sub_environment: { en: "The figures on this page are in the record. They are illustrative estimates.", fr: "Les chiffres de cette page figurent dans le dossier. Ce sont des estimations illustratives.", pt: "Os números desta página estão no registro. São estimativas ilustrativas." },
   record_on_base: { en: "Published on Base", fr: "Publié sur Base", pt: "Publicado na Base" },
   record_not_published_short: { en: "Not yet published", fr: "Pas encore publié", pt: "Ainda não publicado" },
 

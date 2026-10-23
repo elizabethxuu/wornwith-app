@@ -26,8 +26,27 @@ export const SUPPLY_CHAIN = [
   { stage: "retail", place: "Paris", code: "FR-F6631" },
 ] as const;
 
+export const JOURNEY = { countries: 4, distanceKm: 18400 } as const;
+
+// Claim statuses use the same vocabulary as the screens: signing a claim proves
+// it hasn't been changed, not that it has been checked.
+export const ETHICAL_AUDIT = {
+  citedReference: { issuer: "Bureau Veritas", id: "BV-2025-09871", status: "cited_not_checked" },
+  results: [
+    { criterion: "fair_wages", result: "passed", status: "pending_verification" },
+    { criterion: "health_safety", result: "grade_a", status: "pending_verification" },
+    { criterion: "no_forced_labour", result: "passed", status: "pending_verification" },
+  ],
+} as const;
+
+export const CHEMICAL_COMPLIANCE = {
+  reach: { result: "no_test_report_on_file", status: "not_available" },
+  economicOperator: { result: "placeholder", status: "not_available" },
+} as const;
+
 export const IMPACT = {
   co2VsCategoryPercent: 30,
+  co2CategoryAverageKg: 12.1,
   recycledWaterPercent: 80,
   recyclabilityPercent: 92,
   renewableEnergyPercent: 78,
@@ -54,6 +73,9 @@ export const PASSPORT_RECORD = {
     certificationsCited: ["RWS", "GOTS"],
   },
   supplyChain: SUPPLY_CHAIN,
+  journey: JOURNEY,
+  ethicalAudit: ETHICAL_AUDIT,
+  chemicalCompliance: CHEMICAL_COMPLIANCE,
   impact: { ...IMPACT, basis: "illustrative estimates" },
 };
 

@@ -1710,6 +1710,39 @@ export function VerificationInfoPanel({ open, onClose }: { open: boolean; onClos
   );
 }
 
+// A quiet row at the foot of the Materials and Environment screens saying the
+// facts on the page are part of the passport record, and opening the verify
+// panel. It only says "signed" once the record has actually been published.
+export function SignedRecordLink({ subKey }: { subKey: TranslationKey }) {
+  const { t } = useLanguage();
+  const [open, setOpen] = useState(false);
+  const published = Boolean(ATTESTATION.attestationUid);
+  return (
+    <>
+      <button
+        type="button"
+        onClick={(e) => { e.stopPropagation(); setOpen(true); }}
+        className="mt-4 w-full flex items-center justify-between gap-3 rounded-2xl border border-line bg-cream px-3.5 py-3 text-left"
+      >
+        <span className="flex items-center gap-2.5 min-w-0">
+          <span
+            aria-hidden="true"
+            className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] shrink-0 ${published ? "bg-[#5F7A5C] text-white" : "border border-line text-clay"}`}
+          >
+            {published ? "\u2713" : "\u25C7"}
+          </span>
+          <span className="min-w-0">
+            <span className="block font-sans text-[12px] font-semibold text-ink">{t(published ? "sr_title" : "sr_title_pending")}</span>
+            <span className="block font-sans text-[10.5px] text-clay mt-0.5 leading-snug">{t(subKey)}</span>
+          </span>
+        </span>
+        <span aria-hidden="true" className="font-sans text-[14px] text-clay shrink-0">{"\u203A"}</span>
+      </button>
+      <VerificationInfoPanel open={open} onClose={() => setOpen(false)} />
+    </>
+  );
+}
+
 // The real, functional "Share Passport" experience, a bottom sheet with
 // three genuinely working options, not a native share-sheet shortcut.
 // PDF generates a real multi-page document from live app data (see
