@@ -27,3 +27,10 @@ test("privacy copy discloses the services that receive typed text", () => {
   assert.match(privacyBlock, /ElevenLabs/);
   assert.match(privacyBlock, /stored only in this browser/);
 });
+
+test("verification copy describes a signed record, not a verified garment", () => {
+  for (const re of [/"DPP Verified"/, /"Verified Passport"/, /immutable ledger/i, /verification is illustrative/i]) {
+    assert.ok(!re.test(copy), `copy still matches ${re}`);
+  }
+  assert.match(copy, /What it doesn't:/);
+});

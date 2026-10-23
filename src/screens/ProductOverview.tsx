@@ -6,6 +6,7 @@ import { loadOwnershipRecord } from "../lib/persistence";
 import { GARMENT } from "../lib/garment";
 import { useLanguage } from "../lib/i18n";
 import { Volume2, VolumeX, Pause, Play, ChevronRight, Check } from "lucide-react";
+import { ATTESTATION } from "../lib/passportRecord";
 
 
 
@@ -165,7 +166,7 @@ export function ProductOverview({
             onClick={() => setShowVerificationInfo(true)}
             className="mt-1.5 font-sans text-[9px] font-medium uppercase tracking-[0.2em] text-clay"
           >
-            {t("dpp_verified")} · <span className="whitespace-nowrap">{dppNo} ›</span>
+            {t(ATTESTATION.attestationUid ? "dpp_verified" : "dpp_record_pending")} · <span className="whitespace-nowrap">{dppNo} ›</span>
           </button>
           <div className="mt-[clamp(0.35rem,1.2dvh,0.75rem)] border-t border-ink/10 flex flex-col">
             <button

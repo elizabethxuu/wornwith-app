@@ -10,6 +10,7 @@ import { duck as duckAmbient } from "../lib/ambient";
 import { useChapterColor, readableOn } from "../lib/chapterColor";
 import { passportUrl } from "../lib/config";
 import { GARMENT } from "../lib/garment";
+import { ATTESTATION, PASSPORT_ID, checkRecord, publicRecordUrl, shortHex, type RecordCheck } from "../lib/passportRecord";
 import { getCurrentSeason } from "../lib/careRecommendation";
 import { getTimeOfDay, selectAtmosphere, spotifySearchUrl, type Atmosphere } from "../lib/interlude";
 import {
@@ -1566,16 +1567,50 @@ export function useMountReveal() {
   return { visible, reducedMotion: reducedMotionRef.current, stepStyle };
 }
 
-// One reusable "About this verification" panel, triggered from three
+// One reusable "Verify this passport" panel, triggered from three
 // different screens (Passport, Product, Story). A bottom sheet on the
 // scale this app runs at (single-column mobile-first), dismissible via
 // backdrop tap or the close button, matches the app's existing rounded
 // corners, borders, and serif-italic heading treatment rather than
 // introducing a new visual language.
 export function VerificationInfoPanel({ open, onClose }: { open: boolean; onClose: () => void }) {
-  const { t } = useLanguage();
+  const { t, lang } = useLanguage();
+  const [check, setCheck] = useState<RecordCheck | null>(null);
+
+  // Each time the panel opens, recompute this page's fingerprint and compare
+  // it with the record published on Base.
+  useEffect(() => {
+    if (!open) return;
+    let alive = true;
+    setCheck(null);
+    checkRecord().then((r) => { if (alive) setCheck(r); });
+    return () => { alive = false; };
+  }, [open]);
 
   if (!open) return null;
+
+  const recordUrl = publicRecordUrl();
+  const state = check?.state;
+  const tone =
+    state === "match" ? "good" : state === "mismatch" || state === "revoked" ? "bad" : "neutral";
+  const status: { title: TranslationKey; sub?: TranslationKey } =
+    !check ? { title: "vr_checking" }
+    : state === "match" ? { title: "vr_match_title", sub: "vr_publisher_value" }
+    : state === "mismatch" ? { title: "vr_mismatch_title", sub: "vr_mismatch_sub" }
+    : state === "revoked" ? { title: "vr_revoked_title", sub: "vr_revoked_sub" }
+    : state === "unreachable" ? { title: "vr_unreachable_title", sub: "vr_unreachable_sub" }
+    : { title: "vr_unpublished_title", sub: "vr_unpublished_sub" };
+  const published = ATTESTATION.publishedOn
+    ? new Date(`${ATTESTATION.publishedOn}T12:00:00Z`).toLocaleDateString(lang, { day: "numeric", month: "long", year: "numeric" })
+    : t("record_not_published_short");
+
+  const rows: [TranslationKey, React.ReactNode, boolean?][] = [
+    ["vr_publisher", t("vr_publisher_value")],
+    ["vr_passport", `${PASSPORT_ID} · ${GARMENT.name}`],
+    ["vr_fingerprint", check ? `sha256 · ${shortHex(check.localHash, 8, 8)}` : "…", true],
+    ["vr_published", published],
+    ["vr_network", `${ATTESTATION.network} · ${ATTESTATION.service}`],
+  ];
 
   return createPortal(
     <div className="fixed inset-0 h-[100dvh] w-full z-50" onClick={(e) => e.stopPropagation()}>
@@ -1603,47 +1638,72 @@ export function VerificationInfoPanel({ open, onClose }: { open: boolean; onClos
             ×
           </button>
         </div>
-        <p className="font-sans text-[13px] text-clay leading-relaxed">
-          {t("verification_panel_body")}
-        </p>
 
-        {/* Ledger table, same verified-vs-projected visual logic as the
-            "From the Archives" timeline: accent/solid for verified rows,
-            muted/de-emphasized for the one projected row. */}
-        <div className="mt-6 pt-5 border-t border-line">
-          <div className="flex items-start justify-between gap-3 mb-3">
-            <p className="font-sans text-[10px] text-clay/80 leading-relaxed">
-              {t("ledger_caption")}
-            </p>
-            <span className="font-sans text-[9px] text-clay/60 italic shrink-0 mt-0.5">
-              {t("ledger_illustrative_label")}
-            </span>
-          </div>
-          <div className="grid grid-cols-[1.1fr_1.3fr_1fr_0.9fr] gap-x-1.5 pb-1.5 border-b border-line">
-            <span className="font-sans text-[8px] font-semibold uppercase tracking-wide text-clay">{t("ledger_col_date")}</span>
-            <span className="font-sans text-[8px] font-semibold uppercase tracking-wide text-clay">{t("ledger_col_event")}</span>
-            <span className="font-sans text-[8px] font-semibold uppercase tracking-wide text-clay">{t("ledger_col_hash")}</span>
-            <span className="font-sans text-[8px] font-semibold uppercase tracking-wide text-clay text-right">{t("ledger_col_status")}</span>
-          </div>
-          {[
-            { date: "5 Apr 2026", event: t("ledger_event_created"), hash: "0x4f2a\u20269c1e", projected: false },
-            { date: "12 Apr 2026", event: t("ledger_event_transferred"), hash: "0x7b31\u20264a02", projected: false },
-            { date: "2 Jun 2026", event: t("ledger_event_moment_logged"), hash: "0xe910\u20267d5f", projected: false },
-            { date: t("ledger_date_repair"), event: t("ledger_event_repair_projected"), hash: "-", projected: true },
-          ].map((row, i) => (
-            <div
-              key={i}
-              className={`grid grid-cols-[1.1fr_1.3fr_1fr_0.9fr] gap-x-1.5 py-2 border-b border-line/60 last:border-0 ${row.projected ? "opacity-55" : ""}`}
-            >
-              <span className="font-sans text-[9.5px] text-ink">{row.date}</span>
-              <span className="font-sans text-[9.5px] text-ink">{row.event}</span>
-              <span className="font-mono text-[9px] text-clay/70">{row.hash}</span>
-              <span className={`font-sans text-[9.5px] font-medium text-right ${row.projected ? "text-clay" : "text-sage"}`}>
-                {row.projected ? t("ledger_status_projected") : t("ledger_status_verified")}
-              </span>
+        <div
+          role="status"
+          aria-live="polite"
+          className={`flex items-center gap-3 rounded-2xl border px-3.5 py-3 ${
+            tone === "good" ? "bg-sage/10 border-sage/35" : tone === "bad" ? "bg-blush/15 border-blush-deep/40" : "bg-cream border-line"
+          }`}
+        >
+          <span
+            aria-hidden="true"
+            className={`w-6 h-6 rounded-full flex items-center justify-center text-[12px] shrink-0 ${
+              tone === "good" ? "bg-[#5F7A5C] text-white" : tone === "bad" ? "bg-blush-deep text-white" : "border border-line text-clay"
+            }`}
+          >
+            {tone === "good" ? "✓" : tone === "bad" ? "!" : "·"}
+          </span>
+          <span className="min-w-0">
+            <span className="block font-sans text-[12.5px] font-semibold text-ink">{t(status.title)}</span>
+            {status.sub && <span className="block font-sans text-[11px] text-clay mt-0.5">{t(status.sub)}</span>}
+          </span>
+        </div>
+
+        <p className="font-sans text-[13px] text-clay leading-relaxed mt-4">{t(ATTESTATION.attestationUid ? "verification_panel_body" : "verification_panel_body_pending")}</p>
+        <span className="inline-block mt-2 font-sans text-[9px] font-semibold uppercase tracking-[0.18em] text-clay border border-line rounded-full px-2.5 py-1">
+          {t("vr_demo_tag")}
+        </span>
+
+        <dl className="mt-4 border-t border-line">
+          {rows.map(([label, value, mono]) => (
+            <div key={label} className="grid grid-cols-[96px_1fr] gap-x-3 py-2.5 border-b border-line">
+              <dt className="font-sans text-[8.5px] font-semibold uppercase tracking-[0.14em] text-clay pt-0.5">{t(label)}</dt>
+              <dd className={`text-ink break-words ${mono ? "font-mono text-[11px] text-clay" : "font-sans text-[12px]"}`}>{value}</dd>
             </div>
           ))}
+        </dl>
+
+        {state === "match" && (
+          <p className="mt-3 font-sans text-[12px] text-[#3D5A3A]">{"✓"} {t("vr_match_line")}</p>
+        )}
+
+        <div className="mt-4 flex flex-col gap-2">
+          {recordUrl && (
+            <a
+              href={recordUrl}
+              target="_blank"
+              rel="noopener"
+              className="flex items-center justify-center gap-1.5 border border-ink rounded-full py-3 font-sans text-[10.5px] font-medium uppercase tracking-[0.2em] text-ink"
+            >
+              {t("vr_view_record")} {"↗"}
+            </a>
+          )}
+          <a
+            href={`/passport/${PASSPORT_ID}.json`}
+            target="_blank"
+            rel="noopener"
+            className="text-center font-sans text-[10.5px] uppercase tracking-[0.18em] text-clay underline underline-offset-4 decoration-line py-1"
+          >
+            {t(ATTESTATION.attestationUid ? "vr_view_data" : "vr_view_data_pending")} {"↗"}
+          </a>
         </div>
+
+        <p className="mt-4 font-sans text-[12px] text-ink/85 leading-relaxed">{t("vr_resale")}</p>
+        <p className="mt-3 font-sans text-[10.5px] text-clay leading-relaxed">
+          <strong className="font-semibold text-ink/80">{t("vr_proves")}</strong> {t("vr_proves_body")}{" "}
+          <strong className="font-semibold text-ink/80">{t("vr_not_proves")}</strong> {t("vr_not_proves_body")}
+        </p>
       </section>
     </div>,
     document.body

@@ -1,5 +1,6 @@
 import { Eyebrow, Donut, Pill, ExpandableCard } from "../components/UI";
 import { useLanguage } from "../lib/i18n";
+import { IMPACT } from "../lib/passportRecord";
 
 
 /* 8: SUSTAINABILITY METRICS */
@@ -12,16 +13,16 @@ export function SustainabilityMetrics() {
       <p className="text-[11px] text-clay font-sans mt-1">{t("impact_supporting_line")}</p>
       <p className="text-[10px] text-clay font-sans mt-2 mb-4 leading-relaxed">{t("impact_illustrative_note")}</p>
       <div className="flex justify-around mb-5">
-        <Donut percent={30} label="CO₂" sublabel={t("vs_avg")} color="#8E3D52" />
-        <Donut percent={80} label="H₂O" sublabel={t("recycled_water")} color="#2B2622" />
+        <Donut percent={IMPACT.co2VsCategoryPercent} label="CO₂" sublabel={t("vs_avg")} color="#8E3D52" />
+        <Donut percent={IMPACT.recycledWaterPercent} label="H₂O" sublabel={t("recycled_water")} color="#2B2622" />
       </div>
       <div className="space-y-3 mb-4">
-        <Pill label={t("recyclability")} percent={92} color="#8E3D52" />
-        <Pill label={t("renewable_energy")} percent={78} color="#B7727F" />
-        <Pill label={t("ethical_sourcing")} percent={100} color="#2B2622" />
+        <Pill label={t("recyclability")} percent={IMPACT.recyclabilityPercent} color="#8E3D52" />
+        <Pill label={t("renewable_energy")} percent={IMPACT.renewableEnergyPercent} color="#B7727F" />
+        <Pill label={t("ethical_sourcing")} percent={IMPACT.ethicalSourcingPercent} color="#2B2622" />
       </div>
       <div className="grid grid-cols-3 gap-2">
-        {[["7.9kg", t("co2_saved")], ["2,400L", t("water_saved")], ["Top 10%", t("top_10")]].map(([v, l]) => (
+        {[[`${IMPACT.co2SavedKg}kg`, t("co2_saved")], [`${IMPACT.waterSavedLitres.toLocaleString("en-US")}L`, t("water_saved")], [`Top ${IMPACT.topPercentOfBrands}%`, t("top_10")]].map(([v, l]) => (
           <div key={l} className="border-y border-line py-3 text-center">
             <p className="font-display italic text-[20px] leading-none text-ink">{v}</p>
             <p className="text-[9px] font-sans text-clay uppercase tracking-[0.18em] mt-1.5">{l}</p>

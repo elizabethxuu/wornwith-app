@@ -21,6 +21,7 @@ import { GARMENT, getEstimatedYearsRemaining } from "./garment";
 import { loadOwnershipRecord } from "./persistence";
 import { loadWardrobe } from "./persistence";
 import { dict, type Lang } from "./i18n";
+import { ATTESTATION } from "./passportRecord";
 
 const PAGE_W = 210; // A4 mm
 const PAGE_H = 297;
@@ -209,17 +210,17 @@ export async function generatePassportPdf(): Promise<void> {
   doc.setFont("helvetica", "bold");
   doc.setFontSize(9);
   setColor(COLOR.sage);
-  doc.text((t("verified_passport") || "Verified Passport").toUpperCase(), boxTextX, boxY, { charSpace: 0.3 });
+  doc.text((t(ATTESTATION.attestationUid ? "verified_passport" : "passport_record_pending") || "Passport Record").toUpperCase(), boxTextX, boxY, { charSpace: 0.3 });
   boxY += 7;
   doc.setFont("helvetica", "bold");
   doc.setFontSize(12);
   setColor(COLOR.ink);
-  doc.text(t("verified_passport") || "Verified Passport", boxTextX, boxY);
+  doc.text(t(ATTESTATION.attestationUid ? "verified_passport" : "passport_record_pending") || "Passport Record", boxTextX, boxY);
   boxY += 6;
   doc.setFont("helvetica", "normal");
   doc.setFontSize(9);
   setColor(COLOR.clay);
-  doc.text(`${GARMENT.verifiedDate} \u00b7 ${t("passport_id_label") || "Passport ID"}: ${GARMENT.fullDppId}`, boxTextX, boxY);
+  doc.text(`${ATTESTATION.publishedOn ?? (t("record_not_published_short") || "Not yet published")} \u00b7 ${t("passport_id_label") || "Passport ID"}: ${GARMENT.fullDppId}`, boxTextX, boxY);
   boxY += 5;
   doc.text(t("stored_ledger") || "Stored on secure digital ledger", boxTextX, boxY);
   cursor.y += boxH + 12;
@@ -385,7 +386,7 @@ export async function generatePassportPdf(): Promise<void> {
   body(t("about_passport_p3") || "");
   spacer(6);
   sectionTitle(t("verification_panel_title") || "About this verification");
-  body(t("verification_panel_body") || "");
+  body(t(ATTESTATION.attestationUid ? "verification_panel_body" : "verification_panel_body_pending") || "");
   spacer(6);
   sectionTitle(t("data_sources_title") || "Data Sources");
   row(t("data_source_brand_label") || "Brand-Provided Data", t("data_source_verified_value") || "Illustrative");

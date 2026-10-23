@@ -1,17 +1,20 @@
 import { Eyebrow, ExpandableCard, StatusChip } from "../components/UI";
 import { useLanguage } from "../lib/i18n";
 import { ArrowRight, Sprout, Factory, Ship, Store } from "lucide-react";
+import { SUPPLY_CHAIN } from "../lib/passportRecord";
+
+const STAGE_ICONS = { wool_farm: Sprout, milling: Factory, ship: Ship, retail: Store } as const;
 
 
 /* 6: SUPPLY CHAIN */
 export function SupplyChain() {
   const { t } = useLanguage();
-  const chain = [
-    { icon: <Sprout size={18} strokeWidth={1.25} />, label: t("wool_farm"), place: "NZ", code: "NZ-F4821" },
-    { icon: <Factory size={18} strokeWidth={1.25} />, label: t("milling"), place: "Italy", code: "IT-F9043" },
-    { icon: <Ship size={18} strokeWidth={1.25} />, label: t("ship"), place: "Portugal", code: "PT-F2217" },
-    { icon: <Store size={18} strokeWidth={1.25} />, label: t("retail"), place: "Paris", code: "FR-F6631" },
-  ];
+  // Stages come from the signed passport record, so the page and the
+  // published fingerprint always describe the same journey.
+  const chain = SUPPLY_CHAIN.map((s) => {
+    const Icon = STAGE_ICONS[s.stage];
+    return { icon: <Icon size={18} strokeWidth={1.25} />, label: t(s.stage), place: s.place, code: s.code };
+  });
   return (
     <div className="h-full px-5 py-6 fade-up">
       <Eyebrow>{t("supply_chain")}</Eyebrow>
