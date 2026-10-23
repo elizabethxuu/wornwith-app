@@ -67,48 +67,57 @@ export function ProductLifecycle({ onViewChapter }: { onViewChapter?: () => void
 
   const activeDetail = stopDetails[selected];
 
+  // One continuous, unhurried reveal: heading, distance, places, then the
+  // timeline line draws down and each stop settles in after it.
+  const at = (ms: number) => ({ animationDelay: `${ms}ms` });
+
   return (
-    <div className="h-full px-5 py-6 fade-up">
-      <Eyebrow>{t("lifecycle_eyebrow")}</Eyebrow>
-      <h2 className="font-display italic text-2xl text-ink mt-1">{t("where_from")}</h2>
-      <p className="font-sans text-[12px] text-clay mt-1 mb-3">{t("km_traveled")}</p>
-      <div className="flex gap-1.5 mb-5 flex-wrap">
+    <div className="h-full px-6 pt-8 pb-10">
+      <div className="reveal-soft" style={at(0)}>
+        <Eyebrow>{t("lifecycle_eyebrow")}</Eyebrow>
+      </div>
+      <h2 className="reveal-soft font-display italic text-[28px] leading-tight text-ink mt-3" style={at(120)}>{t("where_from")}</h2>
+      <p className="reveal-soft font-sans text-[12px] text-clay mt-2 mb-7" style={at(240)}>{t("km_traveled")}</p>
+      <div className="flex gap-2 mb-12 flex-wrap">
         {[
-          { key: "place_nz" as const },
-          { key: "place_italy" as const },
-          { key: "place_portugal" as const },
-          { key: "place_france" as const },
+          // Each country keeps its own soft tint and a highlighted ring,
+          // drawn from the passport's palette; the label stays dark brown.
+          { key: "place_nz" as const, rgb: "143 166 136" },       // sage, Canterbury pasture
+          { key: "place_italy" as const, rgb: "185 138 74" },     // warm bronze, Biella wool
+          { key: "place_portugal" as const, rgb: "85 107 138" },  // azulejo blue, Porto
+          { key: "place_france" as const, rgb: "201 122 140" },   // blush, Paris
         ].map((bubble, i) => (
           <span
             key={bubble.key}
-            style={{ animationDelay: `${i * 120}ms` }}
-            className="pop-in text-[10px] uppercase tracking-[0.16em] font-sans text-clay border border-line px-2.5 py-1 rounded-full"
+            style={{ ...at(380 + i * 110), ["--chip" as string]: bubble.rgb }}
+            className="reveal-soft country-chip text-[10px] uppercase tracking-[0.18em] font-sans font-semibold px-3 py-1.5 rounded-full"
           >
             {t(bubble.key)}
           </span>
         ))}
       </div>
       <div className="relative pl-6">
-        <div className="absolute left-[9px] top-2 bottom-2 w-px bg-line" />
-        <div className="space-y-5">
+        <div className="absolute left-[9px] top-2 bottom-2 w-px bg-line line-draw" style={at(820)} />
+        <div className="space-y-9">
           {stops.map((s, i) => (
             <button
               key={s.title}
               onClick={() => setSelected(i)}
-              style={{ animationDelay: `${480 + i * 150}ms` }}
-              className="pop-in relative flex items-center gap-3 w-full text-left"
+              style={at(900 + i * 220)}
+              className="reveal-soft relative flex items-center gap-4 w-full text-left"
             >
-              <div className={`absolute -left-6 w-4 h-4 rounded-full border ${selected === i ? "bg-[#8E3D52] border-[#8E3D52]" : "bg-paper border-clay/40"}`} />
-              <span className={`w-6 flex justify-center ${selected === i ? "text-[#8E3D52]" : "text-clay"}`}>{s.icon}</span>
+              <div className={`absolute -left-6 w-4 h-4 rounded-full border transition-colors duration-500 ${selected === i ? "bg-[#8E3D52] border-[#8E3D52]" : "bg-paper border-clay/40"}`} />
+              <span className={`w-6 flex justify-center transition-colors duration-500 ${selected === i ? "text-[#8E3D52]" : "text-clay"}`}>{s.icon}</span>
               <div>
-                <p className={`font-sans text-[14px] font-medium ${selected === i ? "text-[#8E3D52]" : "text-ink"}`}>{s.title}</p>
-                <p className="text-[12px] text-clay font-sans">{s.place}</p>
+                <p className={`font-sans text-[14px] font-medium transition-colors duration-500 ${selected === i ? "text-[#8E3D52]" : "text-ink"}`}>{s.title}</p>
+                <p className="text-[12px] text-clay font-sans mt-0.5">{s.place}</p>
               </div>
             </button>
           ))}
         </div>
       </div>
 
+      <div className="reveal-soft mt-10" style={at(1880)}>
       <ExpandableCard
         key={selected}
         title={activeDetail.cardTitle}
@@ -117,6 +126,7 @@ export function ProductLifecycle({ onViewChapter }: { onViewChapter?: () => void
         learnMoreLabel={activeDetail.learnMoreLabel}
         onLearnMoreClick={activeDetail.onLearnMoreClick}
       />
+      </div>
     </div>
   );
 }
