@@ -20,7 +20,6 @@ export function saveFlag(key: string, value: boolean): void {
   }
 }
 
-export const TOOLS_OPEN_KEY = "ww.toolsOpen";
 export const FOOTER_HIDDEN_KEY = "ww.footerHidden";
 
 export type LegalPage = "privacy" | "terms" | "accessibility" | "release-notes" | "about-passport";

@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
-import { Menu as MenuIcon, X as CloseIcon, Share, ChevronDown, Search } from "lucide-react";
+import { Menu as MenuIcon, X as CloseIcon, Share, Search, AudioLines, Moon, Sun } from "lucide-react";
 import { useLanguage, type TranslationKey } from "../lib/i18n";
 import { ShareSheet } from "./UI";
 import HeaderTools, { SearchSheet } from "./HeaderTools";
-import { readFlag, saveFlag, TOOLS_OPEN_KEY, LEGAL_LINKS, type LegalPage } from "../lib/uiPrefs";
+import { LEGAL_LINKS, type LegalPage } from "../lib/uiPrefs";
+import { applyTheme, readStoredTheme, saveTheme, type Theme } from "../lib/theme";
 
 // Screen numbers match the live app: 1 overview, 2 journey, 3 materials,
 // 4 care, 5 environment, 7 story, 8 ownership.
@@ -40,10 +41,13 @@ export default function PassportTopBar({
   const [menuOpen, setMenuOpen] = useState(false);
   const [shareOpen, setShareOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
-  // The search / voice / theme / language row is folded away by default so
-  // the screens get the room; the chevron beside Share opens it.
-  const [toolsOpen, setToolsOpen] = useState(() => readFlag(TOOLS_OPEN_KEY, false));
-  const toggleTools = () => setToolsOpen((o) => { saveFlag(TOOLS_OPEN_KEY, !o); return !o; });
+  const [theme, setTheme] = useState<Theme>(() => readStoredTheme());
+  useEffect(() => { applyTheme(theme); }, [theme]);
+  const toggleTheme = () => {
+    const next: Theme = theme === "dark" ? "light" : "dark";
+    saveTheme(next);
+    setTheme(next);
+  };
 
   useEffect(() => {
     if (!menuOpen) return;
@@ -55,15 +59,15 @@ export default function PassportTopBar({
   const barStyle = safeArea ? { paddingTop: "max(env(safe-area-inset-top), 0.5rem)" } : { paddingTop: "0.25rem" };
   const brand = (
     <div className="flex items-center gap-2">
-      <img src="/images/wornwith-logo.png" alt="" aria-hidden="true" className="h-8 w-auto" />
-      <p className="font-display italic text-[clamp(1.4rem,6.4vw,1.9rem)] leading-none text-ink">wornwith.care</p>
+      <img src="/images/wornwith-logo.png" alt="" aria-hidden="true" className="h-6 min-[400px]:h-7 md:h-8 w-auto" />
+      <p className="font-display italic text-[clamp(1.2rem,5.2vw,1.9rem)] leading-none text-ink whitespace-nowrap">wornwith.care</p>
     </div>
   );
 
   return (
     <>
       <div
-        className={`shrink-0 grid grid-cols-[1fr_auto_1fr] items-center gap-2 px-3 pb-2 bg-paper print:hidden ${showTools && toolsOpen ? "" : "border-b border-line"}`}
+        className={`shrink-0 grid grid-cols-[1fr_auto_1fr] items-center gap-1 px-2 min-[400px]:px-3 pb-2 bg-paper print:hidden border-b border-line`}
         style={barStyle}
       >
         <div className="flex items-center">
@@ -78,9 +82,9 @@ export default function PassportTopBar({
             <button
               onClick={() => setSearchOpen(true)}
               aria-label={t("tool_search")}
-              className="h-10 ml-1 flex items-center gap-2 text-ink min-w-0"
+              className="h-10 w-10 min-[480px]:w-auto min-[480px]:ml-1 flex items-center justify-center gap-2 text-ink min-w-0"
             >
-              <Search size={18} strokeWidth={1.25} className="shrink-0" />
+              <Search size={19} strokeWidth={1.25} className="shrink-0" />
               <span className="hidden min-[480px]:block font-sans text-[13px] leading-none pb-1 border-b border-ink w-[clamp(3.5rem,14vw,10rem)] text-left">
                 {t("tool_search")}
               </span>
@@ -91,21 +95,7 @@ export default function PassportTopBar({
           {brand}
         </button>
         <div className="flex items-center justify-end">
-          {showTools && (
-            <button
-              onClick={toggleTools}
-              aria-label={toolsOpen ? t("tools_hide") : t("tools_show")}
-              aria-expanded={toolsOpen}
-              title={toolsOpen ? t("tools_hide") : t("tools_show")}
-              className="w-9 h-10 flex items-center justify-center text-ink"
-            >
-              <ChevronDown
-                size={18}
-                strokeWidth={1.25}
-                className={`transition-transform duration-300 ${toolsOpen ? "rotate-180" : ""}`}
-              />
-            </button>
-          )}
+          {showTools && <HeaderTools onGoTo={onGoTo} theme={theme} onToggleTheme={toggleTheme} />}
           <button
             onClick={() => setShareOpen(true)}
             aria-label={t("contents_share")}
@@ -115,7 +105,6 @@ export default function PassportTopBar({
           </button>
         </div>
       </div>
-      {showTools && toolsOpen && <HeaderTools onGoTo={onGoTo} />}
 
       {menuOpen && (
         <div className={`absolute inset-x-0 bottom-0 ${overlayClassName} z-30 bg-paper flex flex-col fade-up`}>
@@ -153,6 +142,25 @@ export default function PassportTopBar({
                 <span className="font-sans text-[10px] tracking-[0.2em] text-clay w-5">+</span>
                 <span className="font-sans text-[11px] uppercase tracking-[0.2em] text-ink">{t("contents_share")}</span>
               </button>
+              {showTools && (
+                <>
+                  <button
+                    onClick={() => { setMenuOpen(false); onGoTo(9); }}
+                    className="md:hidden w-full flex items-center gap-4 py-3.5 border-b border-line text-left"
+                  >
+                    <AudioLines size={14} strokeWidth={1.5} className="text-clay w-5" />
+                    <span className="font-sans text-[11px] uppercase tracking-[0.2em] text-ink">{t("tool_voice")}</span>
+                  </button>
+                  <button
+                    onClick={toggleTheme}
+                    aria-pressed={theme === "dark"}
+                    className="md:hidden w-full flex items-center gap-4 py-3.5 border-b border-line text-left"
+                  >
+                    {theme === "dark" ? <Sun size={14} strokeWidth={1.5} className="text-clay w-5" /> : <Moon size={14} strokeWidth={1.5} className="text-clay w-5" />}
+                    <span className="font-sans text-[11px] uppercase tracking-[0.2em] text-ink">{theme === "dark" ? t("tool_light") : t("tool_dark")}</span>
+                  </button>
+                </>
+              )}
             </div>
             <div className="mt-8 flex items-center gap-3 font-sans text-[10px] uppercase tracking-[0.28em] text-clay" role="group" aria-label="Language">
               {(["en", "fr", "pt"] as const).map((l, k) => (
