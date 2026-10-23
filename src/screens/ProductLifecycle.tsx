@@ -1,15 +1,12 @@
 import { useState } from "react";
 import { Eyebrow, ExpandableCard } from "../components/UI";
 import { useLanguage } from "../lib/i18n";
-import { useChapterColor, readableOn } from "../lib/chapterColor";
 import { Shirt, Sprout, Spool, Scissors } from "lucide-react";
 
 
 /* 5: PRODUCT LIFECYCLE */
 export function ProductLifecycle({ onViewChapter }: { onViewChapter?: () => void } = {}) {
   const { t } = useLanguage();
-  // The chapter's own brown, the same tone as the eyebrow above.
-  const brown = readableOn(useChapterColor());
   const stops = [
     { icon: <Sprout size={18} strokeWidth={1.25} />, title: t("wool_farming"), place: t("place_full_nz_short") },
     { icon: <Spool size={18} strokeWidth={1.25} />, title: t("spinning_weaving"), place: t("place_full_italy") },
@@ -83,15 +80,17 @@ export function ProductLifecycle({ onViewChapter }: { onViewChapter?: () => void
       <p className="reveal-soft font-sans text-[12px] text-clay mt-2 mb-7" style={at(240)}>{t("km_traveled")}</p>
       <div className="flex gap-2 mb-12 flex-wrap">
         {[
-          { key: "place_nz" as const },
-          { key: "place_italy" as const },
-          { key: "place_portugal" as const },
-          { key: "place_france" as const },
+          // Each country keeps its own soft tint and a highlighted ring,
+          // drawn from the passport's palette; the label stays dark brown.
+          { key: "place_nz" as const, rgb: "143 166 136" },       // sage, Canterbury pasture
+          { key: "place_italy" as const, rgb: "185 138 74" },     // warm bronze, Biella wool
+          { key: "place_portugal" as const, rgb: "85 107 138" },  // azulejo blue, Porto
+          { key: "place_france" as const, rgb: "201 122 140" },   // blush, Paris
         ].map((bubble, i) => (
           <span
             key={bubble.key}
-            style={{ ...at(380 + i * 110), backgroundColor: brown, borderColor: brown }}
-            className="reveal-soft text-[10px] uppercase tracking-[0.18em] font-sans font-medium text-white border px-3 py-1.5 rounded-full"
+            style={{ ...at(380 + i * 110), ["--chip" as string]: bubble.rgb }}
+            className="reveal-soft country-chip text-[10px] uppercase tracking-[0.18em] font-sans font-semibold px-3 py-1.5 rounded-full"
           >
             {t(bubble.key)}
           </span>
