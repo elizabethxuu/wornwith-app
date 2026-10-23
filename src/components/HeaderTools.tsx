@@ -4,7 +4,7 @@ import { Search, AudioLines, Moon, Sun, Globe, X as CloseIcon } from "lucide-rea
 import { useLanguage, type TranslationKey } from "../lib/i18n";
 import { loadWardrobe } from "../lib/persistence";
 import { searchEntries, type SearchEntry } from "../lib/searchIndex";
-import { applyTheme, readStoredTheme, saveTheme, type Theme } from "../lib/theme";
+import type { Theme } from "../lib/theme";
 
 // Live screen numbers: 1 overview, 2 journey, 3 materials, 4 care,
 // 5 environment, 7 story, 8 ownership, 9 wardrobe.
@@ -21,9 +21,9 @@ const SECTIONS: { key: TranslationKey; hint: TranslationKey; screen: number }[] 
 const WARDROBE_SCREEN = 9;
 const LANGS = ["en", "fr", "pt"] as const;
 
-const iconBtn = "w-10 h-9 flex items-center justify-center text-ink rounded-full";
+const iconBtn = "w-10 h-10 items-center justify-center text-ink rounded-full";
 
-function SearchSheet({ open, onClose, onGoTo }: { open: boolean; onClose: () => void; onGoTo: (screen: number) => void }) {
+export function SearchSheet({ open, onClose, onGoTo }: { open: boolean; onClose: () => void; onGoTo: (screen: number) => void }) {
   const { t } = useLanguage();
   const [query, setQuery] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
@@ -106,14 +106,23 @@ function SearchSheet({ open, onClose, onGoTo }: { open: boolean; onClose: () => 
   );
 }
 
-export default function HeaderTools({ onGoTo }: { onGoTo: (screen: number) => void }) {
+/**
+ * Voice, theme and language, sitting in the main header to the left of
+ * Share. On phones only the language switch shows; voice and theme move into
+ * the menu so the header stays on one line.
+ */
+export default function HeaderTools({
+  onGoTo,
+  theme,
+  onToggleTheme,
+}: {
+  onGoTo: (screen: number) => void;
+  theme: Theme;
+  onToggleTheme: () => void;
+}) {
   const { t, lang, setLang } = useLanguage();
-  const [searchOpen, setSearchOpen] = useState(false);
   const [langOpen, setLangOpen] = useState(false);
-  const [theme, setTheme] = useState<Theme>(() => readStoredTheme());
   const langRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => { applyTheme(theme); }, [theme]);
 
   useEffect(() => {
     if (!langOpen) return;
@@ -124,51 +133,45 @@ export default function HeaderTools({ onGoTo }: { onGoTo: (screen: number) => vo
     return () => { document.removeEventListener("mousedown", onDown); window.removeEventListener("keydown", onKey); };
   }, [langOpen]);
 
-  const toggleTheme = () => {
-    const next: Theme = theme === "dark" ? "light" : "dark";
-    saveTheme(next);
-    setTheme(next);
-  };
-
   return (
     <>
-      <div className="shrink-0 flex items-center justify-end gap-0.5 px-3 pb-1 bg-paper border-b border-line print:hidden">
-        <button onClick={() => setSearchOpen(true)} aria-label={t("tool_search")} className={iconBtn}>
-          <Search size={18} strokeWidth={1.25} />
+      <button onClick={() => onGoTo(WARDROBE_SCREEN)} aria-label={t("tool_voice")} title={t("tool_voice")} className={`${iconBtn} hidden md:flex`}>
+        <AudioLines size={19} strokeWidth={1.25} />
+      </button>
+      <button
+        onClick={onToggleTheme}
+        aria-label={theme === "dark" ? t("tool_light") : t("tool_dark")}
+        title={theme === "dark" ? t("tool_light") : t("tool_dark")}
+        aria-pressed={theme === "dark"}
+        className={`${iconBtn} hidden md:flex`}
+      >
+        {theme === "dark" ? <Sun size={18} strokeWidth={1.25} /> : <Moon size={18} strokeWidth={1.25} />}
+      </button>
+      <div className="relative" ref={langRef}>
+        <button
+          onClick={() => setLangOpen((o) => !o)}
+          aria-label={t("tool_language")}
+          aria-expanded={langOpen}
+          className="h-10 w-10 md:w-auto md:pl-1.5 md:pr-2 flex items-center justify-center gap-1 text-ink rounded-full"
+        >
+          <Globe size={18} strokeWidth={1.25} />
+          <span className="hidden md:inline font-sans text-[10px] uppercase tracking-[0.18em]">{lang}</span>
         </button>
-        <button onClick={() => onGoTo(WARDROBE_SCREEN)} aria-label={t("tool_voice")} className={iconBtn}>
-          <AudioLines size={19} strokeWidth={1.25} />
-        </button>
-        <button onClick={toggleTheme} aria-label={theme === "dark" ? t("tool_light") : t("tool_dark")} aria-pressed={theme === "dark"} className={iconBtn}>
-          {theme === "dark" ? <Sun size={18} strokeWidth={1.25} /> : <Moon size={18} strokeWidth={1.25} />}
-        </button>
-        <div className="relative" ref={langRef}>
-          <button
-            onClick={() => setLangOpen((o) => !o)}
-            aria-label={t("tool_language")}
-            aria-expanded={langOpen}
-            className="h-9 pl-2 pr-2.5 flex items-center gap-1 text-ink rounded-full"
-          >
-            <Globe size={18} strokeWidth={1.25} />
-            <span className="font-sans text-[10px] uppercase tracking-[0.18em]">{lang}</span>
-          </button>
-          {langOpen && (
-            <div role="group" aria-label={t("tool_language")} className="absolute right-0 top-full mt-1 z-40 min-w-[88px] bg-paper border border-line rounded-[14px] shadow-[0_10px_30px_-12px_rgba(43,38,34,0.35)] py-1">
-              {LANGS.map((l) => (
-                <button
-                  key={l}
-                  onClick={() => { setLang(l); setLangOpen(false); }}
-                  aria-pressed={lang === l}
-                  className={`w-full text-left px-4 py-2.5 font-sans text-[11px] uppercase tracking-[0.22em] ${lang === l ? "text-ink font-semibold" : "text-clay"}`}
-                >
-                  {l}
-                </button>
-              ))}
-            </div>
-          )}
-        </div>
+        {langOpen && (
+          <div role="group" aria-label={t("tool_language")} className="absolute right-0 top-full mt-1 z-40 min-w-[88px] bg-paper border border-line rounded-[14px] shadow-[0_10px_30px_-12px_rgba(43,38,34,0.35)] py-1">
+            {LANGS.map((l) => (
+              <button
+                key={l}
+                onClick={() => { setLang(l); setLangOpen(false); }}
+                aria-pressed={lang === l}
+                className={`w-full text-left px-4 py-2.5 font-sans text-[11px] uppercase tracking-[0.22em] ${lang === l ? "text-ink font-semibold" : "text-clay"}`}
+              >
+                {l}
+              </button>
+            ))}
+          </div>
+        )}
       </div>
-      <SearchSheet open={searchOpen} onClose={() => setSearchOpen(false)} onGoTo={onGoTo} />
     </>
   );
 }
