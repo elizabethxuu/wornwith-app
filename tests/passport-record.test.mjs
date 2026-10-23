@@ -67,3 +67,21 @@ test("a record published by a different wallet does not count as a match", async
   assert.equal((await m.checkRecord(fakeFetch(attestation(hash)))).state, "mismatch");
   assert.equal((await m.checkRecord(fakeFetch(attestation(hash, { attester: "0xrealpublisher" })))).state, "match");
 });
+
+test("audit and compliance claims are in the record with honest statuses", async () => {
+  const m = await loadTs("lib/passportRecord");
+  const rec = m.PASSPORT_RECORD;
+  assert.ok(rec.ethicalAudit.results.length >= 3);
+  for (const r of rec.ethicalAudit.results) assert.equal(r.status, "pending_verification");
+  assert.equal(rec.ethicalAudit.citedReference.status, "cited_not_checked");
+  assert.equal(rec.chemicalCompliance.reach.status, "not_available");
+  assert.equal(rec.chemicalCompliance.economicOperator.status, "not_available");
+});
+
+test("copy that repeats record facts agrees with the record", async () => {
+  const m = await loadTs("lib/passportRecord");
+  const copy = readFileSync(new URL("../src/lib/i18n.tsx", import.meta.url), "utf8");
+  assert.ok(copy.includes(m.ETHICAL_AUDIT.citedReference.id), "audit note cites a different reference");
+  assert.ok(copy.includes(`${m.JOURNEY.distanceKm.toLocaleString("en-US")}km from farm`), "journey copy shows a different distance");
+  assert.ok(copy.includes(`vs ${m.IMPACT.co2CategoryAverageKg}kg avg`), "CO2 copy shows a different category average");
+});

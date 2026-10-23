@@ -1,4 +1,4 @@
-import { Eyebrow, Donut, Pill, ExpandableCard } from "../components/UI";
+import { Eyebrow, Donut, Pill, ExpandableCard, SignedRecordLink } from "../components/UI";
 import { useLanguage } from "../lib/i18n";
 import { IMPACT } from "../lib/passportRecord";
 
@@ -52,6 +52,7 @@ export function SustainabilityMetrics() {
           ))}
         </ul>
       </ExpandableCard>
+      <SignedRecordLink subKey="sr_sub_environment" />
     </div>
   );
 }

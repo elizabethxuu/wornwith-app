@@ -1,9 +1,20 @@
-import { Eyebrow, ExpandableCard, StatusChip } from "../components/UI";
+import { Fragment } from "react";
+import { Eyebrow, ExpandableCard, StatusChip, SignedRecordLink, type ClaimStatus } from "../components/UI";
 import { useLanguage } from "../lib/i18n";
 import { ArrowRight, Sprout, Factory, Ship, Store } from "lucide-react";
-import { SUPPLY_CHAIN } from "../lib/passportRecord";
+import { SUPPLY_CHAIN, JOURNEY, ETHICAL_AUDIT, CHEMICAL_COMPLIANCE } from "../lib/passportRecord";
+import type { TranslationKey } from "../lib/i18n";
 
 const STAGE_ICONS = { wool_farm: Sprout, milling: Factory, ship: Ship, retail: Store } as const;
+
+// Record statuses to the chips the app already uses.
+const CHIP: Record<string, ClaimStatus> = { pending_verification: "pending", not_available: "unavailable" };
+const RESULT_KEY: Record<string, TranslationKey> = {
+  passed: "passed",
+  grade_a: "grade_a",
+  no_test_report_on_file: "reach_info_value",
+  placeholder: "economic_operator_value",
+};
 
 
 /* 6: SUPPLY CHAIN */
@@ -46,7 +57,7 @@ export function SupplyChain() {
         ))}
       </div>
       <div className="grid grid-cols-3 gap-2 mb-5">
-        {[["4", t("countries")], ["18,400km", t("traveled")], ["Demo", t("stat_illustrative")]].map(([v, l]) => (
+        {[[String(JOURNEY.countries), t("countries")], [`${JOURNEY.distanceKm.toLocaleString("en-US")}km`, t("traveled")], ["Demo", t("stat_illustrative")]].map(([v, l]) => (
           <div key={l} className="border-y border-line py-3 text-center">
             <p className="font-display italic text-[22px] leading-none text-ink">{v}</p>
             <p className="text-[9px] font-sans text-clay uppercase tracking-[0.18em] mt-1.5">{l}</p>
@@ -55,21 +66,21 @@ export function SupplyChain() {
       </div>
       <ExpandableCard title={t("ethical_audit")} defaultOpen footerText={`${t("audit_source_note")} ${t("audit_disclosure")}`}>
         <div className="grid grid-cols-[1fr,auto] gap-y-2 gap-x-4 font-sans text-[12px] items-center">
-          <span className="text-clay">{t("fair_wages")}</span>
-          <span className="text-ink flex items-center gap-2 justify-self-start">{t("passed")} <StatusChip status="pending" /></span>
-          <span className="text-clay">{t("health_safety")}</span>
-          <span className="text-ink flex items-center gap-2 justify-self-start">{t("grade_a")} <StatusChip status="pending" /></span>
-          <span className="text-clay">{t("no_forced_labour")}</span>
-          <span className="text-ink flex items-center gap-2 justify-self-start">{t("passed")} <StatusChip status="pending" /></span>
+          {ETHICAL_AUDIT.results.map((r) => (
+            <Fragment key={r.criterion}>
+              <span className="text-clay">{t(r.criterion)}</span>
+              <span className="text-ink flex items-center gap-2 justify-self-start">{t(RESULT_KEY[r.result])} <StatusChip status={CHIP[r.status]} /></span>
+            </Fragment>
+          ))}
         </div>
       </ExpandableCard>
 
       <ExpandableCard title={t("chemical_compliance")} defaultOpen footerText={`${t("chemical_source_note")} ${t("economic_operator_note")}`}>
         <div className="grid grid-cols-[1fr,auto] gap-y-2 gap-x-4 font-sans text-[12px] items-start">
           <span className="text-clay">{t("reach_info")}</span>
-          <span className="text-ink flex flex-col items-end gap-1 text-right text-[11px]">{t("reach_info_value")} <StatusChip status="unavailable" /></span>
+          <span className="text-ink flex flex-col items-end gap-1 text-right text-[11px]">{t(RESULT_KEY[CHEMICAL_COMPLIANCE.reach.result])} <StatusChip status={CHIP[CHEMICAL_COMPLIANCE.reach.status]} /></span>
           <span className="text-clay">{t("economic_operator")}</span>
-          <span className="text-ink flex flex-col items-end gap-1 text-right text-[11px]">{t("economic_operator_value")} <StatusChip status="unavailable" /></span>
+          <span className="text-ink flex flex-col items-end gap-1 text-right text-[11px]">{t(RESULT_KEY[CHEMICAL_COMPLIANCE.economicOperator.result])} <StatusChip status={CHIP[CHEMICAL_COMPLIANCE.economicOperator.status]} /></span>
         </div>
       </ExpandableCard>
 
@@ -82,6 +93,8 @@ export function SupplyChain() {
           [t("manufacturing_renewable_label"), t("manufacturing_renewable_value")],
         ]}
       />
+
+      <SignedRecordLink subKey="sr_sub_materials" />
     </div>
   );
 }
