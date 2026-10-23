@@ -771,6 +771,7 @@ export const dict = {
   legal_back: { en: "Back", fr: "Retour", pt: "Voltar" },
   close_label: { en: "Close", fr: "Fermer", pt: "Fechar" },
   footer_hide: { en: "Hide footer", fr: "Masquer le pied de page", pt: "Ocultar rodapé" },
+  footer_show: { en: "Show footer", fr: "Afficher le pied de page", pt: "Mostrar rodapé" },
   menu_legal: { en: "About & legal", fr: "À propos et mentions", pt: "Sobre e avisos legais" },
   verification_panel_title: { en: "Verify this passport", fr: "Vérifier ce passeport", pt: "Verificar este passaporte" },
   verification_panel_body_pending: {
