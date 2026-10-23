@@ -101,8 +101,12 @@ export function ProductLifecycle({ onViewChapter, onOpenMapStop }: { onViewChapt
         ))}
       </div>
       <div className="relative pl-6">
-        <div className="absolute left-[9px] top-2 bottom-2 w-px bg-line line-draw" style={at(820)} />
-        <div className="space-y-9">
+        {/* The thread runs through each country's color, very faint. */}
+        <div
+          className="absolute left-[9px] top-2 bottom-2 w-px line-draw opacity-50"
+          style={{ ...at(820), backgroundImage: `linear-gradient(to bottom, ${STOP_ACCENTS.join(", ")})` }}
+        />
+        <div className="space-y-8">
           {stops.map((s, i) => (
             <button
               key={s.title}
@@ -110,10 +114,28 @@ export function ProductLifecycle({ onViewChapter, onOpenMapStop }: { onViewChapt
               style={at(900 + i * 220)}
               className="reveal-soft relative flex items-center gap-4 w-full text-left"
             >
-              <div className={`absolute -left-6 w-4 h-4 rounded-full border transition-colors duration-500 ${selected === i ? "bg-[#8E3D52] border-[#8E3D52]" : "bg-paper border-clay/40"}`} />
-              <span className={`w-6 flex justify-center transition-colors duration-500 ${selected === i ? "text-[#8E3D52]" : "text-clay"}`}>{s.icon}</span>
+              {/* Each stop wears its country's pin color from the map: a
+                  fine ring on the dot (filled when selected) and a softly
+                  tinted halo behind the icon. */}
+              <div
+                className="absolute -left-6 w-4 h-4 rounded-full transition-all duration-500"
+                style={{
+                  backgroundColor: selected === i ? STOP_ACCENTS[i] : "rgb(var(--c-paper))",
+                  boxShadow: `inset 0 0 0 1.5px ${STOP_ACCENTS[i]}, 0 0 0 ${selected === i ? 4 : 3}px color-mix(in srgb, ${STOP_ACCENTS[i]} ${selected === i ? 22 : 12}%, transparent)`,
+                }}
+              />
+              <span
+                className="w-9 h-9 shrink-0 rounded-full flex items-center justify-center transition-all duration-500"
+                style={{
+                  color: STOP_ACCENTS[i],
+                  backgroundColor: `color-mix(in srgb, ${STOP_ACCENTS[i]} ${selected === i ? 16 : 9}%, transparent)`,
+                  boxShadow: `inset 0 0 0 1px color-mix(in srgb, ${STOP_ACCENTS[i]} ${selected === i ? 70 : 40}%, transparent)`,
+                }}
+              >
+                {s.icon}
+              </span>
               <div>
-                <p className={`font-sans text-[14px] font-medium transition-colors duration-500 ${selected === i ? "text-[#8E3D52]" : "text-ink"}`}>{s.title}</p>
+                <p className={`font-sans text-[14px] font-medium transition-colors duration-500 ${selected === i ? "text-ink font-semibold" : "text-ink"}`}>{s.title}</p>
                 <p className="text-[12px] text-clay font-sans mt-0.5">{s.place}</p>
               </div>
             </button>
