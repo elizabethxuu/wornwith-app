@@ -115,11 +115,14 @@ export default function HeaderTools({
   onGoTo,
   theme,
   onToggleTheme,
+  compact = false,
 }: {
   onGoTo: (screen: number) => void;
   theme: Theme;
   onToggleTheme: () => void;
+  compact?: boolean;
 }) {
+  const wideOnly = compact ? "hidden" : "hidden md:flex";
   const { t, lang, setLang } = useLanguage();
   const [langOpen, setLangOpen] = useState(false);
   const langRef = useRef<HTMLDivElement>(null);
@@ -135,7 +138,7 @@ export default function HeaderTools({
 
   return (
     <>
-      <button onClick={() => onGoTo(WARDROBE_SCREEN)} aria-label={t("tool_voice")} title={t("tool_voice")} className={`${iconBtn} hidden md:flex`}>
+      <button onClick={() => onGoTo(WARDROBE_SCREEN)} aria-label={t("tool_voice")} title={t("tool_voice")} className={`${iconBtn} ${wideOnly}`}>
         <AudioLines size={19} strokeWidth={1.25} />
       </button>
       <button
@@ -143,7 +146,7 @@ export default function HeaderTools({
         aria-label={theme === "dark" ? t("tool_light") : t("tool_dark")}
         title={theme === "dark" ? t("tool_light") : t("tool_dark")}
         aria-pressed={theme === "dark"}
-        className={`${iconBtn} hidden md:flex`}
+        className={`${iconBtn} ${wideOnly}`}
       >
         {theme === "dark" ? <Sun size={18} strokeWidth={1.25} /> : <Moon size={18} strokeWidth={1.25} />}
       </button>
@@ -152,10 +155,10 @@ export default function HeaderTools({
           onClick={() => setLangOpen((o) => !o)}
           aria-label={t("tool_language")}
           aria-expanded={langOpen}
-          className="h-10 w-10 md:w-auto md:pl-1.5 md:pr-2 flex items-center justify-center gap-1 text-ink rounded-full"
+          className={`h-10 w-10 ${compact ? "" : "md:w-auto md:pl-1.5 md:pr-2"} flex items-center justify-center gap-1 text-ink rounded-full`}
         >
           <Globe size={18} strokeWidth={1.25} />
-          <span className="hidden md:inline font-sans text-[10px] uppercase tracking-[0.18em]">{lang}</span>
+          <span className={`hidden ${compact ? "" : "md:inline"} font-sans text-[10px] uppercase tracking-[0.18em]`}>{lang}</span>
         </button>
         {langOpen && (
           <div role="group" aria-label={t("tool_language")} className="absolute right-0 top-full mt-1 z-40 min-w-[88px] bg-paper border border-line rounded-[14px] shadow-[0_10px_30px_-12px_rgba(43,38,34,0.35)] py-1">
