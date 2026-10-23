@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { ChevronLeft, ChevronRight, WifiOff, SearchX, X as CloseIcon } from "lucide-react";
+import { ChevronLeft, ChevronRight, WifiOff, SearchX, ChevronDown, ChevronUp } from "lucide-react";
 import { readFlag, saveFlag, FOOTER_HIDDEN_KEY, LEGAL_LINKS } from "./lib/uiPrefs";
 import { EmptyState } from "./components/UI";
 import PassportTopBar from "./components/PassportTopBar";
@@ -78,9 +78,10 @@ export default function LiveApp() {
   const [revealing, setRevealing] = useState(() => !introPlayed() && !prefersReducedMotion());
   const liveScreens = buildLiveScreens((i) => setIndex(i), revealing);
   const [legalPage, setLegalPage] = useState<"none" | "privacy" | "terms" | "accessibility" | "release-notes" | "about-passport">("none");
-  // Visitors can close the legal footer; the same links stay in the menu.
-  const [footerHidden, setFooterHidden] = useState(() => readFlag(FOOTER_HIDDEN_KEY, false));
-  const hideFooter = () => { saveFlag(FOOTER_HIDDEN_KEY, true); setFooterHidden(true); };
+  // The legal footer starts folded away; an arrow opens it, and the same
+  // links stay in the menu.
+  const [footerHidden, setFooterHidden] = useState(() => readFlag(FOOTER_HIDDEN_KEY, true));
+  const setFooter = (hidden: boolean) => { saveFlag(FOOTER_HIDDEN_KEY, hidden); setFooterHidden(hidden); };
 
   const runVerification = () => {
     setBootState("verifying");
@@ -245,14 +246,32 @@ export default function LiveApp() {
           </button>
         ))}
         <button
-          onClick={hideFooter}
+          onClick={() => setFooter(true)}
           aria-label={t("footer_hide")}
           title={t("footer_hide")}
           className="absolute right-2 top-1.5 w-7 h-7 flex items-center justify-center text-clay rounded-full hover:bg-line/50"
         >
-          <CloseIcon size={14} strokeWidth={1.5} />
+          <ChevronDown size={16} strokeWidth={1.5} />
         </button>
       </div>
+      )}
+
+      {/* Footer folded away: a small arrow brings it back. On the overview it
+          is a slim strip under the photo; elsewhere it sits in the nav bar. */}
+      {footerHidden && isFront && (
+        <div
+          className="shrink-0 flex justify-center print:hidden"
+          style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
+        >
+          <button
+            onClick={() => setFooter(false)}
+            aria-label={t("footer_show")}
+            title={t("footer_show")}
+            className="w-12 h-6 flex items-center justify-center text-clay hover:text-ink"
+          >
+            <ChevronUp size={16} strokeWidth={1.5} />
+          </button>
+        </div>
       )}
 
       {/* Visible, unambiguous nav bar, the tap-zones in the content area
@@ -275,9 +294,21 @@ export default function LiveApp() {
         ) : (
           <div className="w-10 h-10" />
         )}
-        <p className="font-sans text-[9px] text-clay">
-          {index - FIRST_SCREEN + 1} / {liveScreens.length - FIRST_SCREEN}
-        </p>
+        <div className="flex items-center gap-1">
+          <p className="font-sans text-[9px] text-clay">
+            {index - FIRST_SCREEN + 1} / {liveScreens.length - FIRST_SCREEN}
+          </p>
+          {footerHidden && (
+            <button
+              onClick={() => setFooter(false)}
+              aria-label={t("footer_show")}
+              title={t("footer_show")}
+              className="w-7 h-7 flex items-center justify-center text-clay rounded-full hover:bg-line/50"
+            >
+              <ChevronUp size={14} strokeWidth={1.5} />
+            </button>
+          )}
+        </div>
         {!isLast ? (
           <button
             onClick={goNext}
