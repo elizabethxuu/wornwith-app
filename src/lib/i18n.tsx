@@ -770,6 +770,10 @@ export const dict = {
   footer_terms: { en: "Terms of Use", fr: "Conditions d'Utilisation", pt: "Termos de Uso" },
   legal_back: { en: "Back", fr: "Retour", pt: "Voltar" },
   close_label: { en: "Close", fr: "Fermer", pt: "Fechar" },
+  tools_show: { en: "Show tools", fr: "Afficher les outils", pt: "Mostrar ferramentas" },
+  tools_hide: { en: "Hide tools", fr: "Masquer les outils", pt: "Ocultar ferramentas" },
+  footer_hide: { en: "Hide footer", fr: "Masquer le pied de page", pt: "Ocultar rodapé" },
+  menu_legal: { en: "About & legal", fr: "À propos et mentions", pt: "Sobre e avisos legais" },
   verification_panel_title: { en: "Verify this passport", fr: "Vérifier ce passeport", pt: "Verificar este passaporte" },
   verification_panel_body_pending: {
     en: "This passport's record is ready to be signed and published on Base, a public blockchain. Once it is, anyone can check that it hasn't changed since. The garment details and figures are demonstration data.",

@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
-import { Menu as MenuIcon, X as CloseIcon, Share } from "lucide-react";
+import { Menu as MenuIcon, X as CloseIcon, Share, ChevronDown } from "lucide-react";
 import { useLanguage, type TranslationKey } from "../lib/i18n";
 import { ShareSheet } from "./UI";
 import HeaderTools from "./HeaderTools";
+import { readFlag, saveFlag, TOOLS_OPEN_KEY, LEGAL_LINKS, type LegalPage } from "../lib/uiPrefs";
 
 // Screen numbers match the live app: 1 overview, 2 journey, 3 materials,
 // 4 care, 5 environment, 7 story, 8 ownership.
@@ -27,15 +28,21 @@ export default function PassportTopBar({
   safeArea = true,
   overlayClassName = "top-0",
   showTools = false,
+  onOpenLegal,
 }: {
   onGoTo: (screen: number) => void;
   safeArea?: boolean;
   overlayClassName?: string;
   showTools?: boolean;
+  onOpenLegal?: (page: LegalPage) => void;
 }) {
   const { t, lang, setLang } = useLanguage();
   const [menuOpen, setMenuOpen] = useState(false);
   const [shareOpen, setShareOpen] = useState(false);
+  // The search / voice / theme / language row is folded away by default so
+  // the screens get the room; the chevron beside Share opens it.
+  const [toolsOpen, setToolsOpen] = useState(() => readFlag(TOOLS_OPEN_KEY, false));
+  const toggleTools = () => setToolsOpen((o) => { saveFlag(TOOLS_OPEN_KEY, !o); return !o; });
 
   useEffect(() => {
     if (!menuOpen) return;
@@ -55,28 +62,48 @@ export default function PassportTopBar({
   return (
     <>
       <div
-        className={`shrink-0 flex items-center justify-between px-3 pb-2 bg-paper print:hidden ${showTools ? "" : "border-b border-line"}`}
+        className={`shrink-0 flex items-center justify-between px-3 pb-2 bg-paper print:hidden ${showTools && toolsOpen ? "" : "border-b border-line"}`}
         style={barStyle}
       >
-        <button
-          onClick={() => setMenuOpen(true)}
-          aria-label={t("hero_menu")}
-          className="w-10 h-10 flex items-center justify-center text-ink"
-        >
-          <MenuIcon size={22} strokeWidth={1.25} />
-        </button>
+        <div className="flex items-center">
+          <button
+            onClick={() => setMenuOpen(true)}
+            aria-label={t("hero_menu")}
+            className="w-10 h-10 flex items-center justify-center text-ink"
+          >
+            <MenuIcon size={22} strokeWidth={1.25} />
+          </button>
+          {showTools && <div className="w-9 h-10" aria-hidden="true" />}
+        </div>
         <button onClick={() => onGoTo(1)} aria-label={`wornwith.care, ${t("contents_overview")}`} className="flex items-center">
           {brand}
         </button>
-        <button
-          onClick={() => setShareOpen(true)}
-          aria-label={t("contents_share")}
-          className="w-10 h-10 flex items-center justify-center text-ink"
-        >
-          <Share size={20} strokeWidth={1.25} />
-        </button>
+        <div className="flex items-center">
+          {showTools && (
+            <button
+              onClick={toggleTools}
+              aria-label={toolsOpen ? t("tools_hide") : t("tools_show")}
+              aria-expanded={toolsOpen}
+              title={toolsOpen ? t("tools_hide") : t("tools_show")}
+              className="w-9 h-10 flex items-center justify-center text-ink"
+            >
+              <ChevronDown
+                size={18}
+                strokeWidth={1.25}
+                className={`transition-transform duration-300 ${toolsOpen ? "rotate-180" : ""}`}
+              />
+            </button>
+          )}
+          <button
+            onClick={() => setShareOpen(true)}
+            aria-label={t("contents_share")}
+            className="w-10 h-10 flex items-center justify-center text-ink"
+          >
+            <Share size={20} strokeWidth={1.25} />
+          </button>
+        </div>
       </div>
-      {showTools && <HeaderTools onGoTo={onGoTo} />}
+      {showTools && toolsOpen && <HeaderTools onGoTo={onGoTo} />}
 
       {menuOpen && (
         <div className={`absolute inset-x-0 bottom-0 ${overlayClassName} z-30 bg-paper flex flex-col fade-up`}>
@@ -129,6 +156,22 @@ export default function PassportTopBar({
                 </span>
               ))}
             </div>
+            {onOpenLegal && (
+              <div className="mt-8 pb-8">
+                <p className="font-sans text-[10px] uppercase tracking-[0.2em] text-clay mb-2">{t("menu_legal")}</p>
+                <div className="flex flex-wrap gap-x-4 gap-y-1">
+                  {LEGAL_LINKS.map(([key, page]) => (
+                    <button
+                      key={page}
+                      onClick={() => { setMenuOpen(false); onOpenLegal(page); }}
+                      className="font-sans text-[12px] text-clay hover:underline underline-offset-2 py-1.5"
+                    >
+                      {t(key)}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
           </nav>
         </div>
       )}
