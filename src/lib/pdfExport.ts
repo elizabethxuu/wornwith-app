@@ -210,12 +210,12 @@ export async function generatePassportPdf(): Promise<void> {
   doc.setFont("helvetica", "bold");
   doc.setFontSize(9);
   setColor(COLOR.sage);
-  doc.text((t("verified_passport") || "Verified Passport").toUpperCase(), boxTextX, boxY, { charSpace: 0.3 });
+  doc.text((t(ATTESTATION.attestationUid ? "verified_passport" : "passport_record_pending") || "Passport Record").toUpperCase(), boxTextX, boxY, { charSpace: 0.3 });
   boxY += 7;
   doc.setFont("helvetica", "bold");
   doc.setFontSize(12);
   setColor(COLOR.ink);
-  doc.text(t("verified_passport") || "Verified Passport", boxTextX, boxY);
+  doc.text(t(ATTESTATION.attestationUid ? "verified_passport" : "passport_record_pending") || "Passport Record", boxTextX, boxY);
   boxY += 6;
   doc.setFont("helvetica", "normal");
   doc.setFontSize(9);

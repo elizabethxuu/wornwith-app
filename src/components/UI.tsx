@@ -1695,7 +1695,7 @@ export function VerificationInfoPanel({ open, onClose }: { open: boolean; onClos
             rel="noopener"
             className="text-center font-sans text-[10.5px] uppercase tracking-[0.18em] text-clay underline underline-offset-4 decoration-line py-1"
           >
-            {t("vr_view_data")} {"↗"}
+            {t(ATTESTATION.attestationUid ? "vr_view_data" : "vr_view_data_pending")} {"↗"}
           </a>
         </div>
 

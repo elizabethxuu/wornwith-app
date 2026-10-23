@@ -59,7 +59,7 @@ export function StoryBehindIt() {
             className="w-full flex items-center justify-between mb-3"
           >
             <span className="flex items-center gap-1 text-[11px] font-sans text-clay font-medium">
-              {t("verified_passport")}
+              {t(ATTESTATION.attestationUid ? "verified_passport" : "passport_record_pending")}
             </span>
             <span className="text-[10px] font-sans text-clay">{ATTESTATION.attestationUid ? t("record_on_base") : t("record_not_published_short")}</span>
           </button>

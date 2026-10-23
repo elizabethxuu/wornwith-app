@@ -807,6 +807,9 @@ export const dict = {
   vr_proves_body: { en: "who published this record, and that it hasn't changed since.", fr: "qui a publié ce dossier, et qu'il n'a pas changé depuis.", pt: "quem publicou este registro e que ele não mudou desde então." },
   vr_not_proves: { en: "What it doesn't:", fr: "Ce que cela ne prouve pas :", pt: "O que isso não prova:" },
   vr_not_proves_body: { en: "that the details are true, or that a physical coat is this one. That takes independent audits and a secure chip in the label.", fr: "que les détails sont exacts, ni qu'un manteau physique est bien celui-ci. Il faudrait des audits indépendants et une puce sécurisée dans l'étiquette.", pt: "que os detalhes são verdadeiros, nem que um casaco físico é este. Isso exige auditorias independentes e um chip seguro na etiqueta." },
+  dpp_record_pending: { en: "Passport record", fr: "Dossier du passeport", pt: "Registro do passaporte" },
+  passport_record_pending: { en: "Passport Record", fr: "Dossier du passeport", pt: "Registro do passaporte" },
+  vr_view_data_pending: { en: "See the record data", fr: "Voir les données du dossier", pt: "Ver os dados do registro" },
   record_on_base: { en: "Published on Base", fr: "Publié sur Base", pt: "Publicado na Base" },
   record_not_published_short: { en: "Not yet published", fr: "Pas encore publié", pt: "Ainda não publicado" },
 
