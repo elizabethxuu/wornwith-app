@@ -29,12 +29,15 @@ export default function PassportTopBar({
   safeArea = true,
   overlayClassName = "top-0",
   showTools = false,
+  compact = false,
   onOpenLegal,
 }: {
   onGoTo: (screen: number) => void;
   safeArea?: boolean;
   overlayClassName?: string;
   showTools?: boolean;
+  /** Always use the phone layout, e.g. when the page sits in a narrow column on desktop. */
+  compact?: boolean;
   onOpenLegal?: (page: LegalPage) => void;
 }) {
   const { t, lang, setLang } = useLanguage();
@@ -59,7 +62,7 @@ export default function PassportTopBar({
   const barStyle = safeArea ? { paddingTop: "max(env(safe-area-inset-top), 0.5rem)" } : { paddingTop: "0.25rem" };
   const brand = (
     <div className="flex items-center gap-2">
-      <img src="/images/wornwith-logo.png" alt="" aria-hidden="true" className="h-6 min-[400px]:h-7 md:h-8 w-auto" />
+      <img src="/images/wornwith-logo.png" alt="" aria-hidden="true" className={`h-6 min-[400px]:h-7 ${compact ? "" : "md:h-8"} w-auto`} />
       <p className="font-display italic text-[clamp(1.2rem,5.2vw,1.9rem)] leading-none text-ink whitespace-nowrap">wornwith.care</p>
     </div>
   );
@@ -82,10 +85,10 @@ export default function PassportTopBar({
             <button
               onClick={() => setSearchOpen(true)}
               aria-label={t("tool_search")}
-              className="h-10 w-10 min-[480px]:w-auto min-[480px]:ml-1 flex items-center justify-center gap-2 text-ink min-w-0"
+              className={`h-10 w-10 ${compact ? "" : "min-[480px]:w-auto min-[480px]:ml-1"} flex items-center justify-center gap-2 text-ink min-w-0`}
             >
               <Search size={19} strokeWidth={1.25} className="shrink-0" />
-              <span className="hidden min-[480px]:block font-sans text-[13px] leading-none pb-1 border-b border-ink w-[clamp(3.5rem,14vw,10rem)] text-left">
+              <span className={`hidden ${compact ? "" : "min-[480px]:block"} font-sans text-[13px] leading-none pb-1 border-b border-ink w-[clamp(3.5rem,14vw,10rem)] text-left`}>
                 {t("tool_search")}
               </span>
             </button>
@@ -95,7 +98,7 @@ export default function PassportTopBar({
           {brand}
         </button>
         <div className="flex items-center justify-end">
-          {showTools && <HeaderTools onGoTo={onGoTo} theme={theme} onToggleTheme={toggleTheme} />}
+          {showTools && <HeaderTools onGoTo={onGoTo} theme={theme} onToggleTheme={toggleTheme} compact={compact} />}
           <button
             onClick={() => setShareOpen(true)}
             aria-label={t("contents_share")}
@@ -146,7 +149,7 @@ export default function PassportTopBar({
                 <>
                   <button
                     onClick={() => { setMenuOpen(false); onGoTo(9); }}
-                    className="md:hidden w-full flex items-center gap-4 py-3.5 border-b border-line text-left"
+                    className={`${compact ? "" : "md:hidden"} w-full flex items-center gap-4 py-3.5 border-b border-line text-left`}
                   >
                     <AudioLines size={14} strokeWidth={1.5} className="text-clay w-5" />
                     <span className="font-sans text-[11px] uppercase tracking-[0.2em] text-ink">{t("tool_voice")}</span>
@@ -154,7 +157,7 @@ export default function PassportTopBar({
                   <button
                     onClick={toggleTheme}
                     aria-pressed={theme === "dark"}
-                    className="md:hidden w-full flex items-center gap-4 py-3.5 border-b border-line text-left"
+                    className={`${compact ? "" : "md:hidden"} w-full flex items-center gap-4 py-3.5 border-b border-line text-left`}
                   >
                     {theme === "dark" ? <Sun size={14} strokeWidth={1.5} className="text-clay w-5" /> : <Moon size={14} strokeWidth={1.5} className="text-clay w-5" />}
                     <span className="font-sans text-[11px] uppercase tracking-[0.2em] text-ink">{theme === "dark" ? t("tool_light") : t("tool_dark")}</span>

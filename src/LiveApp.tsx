@@ -206,7 +206,7 @@ export default function LiveApp() {
       {revealing && <OpeningReveal onDone={() => setRevealing(false)} />}
 
       {/* The brand header stays on every screen: menu, logo, share. */}
-      <PassportTopBar showTools onGoTo={(i) => { setLegalPage("none"); setIndex(i); }} onOpenLegal={setLegalPage} />
+      <PassportTopBar showTools compact={!isFront} onGoTo={(i) => { setLegalPage("none"); setIndex(i); }} onOpenLegal={setLegalPage} />
 
       <div ref={scrollRef} className="flex-1 overflow-y-auto visible-scrollbar relative" onClick={handleTap}>
         <ChapterColorProvider color={CHAPTER_COLORS[index]}>
