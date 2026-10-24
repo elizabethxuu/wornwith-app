@@ -39,7 +39,7 @@ export function PrivacyPolicyScreen({ onBack }: { onBack: () => void }) {
       {section("privacy_s1_title", ["privacy_s1_a", "privacy_s1_b", "privacy_s1_c"])}
 
       <div className="border-t border-line mt-6" />
-      {section("privacy_s2_title", ["privacy_s2_a", "privacy_s2_b", "privacy_s2_c", "privacy_s2_e", "privacy_s2_f", "privacy_s2_d"])}
+      {section("privacy_s2_title", ["privacy_s2_a", "privacy_s2_b", "privacy_s2_c", "privacy_s2_e", "privacy_s2_f", "privacy_s2_g", "privacy_s2_h", "privacy_s2_d"])}
 
       <div className="border-t border-line mt-6" />
       {section("privacy_s5_title", ["privacy_s5_a", "privacy_s5_b", "privacy_s5_c"])}

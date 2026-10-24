@@ -454,6 +454,11 @@ export const dict = {
   rem_off_note: { en: "Reminders are off.", fr: "Les rappels sont désactivés.", pt: "Os lembretes estão desativados." },
   rem_denied_note: { en: "Notifications are off for this app. Turn them on in Settings, then try again.", fr: "Les notifications sont désactivées pour cette app. Activez-les dans Réglages, puis réessayez.", pt: "As notificações estão desativadas para esta app. Ative-as nas Definições e tente de novo." },
   rem_calendar_note: { en: "Open the downloaded file to add the four reminders to your calendar.", fr: "Ouvrez le fichier téléchargé pour ajouter les quatre rappels à votre calendrier.", pt: "Abra o ficheiro transferido para adicionar os quatro lembretes ao seu calendário." },
+  // The story card: an image of the coat's life, sized for Instagram Stories.
+  // Apple Wallet
+  // The waitlist page (wornwith.care/waitlist)
+  wl_cta_line: { en: "Want a passport for a piece of your own?", fr: "Envie d'un passeport pour une de vos pièces ?", pt: "Quer um passaporte para uma peça sua?" },
+  wl_cta: { en: "Join the waitlist ›", fr: "Rejoindre la liste ›", pt: "Entrar na lista ›" },
   care_philosophy_title: { en: "Care Philosophy", fr: "Philosophie d'Entretien", pt: "Filosofia de Cuidado" },
   care_philosophy_line1: { en: "Designed to be repaired.", fr: "Conçu pour être réparé.", pt: "Feito para ser reparado." },
   care_philosophy_line2: { en: "Designed to be worn.", fr: "Conçu pour être porté.", pt: "Feito para ser usado." },
@@ -988,6 +993,16 @@ export const dict = {
     en: "Passing the coat on: your name, note and stamps travel inside the link you send. They are not stored on a server, but anyone who has the link can read them.",
     fr: "Transmettre le manteau : votre nom, votre mot et vos tampons voyagent dans le lien que vous envoyez. Ils ne sont pas stockés sur un serveur, mais toute personne ayant le lien peut les lire.",
     pt: "Passar o casaco adiante: o seu nome, bilhete e carimbos viajam dentro do link que envia. Não são guardados num servidor, mas quem tiver o link pode lê-los.",
+  },
+  privacy_s2_g: {
+    en: "The waitlist: if you join, we keep your email and the piece you named, only to tell you when your passport is ready. They are stored with Upstash, our database provider. Write to hello@wornwith.care and we'll delete them.",
+    fr: "La liste d'attente : si vous la rejoignez, nous gardons votre e-mail et la pièce citée, uniquement pour vous prévenir quand votre passeport est prêt. Ils sont stockés chez Upstash, notre fournisseur de base de données. Écrivez à hello@wornwith.care et nous les supprimerons.",
+    pt: "A lista de espera: se entrar, guardamos o seu e-mail e a peça que referiu, apenas para o avisar quando o passaporte estiver pronto. Ficam guardados na Upstash, o nosso fornecedor de base de dados. Escreva para hello@wornwith.care e apagamo-los.",
+  },
+  privacy_s2_h: {
+    en: "Apple Wallet: the pass is made when you ask for it, from the coat's details and your wear count. Nothing about you is kept.",
+    fr: "Apple Wallet : le pass est créé à la demande, à partir des informations du manteau et du nombre de fois porté. Rien vous concernant n'est conservé.",
+    pt: "Apple Wallet: o passe é criado quando o pede, a partir dos dados do casaco e do número de usos. Nada sobre si é guardado.",
   },
   privacy_s5_title: {
     en: "Counted anonymously, and nothing else",
