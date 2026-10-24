@@ -110,7 +110,7 @@ export default function PassportTopBar({
 
   return (
     <>
-      <div
+      <header
         className={`shrink-0 grid grid-cols-[1fr_auto_1fr] items-center gap-1 px-2 min-[400px]:px-3 pb-2 bg-paper print:hidden border-b border-line`}
         style={barStyle}
       >
@@ -148,7 +148,7 @@ export default function PassportTopBar({
             <Share size={20} strokeWidth={1.25} />
           </button>
         </div>
-      </div>
+      </header>
 
       {menuOpen && (
         <div className={`absolute inset-x-0 bottom-0 ${overlayClassName} z-30 bg-paper flex flex-col fade-up`}>
