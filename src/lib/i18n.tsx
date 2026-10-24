@@ -531,6 +531,12 @@ export const dict = {
   save_another_moment: { en: "+ Save another moment", fr: "+ Enregistrer un autre moment", pt: "+ Salvar outro momento" },
 
   // Today's Edit
+  menu_edit_label: { en: "Today's Edit", fr: "Aujourd'hui", pt: "Hoje" },
+  menu_tip_default: { en: "Wear it with care.", fr: "À porter avec soin.", pt: "Use com cuidado." },
+  menu_tip_rain: { en: "Wear it buttoned.", fr: "À porter boutonné.", pt: "Use abotoado." },
+  menu_tip_cold: { en: "Wear it closed.", fr: "À porter fermé.", pt: "Use fechado." },
+  menu_tip_mild: { en: "Wear it open.", fr: "À porter ouvert.", pt: "Use aberto." },
+  menu_tip_warm: { en: "Carry it, just in case.", fr: "À emporter, au cas où.", pt: "Leve-o, por via das dúvidas." },
   todays_edit_title: { en: "Today's Edit", fr: "La Sélection du Jour", pt: "A Seleção de Hoje" },
   ask_anything_placeholder: { en: "Ask anything about your wardrobe\u2026", fr: "Posez une question sur votre garde-robe\u2026", pt: "Pergunte algo sobre seu guarda-roupa\u2026" },
   ask_anything_fallback: {

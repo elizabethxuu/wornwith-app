@@ -5,6 +5,19 @@ import { ShareSheet } from "./UI";
 import HeaderTools, { SearchSheet } from "./HeaderTools";
 import { LEGAL_LINKS, type LegalPage } from "../lib/uiPrefs";
 import { applyTheme, readStoredTheme, saveTheme, type Theme } from "../lib/theme";
+import { GARMENT } from "../lib/garment";
+import { fetchWeather, type WeatherData } from "../lib/todaysEdit";
+
+// Today's Edit, in brief, for the menu: one short line from the real
+// forecast. The forecast is only read when location access was already
+// granted, so opening the menu never triggers a permission prompt.
+function menuTipKey(w: WeatherData | null): TranslationKey {
+  if (!w) return "menu_tip_default";
+  if (w.rainLikely) return "menu_tip_rain";
+  if (w.afternoonTempF < 55) return "menu_tip_cold";
+  if (w.afternoonTempF >= 72) return "menu_tip_warm";
+  return "menu_tip_mild";
+}
 
 // Screen numbers match the live app: 1 overview, 2 journey, 3 materials,
 // 4 care, 5 environment, 7 story, 8 ownership.
@@ -58,6 +71,23 @@ export default function PassportTopBar({
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, [menuOpen]);
+
+  const [menuWeather, setMenuWeather] = useState<WeatherData | null>(null);
+  useEffect(() => {
+    if (!menuOpen || menuWeather || !navigator.permissions?.query) return;
+    let live = true;
+    navigator.permissions
+      .query({ name: "geolocation" as PermissionName })
+      .then((p) => (p.state === "granted" ? fetchWeather() : null))
+      .then((w) => { if (live && w) setMenuWeather(w); })
+      .catch(() => {});
+    return () => { live = false; };
+  }, [menuOpen, menuWeather]);
+  const menuTemp = menuWeather
+    ? lang === "en"
+      ? `${menuWeather.tempF}°`
+      : `${Math.round(((menuWeather.tempF - 32) * 5) / 9)}°`
+    : null;
 
   const barStyle = safeArea ? { paddingTop: "max(env(safe-area-inset-top), 0.5rem)" } : { paddingTop: "0.25rem" };
   const brand = (
@@ -127,7 +157,7 @@ export default function PassportTopBar({
           </div>
           <nav className="flex-1 overflow-y-auto px-6 pt-6 max-w-md w-full mx-auto">
             {/* Quick actions, icons only, side by side at the top. */}
-            <div className="flex items-center gap-3 mb-8" role="group">
+            <div className="flex items-center gap-3 mb-8">
               <button
                 onClick={() => { setMenuOpen(false); setShareOpen(true); }}
                 aria-label={t("contents_share")}
@@ -157,6 +187,25 @@ export default function PassportTopBar({
                   </button>
                 </>
               )}
+              {/* Your coat, with today's line from Today's Edit beside it. */}
+              <button
+                onClick={() => { setMenuOpen(false); onGoTo(9); }}
+                aria-label={`${t("menu_edit_label")}: ${t(menuTipKey(menuWeather))}`}
+                className="ml-auto flex items-center gap-2.5 text-left min-w-0"
+              >
+                <span className="text-right leading-tight min-w-0">
+                  <span className="block font-sans text-[9px] uppercase tracking-[0.2em] text-clay truncate">
+                    {t("menu_edit_label")}{menuTemp ? ` · ${menuTemp}` : ""}
+                  </span>
+                  <span className="block font-display italic text-[16px] text-ink mt-0.5 truncate">{t(menuTipKey(menuWeather))}</span>
+                </span>
+                <img
+                  src={GARMENT.image}
+                  alt=""
+                  aria-hidden="true"
+                  className="w-11 h-11 shrink-0 rounded-full object-cover border border-line"
+                />
+              </button>
             </div>
             <p className="font-sans text-[10px] uppercase tracking-[0.2em] text-clay mb-2">{t("contents_title")}</p>
             <div className="border-t border-line">
