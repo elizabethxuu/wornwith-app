@@ -1,5 +1,24 @@
 {
   "rewrites": [
-    { "source": "/(en|fr|pt)/:path*", "destination": "/index.html" }
+    {
+      "source": "/fr",
+      "destination": "/fr/index.html"
+    },
+    {
+      "source": "/fr/:path*",
+      "destination": "/fr/index.html"
+    },
+    {
+      "source": "/pt",
+      "destination": "/pt/index.html"
+    },
+    {
+      "source": "/pt/:path*",
+      "destination": "/pt/index.html"
+    },
+    {
+      "source": "/(en)/:path*",
+      "destination": "/index.html"
+    }
   ]
 }

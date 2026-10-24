@@ -9,7 +9,7 @@ const STORAGE_KEY = "wornwith:lang";
 // Every user-facing string in the app, keyed and translated. Data values
 // that are proper nouns, measurements, or codes (place names, percentages,
 // certification codes, DPP IDs) intentionally stay as-is across languages.
-// That's normal for real product passports too (a GOTS certificate doesn't
+// That's normal for real product passports too (a GRS certificate doesn't
 // get translated).
 export const dict = {
   // Skeleton loader
@@ -33,11 +33,7 @@ export const dict = {
     fr: "Un registre vivant des matériaux, de l'entretien et du parcours de ce vêtement.",
     pt: "Um registro vivo dos materiais, do cuidado e da jornada desta peça.",
   },
-  stat_illustrative: {
-    en: "Illustrative",
-    fr: "Illustratif",
-    pt: "Ilustrativo",
-  },
+  stat_recycled: { en: "recycled wool", fr: "laine recyclée", pt: "lã reciclada" },
   impact_illustrative_note: {
     en: "Illustrative estimates for this demo. These figures were not measured or independently verified.",
     fr: "Estimations illustratives pour cette démo. Ces chiffres n'ont pas été mesurés ni vérifiés de manière indépendante.",
@@ -172,14 +168,6 @@ export const dict = {
   handover_stamps_one: { en: "It arrives with one stamp from its last life.", fr: "Il arrive avec un tampon de sa vie d'avant.", pt: "Ele chega com um carimbo da vida anterior." },
   handover_begin: { en: "Begin my chapter", fr: "Commencer mon chapitre", pt: "Começar meu capítulo" },
   handover_later: { en: "Not now", fr: "Plus tard", pt: "Agora não" },
-  coat_voice_listen: { en: "Hear it tell its story", fr: "L'écouter raconter son histoire", pt: "Ouvir a sua história" },
-  coat_voice_stop: { en: "Stop", fr: "Arrêter", pt: "Parar" },
-  coat_voice_unavailable: { en: "Voice isn't available in this browser.", fr: "La voix n'est pas disponible dans ce navigateur.", pt: "A voz não está disponível neste navegador." },
-  coat_voice_script: {
-    en: "I began as wool on the Canterbury Plains, in New Zealand. In Biella, third-generation millers spun me into yarn and wove me into cloth. In Porto, careful hands cut and sewed me into a coat, made to be repaired rather than replaced. I've come twenty-one thousand four hundred kilometres to be here, with you. Wear me well. And one day, pass me on.",
-    fr: "J'ai commencé comme laine, dans les plaines de Canterbury, en Nouvelle-Zélande. À Biella, des filateurs de troisième génération m'ont filé et tissé. À Porto, des mains attentives m'ont coupé et cousu pour faire de moi un manteau, pensé pour être réparé plutôt que remplacé. J'ai parcouru vingt et un mille quatre cents kilomètres pour être ici, avec vous. Portez-moi bien. Et un jour, transmettez-moi.",
-    pt: "Comecei como lã nas planícies de Canterbury, na Nova Zelândia. Em Biella, fiandeiros de terceira geração me transformaram em fio e me teceram. No Porto, mãos cuidadosas me cortaram e coseram num casaco, feito para ser reparado em vez de substituído. Percorri vinte e um mil e quatrocentos quilómetros para estar aqui, consigo. Use-me bem. E um dia, passe-me adiante.",
-  },
   stamps_title: { en: "Where it's been", fr: "Où il est allé", pt: "Por onde passou" },
   stamps_hint: { en: "Tap a stamp to find it on the map", fr: "Touchez un tampon pour le retrouver sur la carte", pt: "Toque num carimbo para vê-lo no mapa" },
   stamp_grown: { en: "WOOL GROWN", fr: "LAINE", pt: "LÃ" },
@@ -458,14 +446,14 @@ export const dict = {
   env_metric_carbon_value: { en: "30%", fr: "30%", pt: "30%" },
   env_metric_recyclable: { en: "recyclable material composition", fr: "de composition en matériaux recyclables", pt: "de composição em materiais recicláveis" },
   env_metric_recyclable_value: { en: "92%", fr: "92%", pt: "92%" },
-  env_metric_renewable: { en: "renewable energy used in manufacturing", fr: "d'énergie renouvelable utilisée en fabrication", pt: "de energia renovável usada na fabricação" },
+  env_metric_renewable: { en: "renewable energy across all manufacturing stages", fr: "d'énergie renouvelable sur toutes les étapes de fabrication", pt: "de energia renovável em todas as etapas de fabrico" },
   env_metric_renewable_value: { en: "78%", fr: "78%", pt: "78%" },
   env_metric_sourced: { en: "responsibly sourced wool fibres", fr: "de fibres de laine issues de sources responsables", pt: "de fibras de lã de origem responsável" },
   env_metric_sourced_value: { en: "100%", fr: "100%", pt: "100%" },
   env_metric_water: { en: "water conserved during production", fr: "d'eau préservée pendant la production", pt: "de água preservada durante a produção" },
   env_metric_water_value: { en: "2,400 L", fr: "2 400 L", pt: "2.400 L" },
   env_metric_service: { en: "projected service life", fr: "de durée de vie projetée", pt: "de vida útil projetada" },
-  env_metric_service_value: { en: "10+ years", fr: "10 ans et plus", pt: "10+ anos" },
+  env_metric_service_value: { en: "8–10 years", fr: "8 à 10 ans", pt: "8–10 anos" },
   impact_supporting_line: {
     en: "What this coat actually costs the planet, and what it saves.",
     fr: "Ce que ce manteau coûte réellement à la planète, et ce qu'il permet d'économiser.",
@@ -505,7 +493,7 @@ export const dict = {
   manufacturing_family_value: { en: "Yes, 3rd generation", fr: "Oui, 3e génération", pt: "Sim, 3ª geração" },
   manufacturing_since_label: { en: "Operating since", fr: "En activité depuis", pt: "Em operação desde" },
   manufacturing_since_value: { en: "1938", fr: "1938", pt: "1938" },
-  manufacturing_renewable_label: { en: "Renewable energy", fr: "Énergie renouvelable", pt: "Energia renovável" },
+  manufacturing_renewable_label: { en: "Renewable energy at the mill", fr: "Énergie renouvelable à la filature", pt: "Energia renovável na fiação" },
   manufacturing_renewable_value: { en: "65%", fr: "65%", pt: "65%" },
 
   learn_wool_farm: { en: "Learn about the wool farm", fr: "Découvrir la ferme de laine", pt: "Conhecer a fazenda de lã" },
@@ -1313,7 +1301,7 @@ export const dict = {
   save_memory: { en: "Save memory", fr: "Enregistrer le souvenir", pt: "Salvar memória" },
   cancel: { en: "Cancel", fr: "Annuler", pt: "Cancelar" },
   log_a_memory: { en: "+ Log a memory", fr: "+ Ajouter un souvenir", pt: "+ Registrar uma memória" },
-  seed_name_marais: { en: "The Marais Coat", fr: "Le Manteau Marais", pt: "O Casaco Marais" },
+  seed_name_marais: { en: "Black Wool Coat", fr: "Manteau en Laine Noire", pt: "Casaco de Lã Preta" },
   seed_name_silk: { en: "Silk Slip Dress", fr: "Robe Nuisette en Soie", pt: "Vestido Slip de Seda" },
   seed_name_linen: { en: "Linen Trousers", fr: "Pantalon en Lin", pt: "Calça de Linho" },
   seed_note_marais: { en: "March dinner · Paris, New York", fr: "Dîner de mars · Paris, New York", pt: "Jantar de março · Paris, Nova York" },

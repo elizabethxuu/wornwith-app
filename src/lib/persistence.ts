@@ -139,7 +139,7 @@ export type WardrobeItem = {
 };
 
 const defaultWardrobe: WardrobeItem[] = [
-  { name: "The Marais Coat", nameKey: "seed_name_marais", tag: "DPP", worn: "18×", note: "March dinner · Paris, New York", noteKey: "seed_note_marais", brand: "COS", loggedAt: "2026-03-14" },
+  { name: "Black Wool Coat", nameKey: "seed_name_marais", tag: "DPP", worn: "18×", note: "March dinner · Paris, New York", noteKey: "seed_note_marais", brand: "COS", loggedAt: "2026-03-14" },
   { name: "Silk Slip Dress", nameKey: "seed_name_silk", tag: null, worn: "7×", note: "June birthday · London", noteKey: "seed_note_silk", brand: "Reformation", loggedAt: "2026-06-02", resold: true },
   { name: "Linen Trousers", nameKey: "seed_name_linen", tag: null, worn: "2×", note: "Last: Lisbon trip", noteKey: "seed_note_linen", brand: "Everlane", loggedAt: "2026-07-01", resold: true },
 ];

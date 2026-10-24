@@ -9,7 +9,7 @@ export function SkeletonLoader() {
       className="relative h-full w-full flex flex-col items-center justify-center bg-paper px-8"
     >
       <img
-        src="/images/wornwith-logo.png"
+        src="/images/wornwith-logo.webp"
         alt=""
         aria-hidden="true"
         className="lux-verify-logo w-[clamp(7rem,30vw,11rem)] h-auto"

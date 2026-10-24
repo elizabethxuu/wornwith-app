@@ -33,6 +33,14 @@ test("readableOn keeps colors that already pass and fixes the ones that do not",
 test("the eyebrow label and the progress marker read the chapter color", () => {
   const ui = readFileSync(new URL("../src/components/UI.tsx", import.meta.url), "utf8");
   const shell = readFileSync(new URL("../src/components/ChapterShell.tsx", import.meta.url), "utf8");
-  assert.match(ui, /readableOn\(useChapterColor\(\)\)/);
+  assert.match(ui, /chapterInk\(useChapterColor\(\)\)/);
   assert.match(shell, /useChapterColor\(\)/);
+});
+
+test("chapter colors are readable as text on the dark theme too", async () => {
+  const { readableOnDark, DARK_SURFACE } = await loadTs("lib/contrast");
+  for (const c of CHAPTER_COLORS) {
+    const out = readableOnDark(c);
+    assert.ok(contrastRatio(out, DARK_SURFACE) >= 4.5, `${c} -> ${out} is below 4.5:1 on dark`);
+  }
 });

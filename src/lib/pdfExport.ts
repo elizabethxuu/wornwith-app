@@ -171,7 +171,7 @@ export async function generatePassportPdf(): Promise<void> {
   doc.text(t("dpp_eyebrow").toUpperCase() || "DIGITAL PRODUCT PASSPORT", PAGE_W / 2, cursor.y, { align: "center", charSpace: 0.5 });
   cursor.y += 14;
 
-  const imageDataUrl = await loadImageDataUrl(GARMENT.image);
+  const imageDataUrl = await loadImageDataUrl(GARMENT.imagePng);
   if (imageDataUrl) {
     try {
       const imgW = 70;

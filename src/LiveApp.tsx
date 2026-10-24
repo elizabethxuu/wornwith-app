@@ -72,7 +72,7 @@ export default function LiveApp() {
   const { t } = useLanguage();
   const [bootState, setBootState] = useState<BootState>("verifying");
   const [index, setIndex] = useState(FIRST_SCREEN);
-  const scrollRef = useRef<HTMLDivElement>(null);
+  const scrollRef = useRef<HTMLElement>(null);
   // Built inside the component (not as a module-level constant) so
   // screens like ProductOverview can be given a real "jump to a specific
   // screen" callback, not just the generic forward-tap gesture.
@@ -97,7 +97,7 @@ export default function LiveApp() {
         return;
       }
       setBootState("scanning");
-    }, 1400);
+    }, 900);
   };
 
   useEffect(() => {
@@ -214,7 +214,7 @@ export default function LiveApp() {
       {/* The brand header stays on every screen: menu, logo, share. */}
       <PassportTopBar showTools compact={!isFront} onGoTo={(i) => { setLegalPage("none"); setIndex(i); }} onOpenLegal={setLegalPage} />
 
-      <div ref={scrollRef} className="flex-1 overflow-y-auto visible-scrollbar relative" onClick={handleTap}>
+      <main ref={scrollRef} className="flex-1 overflow-y-auto visible-scrollbar relative" onClick={handleTap}>
         <ChapterColorProvider color={CHAPTER_COLORS[index]}>
           {legalPage === "privacy" ? (
             <PrivacyPolicyScreen onBack={() => setLegalPage("none")} />
@@ -230,14 +230,14 @@ export default function LiveApp() {
             <ChapterShell index={index} total={liveScreens.length}>{liveScreens[index]}</ChapterShell>
           )}
         </ChapterColorProvider>
-      </div>
+      </main>
 
 
       {/* Minimal legal footer, rendered once here rather than per-screen.
           It can be closed so it never covers a screen; the same links stay
           in the menu, so nothing becomes unreachable. */}
       {!footerHidden && (
-      <div
+      <footer
         className="relative flex flex-wrap items-center justify-center gap-x-3.5 gap-y-1 pl-4 pr-10 pt-2 shrink-0 print:hidden"
         style={isFront ? { paddingBottom: "max(env(safe-area-inset-bottom), 12px)" } : undefined}
       >
@@ -259,13 +259,13 @@ export default function LiveApp() {
         >
           <ChevronDown size={16} strokeWidth={1.5} />
         </button>
-      </div>
+      </footer>
       )}
 
       {/* Footer folded away: a small arrow brings it back. On the overview it
           is a slim strip under the photo; elsewhere it sits in the nav bar. */}
       {footerHidden && isFront && (
-        <div
+        <footer
           className="shrink-0 flex justify-center print:hidden"
           style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
         >
@@ -277,7 +277,7 @@ export default function LiveApp() {
           >
             <ChevronUp size={16} strokeWidth={1.5} />
           </button>
-        </div>
+        </footer>
       )}
 
       {/* Visible, unambiguous nav bar, the tap-zones in the content area
@@ -285,7 +285,7 @@ export default function LiveApp() {
           move forward/back. Fixed outside the scrollable content so it can
           never overlap whatever text happens to be on a given screen. */}
       {!isFront && (
-      <div
+      <nav aria-label="Chapters"
         className="flex items-center justify-between px-4 shrink-0 border-t border-line print:hidden"
         style={{ paddingTop: "10px", paddingBottom: "max(env(safe-area-inset-bottom), 10px)" }}
       >
@@ -326,7 +326,7 @@ export default function LiveApp() {
         ) : (
           <div className="w-10 h-10" />
         )}
-      </div>
+      </nav>
       )}
     </div>
   );

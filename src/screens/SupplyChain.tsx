@@ -2,7 +2,10 @@ import { Fragment } from "react";
 import { Eyebrow, ExpandableCard, StatusChip, SignedRecordLink, type ClaimStatus } from "../components/UI";
 import { useLanguage } from "../lib/i18n";
 import { ArrowRight, Sprout, Factory, Ship, Store } from "lucide-react";
-import { SUPPLY_CHAIN, JOURNEY, ETHICAL_AUDIT, CHEMICAL_COMPLIANCE } from "../lib/passportRecord";
+import { SUPPLY_CHAIN, JOURNEY, ETHICAL_AUDIT, CHEMICAL_COMPLIANCE, PASSPORT_RECORD } from "../lib/passportRecord";
+
+// The recycled share, read from the record's composition ("70% Recycled Wool").
+const recycledShare = PASSPORT_RECORD.product.composition.match(/\d+%/)?.[0] ?? "";
 import type { TranslationKey } from "../lib/i18n";
 
 const STAGE_ICONS = { wool_farm: Sprout, milling: Factory, ship: Ship, retail: Store } as const;
@@ -57,7 +60,7 @@ export function SupplyChain() {
         ))}
       </div>
       <div className="grid grid-cols-3 gap-2 mb-5">
-        {[[String(JOURNEY.countries), t("countries")], [`${JOURNEY.distanceKm.toLocaleString("en-US")} km`, t("traveled")], ["Demo", t("stat_illustrative")]].map(([v, l]) => (
+        {[[String(JOURNEY.countries), t("countries")], [`${JOURNEY.distanceKm.toLocaleString("en-US")} km`, t("traveled")], [recycledShare, t("stat_recycled")]].map(([v, l]) => (
           <div key={l} className="border-y border-line py-3 text-center">
             <p className="font-display italic text-[22px] leading-none text-ink">{v}</p>
             <p className="text-[9px] font-sans text-clay uppercase tracking-[0.18em] mt-1.5">{l}</p>

@@ -80,7 +80,7 @@ export function Welcome({ onEnter }: { onEnter?: () => void } = {}) {
         <div className="flex-1 w-full flex flex-col items-center justify-center py-[clamp(0.5rem,2.5dvh,1.5rem)]">
           <div style={{ perspective: "800px" }}>
             <img
-              src="/images/wornwith-logo.png"
+              src="/images/wornwith-logo.webp"
               alt="Worn With Care"
               className="w-[clamp(6.5rem,26dvh,14rem)] [@media(max-height:700px)]:w-32 card-flip-lr"
             />

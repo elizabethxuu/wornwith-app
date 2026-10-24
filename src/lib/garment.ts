@@ -11,10 +11,12 @@ export const GARMENT = {
   brandSku: "COS-8821",
   name: "COS Black Wool Funnel-Neck Coat",
   tagline: "Sustainable materials, timeless style",
-  image: "/images/cos-wool-jacket.png",
+  image: "/images/cos-wool-jacket.webp",
+  // The PDF export embeds PNG, so it keeps its own copy.
+  imagePng: "/images/cos-wool-jacket.png",
   material: "70% Recycled Wool",
   madeIn: "Italy & Portugal",
-  certified: "RWS · GOTS",
+  certified: "RWS · GRS",
   lifespan: "8–10 years",
   ownedSince: "1 April 2026",
   ownedSinceDate: new Date(2026, 3, 1), // real date, used to compute est. lifespan automatically

@@ -103,14 +103,14 @@ export default function PassportTopBar({
   const barStyle = safeArea ? { paddingTop: "max(env(safe-area-inset-top), 0.5rem)" } : { paddingTop: "0.25rem" };
   const brand = (
     <div className="flex items-center gap-2">
-      <img src="/images/wornwith-logo.png" alt="" aria-hidden="true" className={`h-6 min-[400px]:h-7 ${compact ? "" : "md:h-8"} w-auto`} />
+      <img src="/images/wornwith-logo-sm.webp" width={155} height={120} alt="" aria-hidden="true" className={`h-6 min-[400px]:h-7 ${compact ? "" : "md:h-8"} w-auto`} />
       <p className="font-display italic text-[clamp(1.2rem,5.2vw,1.9rem)] leading-none text-ink whitespace-nowrap">wornwith.care</p>
     </div>
   );
 
   return (
     <>
-      <div
+      <header
         className={`shrink-0 grid grid-cols-[1fr_auto_1fr] items-center gap-1 px-2 min-[400px]:px-3 pb-2 bg-paper print:hidden border-b border-line`}
         style={barStyle}
       >
@@ -148,7 +148,7 @@ export default function PassportTopBar({
             <Share size={20} strokeWidth={1.25} />
           </button>
         </div>
-      </div>
+      </header>
 
       {menuOpen && (
         <div className={`absolute inset-x-0 bottom-0 ${overlayClassName} z-30 bg-paper flex flex-col fade-up`}>
@@ -238,7 +238,7 @@ export default function PassportTopBar({
                   <button
                     onClick={() => setLang(l)}
                     aria-pressed={lang === l}
-                    className={`uppercase tracking-[0.28em] py-2 ${lang === l ? "text-ink" : "opacity-60"}`}
+                    className={`uppercase tracking-[0.28em] py-2 ${lang === l ? "text-ink underline underline-offset-[6px] decoration-1" : "text-clay"}`}
                   >
                     {l}
                   </button>

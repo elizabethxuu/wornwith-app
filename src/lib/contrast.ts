@@ -25,3 +25,23 @@ export function readableOn(color: string, background = "#FFFFFF", min = 4.5): st
   }
   return "#2B2622";
 }
+
+// The dark theme's surface. Text set in a chapter color there lightens
+// toward the dark theme's ink, as far as needed, the mirror of readableOn().
+export const DARK_SURFACE = "#1C1917";
+export function readableOnDark(color: string, background = DARK_SURFACE, min = 4.5): string {
+  if (!/^#[0-9a-f]{6}$/i.test(color)) return color;
+  const light = rgb("#F2EBE4");
+  const base = rgb(color);
+  for (let step = 0; step <= 20; step++) {
+    const mixed = "#" + base.map((v, i) => Math.round(v + (light[i] - v) * (step / 20)).toString(16).padStart(2, "0")).join("");
+    if (contrastRatio(mixed, background) >= min) return step === 0 ? color : mixed;
+  }
+  return "#F2EBE4";
+}
+
+// Text in a chapter color, readable in both themes: the light and dark
+// versions ride along as CSS variables and the .chapter-ink rule picks one.
+export function chapterInk(color: string): { className: string; style: Record<string, string> } {
+  return { className: "chapter-ink", style: { "--ink-l": readableOn(color), "--ink-d": readableOnDark(color) } };
+}

@@ -1,5 +1,5 @@
 import { lazy, Suspense, useState, useEffect } from "react";
-import { Card, useMountReveal, VerificationInfoPanel, ShareSheet, VoicePlayer } from "../components/UI";
+import { Card, useMountReveal, VerificationInfoPanel, ShareSheet } from "../components/UI";
 import { useChapterColor } from "../lib/chapterColor";
 import { loadWardrobe, saveWardrobe, logWardrobeEvent } from "../lib/persistence";
 import { GARMENT } from "../lib/garment";
@@ -92,15 +92,6 @@ export function StoryBehindIt() {
           <p className="font-display italic text-[13px] text-ink mt-3" style={storyReveal("translateY(6px)", 2890, 300)}>
             {t("crafted_to_last")}
           </p>
-          {/* The coat tells its own story, in the first person. */}
-          <div className="mt-4" style={storyReveal("translateY(6px)", 3010, 300)}>
-            <VoicePlayer
-              text={t("coat_voice_script")}
-              listenLabel={t("coat_voice_listen")}
-              stopLabel={t("coat_voice_stop")}
-              unavailableLabel={t("coat_voice_unavailable")}
-            />
-          </div>
         </Card>
       </div>
 

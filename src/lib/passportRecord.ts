@@ -54,7 +54,8 @@ export const IMPACT = {
   recyclabilityPercent: 92,
   renewableEnergyPercent: 78,
   ethicalSourcingPercent: 100,
-  co2SavedKg: 7.9,
+  // 30% below the 12.1 kg category average: 12.1 × 0.30 ≈ 3.6 kg saved.
+  co2SavedKg: 3.6,
   waterSavedLitres: 2400,
   topPercentOfBrands: 10,
 } as const;
@@ -73,7 +74,7 @@ export const PASSPORT_RECORD = {
     name: GARMENT.name,
     composition: GARMENT.material,
     madeIn: GARMENT.madeIn,
-    certificationsCited: ["RWS", "GOTS"],
+    certificationsCited: ["RWS", "GRS"],
   },
   supplyChain: SUPPLY_CHAIN,
   journey: JOURNEY,
