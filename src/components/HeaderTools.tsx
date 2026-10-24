@@ -58,29 +58,30 @@ export function SearchSheet({ open, onClose, onGoTo }: { open: boolean; onClose:
 
   return createPortal(
     <div className="fixed inset-0 h-[100dvh] w-full z-50">
-      <button type="button" aria-label={t("close_label")} className="absolute inset-0 w-full h-full bg-ink/45" onClick={onClose} />
+      <button type="button" aria-label={t("close_label")} className="absolute inset-0 w-full h-full bg-ink/25" onClick={onClose} />
       <section
         role="dialog"
         aria-modal="true"
         aria-label={t("tool_search")}
-        className="absolute top-0 inset-x-0 md:max-w-[520px] md:mx-auto max-h-[80dvh] overflow-y-auto bg-paper rounded-b-[24px] border-b border-line px-5 pb-5 fade-up"
+        className="glass-panel absolute top-0 inset-x-0 md:max-w-[520px] md:mx-auto max-h-[80dvh] overflow-y-auto rounded-b-[28px] px-4 pb-5 fade-up"
         style={{ paddingTop: "max(env(safe-area-inset-top), 12px)" }}
       >
-        <div className="flex items-center gap-3 border-b border-line pb-2">
-          <Search size={18} strokeWidth={1.5} className="text-clay shrink-0" aria-hidden="true" />
+        {/* Frosted-glass pill, in the manner of Apple's search fields. */}
+        <div className="glass-pill flex items-center gap-2.5 rounded-full pl-4 pr-1.5 h-11 mt-1">
+          <Search size={17} strokeWidth={1.6} className="text-clay shrink-0" aria-hidden="true" />
           <input
             ref={inputRef}
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder={t("tool_search_placeholder")}
             aria-label={t("tool_search_placeholder")}
-            className="flex-1 min-w-0 bg-transparent font-sans text-[14px] text-ink placeholder:text-clay/70 outline-none py-2"
+            className="flex-1 min-w-0 bg-transparent font-sans text-[15px] text-ink placeholder:text-clay/80 outline-none"
           />
-          <button onClick={onClose} aria-label={t("close_label")} className="w-8 h-8 flex items-center justify-center text-clay">
-            <CloseIcon size={18} strokeWidth={1.5} />
+          <button onClick={onClose} aria-label={t("close_label")} className="glass-pill-btn w-8 h-8 rounded-full flex items-center justify-center text-clay shrink-0">
+            <CloseIcon size={15} strokeWidth={1.75} />
           </button>
         </div>
-        <ul className="mt-2" aria-live="polite">
+        <ul className="mt-3 px-1" aria-live="polite">
           {sections.map((e) => (
             <li key={e.id}>
               <button onClick={() => go(e.screen)} className="w-full text-left py-3 border-b border-line/70 font-display italic text-[1.25rem] text-ink">
