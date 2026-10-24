@@ -1012,119 +1012,85 @@ export function VoicePlayer({
   );
 }
 
-// Records and saves a short voice note in the browser, genuinely
-// functional via MediaRecorder, no fake states. When ELEVENLABS_API_KEY
-// is configured (api/transcribe.js), the recording is also sent to
-// ElevenLabs Speech-to-Text for a transcript; without a key, the note
-// still saves and plays back perfectly, just without a transcript. This
-// is a separate component from VoicePlayer above (which reads text
-// aloud) since recording someone's own voice and playing synthesized
-// speech are fundamentally different mechanisms, not variants of the
-// same one.
-// Product page hero: plays a short video once, then settles into a slow
-// ambient crossfade loop between two stills. Layering (bottom to top):
-// image1 sits as a permanent base, image2's opacity toggles to create the
-// image1<->image2 crossfade once looping, and the video sits on top of
-// both, fading out (revealing image1 already underneath) the moment it
-// ends, that fade-out IS the video-to-image crossfade, no separate
-// "hand off" state needed. Respects prefers-reduced-motion (skips video
-// and the loop entirely, shows one static image) and falls back to the
-// image loop if the video fails to load, errors, or silently never
-// starts (autoplay blocked).
-// Product page hero: two videos play back to back, then the hero settles
-// into a slow ambient crossfade loop between two stills. One <video>
-// element is reused for both clips (its src is swapped when video 1
-// ends) rather than two separate elements, avoiding a double-load. A
-// second, hidden <video preload="auto"> for clip 2 starts fetching the
-// moment clip 1 begins playing, so by the time the handoff happens clip
-// 2 is already cached and starts instantly rather than buffering.
+// Product page hero: one looping video.
 //
-// Layering (bottom to top) for the image-loop phase: image1 sits as a
-// permanent base, image2's opacity toggles to create the image1<->image2
-// crossfade, and the video sits on top of both, fading out at the very
-// end (revealing image1 already underneath), that fade-out IS the
-// video-to-image crossfade, no separate "hand off" state needed.
-//
-// Respects prefers-reduced-motion (skips both videos and the loop
-// entirely, shows one static image) and falls back straight to the
-// image loop if either video fails to load, errors, or silently never
-// starts (autoplay blocked).
-// Product page hero: a single video plays once, then the hero settles
-// into a slow ambient slideshow, crossfading between two stills of the
-// coat. Layering (bottom to top): image1 sits as a permanent base,
-// image2's opacity toggles to create the image1<->image2 crossfade, and
-// the video sits on top of both, fading out at the very end (revealing
-// image1 already underneath), that fade-out IS the video-to-image
-// crossfade, no separate "hand off" state needed.
-//
-// Respects prefers-reduced-motion (skips the video and the slideshow
-// entirely, shows one static image) and falls back straight to the
-// image slideshow if the video fails to load, errors, or silently never
-// starts (autoplay blocked).
-// Product page hero: a single video, looping continuously, no image
-// slideshow, no sequencing state machine. Falls back to a static product
-// photo (the same one used before any of this hero video work began) if
-// the video fails to load, errors, or silently never starts (autoplay
-// blocked), and respects prefers-reduced-motion by showing that same
-// static photo with no motion at all, rather than leaving a blank space.
+// iPhones refuse to autoplay video in Low Power Mode, and a slow connection
+// can take a while to start it. Neither is a failure: the video stays in
+// place showing its own first frame (the poster), and starts on the first
+// tap anywhere, when it scrolls into view, or when the page comes back to
+// the foreground. Only a real load error swaps it for the still, and even
+// then it is the same first frame, so the hero never changes to a different
+// picture. Reduced motion shows that frame too, with no movement.
 export function ProductHero({
   videoSrc,
-  fallbackImageSrc,
+  posterSrc,
   altText,
 }: {
   videoSrc: string;
-  fallbackImageSrc: string;
+  posterSrc: string;
   altText: string;
 }) {
-  const [videoOk, setVideoOk] = useState(true);
-  const [reducedMotion, setReducedMotion] = useState(false);
+  const [failed, setFailed] = useState(false);
+  const [reducedMotion] = useState(
+    () => typeof window !== "undefined" && window.matchMedia?.("(prefers-reduced-motion: reduce)").matches,
+  );
   const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
-    const reduced =
-      typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    setReducedMotion(reduced);
-  }, []);
-
-  useEffect(() => {
-    if (reducedMotion || !videoOk) return;
+    if (reducedMotion || failed) return;
     const video = videoRef.current;
     if (!video) return;
 
-    const fallbackToStatic = () => setVideoOk(false);
-    video.addEventListener("error", fallbackToStatic);
+    const tryPlay = () => {
+      if (!video.paused) return;
+      const p = video.play();
+      // A refusal (Low Power Mode, autoplay off) is fine: the poster stays
+      // and the next tap or visit tries again.
+      if (p && typeof p.catch === "function") p.catch(() => undefined);
+    };
+    const onError = () => setFailed(true);
+    const onVisible = () => { if (document.visibilityState === "visible") tryPlay(); };
 
-    const playPromise = video.play();
-    if (playPromise && typeof playPromise.catch === "function") {
-      playPromise.catch(fallbackToStatic);
+    video.addEventListener("error", onError);
+    video.addEventListener("canplay", tryPlay);
+    document.addEventListener("visibilitychange", onVisible);
+    // A tap counts as permission to play, even in Low Power Mode.
+    const gestures = ["pointerup", "touchend", "click", "keydown"] as const;
+    gestures.forEach((g) => window.addEventListener(g, tryPlay, { passive: true }));
+
+    let io: IntersectionObserver | null = null;
+    if (typeof IntersectionObserver !== "undefined") {
+      io = new IntersectionObserver((entries) => {
+        if (entries.some((e) => e.isIntersecting)) tryPlay();
+        else video.pause();
+      });
+      io.observe(video);
     }
-
-    // Safety net for a silent stall (network hang, autoplay quietly
-    // blocked without rejecting the play() promise).
-    const stallTimer = setTimeout(() => {
-      if (video.paused) fallbackToStatic();
-    }, 5000);
+    tryPlay();
 
     return () => {
-      video.removeEventListener("error", fallbackToStatic);
-      clearTimeout(stallTimer);
+      video.removeEventListener("error", onError);
+      video.removeEventListener("canplay", tryPlay);
+      document.removeEventListener("visibilitychange", onVisible);
+      gestures.forEach((g) => window.removeEventListener(g, tryPlay));
+      io?.disconnect();
     };
-  }, [reducedMotion, videoOk]);
+  }, [reducedMotion, failed]);
 
-  if (reducedMotion || !videoOk) {
+  if (reducedMotion || failed) {
     return (
       <div aria-hidden="true" className="w-full h-64 overflow-hidden mb-4">
-        <img src={fallbackImageSrc} alt={altText} className="w-full h-full object-cover" />
+        <img src={posterSrc} alt={altText} className="w-full h-full object-cover" />
       </div>
     );
   }
 
   return (
-    <div aria-hidden="true" className="relative w-full h-64 overflow-hidden mb-4">
+    <div aria-hidden="true" className="relative w-full h-64 overflow-hidden mb-4 bg-[#EFE7DC]">
       <video
         ref={videoRef}
         src={videoSrc}
-        poster={fallbackImageSrc}
+        poster={posterSrc}
         muted
         playsInline
         autoPlay
@@ -1136,6 +1102,15 @@ export function ProductHero({
   );
 }
 
+// Records and saves a short voice note in the browser, genuinely
+// functional via MediaRecorder, no fake states. When ELEVENLABS_API_KEY
+// is configured (api/transcribe.js), the recording is also sent to
+// ElevenLabs Speech-to-Text for a transcript; without a key, the note
+// still saves and plays back perfectly, just without a transcript. This
+// is a separate component from VoicePlayer above (which reads text
+// aloud) since recording someone's own voice and playing synthesized
+// speech are fundamentally different mechanisms, not variants of the
+// same one.
 export function VoiceNoteRecorder() {
   const { t } = useLanguage();
   const [state, setState] = useState<"idle" | "requesting" | "recording" | "recorded" | "unavailable" | "denied">(
