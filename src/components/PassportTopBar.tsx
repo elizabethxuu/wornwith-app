@@ -5,6 +5,19 @@ import { ShareSheet } from "./UI";
 import HeaderTools, { SearchSheet } from "./HeaderTools";
 import { LEGAL_LINKS, type LegalPage } from "../lib/uiPrefs";
 import { applyTheme, readStoredTheme, saveTheme, type Theme } from "../lib/theme";
+import { GARMENT } from "../lib/garment";
+import { fetchWeather, type WeatherData } from "../lib/todaysEdit";
+
+// Today's Edit, in brief, for the menu: one short line from the real
+// forecast. The forecast is only read when location access was already
+// granted, so opening the menu never triggers a permission prompt.
+function menuTipKey(w: WeatherData | null): TranslationKey {
+  if (!w) return "menu_tip_default";
+  if (w.rainLikely) return "menu_tip_rain";
+  if (w.afternoonTempF < 55) return "menu_tip_cold";
+  if (w.afternoonTempF >= 72) return "menu_tip_warm";
+  return "menu_tip_mild";
+}
 
 // Screen numbers match the live app: 1 overview, 2 journey, 3 materials,
 // 4 care, 5 environment, 7 story, 8 ownership.
@@ -59,6 +72,23 @@ export default function PassportTopBar({
     return () => window.removeEventListener("keydown", onKey);
   }, [menuOpen]);
 
+  const [menuWeather, setMenuWeather] = useState<WeatherData | null>(null);
+  useEffect(() => {
+    if (!menuOpen || menuWeather || !navigator.permissions?.query) return;
+    let live = true;
+    navigator.permissions
+      .query({ name: "geolocation" as PermissionName })
+      .then((p) => (p.state === "granted" ? fetchWeather() : null))
+      .then((w) => { if (live && w) setMenuWeather(w); })
+      .catch(() => {});
+    return () => { live = false; };
+  }, [menuOpen, menuWeather]);
+  const menuTemp = menuWeather
+    ? lang === "en"
+      ? `${menuWeather.tempF}°`
+      : `${Math.round(((menuWeather.tempF - 32) * 5) / 9)}°`
+    : null;
+
   const barStyle = safeArea ? { paddingTop: "max(env(safe-area-inset-top), 0.5rem)" } : { paddingTop: "0.25rem" };
   const brand = (
     <div className="flex items-center gap-2">
@@ -85,10 +115,10 @@ export default function PassportTopBar({
             <button
               onClick={() => setSearchOpen(true)}
               aria-label={t("tool_search")}
-              className={`h-10 w-10 ${compact ? "" : "min-[480px]:w-auto min-[480px]:ml-1"} flex items-center justify-center gap-2 text-ink min-w-0`}
+              className={`h-10 w-10 ${compact ? "" : "min-[480px]:w-auto min-[480px]:h-9 min-[480px]:ml-1.5 min-[480px]:pl-3 min-[480px]:pr-4 min-[480px]:rounded-full search-trigger-glass"} flex items-center justify-center gap-2 text-ink min-w-0`}
             >
-              <Search size={19} strokeWidth={1.25} className="shrink-0" />
-              <span className={`hidden ${compact ? "" : "min-[480px]:block"} font-sans text-[13px] leading-none pb-1 border-b border-ink w-[clamp(3.5rem,14vw,10rem)] text-left`}>
+              <Search size={compact ? 19 : 17} strokeWidth={1.4} className="shrink-0" />
+              <span className={`hidden ${compact ? "" : "min-[480px]:block"} font-sans text-[13px] leading-none text-clay w-[clamp(3.5rem,14vw,10rem)] text-left`}>
                 {t("tool_search")}
               </span>
             </button>
@@ -125,7 +155,58 @@ export default function PassportTopBar({
             {brand}
             <div className="w-10 h-10" aria-hidden="true" />
           </div>
-          <nav className="flex-1 overflow-y-auto px-6 pt-8 max-w-md w-full mx-auto">
+          <nav className="flex-1 overflow-y-auto px-6 pt-6 max-w-md w-full mx-auto">
+            {/* Quick actions, icons only, side by side at the top. */}
+            <div className="flex items-center gap-3 mb-8">
+              <button
+                onClick={() => { setMenuOpen(false); setShareOpen(true); }}
+                aria-label={t("contents_share")}
+                title={t("contents_share")}
+                className="menu-icon-btn"
+              >
+                <Share size={18} strokeWidth={1.4} />
+              </button>
+              {showTools && (
+                <>
+                  <button
+                    onClick={() => { setMenuOpen(false); onGoTo(9); }}
+                    aria-label={t("tool_voice")}
+                    title={t("tool_voice")}
+                    className={`menu-icon-btn ${compact ? "" : "md:hidden"}`}
+                  >
+                    <AudioLines size={18} strokeWidth={1.4} />
+                  </button>
+                  <button
+                    onClick={toggleTheme}
+                    aria-pressed={theme === "dark"}
+                    aria-label={theme === "dark" ? t("tool_light") : t("tool_dark")}
+                    title={theme === "dark" ? t("tool_light") : t("tool_dark")}
+                    className={`menu-icon-btn ${compact ? "" : "md:hidden"}`}
+                  >
+                    {theme === "dark" ? <Sun size={18} strokeWidth={1.4} /> : <Moon size={18} strokeWidth={1.4} />}
+                  </button>
+                </>
+              )}
+              {/* Your coat, with today's line from Today's Edit beside it. */}
+              <button
+                onClick={() => { setMenuOpen(false); onGoTo(9); }}
+                aria-label={`${t("menu_edit_label")}: ${t(menuTipKey(menuWeather))}`}
+                className="ml-auto flex items-center gap-2.5 text-left min-w-0"
+              >
+                <span className="text-right leading-tight min-w-0">
+                  <span className="block font-sans text-[9px] uppercase tracking-[0.2em] text-clay truncate">
+                    {t("menu_edit_label")}{menuTemp ? ` · ${menuTemp}` : ""}
+                  </span>
+                  <span className="block font-display italic text-[16px] text-ink mt-0.5 truncate">{t(menuTipKey(menuWeather))}</span>
+                </span>
+                <img
+                  src={GARMENT.image}
+                  alt=""
+                  aria-hidden="true"
+                  className="w-11 h-11 shrink-0 rounded-full object-cover border border-line"
+                />
+              </button>
+            </div>
             <p className="font-sans text-[10px] uppercase tracking-[0.2em] text-clay mb-2">{t("contents_title")}</p>
             <div className="border-t border-line">
               {MENU_ITEMS.map(([key, screen], i) => (
@@ -138,32 +219,6 @@ export default function PassportTopBar({
                   <span className="font-display italic text-[1.5rem] leading-tight text-ink">{t(key)}</span>
                 </button>
               ))}
-              <button
-                onClick={() => { setMenuOpen(false); setShareOpen(true); }}
-                className="w-full flex items-baseline gap-4 py-3.5 border-b border-line text-left"
-              >
-                <span className="font-sans text-[10px] tracking-[0.2em] text-clay w-5">+</span>
-                <span className="font-sans text-[11px] uppercase tracking-[0.2em] text-ink">{t("contents_share")}</span>
-              </button>
-              {showTools && (
-                <>
-                  <button
-                    onClick={() => { setMenuOpen(false); onGoTo(9); }}
-                    className={`${compact ? "" : "md:hidden"} w-full flex items-center gap-4 py-3.5 border-b border-line text-left`}
-                  >
-                    <AudioLines size={14} strokeWidth={1.5} className="text-clay w-5" />
-                    <span className="font-sans text-[11px] uppercase tracking-[0.2em] text-ink">{t("tool_voice")}</span>
-                  </button>
-                  <button
-                    onClick={toggleTheme}
-                    aria-pressed={theme === "dark"}
-                    className={`${compact ? "" : "md:hidden"} w-full flex items-center gap-4 py-3.5 border-b border-line text-left`}
-                  >
-                    {theme === "dark" ? <Sun size={14} strokeWidth={1.5} className="text-clay w-5" /> : <Moon size={14} strokeWidth={1.5} className="text-clay w-5" />}
-                    <span className="font-sans text-[11px] uppercase tracking-[0.2em] text-ink">{theme === "dark" ? t("tool_light") : t("tool_dark")}</span>
-                  </button>
-                </>
-              )}
             </div>
             <div className="mt-8 flex items-center gap-3 font-sans text-[10px] uppercase tracking-[0.28em] text-clay" role="group" aria-label="Language">
               {(["en", "fr", "pt"] as const).map((l, k) => (
