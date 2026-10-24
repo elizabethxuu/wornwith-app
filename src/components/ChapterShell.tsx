@@ -31,7 +31,7 @@ export default function ChapterShell({ index, total = 10, children }: { index: n
     <div data-testid="chapter-shell">
       <div className="relative h-[clamp(210px,34dvh,320px)] overflow-hidden bg-[#2B2622]">
         <img
-          src="/images/overview-hero.jpg"
+          src="/images/overview-hero.webp"
           alt=""
           aria-hidden="true"
           className="chapter-photo absolute inset-0 w-full h-full object-cover"

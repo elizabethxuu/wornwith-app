@@ -97,7 +97,7 @@ export default function LiveApp() {
         return;
       }
       setBootState("scanning");
-    }, 1400);
+    }, 900);
   };
 
   useEffect(() => {

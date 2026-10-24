@@ -103,7 +103,7 @@ export default function PassportTopBar({
   const barStyle = safeArea ? { paddingTop: "max(env(safe-area-inset-top), 0.5rem)" } : { paddingTop: "0.25rem" };
   const brand = (
     <div className="flex items-center gap-2">
-      <img src="/images/wornwith-logo.png" alt="" aria-hidden="true" className={`h-6 min-[400px]:h-7 ${compact ? "" : "md:h-8"} w-auto`} />
+      <img src="/images/wornwith-logo-sm.webp" width={155} height={120} alt="" aria-hidden="true" className={`h-6 min-[400px]:h-7 ${compact ? "" : "md:h-8"} w-auto`} />
       <p className="font-display italic text-[clamp(1.2rem,5.2vw,1.9rem)] leading-none text-ink whitespace-nowrap">wornwith.care</p>
     </div>
   );

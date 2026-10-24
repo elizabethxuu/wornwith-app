@@ -104,7 +104,7 @@ export function ProductOverview({
           </div>
         <div aria-hidden="true" className="absolute inset-0 lux-kenburns">
           <img
-            src="/images/overview-hero.jpg"
+            src="/images/overview-hero.webp"
             alt=""
             aria-hidden="true"
             className="w-full h-full object-cover object-[50%_28%] transition-transform duration-[900ms] ease-[cubic-bezier(0.22,0.61,0.36,1)]"
