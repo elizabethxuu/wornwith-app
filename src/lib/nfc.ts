@@ -1,4 +1,3 @@
-import { registerPlugin } from "@capacitor/core";
 import { isNativeApp } from "./apiBase";
 import { classifyTag, type TagVerdict } from "./nfcTag";
 
@@ -10,14 +9,20 @@ type WornNFCPlugin = {
   scan(options?: { message?: string }): Promise<{ urls: string[]; texts: string[] }>;
 };
 
-const WornNFC = registerPlugin<WornNFCPlugin>("WornNFC");
+// Loaded only inside the app, so the website never ships the Capacitor library.
+// The plugin is a proxy that answers every property (even `then`), so it is
+// wrapped in a plain object rather than resolved from a promise directly.
+let loaded: Promise<{ nfc: WornNFCPlugin }> | null = null;
+const load = () =>
+  (loaded ??= import("@capacitor/core").then(({ registerPlugin }) => ({ nfc: registerPlugin<WornNFCPlugin>("WornNFC") })));
 
 export type ScanResult = TagVerdict | { state: "cancelled" } | { state: "unavailable" } | { state: "error" };
 
 export async function nfcAvailable(): Promise<boolean> {
   if (!isNativeApp()) return false;
   try {
-    return (await WornNFC.isAvailable()).available;
+    const { nfc } = await load();
+    return (await nfc.isAvailable()).available;
   } catch {
     return false;
   }
@@ -25,7 +30,8 @@ export async function nfcAvailable(): Promise<boolean> {
 
 export async function scanCoatTag(expectedDpp: string, message: string): Promise<ScanResult> {
   try {
-    const { urls, texts } = await WornNFC.scan({ message });
+    const { nfc } = await load();
+    const { urls, texts } = await nfc.scan({ message });
     return classifyTag(urls ?? [], texts ?? [], expectedDpp);
   } catch (e) {
     const code = (e as { code?: string })?.code;
