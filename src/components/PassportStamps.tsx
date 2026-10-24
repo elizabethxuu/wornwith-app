@@ -1,7 +1,7 @@
 import { useEffect, useId, useState } from "react";
 import { createPortal } from "react-dom";
 import { X } from "lucide-react";
-import { collectedStamps, onOpenStampsPage, onStampsChanged, STAMP_COUNT, loadOwnerStamps, addOwnerStamp, removeOwnerStamp, stampDate, MAX_PLACE, MAX_NOTE, type OwnerStamp } from "../lib/stamps";
+import { takePendingOpen, OPEN, OPEN_OWN, collectedStamps, onOpenStampsPage, onStampsChanged, openStampsPage, openYourStampsPage, onOpenYourStampsPage, STAMP_COUNT, loadOwnerStamps, addOwnerStamp, removeOwnerStamp, stampDate, MAX_PLACE, MAX_NOTE, type OwnerStamp } from "../lib/stamps";
 import { haptic, paperSound } from "../lib/touches";
 import { useLanguage, type TranslationKey } from "../lib/i18n";
 import { STOP_ACCENTS, requestMapStop } from "../lib/mapFocus";
@@ -122,7 +122,11 @@ export function StampsPage({ onGoTo }: { onGoTo: (screen: number) => void }) {
   const [collected, setCollected] = useState<number[]>(() => collectedStamps());
 
   const [owned, setOwned] = useState<OwnerStamp[]>(() => loadOwnerStamps());
-  useEffect(() => onOpenStampsPage(() => { setCollected(collectedStamps()); setOwned(loadOwnerStamps()); setOpen(true); paperSound(); }), []);
+  useEffect(() => {
+    const show = () => { setCollected(collectedStamps()); setOwned(loadOwnerStamps()); setOpen(true); paperSound(); };
+    if (takePendingOpen(OPEN)) show();
+    return onOpenStampsPage(show);
+  }, []);
   useEffect(() => onStampsChanged(() => { setCollected(collectedStamps()); setOwned(loadOwnerStamps()); }), []);
   useEffect(() => {
     if (!open) return;
@@ -187,8 +191,69 @@ export function StampsPage({ onGoTo }: { onGoTo: (screen: number) => void }) {
           })}
         </div>
         <p className="mt-3 text-center font-sans text-[10px] text-clay">{complete ? t("stamps_hint") : t("stamps_how")}</p>
-        <OwnerStamps owned={owned} />
+        {/* The other stamp page: the owner's own. */}
+        <button
+          onClick={() => { setOpen(false); setTimeout(openYourStampsPage, 120); }}
+          className="mt-10 w-full flex items-center justify-between rounded-card border border-line px-5 py-4 text-left"
+        >
+          <span>
+            <span className="block font-sans text-[10px] uppercase tracking-[0.2em] text-clay">{t("owner_stamps_title")}</span>
+            <span className="block font-display italic text-[17px] text-[#8E3D52] mt-1">
+              {owned.length ? t("owner_stamps_count").replace("{n}", String(owned.length)) : t("owner_stamps_empty_link")}
+            </span>
+          </span>
+          <span className="text-clay">→</span>
+        </button>
         <p className="mt-10 text-center font-display italic text-[14px] text-clay">{t("stamps_secret")}</p>
+      </div>
+    </div>,
+    document.body
+  );
+}
+
+// Your stamps get a page of their own, hidden on the Ownership screen and
+// linked from the passport's last page (and back).
+export function YourStampsPage() {
+  const { t } = useLanguage();
+  const [open, setOpen] = useState(false);
+  const [owned, setOwned] = useState<OwnerStamp[]>(() => loadOwnerStamps());
+  useEffect(() => {
+    const show = () => { setOwned(loadOwnerStamps()); setOpen(true); paperSound(); };
+    if (takePendingOpen(OPEN_OWN)) show();
+    return onOpenYourStampsPage(show);
+  }, []);
+  useEffect(() => onStampsChanged(() => setOwned(loadOwnerStamps())), []);
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") setOpen(false); };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [open]);
+  if (!open) return null;
+
+  return createPortal(
+    <div role="dialog" aria-modal="true" aria-label={t("owner_stamps_title")} className="fixed inset-0 z-50 bg-paper overflow-y-auto stamps-page-in">
+      <div className="max-w-md mx-auto px-6 pb-10" style={{ paddingTop: "max(env(safe-area-inset-top), 16px)" }}>
+        <div className="flex justify-end">
+          <button onClick={() => setOpen(false)} aria-label={t("close_label")} className="w-10 h-10 -mr-2 flex items-center justify-center text-ink">
+            <X size={22} strokeWidth={1.25} />
+          </button>
+        </div>
+        <p className="font-sans text-[10px] uppercase tracking-[0.2em] text-[#8E3D52] mt-2">{t("owner_stamps_eyebrow")}</p>
+        <h2 className="font-display italic text-[30px] leading-tight text-ink mt-2">{t("owner_stamps_title")}</h2>
+        <OwnerStamps owned={owned} />
+        {/* Back to the coat's own journey stamps. */}
+        <button
+          onClick={() => { setOpen(false); setTimeout(openStampsPage, 120); }}
+          className="mt-10 w-full flex items-center justify-between rounded-card border border-line px-5 py-4 text-left"
+        >
+          <span className="text-clay">←</span>
+          <span className="text-right">
+            <span className="block font-sans text-[10px] uppercase tracking-[0.2em] text-clay">{t("stamps_eyebrow")}</span>
+            <span className="block font-display italic text-[17px] text-ink mt-1">{t("owner_stamps_journey_link")}</span>
+          </span>
+        </button>
+        <p className="mt-10 text-center font-display italic text-[14px] text-clay">{t("owner_stamps_secret")}</p>
       </div>
     </div>,
     document.body
@@ -219,9 +284,8 @@ function OwnerStamps({ owned }: { owned: OwnerStamp[] }) {
   };
 
   return (
-    <section className="mt-12" aria-label={t("owner_stamps_title")}>
-      <p className="font-sans text-[10px] uppercase tracking-[0.2em] text-clay">{t("owner_stamps_title")}</p>
-      <p className="font-sans text-[12px] text-clay mt-1.5 leading-relaxed">{t("owner_stamps_sub")}</p>
+    <section className="mt-2" aria-label={t("owner_stamps_title")}>
+      <p className="font-sans text-[12px] text-clay leading-relaxed">{t("owner_stamps_sub")}</p>
       <div className="stamp-page mt-4 rounded-card border border-line px-4 py-6 grid grid-cols-2 gap-x-2 gap-y-4">
         {owned.map((o, i) => (
           <figure key={o.id} className="flex flex-col items-center" style={{ marginTop: i % 2 ? 14 : 0 }}>

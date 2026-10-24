@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { requestMapStop } from "./lib/mapFocus";
-import { StampsPage } from "./components/PassportStamps";
-import { HandoverWelcome } from "./components/Handover";
+import { LazyStampPages } from "./components/LazyStampPages";
 import { ChevronLeft, ChevronRight, WifiOff, SearchX, ChevronDown, ChevronUp } from "lucide-react";
 import { readFlag, saveFlag, FOOTER_HIDDEN_KEY, LEGAL_LINKS } from "./lib/uiPrefs";
 import { EmptyState } from "./components/UI";
@@ -208,9 +207,9 @@ export default function LiveApp() {
     >
       {revealing && <OpeningReveal onDone={() => setRevealing(false)} />}
       {/* The hidden last page of the passport (stamps). */}
-      <StampsPage onGoTo={(i) => { setLegalPage("none"); setIndex(i); }} />
-      {/* Opening a "pass it on" link: the next owner's welcome. */}
-      <HandoverWelcome ready={!revealing} />
+      {/* The hidden stamp pages, and the next owner's welcome when a
+          "pass it on" link is opened. Loaded only when needed. */}
+      <LazyStampPages onGoTo={(i) => { setLegalPage("none"); setIndex(i); }} ready={!revealing} />
 
       {/* The brand header stays on every screen: menu, logo, share. */}
       <PassportTopBar showTools compact={!isFront} onGoTo={(i) => { setLegalPage("none"); setIndex(i); }} onOpenLegal={setLegalPage} />
