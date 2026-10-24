@@ -86,3 +86,16 @@ test("copy that repeats record facts agrees with the record", async () => {
   assert.equal(m.JOURNEY.legsKm.reduce((a, b) => a + b, 0), m.JOURNEY.distanceKm, "journey legs don't add up to the total");
   assert.ok(copy.includes(`vs ${m.IMPACT.co2CategoryAverageKg}kg avg`), "CO2 copy shows a different category average");
 });
+
+test("impact figures agree with each other", async () => {
+  const m = await loadTs("lib/passportRecord");
+  const expected = (m.IMPACT.co2CategoryAverageKg * m.IMPACT.co2VsCategoryPercent) / 100;
+  assert.ok(Math.abs(m.IMPACT.co2SavedKg - expected) <= 0.1, `CO2 saved (${m.IMPACT.co2SavedKg}) should be ${expected.toFixed(1)}`);
+  assert.ok(!m.PASSPORT_RECORD.product.certificationsCited.includes("GOTS"), "GOTS is for organic fibres, not recycled wool");
+});
+
+test("the lifespan reads the same on every screen", () => {
+  const copy = readFileSync(new URL("../src/lib/i18n.tsx", import.meta.url), "utf8");
+  const pick = (key) => copy.match(new RegExp(`  ${key}: \\{ en: "([^"]+)", fr: "([^"]+)", pt: "([^"]+)"`)).slice(1);
+  assert.deepEqual(pick("env_metric_service_value"), pick("lifespan_value"));
+});

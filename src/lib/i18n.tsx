@@ -9,7 +9,7 @@ const STORAGE_KEY = "wornwith:lang";
 // Every user-facing string in the app, keyed and translated. Data values
 // that are proper nouns, measurements, or codes (place names, percentages,
 // certification codes, DPP IDs) intentionally stay as-is across languages.
-// That's normal for real product passports too (a GOTS certificate doesn't
+// That's normal for real product passports too (a GRS certificate doesn't
 // get translated).
 export const dict = {
   // Skeleton loader
@@ -450,14 +450,14 @@ export const dict = {
   env_metric_carbon_value: { en: "30%", fr: "30%", pt: "30%" },
   env_metric_recyclable: { en: "recyclable material composition", fr: "de composition en matériaux recyclables", pt: "de composição em materiais recicláveis" },
   env_metric_recyclable_value: { en: "92%", fr: "92%", pt: "92%" },
-  env_metric_renewable: { en: "renewable energy used in manufacturing", fr: "d'énergie renouvelable utilisée en fabrication", pt: "de energia renovável usada na fabricação" },
+  env_metric_renewable: { en: "renewable energy across all manufacturing stages", fr: "d'énergie renouvelable sur toutes les étapes de fabrication", pt: "de energia renovável em todas as etapas de fabrico" },
   env_metric_renewable_value: { en: "78%", fr: "78%", pt: "78%" },
   env_metric_sourced: { en: "responsibly sourced wool fibres", fr: "de fibres de laine issues de sources responsables", pt: "de fibras de lã de origem responsável" },
   env_metric_sourced_value: { en: "100%", fr: "100%", pt: "100%" },
   env_metric_water: { en: "water conserved during production", fr: "d'eau préservée pendant la production", pt: "de água preservada durante a produção" },
   env_metric_water_value: { en: "2,400 L", fr: "2 400 L", pt: "2.400 L" },
   env_metric_service: { en: "projected service life", fr: "de durée de vie projetée", pt: "de vida útil projetada" },
-  env_metric_service_value: { en: "10+ years", fr: "10 ans et plus", pt: "10+ anos" },
+  env_metric_service_value: { en: "8–10 years", fr: "8 à 10 ans", pt: "8–10 anos" },
   impact_supporting_line: {
     en: "What this coat actually costs the planet, and what it saves.",
     fr: "Ce que ce manteau coûte réellement à la planète, et ce qu'il permet d'économiser.",
@@ -497,7 +497,7 @@ export const dict = {
   manufacturing_family_value: { en: "Yes, 3rd generation", fr: "Oui, 3e génération", pt: "Sim, 3ª geração" },
   manufacturing_since_label: { en: "Operating since", fr: "En activité depuis", pt: "Em operação desde" },
   manufacturing_since_value: { en: "1938", fr: "1938", pt: "1938" },
-  manufacturing_renewable_label: { en: "Renewable energy", fr: "Énergie renouvelable", pt: "Energia renovável" },
+  manufacturing_renewable_label: { en: "Renewable energy at the mill", fr: "Énergie renouvelable à la filature", pt: "Energia renovável na fiação" },
   manufacturing_renewable_value: { en: "65%", fr: "65%", pt: "65%" },
 
   learn_wool_farm: { en: "Learn about the wool farm", fr: "Découvrir la ferme de laine", pt: "Conhecer a fazenda de lã" },
