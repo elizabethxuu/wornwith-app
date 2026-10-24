@@ -952,6 +952,7 @@ export function VoicePlayer({
   stopLabel: string;
   unavailableLabel: string;
 }) {
+  const { lang } = useLanguage();
   const [state, setState] = useState<"idle" | "loading" | "playing" | "unavailable">("idle");
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
@@ -978,6 +979,7 @@ export function VoicePlayer({
       setState("playing");
     } else if (result.mode === "browser") {
       const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = lang === "fr" ? "fr-FR" : lang === "pt" ? "pt-PT" : "en-GB";
       utterance.rate = 0.95;
       utterance.onend = () => setState("idle");
       utterance.onerror = () => setState("idle");
