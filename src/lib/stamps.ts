@@ -5,7 +5,7 @@
 
 const KEY = "wornwith:COS-8821-4f2a:stamps";
 const CHANGED = "wwc:stamps-changed";
-const OPEN = "wwc:open-stamps";
+export const OPEN = "wwc:open-stamps";
 export const STAMP_COUNT = 4;
 
 function read(): number[] {
@@ -45,6 +45,26 @@ export function openStampsPage() {
 export function onOpenStampsPage(fn: () => void): () => void {
   window.addEventListener(OPEN, fn);
   return () => window.removeEventListener(OPEN, fn);
+}
+
+// A page asked to open before its code had loaded: remembered here, and
+// picked up by that page when it mounts.
+let pendingOpen: string | null = null;
+export function setPendingOpen(kind: string) { pendingOpen = kind; }
+export function takePendingOpen(kind: string): boolean {
+  if (pendingOpen !== kind) return false;
+  pendingOpen = null;
+  return true;
+}
+
+// "Your stamps" has its own hidden page, found on the Ownership screen.
+export const OPEN_OWN = "wwc:open-your-stamps";
+export function openYourStampsPage() {
+  if (typeof window !== "undefined") window.dispatchEvent(new CustomEvent(OPEN_OWN));
+}
+export function onOpenYourStampsPage(fn: () => void): () => void {
+  window.addEventListener(OPEN_OWN, fn);
+  return () => window.removeEventListener(OPEN_OWN, fn);
 }
 
 // Owner stamps: the places the coat goes with you. Added from the last

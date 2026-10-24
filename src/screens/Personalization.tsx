@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { openYourStampsPage } from "../lib/stamps";
 import { Eyebrow, ExpandableCard, ArchiveTransition, ArchiveTimeline, type ArchiveEntry } from "../components/UI";
 import { ChapterColorProvider, ARCHIVE_ACCENT_COLOR } from "../lib/chapterColor";
 import { generateAI } from "../lib/aiService";
@@ -309,6 +310,7 @@ export function Personalization() {
         <p className="font-display italic text-[12px] text-clay text-center mt-8">
           {t("closing_line")}
         </p>
+        <YourStampsMark />
       </div>
     );
   }
@@ -340,6 +342,23 @@ export function Personalization() {
       <p className="font-display italic text-[12px] text-clay text-center mt-auto pt-6">
         {t("closing_line")}
       </p>
+      <YourStampsMark />
     </div>
+  );
+}
+
+// A secret: a faint burgundy stamp mark under the closing line opens the
+// owner's own stamp page. Same quiet mark as the one on the End screen.
+function YourStampsMark() {
+  const { t } = useLanguage();
+  return (
+    <button
+      onClick={(e) => { e.stopPropagation(); openYourStampsPage(); }}
+      aria-label={t("owner_stamps_mark")}
+      title={t("owner_stamps_mark")}
+      className="stamp-hint self-center mx-auto mt-6 mb-2 w-11 h-11 rounded-full border-[1.5px] border-dashed border-[#8E3D52] flex items-center justify-center rotate-[10deg]"
+    >
+      <span className="w-7 h-7 rounded-full border border-[#8E3D52] flex items-center justify-center font-display italic text-[12px] text-[#8E3D52]">✦</span>
+    </button>
   );
 }

@@ -4,7 +4,7 @@ import { useLanguage } from "../lib/i18n";
 import { GARMENT } from "../lib/garment";
 import { passportUrl } from "../lib/config";
 import { acceptHandover, chapterNumber, createHandoverUrl, readHandoverFromHash, MAX_HANDOVER_NOTE, MAX_NAME, type Handover } from "../lib/handover";
-import { loadOwnerStamps, openStampsPage } from "../lib/stamps";
+import { loadOwnerStamps, openYourStampsPage } from "../lib/stamps";
 import { haptic, paperSound } from "../lib/touches";
 
 // Share sheet row: write a note to whoever has the coat next, and send
@@ -101,7 +101,7 @@ export function HandoverWelcome({ ready }: { ready: boolean }) {
     clearHash();
     setH(null);
     haptic(18);
-    if (h.stamps.length) setTimeout(openStampsPage, 350);
+    if (h.stamps.length) setTimeout(openYourStampsPage, 350);
   };
   const later = () => { clearHash(); setH(null); };
 
