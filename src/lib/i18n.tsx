@@ -33,11 +33,7 @@ export const dict = {
     fr: "Un registre vivant des matériaux, de l'entretien et du parcours de ce vêtement.",
     pt: "Um registro vivo dos materiais, do cuidado e da jornada desta peça.",
   },
-  stat_illustrative: {
-    en: "Illustrative",
-    fr: "Illustratif",
-    pt: "Ilustrativo",
-  },
+  stat_recycled: { en: "recycled wool", fr: "laine recyclée", pt: "lã reciclada" },
   impact_illustrative_note: {
     en: "Illustrative estimates for this demo. These figures were not measured or independently verified.",
     fr: "Estimations illustratives pour cette démo. Ces chiffres n'ont pas été mesurés ni vérifiés de manière indépendante.",
@@ -1305,7 +1301,7 @@ export const dict = {
   save_memory: { en: "Save memory", fr: "Enregistrer le souvenir", pt: "Salvar memória" },
   cancel: { en: "Cancel", fr: "Annuler", pt: "Cancelar" },
   log_a_memory: { en: "+ Log a memory", fr: "+ Ajouter un souvenir", pt: "+ Registrar uma memória" },
-  seed_name_marais: { en: "The Marais Coat", fr: "Le Manteau Marais", pt: "O Casaco Marais" },
+  seed_name_marais: { en: "Black Wool Coat", fr: "Manteau en Laine Noire", pt: "Casaco de Lã Preta" },
   seed_name_silk: { en: "Silk Slip Dress", fr: "Robe Nuisette en Soie", pt: "Vestido Slip de Seda" },
   seed_name_linen: { en: "Linen Trousers", fr: "Pantalon en Lin", pt: "Calça de Linho" },
   seed_note_marais: { en: "March dinner · Paris, New York", fr: "Dîner de mars · Paris, New York", pt: "Jantar de março · Paris, Nova York" },
