@@ -8,7 +8,9 @@
 // fine, a transcript is an enhancement, not a requirement, so this fails
 // gracefully rather than blocking the core recording feature.
 
+import { allowApp } from "./_lib/cors.js";
 export default async function handler(req, res) {
+  if (allowApp(req, res)) return;
   if (req.method !== "POST") {
     res.status(405).json({ error: "Method not allowed" });
     return;

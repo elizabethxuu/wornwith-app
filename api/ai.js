@@ -2,6 +2,7 @@ import { EDITORIAL_SYSTEM_PROMPT } from "./_lib/editorialVoice.js";
 import { FEATURES } from "./_lib/prompts.js";
 import { generateWithGemini, GEMINI_MODEL } from "./_lib/geminiClient.js";
 import { generateWithAnthropic, anthropicConfigured } from "./_lib/anthropicClient.js";
+import { allowApp } from "./_lib/cors.js";
 
 const MAX_CONTEXT_CHARS = 4000;
 
@@ -24,6 +25,7 @@ function respond(res, status, body, start, model) {
 }
 
 export default async function handler(req, res) {
+  if (allowApp(req, res)) return;
   const start = Date.now();
 
   if (req.method !== "POST") {

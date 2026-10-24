@@ -1,3 +1,4 @@
+import { apiUrl } from "./apiBase";
 // The UI never needs to know which voice is actually speaking. It calls
 // speak(text) and gets back one of three outcomes. When a premium provider
 // is configured server-side (see api/voice.js), this starts returning
@@ -10,7 +11,7 @@ export type VoiceResult =
 
 export async function requestVoice(text: string): Promise<VoiceResult> {
   try {
-    const res = await fetch("/api/voice", {
+    const res = await fetch(apiUrl("/api/voice"), {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ text }),
@@ -43,7 +44,7 @@ export async function requestVoice(text: string): Promise<VoiceResult> {
 // playable regardless of whether a transcript comes back.
 export async function transcribeVoiceNote(audioBase64: string, mimeType: string): Promise<string | null> {
   try {
-    const res = await fetch("/api/transcribe", {
+    const res = await fetch(apiUrl("/api/transcribe"), {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ audioBase64, mimeType }),
