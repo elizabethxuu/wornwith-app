@@ -12,6 +12,8 @@
     "passport:record": "node scripts/passport-record.mjs"
   },
   "dependencies": {
+    "@fontsource/cormorant-garamond": "^5.3.0",
+    "@fontsource/inter": "^5.3.0",
     "@vercel/analytics": "^2.0.1",
     "d3-geo": "^3.1.1",
     "jspdf": "^4.2.1",

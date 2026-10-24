@@ -908,9 +908,9 @@ export const dict = {
     pt: "Fica no seu dispositivo",
   },
   privacy_s1_a: {
-    en: "Saved moments, wardrobe items, photos, voice notes and ownership notes are stored only in this browser, on this device.",
-    fr: "Les moments, les vêtements, les photos, les notes vocales et les notes de propriété enregistrés sont stockés uniquement dans ce navigateur, sur cet appareil.",
-    pt: "Momentos, peças, fotos, notas de voz e notas de propriedade salvos ficam armazenados apenas neste navegador, neste dispositivo.",
+    en: "Saved moments, wardrobe items, photos, voice notes, ownership notes and passport stamps are stored only in this browser, on this device.",
+    fr: "Les moments, les vêtements, les photos, les notes vocales, les notes de propriété et les tampons du passeport enregistrés sont stockés uniquement dans ce navigateur, sur cet appareil.",
+    pt: "Momentos, peças, fotos, notas de voz, notas de propriedade e carimbos do passaporte salvos ficam armazenados apenas neste navegador, neste dispositivo.",
   },
   privacy_s1_b: {
     en: "They are not uploaded to a Worn With Care server and do not sync to other devices.",
@@ -946,6 +946,36 @@ export const dict = {
     en: "We do not add your name or email to these requests, because the app has no accounts. Photos stay on your device.",
     fr: "Nous n'ajoutons ni votre nom ni votre e-mail à ces requêtes, car l'application n'a pas de comptes. Les photos restent sur votre appareil.",
     pt: "Não adicionamos seu nome nem seu e-mail a essas solicitações, porque o app não tem contas. As fotos ficam no seu dispositivo.",
+  },
+  privacy_s2_e: {
+    en: "Today's Edit weather: only if you have allowed location for this site, your approximate position is sent to Open-Meteo to fetch the forecast. It is not stored.",
+    fr: "Météo de la Sélection du Jour : seulement si vous avez autorisé la localisation pour ce site, votre position approximative est envoyée à Open-Meteo pour obtenir les prévisions. Elle n'est pas conservée.",
+    pt: "Meteorologia da Seleção de Hoje: apenas se permitiu a localização para este site, a sua posição aproximada é enviada à Open-Meteo para obter a previsão. Não é guardada.",
+  },
+  privacy_s2_f: {
+    en: "Passing the coat on: your name, note and stamps travel inside the link you send. They are not stored on a server, but anyone who has the link can read them.",
+    fr: "Transmettre le manteau : votre nom, votre mot et vos tampons voyagent dans le lien que vous envoyez. Ils ne sont pas stockés sur un serveur, mais toute personne ayant le lien peut les lire.",
+    pt: "Passar o casaco adiante: o seu nome, bilhete e carimbos viajam dentro do link que envia. Não são guardados num servidor, mas quem tiver o link pode lê-los.",
+  },
+  privacy_s5_title: {
+    en: "Counted anonymously, and nothing else",
+    fr: "Compté anonymement, et rien d'autre",
+    pt: "Contado anonimamente, e nada mais",
+  },
+  privacy_s5_a: {
+    en: "Visits are counted with Vercel Web Analytics: page views and broad device and country, with no cookies and nothing that identifies you.",
+    fr: "Les visites sont comptées avec Vercel Web Analytics : pages vues, type d'appareil et pays, sans cookies et sans rien qui vous identifie.",
+    pt: "As visitas são contadas com o Vercel Web Analytics: páginas vistas, tipo de dispositivo e país, sem cookies e sem nada que o identifique.",
+  },
+  privacy_s5_b: {
+    en: "Fonts and images are served from this site. Opening the passport doesn't contact Google or any other third party.",
+    fr: "Les polices et les images sont servies par ce site. Ouvrir le passeport ne contacte ni Google ni aucun autre tiers.",
+    pt: "As fontes e imagens são servidas por este site. Abrir o passaporte não contacta a Google nem qualquer outro terceiro.",
+  },
+  privacy_s5_c: {
+    en: "In the iPhone app, tag scans are read on your phone, and care reminders are scheduled on your phone. Neither is sent anywhere.",
+    fr: "Dans l'app iPhone, les étiquettes sont lues sur votre téléphone et les rappels d'entretien y sont programmés. Rien n'est envoyé ailleurs.",
+    pt: "Na app para iPhone, as etiquetas são lidas no seu telemóvel e os lembretes de cuidado são agendados nele. Nada é enviado para outro lado.",
   },
   privacy_s3_title: {
     en: "Your control",
