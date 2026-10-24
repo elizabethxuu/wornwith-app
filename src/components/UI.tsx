@@ -1,4 +1,5 @@
-import { useState, useEffect, useRef, lazy, Suspense } from "react";
+import { useState, useEffect, useRef } from "react";
+import { loadable } from "../lib/loadable";
 import { HandoverRow } from "./Handover";
 import { createPortal } from "react-dom";
 import { Mic, Square, AudioLines, Trash2, Plus, ArrowUp, X, Camera, Shirt } from "lucide-react";
@@ -147,6 +148,7 @@ export function EmptyState({
   onAction,
   actionHref,
   children,
+  headingLevel = 2,
 }: {
   icon: React.ComponentType<{ size?: number; className?: string; strokeWidth?: number }>;
   eyebrow: string;
@@ -156,14 +158,16 @@ export function EmptyState({
   onAction?: () => void;
   actionHref?: string;
   children?: React.ReactNode;
+  headingLevel?: 1 | 2;
 }) {
+  const Heading = headingLevel === 1 ? "h1" : "h2";
   return (
     <div className="h-full flex flex-col items-center justify-center text-center px-8 fade-up">
       <Eyebrow>{eyebrow}</Eyebrow>
       <div className="w-20 h-20 rounded-full bg-blush-pale flex items-center justify-center my-4">
         <Icon size={28} className="text-[#9E4F63]" strokeWidth={1.5} />
       </div>
-      <h2 className="font-display italic text-2xl text-ink mb-2 leading-tight">{title}</h2>
+      <Heading className="font-display italic text-2xl text-ink mb-2 leading-tight">{title}</Heading>
       <p className="font-sans text-[12px] text-clay leading-relaxed max-w-[240px]">{subtitle}</p>
       {children}
       {actionLabel && actionHref && (
@@ -1729,15 +1733,22 @@ export function SignedRecordLink({ subKey }: { subKey: TranslationKey }) {
 // URL, and Copy Link copies the real address. Same portal pattern as
 // VerificationInfoPanel, for the same reason (escaping the fade-up
 // transform containing-block issue).
-// Loaded only when the share sheet opens.
-const StoryCardRow = lazy(() => import("./StoryCardRow"));
-const WalletRow = lazy(() => import("./WalletRow"));
+// Loaded only when the share sheet opens; offline, they simply don't appear.
+const StoryCardRow = loadable(() => import("./StoryCardRow").then((m) => m.default));
+const WalletRow = loadable(() => import("./WalletRow").then((m) => m.default));
 
 export function ShareSheet({ open, onClose }: { open: boolean; onClose: () => void }) {
   const { t, lang } = useLanguage();
   const [showQr, setShowQr] = useState(false);
   const [linkCopied, setLinkCopied] = useState(false);
   const [pdfState, setPdfState] = useState<"idle" | "preparing" | "ready" | "error">("idle");
+
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") onClose(); };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [open, onClose]);
 
   if (!open) return null;
 
@@ -1776,11 +1787,14 @@ export function ShareSheet({ open, onClose }: { open: boolean; onClose: () => vo
         onClick={onClose}
       />
       <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="share-sheet-title"
         className="absolute bottom-0 inset-x-0 max-h-[85dvh] overflow-y-auto bg-paper rounded-t-[28px] border-t border-line px-6 pt-5 fade-up"
         style={{ paddingBottom: "max(env(safe-area-inset-bottom), 32px)" }}
       >
         <div className="flex items-center justify-between mb-1">
-          <p className="font-display italic text-xl text-ink">{t("share_sheet_title")}</p>
+          <h2 id="share-sheet-title" className="font-display italic text-xl text-ink">{t("share_sheet_title")}</h2>
           <button
             onClick={onClose}
             aria-label={t("close_label")}
@@ -1795,10 +1809,8 @@ export function ShareSheet({ open, onClose }: { open: boolean; onClose: () => vo
 
         <div className="divide-y divide-line border-y border-line">
           <HandoverRow />
-          <Suspense fallback={null}>
-            <StoryCardRow />
-            <WalletRow />
-          </Suspense>
+          <StoryCardRow />
+          <WalletRow />
           <div className="py-3.5">
             <p className="font-sans text-[13px] text-ink font-medium">{t("sharing_pdf_title")}</p>
             <p className="font-sans text-[11px] text-clay mt-0.5 leading-relaxed">{t("share_sheet_pdf_desc")}</p>

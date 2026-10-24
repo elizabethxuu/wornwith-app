@@ -180,7 +180,7 @@ export function StampsPage({ onGoTo }: { onGoTo: (screen: number) => void }) {
                 key={s.city}
                 type="button"
                 onClick={() => go(2)}
-                aria-label={`${t("stamps_missing")}: ${s.city}`}
+                aria-label={`${s.city}, ${t("stamps_missing")}`}
                 className="aspect-square w-full max-w-[150px] mx-auto rounded-full border border-dashed border-line flex flex-col items-center justify-center text-center"
                 style={{ marginTop: i % 2 ? 14 : 0 }}
               >

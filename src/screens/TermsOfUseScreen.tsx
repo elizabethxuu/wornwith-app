@@ -14,9 +14,9 @@ export function TermsOfUseScreen({ onBack }: { onBack: () => void }) {
       </button>
 
       <Eyebrow>{t("terms_eyebrow")}</Eyebrow>
-      <h2 className="font-display italic text-2xl text-ink leading-tight mt-1">
+      <h1 className="font-display italic text-2xl text-ink leading-tight mt-1">
         {t("terms_title")}
-      </h2>
+      </h1>
       <p className="font-sans text-[12px] text-clay leading-relaxed mt-3">
         {t("terms_subtitle")}
       </p>

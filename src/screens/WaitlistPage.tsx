@@ -124,7 +124,7 @@ export default function WaitlistPage() {
   return (
     <div className="min-h-[100dvh] bg-cream text-ink">
       <header className="max-w-[1160px] mx-auto px-6 py-7 flex items-center justify-between gap-4 flex-wrap">
-        <a href={home} className="flex items-center gap-2.5" aria-label="Worn With Care">
+        <a href={home} className="flex items-center gap-2.5">
           <img src="/images/wornwith-logo-sm.webp" alt="" className="h-7 w-auto" />
           <span className="font-display italic text-[24px] font-medium">wornwith.care</span>
         </a>
@@ -133,7 +133,8 @@ export default function WaitlistPage() {
         </a>
       </header>
 
-      <main className="max-w-[1160px] mx-auto px-6 pt-6 pb-16 md:pt-10 md:pb-20 flex flex-wrap gap-12 md:gap-14 items-center">
+      <main>
+      <div className="max-w-[1160px] mx-auto px-6 pt-6 pb-16 md:pt-10 md:pb-20 flex flex-wrap gap-12 md:gap-14 items-center">
         <div className="flex-[999_1_480px] min-w-0 flex flex-col gap-5">
           <p className="font-sans text-[12px] tracking-[0.26em] uppercase font-semibold text-[#8E3D52]">{t("wl_eyebrow")}</p>
           <h1 className="font-display italic font-medium text-[44px] md:text-[68px] leading-[1.02] [text-wrap:balance]">{t("wl_title")}</h1>
@@ -141,7 +142,7 @@ export default function WaitlistPage() {
 
           {status === "done" ? (
             <div className="max-w-[520px] mt-2 border border-line bg-paper rounded-2xl px-6 py-5 flex flex-col gap-2 fade-up" role="status">
-              <span className="font-sans text-[11px] tracking-[0.22em] uppercase font-semibold text-[#3F6B4A]">{t("wl_done_eyebrow")}</span>
+              <span className="font-sans text-[11px] tracking-[0.22em] uppercase font-semibold text-verified">{t("wl_done_eyebrow")}</span>
               <span className="font-display italic text-[28px] leading-snug">{t("wl_done_title").replace("{piece}", named)}</span>
               <span className="font-sans text-[14px] text-clay">{t("wl_done_sub")}</span>
             </div>
@@ -224,7 +225,7 @@ export default function WaitlistPage() {
           <a href={`${home}?dpp=${GARMENT.dppId}`} className="w-full max-w-[380px] bg-paper border border-line rounded-[22px] p-6 flex flex-col gap-4 shadow-[0_18px_40px_rgba(46,41,37,0.08)]">
             <div className="flex justify-between items-center gap-3">
               <span className="font-sans text-[10px] tracking-[0.22em] uppercase text-clay">{PASSPORT_ID}</span>
-              <span className="font-sans text-[11px] font-semibold text-[#3F6B4A]">RWS · GRS</span>
+              <span className="font-sans text-[11px] font-semibold text-verified">RWS · GRS</span>
             </div>
             <img src={GARMENT.image} alt={GARMENT.name} className="w-full h-[240px] object-cover rounded-[14px]" />
             <span className="font-display italic text-[26px] leading-tight">{GARMENT.name}</span>
@@ -235,7 +236,7 @@ export default function WaitlistPage() {
             </div>
           </a>
         </div>
-      </main>
+      </div>
 
       <section className="border-t border-line bg-paper">
         <div className="max-w-[1160px] mx-auto px-6 py-14 md:py-16 flex flex-col gap-7">
@@ -251,6 +252,7 @@ export default function WaitlistPage() {
           </ol>
         </div>
       </section>
+      </main>
 
       <footer className="max-w-[1160px] mx-auto px-6 py-8 flex flex-wrap gap-4 justify-between font-sans text-[12px] text-clay">
         <span>© 2026 Worn With Care</span>

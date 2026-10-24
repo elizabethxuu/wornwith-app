@@ -427,3 +427,12 @@ body {
 .chapter-ink { color: var(--ink-l); }
 :root[data-theme="dark"] .chapter-ink { color: var(--ink-d); }
 :root[data-theme="dark"] .light-island .chapter-ink { color: var(--ink-l); }
+
+/* "Verified" green: deep on light, lighter on dark so it stays readable. */
+.text-verified { color: #3F6B4A; }
+[data-theme="dark"] .text-verified { color: #8CC79A; }
+
+/* Reduced motion: things that fade or slide in simply appear. */
+@media (prefers-reduced-motion: reduce) {
+  .fade-up, .pop-in, .stamps-page-in { animation: none !important; opacity: 1; transform: none; }
+}

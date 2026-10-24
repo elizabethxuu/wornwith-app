@@ -1418,6 +1418,11 @@ export const dict = {
     fr: "Vérifiez votre connexion et réessayez. L'histoire du vêtement n'a pas disparu.",
     pt: "Verifique sua conexão e tente novamente. A história da peça não foi a lugar nenhum.",
   },
+  not_found_action: { en: "Go to the passport", fr: "Aller au passeport", pt: "Ir para o passaporte" },
+  nav_chapters: { en: "Chapters", fr: "Chapitres", pt: "Capítulos" },
+  nav_previous: { en: "Previous", fr: "Précédent", pt: "Anterior" },
+  nav_next: { en: "Next", fr: "Suivant", pt: "Seguinte" },
+  map_offline: { en: "The map needs a connection.", fr: "La carte a besoin d'une connexion.", pt: "O mapa precisa de ligação à internet." },
   try_again: { en: "Try again", fr: "Réessayer", pt: "Tentar novamente" },
   not_found_title: { en: "No passport found", fr: "Aucun passeport trouvé", pt: "Nenhum passaporte encontrado" },
   not_found_subtitle: {
@@ -1425,7 +1430,6 @@ export const dict = {
     fr: "Ce code ne correspond à aucun vêtement connu. Rescannez l'étiquette ou vérifiez le lien.",
     pt: "Este código não corresponde a nenhuma peça conhecida. Reescaneie a etiqueta ou verifique o link.",
   },
-  scan_again: { en: "Scan again", fr: "Scanner à nouveau", pt: "Escanear novamente" },
   location_error_eyebrow: { en: "Ready to pass it on", fr: "Prêt à le transmettre", pt: "Pronto para repassar" },
   location_error_title: { en: "Location isn't available", fr: "Position non disponible", pt: "Localização não disponível" },
   location_error_subtitle: {
@@ -1471,8 +1475,9 @@ function writeLangToUrl(l: Lang, mode: "push" | "replace") {
   const next = localizedUrl(l, { pathname, search, hash });
   if (next === `${pathname}${search}${hash}`) return;
   try {
-    if (mode === "push") window.history.pushState(null, "", next);
-    else window.history.replaceState(null, "", next);
+    // Keep the screen the visitor is on (LiveApp stores it in the state).
+    if (mode === "push") window.history.pushState(window.history.state, "", next);
+    else window.history.replaceState(window.history.state, "", next);
   } catch {
     // ignore
   }

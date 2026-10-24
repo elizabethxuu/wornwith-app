@@ -8,6 +8,7 @@
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
     <link rel="manifest" href="/site.webmanifest" />
     <meta name="theme-color" content="#FBF9F6" />
+    <style>#splash{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:#fff}#splash img{width:clamp(7rem,30vw,11rem);height:auto;margin-bottom:60px}[data-theme="dark"] #splash{background:#1c1917}</style>
     <script>try{if(localStorage.getItem("wornwith:theme")==="dark"){document.documentElement.dataset.theme="dark";document.documentElement.style.colorScheme="dark";}}catch(e){}</script>
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -56,7 +57,9 @@
     </script>
   </head>
   <body>
-    <div id="root"></div>
+    <!-- Shown the instant the page arrives, before the app's code loads; the
+         app replaces it with the same logo, so there is no jump. -->
+    <div id="root"><div id="splash" aria-hidden="true"><img src="/images/wornwith-logo.webp" alt="" width="176" height="136" /></div></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

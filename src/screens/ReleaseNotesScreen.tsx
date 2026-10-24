@@ -26,13 +26,13 @@ export function ReleaseNotesScreen({ onBack }: { onBack: () => void }) {
       </button>
 
       <Eyebrow>{t("release_notes_eyebrow")}</Eyebrow>
-      <h2 className="font-display italic text-2xl text-ink leading-tight mt-1">
+      <h1 className="font-display italic text-2xl text-ink leading-tight mt-1">
         {t("rn12_title")}
-      </h2>
+      </h1>
       <p className="font-sans text-[12px] text-clay mt-1" style={{ letterSpacing: "0.02em" }}>
         {t("rn12_date")}
       </p>
-      <p className="font-sans text-[11px] mt-0.5" style={{ color: "#8A8A8A" }}>
+      <p className="font-sans text-[11px] mt-0.5 text-clay">
         {t("rn12_version")}
       </p>
       <p className="font-sans text-[12px] text-clay leading-relaxed mt-3">
@@ -51,7 +51,7 @@ export function ReleaseNotesScreen({ onBack }: { onBack: () => void }) {
       <p className="font-sans text-[12px] text-clay mt-1" style={{ letterSpacing: "0.02em" }}>
         {t("rn11_date")}
       </p>
-      <p className="font-sans text-[11px] mt-0.5" style={{ color: "#8A8A8A" }}>
+      <p className="font-sans text-[11px] mt-0.5 text-clay">
         {t("rn11_version")}
       </p>
       <p className="font-sans text-[12px] text-clay leading-relaxed mt-3">
@@ -69,7 +69,7 @@ export function ReleaseNotesScreen({ onBack }: { onBack: () => void }) {
       <p className="font-sans text-[12px] text-clay mt-1" style={{ letterSpacing: "0.02em" }}>
         {t("release_notes_date")}
       </p>
-      <p className="font-sans text-[11px] mt-0.5" style={{ color: "#8A8A8A" }}>
+      <p className="font-sans text-[11px] mt-0.5 text-clay">
         {t("release_notes_version")}
       </p>
       <p className="font-sans text-[12px] text-clay leading-relaxed mt-3">

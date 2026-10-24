@@ -1,12 +1,32 @@
-import { lazy, Suspense, useState, useEffect } from "react";
+import { useState, useEffect } from "react";
+import { loadable } from "../lib/loadable";
 import { Card, useMountReveal, VerificationInfoPanel, ShareSheet } from "../components/UI";
 import { useChapterColor } from "../lib/chapterColor";
 import { loadWardrobe, saveWardrobe, logWardrobeEvent } from "../lib/persistence";
 import { GARMENT } from "../lib/garment";
 import { useLanguage } from "../lib/i18n";
 
-// The map library is large and only this screen needs it, so it loads on demand.
-const JourneyMap = lazy(() => import("../components/JourneyMap"));
+// The map library is large and only this screen needs it, so it loads on
+// demand. Without a connection it says so, and fills in once one returns.
+const JourneyMap = loadable(() => import("../components/JourneyMap").then((m) => m.default), {
+  loading: <div className="w-full mb-4" style={{ minHeight: 340 }} aria-hidden="true" />,
+  offline: (retry) => <MapOffline retry={retry} />,
+});
+
+function MapOffline({ retry }: { retry: () => void }) {
+  const { t } = useLanguage();
+  return (
+    <div className="w-full mb-4 rounded-2xl border border-line bg-paper flex flex-col items-center justify-center gap-3 px-6 text-center" style={{ minHeight: 340 }}>
+      <p className="font-display italic text-[20px] text-ink">{t("map_offline")}</p>
+      <button
+        onClick={(e) => { e.stopPropagation(); retry(); }}
+        className="rounded-full border border-line px-5 py-2.5 font-sans text-[12px] text-ink"
+      >
+        {t("try_again")}
+      </button>
+    </div>
+  );
+}
 import { Sparkles, Share, Bookmark } from "lucide-react";
 import { ATTESTATION } from "../lib/passportRecord";
 
@@ -49,9 +69,7 @@ export function StoryBehindIt() {
 
   return (
     <div className="h-full px-5 py-6 fade-up">
-      <Suspense fallback={<div className="w-full mb-4" style={{ minHeight: 340 }} aria-hidden="true" />}>
-        <JourneyMap />
-      </Suspense>
+      <JourneyMap />
       <div style={storyReveal("translateY(16px)", 1330, 500)}>
         <Card>
           <button
