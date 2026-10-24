@@ -62,7 +62,7 @@ export default function DeckPreview() {
       >
         <ChapterColorProvider color={color}>
           {screens[index].name === "Overview" ? (
-            <ProductOverview onExploreJourney={() => setIndex(3)} onGoTo={(i) => setIndex(i + 1)} />
+            <ProductOverview onExploreJourney={() => setIndex(3)} />
           ) : (
             screens[index].el
           )}

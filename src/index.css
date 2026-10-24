@@ -383,3 +383,40 @@ body {
   background: rgb(255 255 255 / 0.06);
   box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.12);
 }
+
+/* Passport stamps: a faint ruled page, and each stamp thunks down once,
+   from a little larger and lifted, to its own angle, the first time the
+   section scrolls into view. */
+.stamp-page {
+  background-image:
+    repeating-linear-gradient(0deg, transparent 0 21px, rgb(var(--c-line) / 0.35) 21px 22px);
+}
+.stamp {
+  opacity: 0;
+  transform: rotate(var(--tilt)) scale(1.35);
+  mix-blend-mode: multiply;
+  transition: transform 0.2s ease;
+}
+:root[data-theme="dark"] .stamp { mix-blend-mode: screen; }
+.stamp-in { animation: stampDown 0.42s cubic-bezier(0.2, 0.9, 0.3, 1.25) both; }
+.stamp-in:active { transform: rotate(var(--tilt)) scale(0.95); }
+@keyframes stampDown {
+  0% { opacity: 0; transform: rotate(calc(var(--tilt) - 6deg)) scale(1.35); filter: blur(1.5px); }
+  60% { opacity: 0.95; transform: rotate(var(--tilt)) scale(0.96); filter: blur(0); }
+  100% { opacity: 0.95; transform: rotate(var(--tilt)) scale(1); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .stamp { opacity: 0.9; transform: rotate(var(--tilt)); }
+  .stamp-in { animation: none; }
+}
+
+/* The last page turns in like a page: a soft rise from the right edge. */
+@keyframes stampsPageIn {
+  from { opacity: 0; transform: perspective(900px) rotateY(-14deg) translateX(24px); transform-origin: right center; }
+  to { opacity: 1; transform: none; }
+}
+.stamps-page-in { animation: stampsPageIn 0.55s cubic-bezier(0.22, 1, 0.36, 1) both; }
+@media (prefers-reduced-motion: reduce) { .stamps-page-in { animation: none; } }
+/* The faint mark at the very end of the passport that hints at the page. */
+.stamp-hint { opacity: 0.35; transition: opacity 0.3s ease, transform 0.3s ease; }
+.stamp-hint:hover, .stamp-hint:focus-visible { opacity: 0.75; transform: rotate(-6deg) scale(1.04); }

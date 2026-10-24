@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { ComposableMap, Geographies, Geography, Marker, Line, ZoomableGroup } from "react-simple-maps";
 import { useLanguage } from "../lib/i18n";
 import { STOP_ACCENTS, takePendingMapStop, onMapStopRequest } from "../lib/mapFocus";
+import { collectStamp } from "../lib/stamps";
 
 const worldMapUrl = "/data/world-110m.json";
 // Per-country watercolor wash, France (Paris) is the one deliberate
@@ -99,6 +100,8 @@ export default function JourneyMap() {
   const selectStop = (i: number) => {
     setSelected(i);
   };
+
+  useEffect(() => { collectStamp(selected); }, [selected]);
 
   const stop = journeyStops[selected];
 
