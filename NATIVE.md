@@ -26,3 +26,29 @@ The iPhone app wraps the same site in a native shell (Capacitor). It adds two th
 - In the app, the AI and voice features call https://wornwith.care/api/…; those endpoints already allow the app's origin.
 - After any web change: `npm run build && npx cap sync ios`, then run again in Xcode.
 - Write the NFC sticker with the passport URL (e.g. https://wornwith.care/?dpp=COS-8821-4f2a) using an app like NFC Tools.
+
+## Apple Wallet pass
+
+The share sheet shows **Add to Apple Wallet** (on Apple devices) once the pass can be signed. Until then the button stays hidden.
+
+1. In your Apple Developer account → Certificates, Identifiers & Profiles → **Identifiers** → **+** → **Pass Type IDs**. Use `pass.care.wornwith.passport`.
+2. Open it → **Create Certificate**. Follow the prompt to make a certificate request in Keychain Access, upload it, and download the `.cer`.
+3. Double-click the `.cer` to add it to Keychain, then export it from Keychain as a `.p12` (set a password).
+4. Convert it in Terminal:
+   ```
+   openssl pkcs12 -in pass.p12 -clcerts -nokeys -out pass-cert.pem -legacy
+   openssl pkcs12 -in pass.p12 -nocerts -out pass-key.pem -legacy
+   ```
+5. Download Apple's **WWDR G4** certificate (apple.com/certificateauthority), then `openssl x509 -inform der -in AppleWWDRCAG4.cer -out wwdr.pem`.
+6. In Vercel → Settings → Environment Variables, add:
+   - `APPLE_PASS_TYPE_ID` = `pass.care.wornwith.passport`
+   - `APPLE_TEAM_ID` = your 10-character Team ID (top right of the developer site)
+   - `APPLE_PASS_CERT` = contents of `pass-cert.pem`
+   - `APPLE_PASS_KEY` = contents of `pass-key.pem`
+   - `APPLE_PASS_KEY_PASSPHRASE` = the key's password
+   - `APPLE_WWDR_CERT` = contents of `wwdr.pem`
+7. Redeploy. Keep the `.p12` and `.pem` files private: never put them in the repo.
+
+## Waitlist (wornwith.care/waitlist)
+
+Until a database is connected, the form offers to email hello@wornwith.care instead. To turn it on: Vercel → your project → **Storage** → **Create Database** → **Upstash for Redis** (free tier) → connect it to this project, then redeploy. To read the sign-ups, open the database's **Data Browser** in Vercel and look at the `wl:people` hash. The count and most-named piece only show on the page once 10 people have joined.

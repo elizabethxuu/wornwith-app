@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, lazy, Suspense } from "react";
 import { HandoverRow } from "./Handover";
 import { createPortal } from "react-dom";
 import { Mic, Square, AudioLines, Trash2, Plus, ArrowUp, X, Camera, Shirt } from "lucide-react";
@@ -1754,6 +1754,10 @@ export function SignedRecordLink({ subKey }: { subKey: TranslationKey }) {
 // URL, and Copy Link copies the real address. Same portal pattern as
 // VerificationInfoPanel, for the same reason (escaping the fade-up
 // transform containing-block issue).
+// Loaded only when the share sheet opens.
+const StoryCardRow = lazy(() => import("./StoryCardRow"));
+const WalletRow = lazy(() => import("./WalletRow"));
+
 export function ShareSheet({ open, onClose }: { open: boolean; onClose: () => void }) {
   const { t, lang } = useLanguage();
   const [showQr, setShowQr] = useState(false);
@@ -1816,6 +1820,10 @@ export function ShareSheet({ open, onClose }: { open: boolean; onClose: () => vo
 
         <div className="divide-y divide-line border-y border-line">
           <HandoverRow />
+          <Suspense fallback={null}>
+            <StoryCardRow />
+            <WalletRow />
+          </Suspense>
           <div className="py-3.5">
             <p className="font-sans text-[13px] text-ink font-medium">{t("sharing_pdf_title")}</p>
             <p className="font-sans text-[11px] text-clay mt-0.5 leading-relaxed">{t("share_sheet_pdf_desc")}</p>
