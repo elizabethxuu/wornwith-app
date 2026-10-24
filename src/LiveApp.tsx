@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { requestMapStop } from "./lib/mapFocus";
 import { LazyStampPages } from "./components/LazyStampPages";
 import { ChevronLeft, ChevronRight, WifiOff, SearchX, ChevronDown, ChevronUp } from "lucide-react";
-import { readFlag, saveFlag, FOOTER_HIDDEN_KEY, LEGAL_LINKS } from "./lib/uiPrefs";
+import { readFlag, saveFlag, FOOTER_HIDDEN_KEY, LEGAL_LINKS, type LegalPage } from "./lib/uiPrefs";
 import { EmptyState } from "./components/UI";
 import PassportTopBar from "./components/PassportTopBar";
 import ChapterShell from "./components/ChapterShell";
@@ -25,6 +25,7 @@ import {
   PrivacyPolicyScreen,
   TermsOfUseScreen,
   AccessibilityScreen,
+  ContactScreen,
   ReleaseNotesScreen,
   ClosingScreen,
   AboutPassportScreen,
@@ -79,7 +80,7 @@ export default function LiveApp() {
   // The entrance only plays once per visit, and not for reduced motion.
   const [revealing, setRevealing] = useState(() => !introPlayed() && !prefersReducedMotion());
   const liveScreens = buildLiveScreens((i) => setIndex(i), revealing);
-  const [legalPage, setLegalPage] = useState<"none" | "privacy" | "terms" | "accessibility" | "release-notes" | "about-passport">("none");
+  const [legalPage, setLegalPage] = useState<"none" | LegalPage>("none");
   // The legal footer starts folded away; an arrow opens it, and the same
   // links stay in the menu.
   const [footerHidden, setFooterHidden] = useState(() => readFlag(FOOTER_HIDDEN_KEY, true));
@@ -226,6 +227,8 @@ export default function LiveApp() {
             <ReleaseNotesScreen onBack={() => setLegalPage("none")} />
           ) : legalPage === "about-passport" ? (
             <AboutPassportScreen onBack={() => setLegalPage("none")} />
+          ) : legalPage === "contact" ? (
+            <ContactScreen onBack={() => setLegalPage("none")} />
           ) : (
             <ChapterShell index={index} total={liveScreens.length}>{liveScreens[index]}</ChapterShell>
           )}

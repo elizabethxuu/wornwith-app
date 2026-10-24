@@ -14,6 +14,7 @@ export { MyWardrobe } from "./MyWardrobe";
 export { PrivacyPolicyScreen } from "./PrivacyPolicyScreen";
 export { TermsOfUseScreen } from "./TermsOfUseScreen";
 export { AccessibilityScreen } from "./AccessibilityScreen";
+export { ContactScreen } from "./ContactScreen";
 export { ReleaseNotesScreen } from "./ReleaseNotesScreen";
 export { ClosingScreen } from "./ClosingScreen";
 export { AboutPassportScreen } from "./AboutPassportScreen";
