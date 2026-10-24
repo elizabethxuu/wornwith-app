@@ -64,104 +64,173 @@ export type StoryCardText = {
   route: string;
   stageLabels: string[]; // one per stamp
   ownLine?: string;
-  coatName: string;
-  footer: string;
   locale: string;
 };
 
-export async function renderStoryCard(text: StoryCardText): Promise<Blob> {
+type Assets = { text: StoryCardText; logo: HTMLImageElement | null; stamps: HTMLImageElement[] };
+
+async function prepare(text: StoryCardText): Promise<Assets> {
   await Promise.all([
     document.fonts?.load("italic 600 200px 'Cormorant Garamond'"),
     document.fonts?.load("italic 400 60px 'Cormorant Garamond'"),
     document.fonts?.load("500 30px 'Inter'"),
   ]).catch(() => {});
+  const logo = await loadImage("/images/wornwith-logo.png").catch(() => null);
+  const stamps = await Promise.all(STAMPS.map((_, i) => stampImage(i, text.stageLabels[i])));
+  return { text, logo, stamps };
+}
 
-  const canvas = document.createElement("canvas");
-  canvas.width = W;
-  canvas.height = H;
-  const ctx = canvas.getContext("2d");
-  if (!ctx) throw new Error("no canvas");
+// The timeline, in milliseconds: the distance counts up from zero, then the
+// four stamps land one after another, then the owner's line fades in, and
+// the finished card holds.
+const COUNT_FROM = 250;
+const COUNT_MS = 2100;
+const STAMP_AT = 2550;
+const STAMP_GAP = 360;
+const STAMP_MS = 420;
+const OWN_AT = STAMP_AT + 4 * STAMP_GAP + 150;
+export const STORY_CARD_MS = OWN_AT + 2400;
+
+const clamp01 = (x: number) => Math.min(1, Math.max(0, x));
+const easeOutCubic = (x: number) => 1 - Math.pow(1 - x, 3);
+const easeOutBack = (x: number) => 1 + 2.2 * Math.pow(x - 1, 3) + 1.2 * Math.pow(x - 1, 2);
+
+const CELLS = [
+  [W / 2 - 215, 1100],
+  [W / 2 + 215, 1130],
+  [W / 2 - 205, 1480],
+  [W / 2 + 220, 1460],
+];
+
+function drawFrame(ctx: CanvasRenderingContext2D, a: Assets, t: number) {
+  const { text } = a;
+  ctx.save();
+  ctx.globalAlpha = 1;
+  ctx.globalCompositeOperation = "source-over";
 
   // Paper, with the faint ruled lines of a passport page.
   ctx.fillStyle = PAPER;
   ctx.fillRect(0, 0, W, H);
   ctx.strokeStyle = "rgba(228,224,215,0.55)";
   ctx.lineWidth = 2;
-  for (let y = 980; y < 1640; y += 44) {
+  for (let y = 990; y < 1650; y += 44) {
     ctx.beginPath(); ctx.moveTo(90, y); ctx.lineTo(W - 90, y); ctx.stroke();
   }
-
   ctx.textAlign = "center";
   ctx.textBaseline = "alphabetic";
 
   // Brand.
-  try {
-    const logo = await loadImage("/images/wornwith-logo.png");
+  ctx.font = "italic 500 54px 'Cormorant Garamond', serif";
+  ctx.fillStyle = INK;
+  if (a.logo) {
     const lh = 64;
-    const lw = (logo.width / logo.height) * lh;
-    ctx.font = "italic 500 54px 'Cormorant Garamond', serif";
+    const lw = (a.logo.width / a.logo.height) * lh;
     const tw = ctx.measureText("wornwith.care").width;
     const x0 = W / 2 - (lw + 18 + tw) / 2;
-    ctx.drawImage(logo, x0, 150, lw, lh);
-    ctx.fillStyle = INK;
+    ctx.drawImage(a.logo, x0, 150, lw, lh);
     ctx.textAlign = "left";
     ctx.fillText("wornwith.care", x0 + lw + 18, 200);
     ctx.textAlign = "center";
-  } catch {
-    ctx.font = "italic 500 54px 'Cormorant Garamond', serif";
-    ctx.fillStyle = INK;
+  } else {
     ctx.fillText("wornwith.care", W / 2, 200);
   }
 
-  // The headline number.
+  // The headline number, counting up from zero. Rounded to the nearest 100
+  // as it climbs, so the digits tick like an odometer rather than blur.
   ctx.fillStyle = CLAY;
   ctx.font = "500 26px 'Inter', sans-serif";
   spaced(ctx, text.eyebrow.toUpperCase(), W / 2, 420, 9);
+  const p = easeOutCubic(clamp01((t - COUNT_FROM) / COUNT_MS));
+  const km = p >= 1 ? JOURNEY.distanceKm : Math.round((JOURNEY.distanceKm * p) / 100) * 100;
   ctx.fillStyle = INK;
   ctx.font = "italic 600 210px 'Cormorant Garamond', serif";
-  ctx.fillText(`${JOURNEY.distanceKm.toLocaleString(text.locale)} km`, W / 2, 640);
+  ctx.fillText(`${km.toLocaleString(text.locale)} km`, W / 2, 640);
 
   // The route, in the coat's own words.
   ctx.fillStyle = BURGUNDY;
   fitText(ctx, text.route, (px) => `italic 400 ${px}px 'Cormorant Garamond', serif`, 50, W - 180);
   ctx.fillText(text.route, W / 2, 770);
 
-  // The four stamps, each at its own angle, a little overlapping.
-  const imgs = await Promise.all(STAMPS.map((_, i) => stampImage(i, text.stageLabels[i])));
-  const cells = [
-    [W / 2 - 215, 1090],
-    [W / 2 + 215, 1120],
-    [W / 2 - 205, 1470],
-    [W / 2 + 220, 1450],
-  ];
-  imgs.forEach((img, i) => {
-    const [cx, cy] = cells[i];
+  // The four stamps thunk down one by one: from a little larger and turned,
+  // to their own angle.
+  a.stamps.forEach((img, i) => {
+    const k = clamp01((t - (STAMP_AT + i * STAMP_GAP)) / STAMP_MS);
+    if (k <= 0) return;
+    const [cx, cy] = CELLS[i];
+    const scale = 1.35 - 0.35 * easeOutBack(k);
     ctx.save();
     ctx.translate(cx, cy);
-    ctx.rotate((STAMPS[i].tilt * Math.PI) / 180);
-    ctx.globalAlpha = 0.94;
+    ctx.rotate(((STAMPS[i].tilt - 6 * (1 - k)) * Math.PI) / 180);
+    ctx.scale(scale, scale);
+    ctx.globalAlpha = 0.94 * clamp01(k * 1.6);
     ctx.globalCompositeOperation = "multiply";
     ctx.drawImage(img, -190, -190, 380, 380);
     ctx.restore();
   });
 
   if (text.ownLine) {
+    ctx.globalAlpha = clamp01((t - OWN_AT) / 500);
     ctx.fillStyle = BURGUNDY;
-    fitText(ctx, text.ownLine, (px) => `italic 400 ${px}px 'Cormorant Garamond', serif`, 40, W - 180);
-    ctx.fillText(text.ownLine, W / 2, 1715);
+    fitText(ctx, text.ownLine, (px) => `italic 400 ${px}px 'Cormorant Garamond', serif`, 42, W - 180);
+    ctx.fillText(text.ownLine, W / 2, 1780);
   }
+  ctx.restore();
+}
 
-  // The coat, and where to find its passport.
-  ctx.fillStyle = INK;
-  fitText(ctx, text.coatName, (px) => `italic 500 ${px}px 'Cormorant Garamond', serif`, 42, W - 180);
-  ctx.fillText(text.coatName, W / 2, 1790);
-  ctx.fillStyle = CLAY;
-  ctx.font = "500 22px 'Inter', sans-serif";
-  spaced(ctx, text.footer.toUpperCase(), W / 2, 1845, 7);
+function makeCanvas() {
+  const canvas = document.createElement("canvas");
+  canvas.width = W;
+  canvas.height = H;
+  const ctx = canvas.getContext("2d");
+  if (!ctx) throw new Error("no canvas");
+  return { canvas, ctx };
+}
 
+// The finished card, as a still image.
+export async function renderStoryCard(text: StoryCardText): Promise<Blob> {
+  const a = await prepare(text);
+  const { canvas, ctx } = makeCanvas();
+  drawFrame(ctx, a, STORY_CARD_MS);
   return new Promise((resolve, reject) =>
     canvas.toBlob((b) => (b ? resolve(b) : reject(new Error("toBlob failed"))), "image/png")
   );
 }
 
-export const STORY_CARD_FILENAME = `wornwith-care-${GARMENT.dppId}.png`;
+// The moving card: recorded from the canvas as it plays, as MP4 where the
+// browser can (Safari, recent Chrome), else WebM. Null if this browser
+// can't record video at all, in which case the still image is used.
+export function canRecordVideo(): boolean {
+  return typeof MediaRecorder !== "undefined" && typeof HTMLCanvasElement !== "undefined" && "captureStream" in HTMLCanvasElement.prototype;
+}
+
+export async function renderStoryCardVideo(text: StoryCardText): Promise<{ blob: Blob; ext: "mp4" | "webm" } | null> {
+  if (!canRecordVideo()) return null;
+  const type = ["video/mp4;codecs=avc1", "video/mp4", "video/webm;codecs=vp9", "video/webm"].find((m) => MediaRecorder.isTypeSupported(m));
+  if (!type) return null;
+  const a = await prepare(text);
+  const { canvas, ctx } = makeCanvas();
+  drawFrame(ctx, a, 0);
+  const stream = canvas.captureStream(30);
+  const rec = new MediaRecorder(stream, { mimeType: type, videoBitsPerSecond: 6_000_000 });
+  const chunks: Blob[] = [];
+  rec.ondataavailable = (e) => { if (e.data.size) chunks.push(e.data); };
+  const done = new Promise<void>((resolve) => { rec.onstop = () => resolve(); });
+  rec.start(250);
+  const start = performance.now();
+  await new Promise<void>((resolve) => {
+    const tick = () => {
+      const t = performance.now() - start;
+      drawFrame(ctx, a, t);
+      if (t < STORY_CARD_MS) requestAnimationFrame(tick);
+      else resolve();
+    };
+    requestAnimationFrame(tick);
+  });
+  rec.stop();
+  stream.getTracks().forEach((tr) => tr.stop());
+  await done;
+  const mime = type.split(";")[0];
+  return { blob: new Blob(chunks, { type: mime }), ext: mime === "video/mp4" ? "mp4" : "webm" };
+}
+
+export const STORY_CARD_FILENAME = `wornwith-care-${GARMENT.dppId}`;
