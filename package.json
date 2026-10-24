@@ -12,6 +12,11 @@
     "passport:record": "node scripts/passport-record.mjs"
   },
   "dependencies": {
+    "@capacitor/core": "^8.5.3",
+    "@capacitor/ios": "^8.5.3",
+    "@capacitor/local-notifications": "^8.3.1",
+    "@fontsource/cormorant-garamond": "^5.3.0",
+    "@fontsource/inter": "^5.3.0",
     "@vercel/analytics": "^2.0.1",
     "d3-geo": "^3.1.1",
     "jspdf": "^4.2.1",
@@ -26,6 +31,7 @@
     "world-atlas": "^2.0.2"
   },
   "devDependencies": {
+    "@capacitor/cli": "^8.5.3",
     "@types/d3-geo": "^3.1.0",
     "@types/node": "^24.13.2",
     "@types/qrcode": "^1.5.6",

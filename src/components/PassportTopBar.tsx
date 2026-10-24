@@ -6,6 +6,7 @@ import HeaderTools, { SearchSheet } from "./HeaderTools";
 import { LEGAL_LINKS, type LegalPage } from "../lib/uiPrefs";
 import { applyTheme, readStoredTheme, saveTheme, type Theme } from "../lib/theme";
 import { GARMENT } from "../lib/garment";
+import { NativeScanButton } from "./NativeScan";
 import { openStampsPage } from "../lib/stamps";
 import { fetchWeather, type WeatherData } from "../lib/todaysEdit";
 
@@ -171,6 +172,7 @@ export default function PassportTopBar({
           <nav className="flex-1 overflow-y-auto px-6 pt-6 max-w-md w-full mx-auto">
             {/* Quick actions, icons only, side by side at the top. */}
             <div className="flex items-center gap-3 mb-8">
+              <NativeScanButton onOpenPassport={() => { setMenuOpen(false); onGoTo(1); }} />
               <button
                 onClick={() => { setMenuOpen(false); setShareOpen(true); }}
                 aria-label={t("contents_share")}

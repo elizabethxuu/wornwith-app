@@ -1,3 +1,4 @@
+import { apiUrl } from "./apiBase";
 // The one function every AI-powered UI element calls. Handles the parts
 // that used to be missing entirely: a real timeout (so a stalled request
 // can't leave a "Generating…" state hanging forever), and de-duplication
@@ -35,7 +36,7 @@ export function generateAI(feature: AIFeature, context: Record<string, unknown>)
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), TIMEOUT_MS);
     try {
-      const res = await fetch("/api/ai", {
+      const res = await fetch(apiUrl("/api/ai"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ feature, context }),

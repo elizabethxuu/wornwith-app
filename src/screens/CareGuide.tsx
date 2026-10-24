@@ -1,4 +1,5 @@
 import { Eyebrow, CareRitualRow, type CareRitual } from "../components/UI";
+import { CareReminders } from "../components/CareReminders";
 import { getCareRecommendation } from "../lib/careRecommendation";
 import { useLanguage } from "../lib/i18n";
 import { Scissors, Droplets, Brush, Heart, Package, Flame } from "lucide-react";
@@ -82,6 +83,8 @@ export function CareGuide() {
           "{t("care_philosophy_quote")}"
         </p>
       </div>
+
+      <CareReminders />
     </div>
   );
 }
