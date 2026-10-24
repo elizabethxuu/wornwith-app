@@ -127,6 +127,7 @@ export const dict = {
     pt: "Um Passaporte Digital do Produto é um registro que toda peça de roupa vendida na UE deverá ter até 2028–2030, onde foi feita, do que é feita e como cuidar dela. Esta é a visão de uma designer sobre como esse momento poderia ser.",
   },
   verified_passport: { en: "Signed Passport Record", fr: "Dossier du passeport signé", pt: "Registro do passaporte assinado" },
+  show_on_map: { en: "show on map", fr: "voir sur la carte", pt: "ver no mapa" },
   espr_badge_caption: { en: "View record", fr: "Voir le dossier", pt: "Ver registro" },
   espr_verification_label: { en: "ESPR Verification", fr: "Vérification ESPR", pt: "Verificação ESPR" },
   stored_ledger: { en: "Stored on secure digital ledger", fr: "Stocké sur un registre numérique sécurisé", pt: "Armazenado em registro digital seguro" },
@@ -249,7 +250,9 @@ export const dict = {
   // Product lifecycle
   lifecycle_eyebrow: { en: "Product Lifecycle", fr: "Cycle de Vie du Produit", pt: "Ciclo de Vida do Produto" },
   where_from: { en: "Where did it come from?", fr: "D'où vient-il ?", pt: "De onde ele veio?" },
-  km_traveled: { en: "18,400km from farm to your hands", fr: "18 400 km de la ferme à vos mains", pt: "18.400km da fazenda até suas mãos" },
+  km_traveled: { en: "21,400 km from farm to your hands", fr: "21 400 km de la ferme à vos mains", pt: "21.400 km da fazenda até suas mãos" },
+  more_details: { en: "More details", fr: "Plus de détails", pt: "Mais detalhes" },
+  by_sea: { en: "by sea", fr: "par mer", pt: "por mar" },
   wool_farming: { en: "Wool Farming", fr: "Élevage de Laine", pt: "Criação de Lã" },
   spinning_weaving: { en: "Spinning & Weaving", fr: "Filature et Tissage", pt: "Fiação e Tecelagem" },
   cutting_construction: { en: "Cutting & Construction", fr: "Coupe et Confection", pt: "Corte e Confecção" },
