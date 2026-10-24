@@ -217,7 +217,7 @@ export const dict = {
   stop_blurb_italy: {
     en: "Raw wool is cleaned, spun into yarn, and woven into cloth by third-generation millers.",
     fr: "La laine brute est nettoyée, filée puis tissée par des artisans de troisième génération.",
-    pt: "A lã bruta é limpa, fiada e tecida por moleiros de terceira geração.",
+    pt: "A lã bruta é limpa, fiada e tecida por fiandeiros de terceira geração.",
   },
   stop_blurb_portugal: {
     en: "Skilled hands cut and construct each panel, the same ateliers COS has worked with for years.",
