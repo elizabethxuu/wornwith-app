@@ -121,6 +121,17 @@ export const dict = {
   hero_next: { en: "Next: Journey", fr: "Suivant : Parcours", pt: "Próximo: Jornada" },
   welcome_to: { en: "Welcome to", fr: "Bienvenue sur", pt: "Bem-vindo ao" },
   what_is_this: { en: "What is this?", fr: "Qu'est-ce que c'est ?", pt: "O que é isto?" },
+  dpp_explainer_short: {
+    en: "Every garment sold in the EU will soon carry a Digital Product Passport. This is one designer's take on how it could feel.",
+    fr: "Tout vêtement vendu dans l'UE portera bientôt un Passeport Numérique Produit. Voici la vision d'une créatrice de ce que cela pourrait être.",
+    pt: "Toda peça vendida na UE terá em breve um Passaporte Digital do Produto. Esta é a visão de uma designer de como isso poderia ser.",
+  },
+  stamps_title: { en: "Where it's been", fr: "Où il est allé", pt: "Por onde passou" },
+  stamps_hint: { en: "Tap a stamp to find it on the map", fr: "Touchez un tampon pour le retrouver sur la carte", pt: "Toque num carimbo para vê-lo no mapa" },
+  stamp_grown: { en: "WOOL GROWN", fr: "LAINE", pt: "LÃ" },
+  stamp_spun: { en: "SPUN & WOVEN", fr: "FILÉ & TISSÉ", pt: "FIAÇÃO" },
+  stamp_sewn: { en: "CUT & SEWN", fr: "CONFECTION", pt: "CONFECÇÃO" },
+  stamp_arrived: { en: "ARRIVED", fr: "ARRIVÉ", pt: "CHEGOU" },
   dpp_explainer: {
     en: "A Digital Product Passport is a record every garment sold in the EU will be required to carry by 2028–2030, where it was made, what it's made of, and how to care for it. This is one designer's take on what that moment could actually feel like.",
     fr: "Un Passeport Numérique Produit est un enregistrement que chaque vêtement vendu dans l'UE devra porter d'ici 2028–2030, où il a été fabriqué, de quoi il est fait, et comment en prendre soin. Voici la vision d'une créatrice de ce moment.",
