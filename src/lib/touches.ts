@@ -1,10 +1,34 @@
-// Small physical touches. Both are best-effort and silent when unsupported:
-// vibration works on Android (iOS Safari doesn't expose it), and the paper
+// Small physical touches. Both are best-effort and silent when unsupported.
+// Vibration: Android through the Vibration API. iPhone Safari has no such
+// API, but since iOS 18 toggling a native switch control plays the system
+// haptic tick, so on iPhone a hidden switch is flipped instead. The paper
 // sound is synthesized with Web Audio, so there's no file to load.
+
+const isIOS = () =>
+  typeof navigator !== "undefined" &&
+  (/iPhone|iPad|iPod/.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1));
+
+function iosTick() {
+  const label = document.createElement("label");
+  label.setAttribute("aria-hidden", "true");
+  label.style.display = "none";
+  const input = document.createElement("input");
+  input.type = "checkbox";
+  input.setAttribute("switch", "");
+  label.appendChild(input);
+  document.head.appendChild(label);
+  label.click();
+  document.head.removeChild(label);
+}
 
 export function haptic(ms = 12) {
   try {
-    if (typeof navigator !== "undefined" && "vibrate" in navigator) navigator.vibrate(ms);
+    if (typeof navigator === "undefined") return;
+    if ("vibrate" in navigator && typeof navigator.vibrate === "function") {
+      navigator.vibrate(ms);
+    } else if (isIOS()) {
+      iosTick();
+    }
   } catch {
     /* unsupported */
   }

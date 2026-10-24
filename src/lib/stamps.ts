@@ -1,3 +1,5 @@
+import { haptic } from "./touches";
+
 // Passport stamps, the hidden last page. A stamp is collected the first
 // time its stop is opened (on the Journey timeline, the Story map, or a
 // country chip). Kept in the visitor's own browser; if storage is blocked
@@ -29,6 +31,8 @@ export function collectStamp(index: number) {
   const now = collectedStamps();
   if (now.includes(index) || index < 0 || index >= STAMP_COUNT) return;
   memory = [...now, index].sort();
+  // Collected by a tap (not the default stop shown on arrival): a small tick.
+  if (now.length > 0 || index !== STAMP_COUNT - 1) haptic(8);
   try { localStorage.setItem(KEY, JSON.stringify(memory)); } catch { /* storage blocked */ }
   if (typeof window !== "undefined") window.dispatchEvent(new CustomEvent(CHANGED));
 }
