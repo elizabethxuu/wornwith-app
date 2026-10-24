@@ -456,9 +456,6 @@ export const dict = {
   rem_calendar_note: { en: "Open the downloaded file to add the four reminders to your calendar.", fr: "Ouvrez le fichier téléchargé pour ajouter les quatre rappels à votre calendrier.", pt: "Abra o ficheiro transferido para adicionar os quatro lembretes ao seu calendário." },
   // The story card: an image of the coat's life, sized for Instagram Stories.
   // Apple Wallet
-  // The waitlist page (wornwith.care/waitlist)
-  wl_cta_line: { en: "Want a passport for a piece of your own?", fr: "Envie d'un passeport pour une de vos pièces ?", pt: "Quer um passaporte para uma peça sua?" },
-  wl_cta: { en: "Join the waitlist ›", fr: "Rejoindre la liste ›", pt: "Entrar na lista ›" },
   care_philosophy_title: { en: "Care Philosophy", fr: "Philosophie d'Entretien", pt: "Filosofia de Cuidado" },
   care_philosophy_line1: { en: "Designed to be repaired.", fr: "Conçu pour être réparé.", pt: "Feito para ser reparado." },
   care_philosophy_line2: { en: "Designed to be worn.", fr: "Conçu pour être porté.", pt: "Feito para ser usado." },

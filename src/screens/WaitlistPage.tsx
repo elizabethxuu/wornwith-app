@@ -70,6 +70,12 @@ export default function WaitlistPage() {
 
   useEffect(() => {
     document.title = `${t("wl_eyebrow")} · Worn With Care`;
+    // Unlisted until the waitlist is announced: keep it out of search results.
+    const robots = document.createElement("meta");
+    robots.name = "robots";
+    robots.content = "noindex";
+    document.head.appendChild(robots);
+    return () => robots.remove();
   }, [lang]);
 
   useEffect(() => {
