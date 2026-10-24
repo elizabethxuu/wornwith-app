@@ -22,7 +22,7 @@ export function saveFlag(key: string, value: boolean): void {
 
 export const FOOTER_HIDDEN_KEY = "ww.footerHidden";
 
-export type LegalPage = "privacy" | "terms" | "accessibility" | "release-notes" | "about-passport";
+export type LegalPage = "privacy" | "terms" | "accessibility" | "release-notes" | "about-passport" | "contact";
 
 // The legal and about pages, shown in the footer and again in the menu.
 export const LEGAL_LINKS: [TranslationKey, LegalPage][] = [
@@ -31,4 +31,5 @@ export const LEGAL_LINKS: [TranslationKey, LegalPage][] = [
   ["footer_accessibility", "accessibility"],
   ["footer_release_notes", "release-notes"],
   ["footer_about_passport", "about-passport"],
+  ["footer_contact", "contact"],
 ];

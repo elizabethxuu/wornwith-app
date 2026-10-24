@@ -20,16 +20,18 @@ function menuTipKey(w: WeatherData | null): TranslationKey {
   return "menu_tip_mild";
 }
 
-// Screen numbers match the live app: 1 overview, 2 journey, 3 materials,
-// 4 care, 5 environment, 7 story, 8 ownership.
+// Every chapter, in the app's order, numbered as the chapter itself is
+// numbered (the "09" above Wardrobe matches "09" here).
 const MENU_ITEMS: [TranslationKey, number][] = [
   ["contents_overview", 1],
   ["contents_journey", 2],
   ["contents_materials", 3],
   ["contents_care", 4],
   ["contents_environment", 5],
-  ["contents_ownership", 8],
+  ["contents_next_chapter", 6],
   ["contents_story", 7],
+  ["contents_ownership", 8],
+  ["contents_wardrobe", 9],
 ];
 
 /**
@@ -220,13 +222,13 @@ export default function PassportTopBar({
             </div>
             <p className="font-sans text-[10px] uppercase tracking-[0.2em] text-clay mb-2">{t("contents_title")}</p>
             <div className="border-t border-line">
-              {MENU_ITEMS.map(([key, screen], i) => (
+              {MENU_ITEMS.map(([key, screen]) => (
                 <button
                   key={key}
                   onClick={() => { setMenuOpen(false); onGoTo(screen); }}
                   className="w-full flex items-baseline gap-4 py-3.5 border-b border-line text-left"
                 >
-                  <span className="font-sans text-[10px] tracking-[0.2em] text-clay w-5">{String(i + 1).padStart(2, "0")}</span>
+                  <span className="font-sans text-[10px] tracking-[0.2em] text-clay w-5">{String(screen).padStart(2, "0")}</span>
                   <span className="font-display italic text-[1.5rem] leading-tight text-ink">{t(key)}</span>
                 </button>
               ))}
