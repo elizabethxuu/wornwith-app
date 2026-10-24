@@ -1,4 +1,7 @@
-import { useEffect, useId, useRef, useState } from "react";
+import { useEffect, useId, useState } from "react";
+import { createPortal } from "react-dom";
+import { X } from "lucide-react";
+import { collectedStamps, onOpenStampsPage, onStampsChanged, STAMP_COUNT } from "../lib/stamps";
 import { useLanguage, type TranslationKey } from "../lib/i18n";
 import { STOP_ACCENTS, requestMapStop } from "../lib/mapFocus";
 
@@ -96,40 +99,76 @@ function StampArt({ s, color, label }: { s: Stamp; color: string; label: string 
   );
 }
 
-export function PassportStamps({ onGoTo }: { onGoTo?: (screen: number) => void }) {
+// The hidden last page. Opened from the End screen's faint mark, from a
+// triple tap on the logo, or from "Passport complete" once all four are
+// collected. Collected stamps thunk down; the rest wait as faint dashed
+// outlines that lead to the Journey, where they can be found.
+export function StampsPage({ onGoTo }: { onGoTo: (screen: number) => void }) {
   const { t } = useLanguage();
-  const ref = useRef<HTMLDivElement>(null);
-  const [inked, setInked] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [collected, setCollected] = useState<number[]>(() => collectedStamps());
 
+  useEffect(() => onOpenStampsPage(() => { setCollected(collectedStamps()); setOpen(true); }), []);
+  useEffect(() => onStampsChanged(() => setCollected(collectedStamps())), []);
   useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    if (typeof IntersectionObserver === "undefined") { setInked(true); return; }
-    const io = new IntersectionObserver(([entry]) => {
-      if (entry.isIntersecting) { setInked(true); io.disconnect(); }
-    }, { threshold: 0.35 });
-    io.observe(el);
-    return () => io.disconnect();
-  }, []);
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") setOpen(false); };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [open]);
 
-  return (
-    <section ref={ref} className="mt-8" aria-label={t("stamps_title")}>
-      <p className="font-sans text-[10px] uppercase tracking-[0.2em] text-ink">{t("stamps_title")}</p>
-      <div className="stamp-page mt-3 rounded-card border border-line px-4 py-5 grid grid-cols-2 gap-x-2 gap-y-1">
-        {STAMPS.map((s, i) => (
-          <button
-            key={s.city}
-            type="button"
-            onClick={(e) => { e.stopPropagation(); requestMapStop(i); onGoTo?.(7); }}
-            aria-label={`${s.city}, ${t(s.stage)}. ${t("show_on_map")}`}
-            className={`stamp ${inked ? "stamp-in" : ""} aspect-square w-full max-w-[150px] mx-auto`}
-            style={{ ["--tilt" as string]: `${s.tilt}deg`, animationDelay: `${i * 260}ms`, marginTop: i % 2 ? 14 : 0 }}
-          >
-            <StampArt s={s} color={`color-mix(in srgb, ${STOP_ACCENTS[i]} 78%, #3B2A22)`} label={t(s.stage)} />
+  if (!open) return null;
+  const go = (screen: number) => { setOpen(false); onGoTo(screen); };
+  const complete = collected.length === STAMP_COUNT;
+
+  return createPortal(
+    <div role="dialog" aria-modal="true" aria-label={t("stamps_page_title")} className="fixed inset-0 z-50 bg-paper overflow-y-auto stamps-page-in">
+      <div className="max-w-md mx-auto px-6 pb-10" style={{ paddingTop: "max(env(safe-area-inset-top), 16px)" }}>
+        <div className="flex justify-end">
+          <button onClick={() => setOpen(false)} aria-label={t("close_label")} className="w-10 h-10 -mr-2 flex items-center justify-center text-ink">
+            <X size={22} strokeWidth={1.25} />
           </button>
-        ))}
+        </div>
+        <p className="font-sans text-[10px] uppercase tracking-[0.2em] text-clay mt-2">{t("stamps_eyebrow")}</p>
+        <h2 className="font-display italic text-[30px] leading-tight text-ink mt-2">{t("stamps_page_title")}</h2>
+        <p className="font-sans text-[12px] text-clay mt-2">
+          {complete ? t("stamps_complete") : t("stamps_progress").replace("{n}", String(collected.length)).replace("{total}", String(STAMP_COUNT))}
+        </p>
+
+        <div className="stamp-page mt-6 rounded-card border border-line px-4 py-6 grid grid-cols-2 gap-x-2 gap-y-2">
+          {STAMPS.map((s, i) => {
+            const have = collected.includes(i);
+            const order = collected.indexOf(i);
+            return have ? (
+              <button
+                key={s.city}
+                type="button"
+                onClick={() => { requestMapStop(i); go(7); }}
+                aria-label={`${s.city}, ${t(s.stage)}. ${t("show_on_map")}`}
+                className="stamp stamp-in aspect-square w-full max-w-[150px] mx-auto"
+                style={{ ["--tilt" as string]: `${s.tilt}deg`, animationDelay: `${250 + order * 260}ms`, marginTop: i % 2 ? 14 : 0 }}
+              >
+                <StampArt s={s} color={`color-mix(in srgb, ${STOP_ACCENTS[i]} 78%, #3B2A22)`} label={t(s.stage)} />
+              </button>
+            ) : (
+              <button
+                key={s.city}
+                type="button"
+                onClick={() => go(2)}
+                aria-label={`${t("stamps_missing")}: ${s.city}`}
+                className="aspect-square w-full max-w-[150px] mx-auto rounded-full border border-dashed border-line flex flex-col items-center justify-center text-center"
+                style={{ marginTop: i % 2 ? 14 : 0 }}
+              >
+                <span className="font-display italic text-[15px] text-clay/70">{s.city}</span>
+                <span className="font-sans text-[8px] uppercase tracking-[0.2em] text-clay/60 mt-1">{t("stamps_missing")}</span>
+              </button>
+            );
+          })}
+        </div>
+        <p className="mt-3 text-center font-sans text-[10px] text-clay">{complete ? t("stamps_hint") : t("stamps_how")}</p>
+        <p className="mt-10 text-center font-display italic text-[14px] text-clay">{t("stamps_secret")}</p>
       </div>
-      <p className="mt-2 text-center font-sans text-[10px] text-clay">{t("stamps_hint")}</p>
-    </section>
+    </div>,
+    document.body
   );
 }

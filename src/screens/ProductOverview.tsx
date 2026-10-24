@@ -1,5 +1,4 @@
 import { useState, useEffect, useRef, useSyncExternalStore } from "react";
-import { PassportStamps } from "../components/PassportStamps";
 import * as ambient from "../lib/ambient";
 import { Eyebrow, VerificationInfoPanel, ShareSheet, ProductHero } from "../components/UI";
 import { ChapterColorProvider } from "../lib/chapterColor";
@@ -14,9 +13,8 @@ import { ATTESTATION } from "../lib/passportRecord";
 /* 4: PRODUCT OVERVIEW */
 export function ProductOverview({
   onExploreJourney,
-  onGoTo,
   intro = false,
-}: { onExploreJourney?: () => void; onGoTo?: (index: number) => void; intro?: boolean } = {}) {
+}: { onExploreJourney?: () => void; intro?: boolean } = {}) {
   const { t } = useLanguage();
   const [ctaFading, setCtaFading] = useState(false);
   const [showVerificationInfo, setShowVerificationInfo] = useState(false);
@@ -312,9 +310,6 @@ export function ProductOverview({
           <div className="flex justify-between"><span className="text-clay">{t("condition")}</span><span className="text-ink font-medium">{loadOwnershipRecord().condition || t("excellent")}</span></div>
         </div>
       </div>
-
-      {/* Where it's been, as passport stamps. */}
-      <PassportStamps onGoTo={onGoTo} />
 
       <p className="font-display italic text-[15px] text-ink/80 leading-snug mt-10">{t("dpp_explainer_short")}</p>
       <p className="font-sans text-[9px] uppercase tracking-[0.2em] text-clay mt-3 mb-2">{t("welcome_by")}</p>

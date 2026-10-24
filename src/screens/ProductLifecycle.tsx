@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Eyebrow, ExpandableCard } from "../components/UI";
 import { useLanguage } from "../lib/i18n";
 import { STOP_ACCENTS } from "../lib/mapFocus";
+import { collectStamp } from "../lib/stamps";
 import { JOURNEY } from "../lib/passportRecord";
 import { Shirt, Sprout, Spool, Scissors } from "lucide-react";
 
@@ -20,6 +21,8 @@ export function ProductLifecycle({ onViewChapter, onOpenMapStop }: { onViewChapt
   // row is tappable, and the card beneath adapts to whichever chapter is
   // selected rather than always describing the wool farm.
   const [selected, setSelected] = useState(stops.length - 1);
+  // Opening a stop collects its passport stamp (see the hidden last page).
+  useEffect(() => { collectStamp(selected); }, [selected]);
 
   const stopDetails = [
     {

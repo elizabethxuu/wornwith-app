@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { requestMapStop } from "./lib/mapFocus";
+import { StampsPage } from "./components/PassportStamps";
 import { ChevronLeft, ChevronRight, WifiOff, SearchX, ChevronDown, ChevronUp } from "lucide-react";
 import { readFlag, saveFlag, FOOTER_HIDDEN_KEY, LEGAL_LINKS } from "./lib/uiPrefs";
 import { EmptyState } from "./components/UI";
@@ -38,7 +39,7 @@ function buildLiveScreens(goToScreen: (index: number) => void, intro: boolean) {
     // the app opens straight onto the overview. The slot stays empty so the
     // other screen numbers (and chapter colors) do not shift.
     null,
-    <ProductOverview key="overview" intro={intro} onExploreJourney={() => goToScreen(2)} onGoTo={goToScreen} />,
+    <ProductOverview key="overview" intro={intro} onExploreJourney={() => goToScreen(2)} />,
     <ProductLifecycle key="lifecycle" onViewChapter={() => goToScreen(7)} onOpenMapStop={(i) => { requestMapStop(i); goToScreen(7); }} />,
     <SupplyChain key="supply" />,
     <CareGuide key="care" />,
@@ -205,6 +206,8 @@ export default function LiveApp() {
       }`}
     >
       {revealing && <OpeningReveal onDone={() => setRevealing(false)} />}
+      {/* The hidden last page of the passport (stamps). */}
+      <StampsPage onGoTo={(i) => { setLegalPage("none"); setIndex(i); }} />
 
       {/* The brand header stays on every screen: menu, logo, share. */}
       <PassportTopBar showTools compact={!isFront} onGoTo={(i) => { setLegalPage("none"); setIndex(i); }} onOpenLegal={setLegalPage} />

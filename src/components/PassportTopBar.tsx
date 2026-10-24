@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Menu as MenuIcon, X as CloseIcon, Share, Search, AudioLines, Moon, Sun } from "lucide-react";
 import { useLanguage, type TranslationKey } from "../lib/i18n";
 import { ShareSheet } from "./UI";
@@ -6,6 +6,7 @@ import HeaderTools, { SearchSheet } from "./HeaderTools";
 import { LEGAL_LINKS, type LegalPage } from "../lib/uiPrefs";
 import { applyTheme, readStoredTheme, saveTheme, type Theme } from "../lib/theme";
 import { GARMENT } from "../lib/garment";
+import { openStampsPage } from "../lib/stamps";
 import { fetchWeather, type WeatherData } from "../lib/todaysEdit";
 
 // Today's Edit, in brief, for the menu: one short line from the real
@@ -89,6 +90,16 @@ export default function PassportTopBar({
       : `${Math.round(((menuWeather.tempF - 32) * 5) / 9)}°`
     : null;
 
+  // A secret: three quick taps on the logo open the passport's hidden last
+  // page. A single tap still goes to the overview.
+  const logoTaps = useRef<number[]>([]);
+  const onLogoTap = () => {
+    const now = Date.now();
+    logoTaps.current = [...logoTaps.current.filter((ts) => now - ts < 700), now];
+    if (logoTaps.current.length >= 3) { logoTaps.current = []; openStampsPage(); return; }
+    if (logoTaps.current.length === 1) onGoTo(1);
+  };
+
   const barStyle = safeArea ? { paddingTop: "max(env(safe-area-inset-top), 0.5rem)" } : { paddingTop: "0.25rem" };
   const brand = (
     <div className="flex items-center gap-2">
@@ -124,7 +135,7 @@ export default function PassportTopBar({
             </button>
           )}
         </div>
-        <button onClick={() => onGoTo(1)} aria-label={`wornwith.care, ${t("contents_overview")}`} className="flex items-center">
+        <button onClick={onLogoTap} aria-label={`wornwith.care, ${t("contents_overview")}`} className="flex items-center">
           {brand}
         </button>
         <div className="flex items-center justify-end">

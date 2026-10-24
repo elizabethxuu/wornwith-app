@@ -409,3 +409,14 @@ body {
   .stamp { opacity: 0.9; transform: rotate(var(--tilt)); }
   .stamp-in { animation: none; }
 }
+
+/* The last page turns in like a page: a soft rise from the right edge. */
+@keyframes stampsPageIn {
+  from { opacity: 0; transform: perspective(900px) rotateY(-14deg) translateX(24px); transform-origin: right center; }
+  to { opacity: 1; transform: none; }
+}
+.stamps-page-in { animation: stampsPageIn 0.55s cubic-bezier(0.22, 1, 0.36, 1) both; }
+@media (prefers-reduced-motion: reduce) { .stamps-page-in { animation: none; } }
+/* The faint mark at the very end of the passport that hints at the page. */
+.stamp-hint { opacity: 0.35; transition: opacity 0.3s ease, transform 0.3s ease; }
+.stamp-hint:hover, .stamp-hint:focus-visible { opacity: 0.75; transform: rotate(-6deg) scale(1.04); }
