@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { StoryCardRow } from "./StoryCardRow";
+import { HandoverRow } from "./Handover";
 import { createPortal } from "react-dom";
 import { Mic, Square, AudioLines, Trash2, Plus, ArrowUp, X, Camera, Shirt } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
@@ -1813,6 +1814,7 @@ export function ShareSheet({ open, onClose }: { open: boolean; onClose: () => vo
 
         <div className="divide-y divide-line border-y border-line">
           <StoryCardRow />
+          <HandoverRow />
           <div className="py-3.5">
             <p className="font-sans text-[13px] text-ink font-medium">{t("sharing_pdf_title")}</p>
             <p className="font-sans text-[11px] text-clay mt-0.5 leading-relaxed">{t("share_sheet_pdf_desc")}</p>
