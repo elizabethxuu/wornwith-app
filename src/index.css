@@ -420,3 +420,4 @@ body {
 /* The faint mark at the very end of the passport that hints at the page. */
 .stamp-hint { opacity: 0.35; transition: opacity 0.3s ease, transform 0.3s ease; }
 .stamp-hint:hover, .stamp-hint:focus-visible { opacity: 0.75; transform: rotate(-6deg) scale(1.04); }
+.stamp-still { opacity: 0.95; transform: rotate(var(--tilt)); }

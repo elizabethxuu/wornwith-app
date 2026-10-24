@@ -1,4 +1,6 @@
 import { useState, useEffect, useRef } from "react";
+import { StoryCardRow } from "./StoryCardRow";
+import { HandoverRow } from "./Handover";
 import { createPortal } from "react-dom";
 import { Mic, Square, AudioLines, Trash2, Plus, ArrowUp, X, Camera, Shirt } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
@@ -950,6 +952,7 @@ export function VoicePlayer({
   stopLabel: string;
   unavailableLabel: string;
 }) {
+  const { lang } = useLanguage();
   const [state, setState] = useState<"idle" | "loading" | "playing" | "unavailable">("idle");
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
@@ -976,6 +979,7 @@ export function VoicePlayer({
       setState("playing");
     } else if (result.mode === "browser") {
       const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = lang === "fr" ? "fr-FR" : lang === "pt" ? "pt-PT" : "en-GB";
       utterance.rate = 0.95;
       utterance.onend = () => setState("idle");
       utterance.onerror = () => setState("idle");
@@ -1811,6 +1815,8 @@ export function ShareSheet({ open, onClose }: { open: boolean; onClose: () => vo
         </p>
 
         <div className="divide-y divide-line border-y border-line">
+          <StoryCardRow />
+          <HandoverRow />
           <div className="py-3.5">
             <p className="font-sans text-[13px] text-ink font-medium">{t("sharing_pdf_title")}</p>
             <p className="font-sans text-[11px] text-clay mt-0.5 leading-relaxed">{t("share_sheet_pdf_desc")}</p>
