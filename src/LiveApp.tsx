@@ -72,7 +72,7 @@ export default function LiveApp() {
   const { t } = useLanguage();
   const [bootState, setBootState] = useState<BootState>("verifying");
   const [index, setIndex] = useState(FIRST_SCREEN);
-  const scrollRef = useRef<HTMLDivElement>(null);
+  const scrollRef = useRef<HTMLElement>(null);
   // Built inside the component (not as a module-level constant) so
   // screens like ProductOverview can be given a real "jump to a specific
   // screen" callback, not just the generic forward-tap gesture.
@@ -214,7 +214,7 @@ export default function LiveApp() {
       {/* The brand header stays on every screen: menu, logo, share. */}
       <PassportTopBar showTools compact={!isFront} onGoTo={(i) => { setLegalPage("none"); setIndex(i); }} onOpenLegal={setLegalPage} />
 
-      <div ref={scrollRef} className="flex-1 overflow-y-auto visible-scrollbar relative" onClick={handleTap}>
+      <main ref={scrollRef} className="flex-1 overflow-y-auto visible-scrollbar relative" onClick={handleTap}>
         <ChapterColorProvider color={CHAPTER_COLORS[index]}>
           {legalPage === "privacy" ? (
             <PrivacyPolicyScreen onBack={() => setLegalPage("none")} />
@@ -230,7 +230,7 @@ export default function LiveApp() {
             <ChapterShell index={index} total={liveScreens.length}>{liveScreens[index]}</ChapterShell>
           )}
         </ChapterColorProvider>
-      </div>
+      </main>
 
 
       {/* Minimal legal footer, rendered once here rather than per-screen.

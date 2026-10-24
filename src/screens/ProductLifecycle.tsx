@@ -135,7 +135,7 @@ export function ProductLifecycle({ onViewChapter, onOpenMapStop }: { onViewChapt
               </div>
             </button>
             {i < stops.length - 1 && (
-              <p className="reveal-soft pl-[52px] py-3 font-display italic text-[13px] text-clay/80" style={at(1000 + i * 220)}>{legs[i]}</p>
+              <p className="reveal-soft pl-[52px] py-3 font-display italic text-[13px] text-clay" style={at(1000 + i * 220)}>{legs[i]}</p>
             )}
             </div>
           ))}

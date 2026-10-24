@@ -421,3 +421,9 @@ body {
 .stamp-hint { opacity: 0.35; transition: opacity 0.3s ease, transform 0.3s ease; }
 .stamp-hint:hover, .stamp-hint:focus-visible { opacity: 0.75; transform: rotate(-6deg) scale(1.04); }
 .stamp-still { opacity: 0.95; transform: rotate(var(--tilt)); }
+
+/* Text in a chapter color: darkened for white, lightened for the dark theme
+   (see chapterInk() in lib/contrast.ts). */
+.chapter-ink { color: var(--ink-l); }
+:root[data-theme="dark"] .chapter-ink { color: var(--ink-d); }
+:root[data-theme="dark"] .light-island .chapter-ink { color: var(--ink-l); }

@@ -8,7 +8,8 @@ import type { WardrobeItem } from "../lib/persistence";
 import { loadVoiceNote, saveVoiceNote, deleteVoiceNote, compressImage, type VoiceNote } from "../lib/persistence";
 import { requestVoice, transcribeVoiceNote } from "../lib/voice";
 import { duck as duckAmbient } from "../lib/ambient";
-import { useChapterColor, readableOn } from "../lib/chapterColor";
+import { useChapterColor } from "../lib/chapterColor";
+import { chapterInk } from "../lib/contrast";
 import { passportUrl } from "../lib/config";
 import { GARMENT } from "../lib/garment";
 import { ATTESTATION, PASSPORT_ID, checkRecord, publicRecordUrl, shortHex, type RecordCheck } from "../lib/passportRecord";
@@ -29,9 +30,9 @@ import {
 } from "../lib/todaysEdit";
 
 export function Eyebrow({ children }: { children: React.ReactNode }) {
-  const color = readableOn(useChapterColor());
+  const ink = chapterInk(useChapterColor());
   return (
-    <p className="text-[10px] tracking-[0.26em] uppercase font-sans font-medium transition-colors duration-500" style={{ color }}>
+    <p className={`${ink.className} text-[10px] tracking-[0.26em] uppercase font-sans font-medium transition-colors duration-500`} style={ink.style}>
       {children}
     </p>
   );
@@ -808,7 +809,7 @@ export function TodaysEdit({ wardrobe }: { wardrobe: WardrobeItem[] }) {
       </p>
 
       {/* Recommended garment, the actual hero moment */}
-      <p className="font-display italic text-lg mt-4 transition-colors duration-500" style={{ color }}>
+      <p className={`${chapterInk(color).className} font-display italic text-lg mt-4 transition-colors duration-500`} style={chapterInk(color).style}>
         {capitalizeFirst(itemName)}
       </p>
       <p className="font-sans text-[12px] text-ink/80 leading-relaxed mt-1">
@@ -820,7 +821,7 @@ export function TodaysEdit({ wardrobe }: { wardrobe: WardrobeItem[] }) {
           chrome, the atmosphere title as an invitation, with a distinct
           secondary-style entrance button beneath it. */}
       <div className="mt-5 py-4 border-t border-b border-line">
-        <p className="font-sans text-[10px] uppercase tracking-[0.14em] font-semibold" style={{ color }}>
+        <p className={`${chapterInk(color).className} font-sans text-[10px] uppercase tracking-[0.14em] font-semibold`} style={chapterInk(color).style}>
           {t("interlude_title")}
         </p>
         <p className="font-sans text-[11px] text-clay mt-1">{t("interlude_supporting")}</p>

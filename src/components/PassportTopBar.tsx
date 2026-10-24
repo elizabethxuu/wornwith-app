@@ -238,7 +238,7 @@ export default function PassportTopBar({
                   <button
                     onClick={() => setLang(l)}
                     aria-pressed={lang === l}
-                    className={`uppercase tracking-[0.28em] py-2 ${lang === l ? "text-ink" : "opacity-60"}`}
+                    className={`uppercase tracking-[0.28em] py-2 ${lang === l ? "text-ink underline underline-offset-[6px] decoration-1" : "text-clay"}`}
                   >
                     {l}
                   </button>
