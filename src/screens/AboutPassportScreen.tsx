@@ -28,9 +28,9 @@ export function AboutPassportScreen({ onBack }: { onBack: () => void }) {
       </button>
 
       <Eyebrow>{t("about_passport_eyebrow")}</Eyebrow>
-      <h2 className="font-display italic text-2xl text-ink leading-tight mt-1">
+      <h1 className="font-display italic text-2xl text-ink leading-tight mt-1">
         {t("about_passport_title")}
-      </h2>
+      </h1>
       <p className="font-sans text-[12px] text-clay leading-relaxed mt-3">{t("about_passport_p1")}</p>
       <p className="font-sans text-[12px] text-clay leading-relaxed mt-3">{t("about_passport_p2")}</p>
       <p className="font-sans text-[12px] text-clay leading-relaxed mt-3">{t("about_passport_p3")}</p>

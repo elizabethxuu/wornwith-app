@@ -193,7 +193,7 @@ export function ProductOverview({
       <div className="mt-2" />
       <ProductHero
         videoSrc="/videos/product-hero-2.mp4"
-        fallbackImageSrc={GARMENT.image}
+        posterSrc="/videos/product-hero-2-poster.webp"
         altText={t("product_hero_alt")}
       />
       <div className="flex items-start justify-between gap-4">

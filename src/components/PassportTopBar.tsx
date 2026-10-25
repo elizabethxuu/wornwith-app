@@ -154,7 +154,7 @@ export default function PassportTopBar({
       </header>
 
       {menuOpen && (
-        <div className={`absolute inset-x-0 bottom-0 ${overlayClassName} z-30 bg-paper flex flex-col fade-up`}>
+        <div role="dialog" aria-modal="true" aria-label={t("hero_menu")} className={`absolute inset-x-0 bottom-0 ${overlayClassName} z-30 bg-paper flex flex-col fade-up`}>
           <div
             className="shrink-0 flex items-center justify-between px-3 pb-2 border-b border-line"
             style={barStyle}
@@ -205,7 +205,6 @@ export default function PassportTopBar({
               {/* Your coat, with today's line from Today's Edit beside it. */}
               <button
                 onClick={() => { setMenuOpen(false); onGoTo(9); }}
-                aria-label={`${t("menu_edit_label")}: ${t(menuTipKey(menuWeather))}`}
                 className="ml-auto flex items-center gap-2.5 text-left min-w-0"
               >
                 <span className="text-right leading-tight min-w-0">
@@ -235,7 +234,7 @@ export default function PassportTopBar({
                 </button>
               ))}
             </div>
-            <div className="mt-8 flex items-center gap-3 font-sans text-[10px] uppercase tracking-[0.28em] text-clay" role="group" aria-label="Language">
+            <div className="mt-8 flex items-center gap-3 font-sans text-[10px] uppercase tracking-[0.28em] text-clay" role="group" aria-label={t("tool_language")}>
               {(["en", "fr", "pt"] as const).map((l, k) => (
                 <span key={l} className="flex items-center gap-3">
                   {k > 0 && <span aria-hidden>·</span>}

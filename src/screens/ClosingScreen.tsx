@@ -3,7 +3,7 @@ import { useLanguage } from "../lib/i18n";
 import { collectedStamps, onStampsChanged, openStampsPage, STAMP_COUNT } from "../lib/stamps";
 
 export function ClosingScreen({ onReturnToWardrobe }: { onReturnToWardrobe: () => void }) {
-  const { t, lang } = useLanguage();
+  const { t } = useLanguage();
   const [count, setCount] = useState(() => collectedStamps().length);
   useEffect(() => onStampsChanged(() => setCount(collectedStamps().length)), []);
   const complete = count === STAMP_COUNT;
@@ -32,13 +32,6 @@ export function ClosingScreen({ onReturnToWardrobe }: { onReturnToWardrobe: () =
         {t("return_to_wardrobe")}
       </button>
 
-      <p className="font-sans text-[12px] text-clay text-center mt-12">{t("wl_cta_line")}</p>
-      <a
-        href={lang === "en" ? "/waitlist" : `/${lang}/waitlist`}
-        className="mt-2 font-display italic text-[17px] text-[#8E3D52] underline decoration-[#8E3D52]/30 underline-offset-4"
-      >
-        {t("wl_cta")}
-      </a>
 
       {/* The way to the hidden last page: once every stop is stamped, a
           quiet "Passport complete"; until then, just a faint stamp mark

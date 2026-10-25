@@ -55,6 +55,35 @@ function buildLiveScreens(goToScreen: (index: number) => void, intro: boolean) {
 
 // The first screen people can reach (slot 0 is intentionally empty).
 const FIRST_SCREEN = 1;
+const LAST_SCREEN = 10;
+
+// Where the visitor is, kept for this tab only, so a reload (or iOS bringing
+// the page back) returns to the same screen instead of the beginning.
+const SCREEN_KEY = "wornwith:screen";
+type Place = { screen: number; legal: "none" | LegalPage };
+function savedPlace(): Place | null {
+  // Only a reload (or Back/Forward into the page) returns to the saved
+  // screen; opening the link or tapping the tag again starts at the top.
+  try {
+    const nav = performance.getEntriesByType?.("navigation")[0] as PerformanceNavigationTiming | undefined;
+    if (nav && nav.type !== "reload" && nav.type !== "back_forward") return null;
+  } catch {
+    // ignore
+  }
+  try {
+    const p = JSON.parse(sessionStorage.getItem(SCREEN_KEY) || "null");
+    if (p && Number.isInteger(p.screen) && p.screen >= FIRST_SCREEN && p.screen <= LAST_SCREEN) {
+      return { screen: p.screen, legal: typeof p.legal === "string" ? p.legal : "none" };
+    }
+  } catch {
+    // ignore
+  }
+  return null;
+}
+function placeFromHistory(state: unknown): Place | null {
+  const p = state as Partial<Place> | null;
+  return p && Number.isInteger(p.screen) ? { screen: p.screen as number, legal: (p.legal as Place["legal"]) || "none" } : null;
+}
 
 type BootState = "verifying" | "scanning" | "ready" | "offline" | "not-found";
 
@@ -72,7 +101,7 @@ function checkDppId(): boolean {
 export default function LiveApp() {
   const { t } = useLanguage();
   const [bootState, setBootState] = useState<BootState>("verifying");
-  const [index, setIndex] = useState(FIRST_SCREEN);
+  const [index, setIndex] = useState(() => placeFromHistory(window.history.state)?.screen ?? savedPlace()?.screen ?? FIRST_SCREEN);
   const scrollRef = useRef<HTMLElement>(null);
   // Built inside the component (not as a module-level constant) so
   // screens like ProductOverview can be given a real "jump to a specific
@@ -80,7 +109,36 @@ export default function LiveApp() {
   // The entrance only plays once per visit, and not for reduced motion.
   const [revealing, setRevealing] = useState(() => !introPlayed() && !prefersReducedMotion());
   const liveScreens = buildLiveScreens((i) => setIndex(i), revealing);
-  const [legalPage, setLegalPage] = useState<"none" | LegalPage>("none");
+  const [legalPage, setLegalPage] = useState<"none" | LegalPage>(
+    () => placeFromHistory(window.history.state)?.legal ?? savedPlace()?.legal ?? "none",
+  );
+  // Each screen is a step in the browser's history, so Back and Forward move
+  // between screens (and out of a legal page) instead of leaving the site.
+  const fromHistory = useRef(false);
+  const firstPlace = useRef(true);
+  useEffect(() => {
+    const place: Place = { screen: index, legal: legalPage };
+    try { sessionStorage.setItem(SCREEN_KEY, JSON.stringify(place)); } catch { /* ignore */ }
+    const current = placeFromHistory(window.history.state);
+    const state = { ...(window.history.state || {}), ...place };
+    try {
+      if (firstPlace.current || fromHistory.current) window.history.replaceState(state, "");
+      else if (!current || current.screen !== index || current.legal !== legalPage) window.history.pushState(state, "");
+    } catch { /* ignore */ }
+    firstPlace.current = false;
+    fromHistory.current = false;
+  }, [index, legalPage]);
+  useEffect(() => {
+    const onPop = (e: PopStateEvent) => {
+      const place = placeFromHistory(e.state);
+      if (!place) return;
+      fromHistory.current = true;
+      setIndex(place.screen);
+      setLegalPage(place.legal);
+    };
+    window.addEventListener("popstate", onPop);
+    return () => window.removeEventListener("popstate", onPop);
+  }, []);
   // The legal footer starts folded away; an arrow opens it, and the same
   // links stay in the menu.
   const [footerHidden, setFooterHidden] = useState(() => readFlag(FOOTER_HIDDEN_KEY, true));
@@ -127,6 +185,26 @@ export default function LiveApp() {
     setIndex((i) => Math.min(liveScreens.length - 1, i + 1));
   };
 
+  // Left and right arrow keys turn the page, unless someone is typing or a
+  // sheet or menu is open over the passport.
+  const keyNav = useRef({ goPrev, goNext });
+  keyNav.current = { goPrev, goNext };
+  useEffect(() => {
+    if (bootState !== "ready") return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.defaultPrevented || e.altKey || e.ctrlKey || e.metaKey || e.shiftKey) return;
+      if (e.key !== "ArrowLeft" && e.key !== "ArrowRight") return;
+      const el = e.target as HTMLElement | null;
+      if (el?.closest("input, textarea, select, [contenteditable='true'], [role='slider']")) return;
+      if (document.querySelector('[aria-modal="true"]')) return;
+      e.preventDefault();
+      if (e.key === "ArrowLeft") keyNav.current.goPrev();
+      else keyNav.current.goNext();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [bootState]);
+
   const handleTap = (e: React.MouseEvent) => {
     // Don't hijack taps meant for actual controls, inputs, textareas,
     // buttons, links, and checkboxes should just work normally.
@@ -165,8 +243,9 @@ export default function LiveApp() {
 
   if (bootState === "offline") {
     return (
-      <div className="h-[100dvh] w-full bg-paper">
+      <main className="h-[100dvh] w-full bg-paper">
         <EmptyState
+          headingLevel={1}
           icon={WifiOff}
           eyebrow={t("connection_eyebrow")}
           title={t("connection_error_title")}
@@ -174,22 +253,23 @@ export default function LiveApp() {
           actionLabel={t("try_again")}
           onAction={runVerification}
         />
-      </div>
+      </main>
     );
   }
 
   if (bootState === "not-found") {
     return (
-      <div className="h-[100dvh] w-full bg-paper">
+      <main className="h-[100dvh] w-full bg-paper">
         <EmptyState
+          headingLevel={1}
           icon={SearchX}
           eyebrow={t("dpp_eyebrow")}
           title={t("not_found_title")}
           subtitle={t("not_found_subtitle")}
-          actionLabel={t("scan_again")}
-          actionHref="?mode=tag"
+          actionLabel={t("not_found_action")}
+          actionHref={window.location.pathname}
         />
-      </div>
+      </main>
     );
   }
 
@@ -288,14 +368,14 @@ export default function LiveApp() {
           move forward/back. Fixed outside the scrollable content so it can
           never overlap whatever text happens to be on a given screen. */}
       {!isFront && (
-      <nav aria-label="Chapters"
+      <nav aria-label={t("nav_chapters")}
         className="flex items-center justify-between px-4 shrink-0 border-t border-line print:hidden"
         style={{ paddingTop: "10px", paddingBottom: "max(env(safe-area-inset-bottom), 10px)" }}
       >
         {!isFirst ? (
           <button
             onClick={goPrev}
-            aria-label="Previous"
+            aria-label={t("nav_previous")}
             className="w-10 h-10 rounded-full bg-ink shadow-sm flex items-center justify-center"
           >
             <ChevronLeft size={20} className="text-paper" />
@@ -321,7 +401,7 @@ export default function LiveApp() {
         {!isLast ? (
           <button
             onClick={goNext}
-            aria-label="Next"
+            aria-label={t("nav_next")}
             className="w-10 h-10 rounded-full bg-ink shadow-sm flex items-center justify-center"
           >
             <ChevronRight size={20} className="text-paper" />
