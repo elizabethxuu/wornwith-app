@@ -53,6 +53,21 @@ The share sheet shows **Add to Apple Wallet** (on Apple devices) once the pass c
 
 Until a database is connected, the form offers to email hello@wornwith.care instead. To turn it on: Vercel → your project → **Storage** → **Create Database** → **Upstash for Redis** (free tier) → connect it to this project, then redeploy. To read the sign-ups, open the database's **Data Browser** in Vercel and look at the `wl:people` hash. The count and most-named piece only show on the page once 10 people have joined.
 
+## Home-screen widget (one-time setup in Xcode)
+
+The widget's code and images are ready in `ios/App/WornWidgetFiles/`. Xcode has to create the widget "target" itself, once:
+
+1. In Xcode: **File → New → Target… → Widget Extension** → Next.
+2. Product Name: `WornWidget`. **Untick** "Include Live Activity" and "Include Configuration App Intent". Finish, then **Activate** when asked.
+3. In the left sidebar, open the new **WornWidget** folder. Select the `.swift` files Xcode made (e.g. `WornWidget.swift`, `WornWidgetBundle.swift`) → right-click → **Delete → Move to Trash**.
+4. Drag `ios/App/WornWidgetFiles/WornWidget.swift` from Finder into that **WornWidget** folder. In the dialog, tick **Copy items if needed** and, under Targets, tick **WornWidget only**.
+5. Open the WornWidget folder's **Assets** catalog and drag in `Coat.png` and `WLogo.png` from `WornWidgetFiles` (they must keep those names).
+6. Select the **App** target → Signing & Capabilities → **+ Capability → App Groups** → tick `group.care.wornwith.app` (add it with + if it isn't listed). Do the same for the **WornWidget** target.
+7. Set the **WornWidget** target's Minimum Deployments to iOS 16.0 (General tab).
+8. Run the app on your iPhone, then long-press the home screen → **+** → Worn With Care. The widget shows the next care step and your wear count; the lock-screen version is under Lock Screen → Customize.
+
+The widget code was written without a Mac, so if Xcode shows an error, paste it to Claude.
+
 ## TestFlight pilot, then the App Store
 
 What's already set in the project: bundle ID `care.wornwith.app`, display name "Worn With Care", iPhone only, the pink W app icon and launch screen, permission texts (microphone, camera, photos, location, NFC), the export-compliance flag (standard HTTPS only), and a privacy manifest (`App/PrivacyInfo.xcprivacy`: no tracking; audio, wardrobe questions, approximate location and anonymous usage, none linked to the person).
@@ -64,5 +79,5 @@ What's already set in the project: bundle ID `care.wornwith.app`, display name "
    - *External* (up to 10,000 people by email or a public link): needs a short beta review (usually about a day). Use this for boutiques, language testers and friends. Put the Google Form link in "What to Test".
 4. **App Privacy** (App Store Connect → App Privacy): answer to match the manifest. Data not linked to the user, not used for tracking: Audio Data and Other User Content (app functionality), Coarse Location (app functionality), Product Interaction (analytics). Privacy policy URL: https://wornwith.care (Privacy page) or a direct link.
 5. **Listing:** category Lifestyle; age rating 4+; subtitle (30 characters), description, keywords; support URL and marketing URL https://wornwith.care; screenshots at 6.9" (1320 × 2868), at least 3.
-6. **App Review notes** (reviewers don't have the coat): "The passport opens without a tag: launch the app and it opens on the coat's passport. Tag scanning (Menu → first icon) needs an NFC sticker written with https://wornwith.care/?dpp=4f2a; a 30-second video of the scan is attached. Care reminders: Menu → bell → Turn on reminders." Attach the video.
+6. **Listing and App Review notes:** ready to paste in `ios/APP_STORE.md`. They lead with tag scanning, reminders and the widget, which is what shows Apple this is more than a website. Attach a 30-second video of a tag scan for the reviewers.
 7. **Submit for Review**, then release manually or automatically once approved.
