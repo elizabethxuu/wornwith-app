@@ -1,6 +1,7 @@
 import UIKit
 import Capacitor
 import CoreNFC
+import WidgetKit
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -115,9 +116,36 @@ public class WornNFCPlugin: CAPPlugin, CAPBridgedPlugin, NFCNDEFReaderSessionDel
     }
 }
 
+// MARK: - Worn With Care: the home-screen widget's data
+
+/// Shares what the widget shows (wear count, language, whether reminders are
+/// on) through the app group both targets belong to, then asks the widget to
+/// redraw. The widget works out the next care step itself.
+@objc(WornWidgetPlugin)
+public class WornWidgetPlugin: CAPPlugin, CAPBridgedPlugin {
+    public let identifier = "WornWidgetPlugin"
+    public let jsName = "WornWidget"
+    public let pluginMethods: [CAPPluginMethod] = [
+        CAPPluginMethod(name: "sync", returnType: CAPPluginReturnPromise),
+    ]
+
+    @objc func sync(_ call: CAPPluginCall) {
+        guard let shared = UserDefaults(suiteName: "group.care.wornwith.app") else {
+            call.reject("App group isn't set up.", "UNAVAILABLE")
+            return
+        }
+        shared.set(call.getInt("worn") ?? 0, forKey: "worn")
+        shared.set(call.getString("lang") ?? "en", forKey: "lang")
+        shared.set(call.getBool("reminders") ?? false, forKey: "reminders")
+        WidgetCenter.shared.reloadAllTimelines()
+        call.resolve()
+    }
+}
+
 /// The app's main screen: Capacitor's web view, plus the NFC reader above.
 class MainViewController: CAPBridgeViewController {
     override open func capacitorDidLoad() {
         bridge?.registerPluginInstance(WornNFCPlugin())
+        bridge?.registerPluginInstance(WornWidgetPlugin())
     }
 }

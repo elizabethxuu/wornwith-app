@@ -9,6 +9,7 @@ import ChapterShell from "./components/ChapterShell";
 import OpeningReveal, { introPlayed, prefersReducedMotion } from "./components/OpeningReveal";
 import { GARMENT } from "./lib/garment";
 import { useLanguage } from "./lib/i18n";
+import { syncWidget } from "./lib/widget";
 import { ChapterColorProvider, CHAPTER_COLORS } from "./lib/chapterColor";
 import {
   SkeletonLoader,
@@ -99,7 +100,16 @@ function checkDppId(): boolean {
 }
 
 export default function LiveApp() {
-  const { t } = useLanguage();
+  const { t, lang } = useLanguage();
+  // The home-screen widget (iPhone app only): refreshed on open, when the
+  // language changes, and whenever the app goes to the background, so it
+  // shows the latest wear count and reminder setting.
+  useEffect(() => {
+    syncWidget(lang);
+    const onHide = () => { if (document.visibilityState === "hidden") syncWidget(lang); };
+    document.addEventListener("visibilitychange", onHide);
+    return () => document.removeEventListener("visibilitychange", onHide);
+  }, [lang]);
   const [bootState, setBootState] = useState<BootState>("verifying");
   const [index, setIndex] = useState(() => placeFromHistory(window.history.state)?.screen ?? savedPlace()?.screen ?? FIRST_SCREEN);
   const scrollRef = useRef<HTMLElement>(null);

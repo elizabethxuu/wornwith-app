@@ -4,6 +4,16 @@
 <dict>
   <key>CAPACITOR_DEBUG</key>
 	<string>$(CAPACITOR_DEBUG)</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Worn With Care uses the microphone only when you record a voice note about your coat.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Worn With Care uses the camera only when you add a photo of a piece to your wardrobe.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Worn With Care opens your photos only when you choose one to add to your wardrobe.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Your approximate location is used to check today's weather for Today's Edit, and to find repair and thrift shops nearby. It is not stored.</string>
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
 	<key>NFCReaderUsageDescription</key>
 	<string>Worn With Care reads the tag sewn into your coat to open its passport.</string>
 	<key>CFBundleDevelopmentRegion</key>
