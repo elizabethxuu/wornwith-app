@@ -56,3 +56,17 @@ export function downloadCareCalendar(text: Text) {
   a.remove();
   setTimeout(() => URL.revokeObjectURL(url), 10_000);
 }
+
+// The menu's bell opens the Care screen at the reminders card.
+let focusRequested = false;
+export const FOCUS_REMINDERS = "wornwith:focus-reminders";
+export function requestRemindersFocus() {
+  focusRequested = true;
+  // If the card is already on screen, it hears this and scrolls itself.
+  window.dispatchEvent(new Event(FOCUS_REMINDERS));
+}
+export function takeRemindersFocus(): boolean {
+  const f = focusRequested;
+  focusRequested = false;
+  return f;
+}

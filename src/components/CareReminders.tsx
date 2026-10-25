@@ -1,10 +1,10 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { BellRing, CalendarPlus } from "lucide-react";
 import { Eyebrow } from "./UI";
 import { useLanguage, type TranslationKey } from "../lib/i18n";
 import { isNativeApp } from "../lib/apiBase";
 import { CARE_REMINDERS, type CareReminder } from "../lib/careReminders";
-import { disableReminders, downloadCareCalendar, enableReminders, remindersOn } from "../lib/reminders";
+import { disableReminders, downloadCareCalendar, enableReminders, remindersOn, takeRemindersFocus, FOCUS_REMINDERS } from "../lib/reminders";
 import { haptic } from "../lib/touches";
 
 // On the Care screen: the coat's care rhythm as reminders. In the iPhone app
@@ -32,8 +32,31 @@ export function CareReminders() {
     else if (result === "denied") setNote("rem_denied_note");
   };
 
+  // Opened from the menu's bell: bring the card into view once the screen
+  // has settled at the top, and give it a brief glow.
+  const cardRef = useRef<HTMLDivElement>(null);
+  const [glow, setGlow] = useState(false);
+  useEffect(() => {
+    const timers: ReturnType<typeof setTimeout>[] = [];
+    const focus = () => {
+      if (!takeRemindersFocus()) return;
+      timers.push(setTimeout(() => {
+        cardRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+        setGlow(true);
+      }, 450));
+      timers.push(setTimeout(() => setGlow(false), 2400));
+    };
+    focus();
+    window.addEventListener(FOCUS_REMINDERS, focus);
+    return () => { window.removeEventListener(FOCUS_REMINDERS, focus); timers.forEach(clearTimeout); };
+  }, []);
+
   return (
-    <div className="border-t border-line pt-5 mt-6">
+    <div
+      ref={cardRef}
+      id="care-reminders"
+      className={`border-t border-line pt-5 mt-6 -mx-3 px-3 pb-3 rounded-2xl transition-[background-color,box-shadow] duration-700 ${glow ? "bg-blush-pale/60 shadow-[0_0_0_1px_rgba(142,61,82,0.25)]" : ""}`}
+    >
       <Eyebrow>{t("rem_title")}</Eyebrow>
       <p className="font-sans text-[12px] text-clay mt-2 leading-relaxed">{t("rem_sub")}</p>
       <ul className="mt-3 space-y-1.5">

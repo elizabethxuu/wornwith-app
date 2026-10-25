@@ -52,3 +52,17 @@ The share sheet shows **Add to Apple Wallet** (on Apple devices) once the pass c
 ## Waitlist (wornwith.care/waitlist)
 
 Until a database is connected, the form offers to email hello@wornwith.care instead. To turn it on: Vercel → your project → **Storage** → **Create Database** → **Upstash for Redis** (free tier) → connect it to this project, then redeploy. To read the sign-ups, open the database's **Data Browser** in Vercel and look at the `wl:people` hash. The count and most-named piece only show on the page once 10 people have joined.
+
+## TestFlight pilot, then the App Store
+
+What's already set in the project: bundle ID `care.wornwith.app`, display name "Worn With Care", iPhone only, the pink W app icon and launch screen, permission texts (microphone, camera, photos, location, NFC), the export-compliance flag (standard HTTPS only), and a privacy manifest (`App/PrivacyInfo.xcprivacy`: no tracking; audio, wardrobe questions, approximate location and anonymous usage, none linked to the person).
+
+1. **App Store Connect** (appstoreconnect.apple.com) → Apps → **+** → New App: iOS, name "Worn With Care", bundle ID `care.wornwith.app`, SKU `wornwith-001`.
+2. **Upload a build:** in Xcode choose *Any iOS Device (arm64)* → Product → **Archive** → Distribute App → App Store Connect → Upload. Raise **Build** (`CURRENT_PROJECT_VERSION`) by 1 for every upload.
+3. **TestFlight pilot:**
+   - *Internal* (you and up to 100 people on your App Store Connect team): available minutes after upload, no review.
+   - *External* (up to 10,000 people by email or a public link): needs a short beta review (usually about a day). Use this for boutiques, language testers and friends. Put the Google Form link in "What to Test".
+4. **App Privacy** (App Store Connect → App Privacy): answer to match the manifest. Data not linked to the user, not used for tracking: Audio Data and Other User Content (app functionality), Coarse Location (app functionality), Product Interaction (analytics). Privacy policy URL: https://wornwith.care (Privacy page) or a direct link.
+5. **Listing:** category Lifestyle; age rating 4+; subtitle (30 characters), description, keywords; support URL and marketing URL https://wornwith.care; screenshots at 6.9" (1320 × 2868), at least 3.
+6. **App Review notes** (reviewers don't have the coat): "The passport opens without a tag: launch the app and it opens on the coat's passport. Tag scanning (Menu → first icon) needs an NFC sticker written with https://wornwith.care/?dpp=4f2a; a 30-second video of the scan is attached. Care reminders: Menu → bell → Turn on reminders." Attach the video.
+7. **Submit for Review**, then release manually or automatically once approved.

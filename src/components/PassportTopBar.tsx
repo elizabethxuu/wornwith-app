@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
-import { Menu as MenuIcon, X as CloseIcon, Share, Search, AudioLines, Moon, Sun } from "lucide-react";
+import { Menu as MenuIcon, X as CloseIcon, Share, Search, AudioLines, Moon, Sun, Bell, BellRing } from "lucide-react";
+import { remindersOn, requestRemindersFocus } from "../lib/reminders";
 import { useLanguage, type TranslationKey } from "../lib/i18n";
 import { ShareSheet } from "./UI";
 import HeaderTools, { SearchSheet } from "./HeaderTools";
@@ -171,7 +172,7 @@ export default function PassportTopBar({
           </div>
           <nav className="flex-1 overflow-y-auto px-6 pt-6 max-w-md w-full mx-auto">
             {/* Quick actions, icons only, side by side at the top. */}
-            <div className="flex items-center gap-3 mb-8">
+            <div className="flex flex-wrap items-center gap-3 mb-8">
               <NativeScanButton onOpenPassport={() => { setMenuOpen(false); onGoTo(1); }} />
               <button
                 onClick={() => { setMenuOpen(false); setShareOpen(true); }}
@@ -180,6 +181,16 @@ export default function PassportTopBar({
                 className="menu-icon-btn"
               >
                 <Share size={18} strokeWidth={1.4} />
+              </button>
+              {/* Care reminders: opens the Care screen at the reminders card. */}
+              <button
+                onClick={() => { requestRemindersFocus(); setMenuOpen(false); onGoTo(4); }}
+                aria-label={t("rem_title")}
+                title={t("rem_title")}
+                className="menu-icon-btn relative"
+              >
+                {remindersOn() ? <BellRing size={18} strokeWidth={1.4} /> : <Bell size={18} strokeWidth={1.4} />}
+                {remindersOn() && <span aria-hidden="true" className="absolute top-2.5 right-2.5 w-1.5 h-1.5 rounded-full bg-[#8E3D52]" />}
               </button>
               {showTools && (
                 <>
@@ -205,7 +216,7 @@ export default function PassportTopBar({
               {/* Your coat, with today's line from Today's Edit beside it. */}
               <button
                 onClick={() => { setMenuOpen(false); onGoTo(9); }}
-                className="ml-auto flex items-center gap-2.5 text-left min-w-0"
+                className="ml-auto flex items-center gap-2.5 text-left min-w-[200px] max-w-full justify-end"
               >
                 <span className="text-right leading-tight min-w-0">
                   <span className="block font-sans text-[9px] uppercase tracking-[0.2em] text-clay truncate">
